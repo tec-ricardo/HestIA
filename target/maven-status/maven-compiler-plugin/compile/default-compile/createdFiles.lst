@@ -1,0 +1,9 @@
+br\com\hestia\empresa\model\StatusEmpresa.class
+br\com\hestia\empresa\model\SetorEmpresa.class
+br\com\hestia\empresa\model\Empresa.class
+br\com\hestia\HestIaApplication.class
+br\com\hestia\empresa\service\EmpresaService.class
+br\com\hestia\empresa\model\PorteEmpresa.class
+br\com\hestia\empresa\repository\EmpresaRepository.class
+br\com\hestia\empresa\dto\EmpresaRequest.class
+br\com\hestia\empresa\controller\EmpresaController.class
