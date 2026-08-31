@@ -17,9 +17,15 @@ public class EmpresaService {
     }
 
     public Empresa cadastrar(EmpresaDTO dto) {
+
+        if (empresaRepository.existsByCnpj(dto.getCnpj())) {
+            throw new IllegalArgumentException("CNPJ já cadastrado");
+        }
+
         Empresa empresa = new Empresa();
 
         empresa.setNome(dto.getNome());
+        empresa.setCnpj(dto.getCnpj());
         empresa.setConfiguracoesGerais(dto.getConfiguracoesGerais());
         empresa.setPoliticas(dto.getPoliticas());
         empresa.setOrcamento(dto.getOrcamento());
@@ -37,9 +43,11 @@ public class EmpresaService {
     }
 
     public Empresa atualizar(Long id, EmpresaDTO dto) {
+
         Empresa empresa = buscarPorId(id);
 
         empresa.setNome(dto.getNome());
+        empresa.setCnpj(dto.getCnpj());
         empresa.setConfiguracoesGerais(dto.getConfiguracoesGerais());
         empresa.setPoliticas(dto.getPoliticas());
         empresa.setOrcamento(dto.getOrcamento());
@@ -48,7 +56,9 @@ public class EmpresaService {
     }
 
     public void excluir(Long id) {
+
         Empresa empresa = buscarPorId(id);
+
         empresaRepository.delete(empresa);
     }
 }

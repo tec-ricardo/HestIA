@@ -13,6 +13,9 @@ public class Empresa {
     @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false, unique = true)
+    private String cnpj;
+
     private String configuracoesGerais;
 
     private String politicas;
@@ -22,9 +25,10 @@ public class Empresa {
     public Empresa() {
     }
 
-    public Empresa(Long id, String nome, String configuracoesGerais, String politicas, Double orcamento) {
+    public Empresa(Long id, String nome, String cnpj, String configuracoesGerais, String politicas, Double orcamento) {
         this.id = id;
         this.nome = nome;
+        this.cnpj = cnpj;
         this.configuracoesGerais = configuracoesGerais;
         this.politicas = politicas;
         this.orcamento = orcamento;
@@ -44,6 +48,14 @@ public class Empresa {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getConfiguracoesGerais() {
