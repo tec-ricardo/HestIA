@@ -54,7 +54,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "git-widget-placeholder": "develop",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "SCRUM-46-matriz-permissoes",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/ricardo.davila/OneDrive - ESPM/QUARTO SEMESTRE/PROJETO INTEGRADO/HestIA",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,6 +71,19 @@
     "project.structure.side.proportion": "0.0"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="HestIA" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="HestIA" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -74,6 +93,13 @@
     </attachedChunks>
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="65559c49-00b1-4960-b08b-8e148e4de306" name="Changes" comment="" />
+      <created>1788293299201</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1788293299201</updated>
+    </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
