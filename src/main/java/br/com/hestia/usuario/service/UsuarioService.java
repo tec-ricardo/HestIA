@@ -8,6 +8,7 @@ import br.com.hestia.usuario.dto.UsuarioDTO;
 import br.com.hestia.usuario.model.Usuario;
 import br.com.hestia.usuario.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -17,15 +18,18 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmpresaRepository empresaRepository;
     private final DepartamentoRepository departamentoRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             EmpresaRepository empresaRepository,
-            DepartamentoRepository departamentoRepository
+            DepartamentoRepository departamentoRepository,
+            PasswordEncoder passwordEncoder
     ) {
         this.usuarioRepository = usuarioRepository;
         this.empresaRepository = empresaRepository;
         this.departamentoRepository = departamentoRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Usuario criar(UsuarioDTO dto) {
@@ -57,7 +61,7 @@ public class UsuarioService {
 
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
-        usuario.setSenha(dto.getSenha());
+        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
         usuario.setCargo(dto.getCargo());
         usuario.setPerfil(dto.getPerfil());
         usuario.setEmpresa(empresa);
