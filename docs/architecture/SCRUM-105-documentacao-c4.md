@@ -18,9 +18,9 @@ repositório.
 
 ## 2. Nível 1 — Contexto do sistema
 
-![Diagrama de Contexto do HestIA](diagrams/c4-contexto.png)
+![Diagrama de Contexto do HestIA](c4-contexto.png)
 
-[Fonte Mermaid do diagrama de contexto](diagrams/c4-contexto.mmd)
+[Fonte Mermaid do diagrama de contexto](c4-contexto.mmd)
 
 | Elemento | Tipo | Responsabilidade ou relação |
 |---|---|---|
@@ -34,9 +34,9 @@ repositório.
 
 ## 3. Nível 2 — Contêineres
 
-![Diagrama de Contêineres do MVP](diagrams/c4-conteineres.png)
+![Diagrama de Contêineres do MVP](c4-conteineres.png)
 
-[Fonte Mermaid do diagrama de contêineres](diagrams/c4-conteineres.mmd)
+[Fonte Mermaid do diagrama de contêineres](c4-conteineres.mmd)
 
 | Contêiner | Tecnologia | Responsabilidade | Estado |
 |---|---|---|---|
@@ -50,9 +50,9 @@ altera, por si só, o estilo do núcleo para microsserviços.
 
 ## 4. Nível 3 — Componentes da API HestIA
 
-![Componentes e limites do monólito modular](diagrams/c4-componentes.png)
+![Componentes e limites do monólito modular](c4-componentes.png)
 
-[Fonte Mermaid do diagrama de componentes](diagrams/c4-componentes.mmd)
+[Fonte Mermaid do diagrama de componentes](c4-componentes.mmd)
 
 | Componente | Responsabilidade | Dependências permitidas |
 |---|---|---|
