@@ -10,23 +10,24 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
 
-    private String configuracoesGerais;
+    @Column(nullable = false, unique = true, length = 14)
+    private String cnpj;
 
-    private String politicas;
+    private String configuracoesGerais;
 
     private Double orcamento;
 
     public Empresa() {
     }
 
-    public Empresa(Long id, String nome, String configuracoesGerais, String politicas, Double orcamento) {
+    public Empresa(Long id, String nome, String cnpj, String configuracoesGerais, Double orcamento) {
         this.id = id;
         this.nome = nome;
+        this.cnpj = cnpj;
         this.configuracoesGerais = configuracoesGerais;
-        this.politicas = politicas;
         this.orcamento = orcamento;
     }
 
@@ -46,20 +47,20 @@ public class Empresa {
         this.nome = nome;
     }
 
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
     public String getConfiguracoesGerais() {
         return configuracoesGerais;
     }
 
     public void setConfiguracoesGerais(String configuracoesGerais) {
         this.configuracoesGerais = configuracoesGerais;
-    }
-
-    public String getPoliticas() {
-        return politicas;
-    }
-
-    public void setPoliticas(String politicas) {
-        this.politicas = politicas;
     }
 
     public Double getOrcamento() {
