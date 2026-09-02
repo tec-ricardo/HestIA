@@ -20,7 +20,9 @@ class FerramentaIARepositoryTest {
 
     @Test
     void criaFerramentaComEstadoInicialEIsolamentoPorEmpresa() {
-        var empresa = empresaRepository.save(new Empresa(null, "ESPM", null, null, 1000.0));
+        var empresa = empresaRepository.save(new Empresa(
+                null, "ESPM", "61428598000190", null, 1000.0
+        ));
         var ferramenta = new FerramentaIA(
                 "ChatGPT", "OpenAI", "Assistente corporativo",
                 TipoFerramentaIA.CHATBOT, "Apoiar atividades corporativas",

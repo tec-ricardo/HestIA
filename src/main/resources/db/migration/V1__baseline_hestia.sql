@@ -1,8 +1,8 @@
 CREATE TABLE empresas (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(14) NOT NULL UNIQUE,
     configuracoes_gerais VARCHAR(255),
-    politicas VARCHAR(255),
     orcamento DOUBLE PRECISION
 );
 
