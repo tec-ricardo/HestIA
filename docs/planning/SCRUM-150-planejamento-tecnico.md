@@ -247,6 +247,11 @@ Critérios mínimos:
 
 ## 6. Dependências
 
+![Trilha e dependências técnicas do MVP](diagrams/trilha-tecnica.png)
+
+O [arquivo-fonte Mermaid](diagrams/trilha-tecnica.mmd) acompanha a imagem para
+permitir que a equipe atualize a trilha junto com o planejamento.
+
 ```text
 SCRUM-150
   └─> SCRUM-106
