@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Utilizações de IA
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+                <div>
+
+                    <p class="eyebrow">
+                        Colaborador
+                    </p>
+
+                    <h1>
+                        Utilizações de IA
+                    </h1>
+
+                </div>
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                    <select disabled>
+
+                        <option selected>
+                            Colaborador
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <!-- REGISTRO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Registrar utilização de IA
+                    </h3>
+
+                </div>
+
+
+                <form
+                    class="form-grid"
+                    onsubmit="return false;">
+
+
+                    <label>
+
+                        Usuário
+
+                        <input
+                            type="text"
+                            value="<%= email %>"
+                            readonly>
+
+                    </label>
+
+
+                    <label>
+
+                        Modelo utilizado
+
+                        <input
+                            type="text"
+                            placeholder="Modelo ou ferramenta de IA"
+                            required>
+
+                    </label>
+
+
+                    <label>
+
+                        Data
+
+                        <input
+                            type="date"
+                            required>
+
+                    </label>
+
+
+                    <label>
+
+                        Informações de consumo
+
+                        <input
+                            type="text"
+                            placeholder="Consumo">
+
+                    </label>
+
+
+                    <label class="full">
+
+                        Finalidade
+
+                        <input
+                            type="text"
+                            placeholder="Finalidade da utilização"
+                            required>
+
+                    </label>
+
+
+                    <button
+                        class="primary fake-save"
+                        type="button">
+
+                        Registrar utilização
+
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- HISTORICO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Histórico de utilizações
+                    </h3>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Modelo
+                                </th>
+
+                                <th>
+                                    Data
+                                </th>
+
+                                <th>
+                                    Consumo
+                                </th>
+
+                                <th>
+                                    Finalidade
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td colspan="4">
+                                    Nenhum registro exibido no protótipo.
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <div
+                class="toast"
+                id="toast">
+
+                Ação demonstrativa do protótipo visual.
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

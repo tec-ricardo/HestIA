@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Custos e eficiência
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Gestor
+                    </p>
+
+                    <h1>
+                        Custos e eficiência
+                    </h1>
+
+                </div>
+
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                    <select disabled>
+
+                        <option selected>
+                            Gestor
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <!-- INDICADORES -->
+
+            <section class="grid four">
+
+                <article class="metric-card">
+
+                    <span>
+                        Custo total
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Nenhuma informação de custo registrada.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Departamentos
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Departamentos com registros de utilização.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Utilizações
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Registros utilizados na análise de custo.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Eficiência
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Indicador disponível conforme os dados registrados.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- CUSTOS POR DEPARTAMENTO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Custos por departamento
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart">
+
+                    <canvas id="graficoCustos"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="semCustos">
+
+                        Nenhum dado de custo por departamento disponível.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- EFICIENCIA -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Indicadores de eficiência
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart">
+
+                    <canvas id="graficoEficiencia"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="semEficiencia">
+
+                        Nenhum indicador de eficiência disponível.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <script>
+
+        /* CUSTOS */
+
+        const graficoCustos =
+            document.getElementById("graficoCustos");
+
+
+        const departamentosCustos = ["Tecnologia",
+    "Marketing",
+    "Financeiro",
+    "RH"];
+
+        const valoresCustos = [4200,
+    2800,
+    1900,
+    1100];
+
+
+        if (graficoCustos && departamentosCustos.length > 0) {
+
+            document
+                .getElementById("semCustos")
+                .style.display = "none";
+
+
+            new Chart(graficoCustos, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: departamentosCustos,
+
+                    datasets: [{
+
+                        label: "Custos de IA",
+
+                        data: valoresCustos
+
+                    }]
+
+                }
+
+            });
+
+        }
+
+
+        /* EFICIENCIA */
+
+        const graficoEficiencia =
+            document.getElementById("graficoEficiencia");
+
+
+        const indicadoresEficiencia = ["Uso adequado",
+    "Produtividade",
+    "Aproveitamento"];
+
+        const valoresEficiencia = [84,
+    76,
+    71];
+
+
+        if (
+            graficoEficiencia &&
+            indicadoresEficiencia.length > 0
+        ) {
+
+            document
+                .getElementById("semEficiencia")
+                .style.display = "none";
+
+
+            new Chart(graficoEficiencia, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: indicadoresEficiencia,
+
+                    datasets: [{
+
+                        label: "Eficiência",
+
+                        data: valoresEficiencia
+
+                    }]
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

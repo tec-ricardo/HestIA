@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Visão Geral
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Plataforma corporativa
+                    </p>
+
+                    <h1>
+                        Visão geral
+                    </h1>
+
+                </div>
+
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                    <select disabled>
+
+                        <% if (perfil == "colaborador") { %>
+
+                            <option selected>
+                                Colaborador
+                            </option>
+
+                        <% } %>
+
+
+                        <% if (perfil == "gestor") { %>
+
+                            <option selected>
+                                Gestor
+                            </option>
+
+                        <% } %>
+
+
+                        <% if (perfil == "administrador") { %>
+
+                            <option selected>
+                                Administrador
+                            </option>
+
+                        <% } %>
+
+                    </select>
+
+                </div>
+
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+
+            <!-- COLABORADOR -->
+
+            <% if (perfil == "colaborador") { %>
+
+                <section class="hero-card">
+
+                    <p class="eyebrow">
+                        Colaborador
+                    </p>
+
+                    <h2>
+                        Acompanhe seu uso de Inteligência Artificial
+                    </h2>
+
+                    <p>
+                        Consulte seus principais indicadores relacionados
+                        à utilização de Inteligência Artificial.
+                    </p>
+
+                </section>
+
+
+                <!-- KPIS -->
+
+                <section class="dashboard-summary">
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            AI Maturity Score
+                        </span>
+
+                        <strong>
+                            72
+                        </strong>
+
+                        <p>
+                            Indicador de maturidade
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            AI Credits
+                        </span>
+
+                        <strong>
+                            680
+                        </strong>
+
+                        <p>
+                            Saldo atual
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Ranking
+                        </span>
+
+                        <strong>
+                            4º
+                        </strong>
+
+                        <p>
+                            Classificação atual
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Uso responsável
+                        </span>
+
+                        <strong>
+                            80
+                        </strong>
+
+                        <p>
+                            Indicador de maturidade
+                        </p>
+
+                    </article>
+
+                </section>
+
+
+                <!-- GRAFICOS -->
+
+                <section class="dashboard-grid">
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Indicadores de maturidade
+                                </h3>
+
+                                <span>
+                                    AI Maturity Score
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-chart">
+
+                            <canvas id="graficoColaborador"></canvas>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Ranking de AI Credits
+                                </h3>
+
+                                <span>
+                                    Classificação
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="ranking-list">
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-position">
+                                    1
+                                </div>
+
+                                <div class="ranking-info">
+
+                                    <strong>
+                                        Ana
+                                    </strong>
+
+                                    <span>
+                                        AI Credits
+                                    </span>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    920
+                                </div>
+
+                            </div>
+
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-position">
+                                    2
+                                </div>
+
+                                <div class="ranking-info">
+
+                                    <strong>
+                                        Carlos
+                                    </strong>
+
+                                    <span>
+                                        AI Credits
+                                    </span>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    810
+                                </div>
+
+                            </div>
+
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-position">
+                                    3
+                                </div>
+
+                                <div class="ranking-info">
+
+                                    <strong>
+                                        Mariana
+                                    </strong>
+
+                                    <span>
+                                        AI Credits
+                                    </span>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    750
+                                </div>
+
+                            </div>
+
+
+                            <div class="ranking-item">
+
+                                <div class="ranking-position">
+                                    4
+                                </div>
+
+                                <div class="ranking-info">
+
+                                    <strong>
+                                        Você
+                                    </strong>
+
+                                    <span>
+                                        AI Credits
+                                    </span>
+
+                                </div>
+
+                                <div class="ranking-value">
+                                    680
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+            <% } %>
+
+
+
+            <!-- GESTOR -->
+
+            <% if (perfil == "gestor") { %>
+
+                <section class="hero-card">
+
+                    <p class="eyebrow">
+                        Gestor
+                    </p>
+
+                    <h2>
+                        Acompanhe maturidade, custos e eficiência
+                    </h2>
+
+                    <p>
+                        Visualize os principais indicadores relacionados
+                        ao uso de Inteligência Artificial e acompanhe
+                        informações para apoiar a tomada de decisão.
+                    </p>
+
+                </section>
+
+
+                <!-- KPIS -->
+
+                <section class="dashboard-summary">
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            AI Maturity Score
+                        </span>
+
+                        <strong>
+                            74
+                        </strong>
+
+                        <p>
+                            Indicador de maturidade
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Custos
+                        </span>
+
+                        <strong>
+                            R$ 10.000
+                        </strong>
+
+                        <p>
+                            Utilização de IA
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Departamentos
+                        </span>
+
+                        <strong>
+                            4
+                        </strong>
+
+                        <p>
+                            Áreas analisadas
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Produtividade
+                        </span>
+
+                        <strong>
+                            76
+                        </strong>
+
+                        <p>
+                            Indicador de maturidade
+                        </p>
+
+                    </article>
+
+                </section>
+
+
+                <!-- GRAFICOS -->
+
+                <section class="dashboard-grid">
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Maturidade por departamento
+                                </h3>
+
+                                <span>
+                                    AI Maturity Score
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-chart">
+
+                            <canvas id="graficoMaturidadeGestor"></canvas>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Custos por departamento
+                                </h3>
+
+                                <span>
+                                    Distribuição dos custos
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-chart">
+
+                            <canvas id="graficoCustos"></canvas>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+            <% } %>
+
+
+
+            <!-- ADMINISTRADOR -->
+
+            <% if (perfil == "administrador") { %>
+
+                <section class="hero-card">
+
+                    <p class="eyebrow">
+                        Administrador
+                    </p>
+
+                    <h2>
+                        Administração e governança da plataforma
+                    </h2>
+
+                    <p>
+                        Acompanhe a estrutura organizacional,
+                        usuários, ferramentas e políticas da plataforma.
+                    </p>
+
+                </section>
+
+
+                <!-- KPIS -->
+
+                <section class="dashboard-summary">
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Empresas
+                        </span>
+
+                        <strong>
+                            3
+                        </strong>
+
+                        <p>
+                            Organizações cadastradas
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Usuários
+                        </span>
+
+                        <strong>
+                            128
+                        </strong>
+
+                        <p>
+                            Usuários cadastrados
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Ferramentas de IA
+                        </span>
+
+                        <strong>
+                            12
+                        </strong>
+
+                        <p>
+                            Modelos e ferramentas
+                        </p>
+
+                    </article>
+
+
+                    <article class="dashboard-summary-card">
+
+                        <span>
+                            Políticas
+                        </span>
+
+                        <strong>
+                            8
+                        </strong>
+
+                        <p>
+                            Políticas cadastradas
+                        </p>
+
+                    </article>
+
+                </section>
+
+
+                <!-- GRAFICOS DO ADMINISTRADOR -->
+
+                <section class="dashboard-grid">
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Usuários por departamento
+                                </h3>
+
+                                <span>
+                                    Estrutura organizacional
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-chart">
+
+                            <canvas id="graficoUsuariosAdmin"></canvas>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Conformidade das utilizações
+                                </h3>
+
+                                <span>
+                                    Governança de IA
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-chart governanca-chart">
+
+                            <canvas id="graficoGovernancaAdmin"></canvas>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+                <!-- PAINEIS -->
+
+                <section class="dashboard-grid">
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Estrutura organizacional
+                                </h3>
+
+                                <span>
+                                    Administração
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="list-clean">
+
+                            <span>
+                                Cadastro de empresas
+                            </span>
+
+                            <span>
+                                Cadastro de departamentos
+                            </span>
+
+                            <span>
+                                Cadastro de usuários
+                            </span>
+
+                            <span>
+                                Perfis e permissões
+                            </span>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="dashboard-panel">
+
+                        <div class="dashboard-title">
+
+                            <div>
+
+                                <h3>
+                                    Governança de IA
+                                </h3>
+
+                                <span>
+                                    Administração
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="list-clean">
+
+                            <span>
+                                Modelos e ferramentas de IA
+                            </span>
+
+                            <span>
+                                Competências
+                            </span>
+
+                            <span>
+                                Políticas
+                            </span>
+
+                            <span>
+                                Conformidade
+                            </span>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+            <% } %>
+
+
+            <!-- AVISO -->
+
+            <p class="dashboard-demo">
+                Dados demonstrativos do MVP.
+            </p>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- GRAFICOS -->
+
+    <script>
+
+
+        /* COLABORADOR */
+
+        const graficoColaborador =
+            document.getElementById("graficoColaborador");
+
+
+        if (graficoColaborador) {
+
+            new Chart(graficoColaborador, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "AI Literacy",
+                        "Governança",
+                        "Uso Responsável",
+                        "Produtividade",
+                        "FinOps",
+                        "Segurança",
+                        "Colaboração",
+                        "Competências"
+                    ],
+
+                    datasets: [{
+
+                        label: "Score",
+
+                        data: [
+                            72,
+                            65,
+                            80,
+                            76,
+                            58,
+                            85,
+                            70,
+                            68
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+
+        /* GESTOR - MATURIDADE */
+
+        const graficoMaturidadeGestor =
+            document.getElementById("graficoMaturidadeGestor");
+
+
+        if (graficoMaturidadeGestor) {
+
+            new Chart(graficoMaturidadeGestor, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "Tecnologia",
+                        "Marketing",
+                        "Financeiro",
+                        "RH"
+                    ],
+
+                    datasets: [{
+
+                        label: "AI Maturity Score",
+
+                        data: [
+                            82,
+                            74,
+                            67,
+                            61
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+
+        /* GESTOR - CUSTOS */
+
+        const graficoCustos =
+            document.getElementById("graficoCustos");
+
+
+        if (graficoCustos) {
+
+            new Chart(graficoCustos, {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Tecnologia",
+                        "Marketing",
+                        "Financeiro",
+                        "RH"
+                    ],
+
+                    datasets: [{
+
+                        data: [
+                            4200,
+                            2800,
+                            1900,
+                            1100
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "65%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "top"
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+
+        /* ADMINISTRADOR - USUARIOS */
+
+        const graficoUsuariosAdmin =
+            document.getElementById("graficoUsuariosAdmin");
+
+
+        if (graficoUsuariosAdmin) {
+
+            new Chart(graficoUsuariosAdmin, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "Tecnologia",
+                        "Marketing",
+                        "Financeiro",
+                        "RH"
+                    ],
+
+                    datasets: [{
+
+                        label: "Usuários",
+
+                        data: [
+                            42,
+                            35,
+                            28,
+                            23
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 50
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+
+        /* ADMINISTRADOR - GOVERNANCA */
+
+        const graficoGovernancaAdmin =
+            document.getElementById("graficoGovernancaAdmin");
+
+
+        if (graficoGovernancaAdmin) {
+
+            new Chart(graficoGovernancaAdmin, {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Conforme",
+                        "Não conforme"
+                    ],
+
+                    datasets: [{
+
+                        data: [
+                            82,
+                            18
+                        ]
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "65%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "top"
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+    </script>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>
