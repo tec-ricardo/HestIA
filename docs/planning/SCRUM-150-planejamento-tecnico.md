@@ -247,9 +247,9 @@ Critérios mínimos:
 
 ## 6. Dependências
 
-![Trilha e dependências técnicas do MVP](diagrams/trilha-tecnica.png)
+![Trilha e dependências técnicas do MVP](trilha-tecnica.png)
 
-O [arquivo-fonte Mermaid](diagrams/trilha-tecnica.mmd) acompanha a imagem para
+O [arquivo-fonte Mermaid](trilha-tecnica.mmd) acompanha a imagem para
 permitir que a equipe atualize a trilha junto com o planejamento.
 
 ```text
