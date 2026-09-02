@@ -91,9 +91,9 @@ br.com.hestia
 
 ## 7. Arquitetura de execução
 
-![Contêineres propostos para o MVP](diagrams/c4-conteineres.png)
+![Contêineres propostos para o MVP](c4-conteineres.png)
 
-O [arquivo-fonte Mermaid](diagrams/c4-conteineres.mmd) permite atualizar o
+O [arquivo-fonte Mermaid](c4-conteineres.mmd) permite atualizar o
 diagrama junto com a arquitetura.
 
 ### Integração Spring Boot e Node.js
