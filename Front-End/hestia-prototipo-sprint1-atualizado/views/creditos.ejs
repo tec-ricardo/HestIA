@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - AI Credits
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Boas práticas
+                    </p>
+
+                    <h1>
+                        AI Credits
+                    </h1>
+
+                </div>
+
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                </div>
+
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <!-- COLABORADOR -->
+
+            <% if (perfil == "colaborador") { %>
+
+                <section class="grid two">
+
+                    <article class="metric-card">
+
+                        <span>
+                            Meus AI Credits
+                        </span>
+
+                        <strong>
+                            680
+                        </strong>
+
+                        <p>
+                            Nenhum saldo calculado no protótipo.
+                        </p>
+
+                    </article>
+
+
+                    <article class="metric-card">
+
+                        <span>
+                            Classificação
+                        </span>
+
+                        <strong>
+                            4º
+                        </strong>
+
+                        <p>
+                            A classificação será baseada
+                            nos créditos acumulados.
+                        </p>
+
+                    </article>
+
+                </section>
+
+            <% } %>
+
+
+            <!-- RANKING -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Ranking de AI Credits
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart creditos-chart">
+
+                    <canvas id="graficoCredits"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="semCredits">
+
+                        Nenhum dado disponível para gerar o ranking.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CRITERIOS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Critérios de boas práticas
+                    </h3>
+
+                </div>
+
+
+                <div class="pill-grid">
+
+                    <div class="solid-item">
+
+                        <span>
+                            Utilização eficiente dos modelos de IA
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Escolha adequada do modelo para cada tarefa
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Compartilhamento de conhecimento
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Reutilização de prompts aprovados
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Redução de retrabalho
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Participação em programas de capacitação
+                        </span>
+
+                    </div>
+
+
+                    <div class="solid-item">
+
+                        <span>
+                            Melhoria contínua da qualidade
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <script>
+
+        const graficoCredits =
+            document.getElementById("graficoCredits");
+
+
+        const usuariosCredits = [
+            "Ana",
+            "Carlos",
+            "Mariana",
+            "João",
+            "Lucas"
+        ];
+
+
+        const valoresCredits = [
+            920,
+            810,
+            750,
+            680,
+            610
+        ];
+
+
+        if (
+            graficoCredits &&
+            usuariosCredits.length > 0
+        ) {
+
+            document
+                .getElementById("semCredits")
+                .style.display = "none";
+
+
+            new Chart(graficoCredits, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: usuariosCredits,
+
+                    datasets: [{
+
+                        label: "AI Credits",
+
+                        data: valoresCredits
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "top"
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 1000
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

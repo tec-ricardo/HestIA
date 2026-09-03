@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Governança
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+
+                <div>
+
+                    <p class="eyebrow">
+                        Governança
+                    </p>
+
+                    <h1>
+                        Políticas e conformidade
+                    </h1>
+
+                </div>
+
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                </div>
+
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <!-- INDICADORES -->
+
+            <section class="grid two">
+
+                <article class="metric-card">
+
+                    <span>
+                        Políticas
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Nenhuma política registrada.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Conformidade
+                    </span>
+
+                    <strong>
+                        --
+                    </strong>
+
+                    <p>
+                        Nenhuma utilização avaliada.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- DASHBOARD -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Conformidade das utilizações
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart governanca-chart">
+
+                    <canvas id="graficoConformidade"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="semConformidade">
+
+                        Nenhum registro de conformidade disponível.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- POLITICAS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Políticas e diretrizes
+                    </h3>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Política / diretriz
+                                </th>
+
+                                <th>
+                                    Situação
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td colspan="2">
+                                    Nenhuma política cadastrada.
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- ADMINISTRADOR -->
+
+            <% if (perfil == "administrador") { %>
+
+                <section class="grid two">
+
+
+                    <article class="panel">
+
+                        <div class="panel-head">
+
+                            <h3>
+                                Cadastrar política ou diretriz
+                            </h3>
+
+                        </div>
+
+
+                        <form
+                            class="form-grid"
+                            onsubmit="return false;">
+
+
+                            <label class="full">
+
+                                Política ou diretriz
+
+                                <input
+                                    type="text"
+                                    required>
+
+                            </label>
+
+
+                            <button
+                                class="primary fake-save"
+                                type="button">
+
+                                Cadastrar
+
+                            </button>
+
+                        </form>
+
+                    </article>
+
+
+                    <article class="panel">
+
+                        <div class="panel-head">
+
+                            <h3>
+                                Registrar conformidade
+                            </h3>
+
+                        </div>
+
+
+                        <form
+                            class="form-grid"
+                            onsubmit="return false;">
+
+
+                            <label>
+
+                                Utilização de IA
+
+                                <input
+                                    type="text"
+                                    required>
+
+                            </label>
+
+
+                            <label>
+
+                                Conformidade
+
+                                <input
+                                    type="text"
+                                    required>
+
+                            </label>
+
+
+                            <button
+                                class="primary fake-save"
+                                type="button">
+
+                                Registrar
+
+                            </button>
+
+                        </form>
+
+                    </article>
+
+                </section>
+
+            <% } %>
+
+
+            <div
+                class="toast"
+                id="toast">
+
+                Ação demonstrativa do protótipo visual.
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- CHART JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- GRAFICO DE CONFORMIDADE -->
+
+    <script>
+
+        const graficoConformidade =
+            document.getElementById("graficoConformidade");
+
+
+        const tiposConformidade = [
+            "Conforme",
+            "Não conforme"
+        ];
+
+
+        const valoresConformidade = [
+            82,
+            18
+        ];
+
+
+        if (
+            graficoConformidade &&
+            tiposConformidade.length > 0
+        ) {
+
+            document
+                .getElementById("semConformidade")
+                .style.display = "none";
+
+
+            new Chart(graficoConformidade, {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: tiposConformidade,
+
+                    datasets: [{
+
+                        data: valoresConformidade
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    cutout: "65%",
+
+                    plugins: {
+
+                        legend: {
+
+                            position: "top"
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

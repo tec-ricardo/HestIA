@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Administração
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+                <div>
+
+                    <p class="eyebrow">
+                        Administrador
+                    </p>
+
+                    <h1>
+                        Administração
+                    </h1>
+
+                </div>
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                    <select disabled>
+
+                        <option selected>
+                            Administrador
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <section class="grid two">
+
+
+                <!-- EMPRESA -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Cadastro de empresa
+                        </h3>
+
+                    </div>
+
+                    <form
+                        class="form-grid"
+                        onsubmit="return false;">
+
+                        <label class="full">
+
+                            Empresa
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <button
+                            class="primary fake-save"
+                            type="button">
+
+                            Cadastrar empresa
+
+                        </button>
+
+                    </form>
+
+                </article>
+
+
+                <!-- DEPARTAMENTO -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Cadastro de departamento
+                        </h3>
+
+                    </div>
+
+                    <form
+                        class="form-grid"
+                        onsubmit="return false;">
+
+                        <label>
+
+                            Departamento
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <label>
+
+                            Empresa existente
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <button
+                            class="primary fake-save"
+                            type="button">
+
+                            Cadastrar departamento
+
+                        </button>
+
+                    </form>
+
+                </article>
+
+
+                <!-- USUARIO -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Cadastro de usuário
+                        </h3>
+
+                    </div>
+
+                    <form
+                        class="form-grid"
+                        onsubmit="return false;">
+
+                        <label>
+
+                            Usuário
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <label>
+
+                            Empresa
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <label>
+
+                            Departamento
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <label>
+
+                            Perfil
+
+                            <select required>
+
+                                <option>
+                                    Colaborador
+                                </option>
+
+                                <option>
+                                    Gestor
+                                </option>
+
+                                <option>
+                                    Administrador
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                        <button
+                            class="primary fake-save"
+                            type="button">
+
+                            Cadastrar usuário
+
+                        </button>
+
+                    </form>
+
+                </article>
+
+
+                <!-- PERFIS -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Perfis e permissões
+                        </h3>
+
+                    </div>
+
+                    <div class="list-clean">
+
+                        <span>
+                            Colaborador
+                        </span>
+
+                        <span>
+                            Gestor
+                        </span>
+
+                        <span>
+                            Administrador
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- FERRAMENTA -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Cadastro de modelo ou ferramenta de IA
+                        </h3>
+
+                    </div>
+
+                    <form
+                        class="form-grid"
+                        onsubmit="return false;">
+
+                        <label class="full">
+
+                            Identificação
+
+                            <input
+                                type="text"
+                                required>
+
+                        </label>
+
+                        <button
+                            class="primary fake-save"
+                            type="button">
+
+                            Cadastrar ferramenta de IA
+
+                        </button>
+
+                    </form>
+
+                </article>
+
+            </section>
+
+
+            <div
+                class="toast"
+                id="toast">
+
+                Ação demonstrativa do protótipo visual.
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+ 
+<head> 
+ 
+    <meta charset="UTF-8"> 
+ 
+    <meta 
+        name="viewport" 
+        content="width=device-width, initial-scale=1.0"> 
+ 
+    <title> 
+        HestIA - Acesso 
+    </title> 
+ 
+    <link 
+        rel="stylesheet" 
+        href="/styles.css"> 
+ 
+</head> 
+ 
+<body class="login-body"> 
+
+    <!-- FUNDO DECORATIVO -->
+
+    <div class="login-background-circle circle-one"></div>
+    <div class="login-background-circle circle-two"></div>
+ 
+    <main class="login-shell"> 
+ 
+        <section class="login-card"> 
+ 
+            <!-- LOGO --> 
+ 
+            <div class="brand login-brand"> 
+ 
+                <div class="brand-mark"> 
+                    H 
+                </div> 
+ 
+                <div> 
+ 
+                    <strong> 
+                        HestIA 
+                    </strong> 
+ 
+                    <span> 
+                        Governança de IA 
+                    </span> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <!-- ACESSO --> 
+ 
+            <p class="eyebrow"> 
+                Acesso à plataforma 
+            </p> 
+ 
+            <h1> 
+                Identifique seu perfil 
+            </h1> 
+ 
+ 
+            <% if (erro) { %> 
+ 
+                <div class="login-error"> 
+ 
+                    <%= erro %> 
+ 
+                </div> 
+ 
+            <% } %> 
+ 
+ 
+            <!-- FORMULARIO --> 
+ 
+            <form 
+                action="/acesso" 
+                method="post" 
+                class="login-form"> 
+ 
+                <label> 
+ 
+                    E-mail 
+ 
+                    <input 
+                        name="email" 
+                        type="text" 
+                        placeholder="exemplo@adm" 
+                        required> 
+ 
+                </label> 
+ 
+ 
+                <label> 
+ 
+                    Senha 
+ 
+                    <div class="password-field"> 
+ 
+                        <input 
+                            id="senha" 
+                            name="senha" 
+                            type="password" 
+                            placeholder="Digite sua senha" 
+                            required> 
+ 
+                        <button 
+                            id="toggleSenha" 
+                            class="password-toggle" 
+                            type="button"> 
+ 
+                            <span class="eye-icon"> 
+                                ◉ 
+                            </span> 
+ 
+                        </button> 
+ 
+                    </div> 
+ 
+                </label> 
+ 
+ 
+                <button 
+                    class="primary" 
+                    type="submit"> 
+ 
+                    Entrar 
+ 
+                </button> 
+ 
+            </form> 
+ 
+ 
+            <!-- ACESSOS --> 
+ 
+            <div class="access-rules"> 
+ 
+                <strong> 
+                    Acessos do protótipo 
+                </strong> 
+ 
+                <span> 
+                    @colaborador → Colaborador 
+                </span> 
+ 
+                <span> 
+                    @gestor → Gestor 
+                </span> 
+ 
+                <span> 
+                    @adm → Administrador 
+                </span> 
+ 
+            </div> 
+ 
+        </section> 
+ 
+    </main> 
+ 
+ 
+    <script src="/app.js"></script> 
+ 
+</body> 
+ 
+</html>
