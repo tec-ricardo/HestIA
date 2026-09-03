@@ -96,7 +96,7 @@
                         Custo total
                     </span>
 
-                    <strong>
+                    <strong id="custoTotal">
                         --
                     </strong>
 
@@ -113,7 +113,7 @@
                         Departamentos
                     </span>
 
-                    <strong>
+                    <strong id="totalDepartamentos">
                         --
                     </strong>
 
@@ -147,7 +147,7 @@
                         Eficiência
                     </span>
 
-                    <strong>
+                    <strong id="eficienciaGeral">
                         --
                     </strong>
 
@@ -173,7 +173,7 @@
                 </div>
 
 
-                <div class="dashboard-chart">
+                <div class="dashboard-chart custos-chart">
 
                     <canvas id="graficoCustos"></canvas>
 
@@ -203,7 +203,7 @@
                 </div>
 
 
-                <div class="dashboard-chart">
+                <div class="dashboard-chart custos-chart">
 
                     <canvas id="graficoEficiencia"></canvas>
 
@@ -235,15 +235,47 @@
             document.getElementById("graficoCustos");
 
 
-        const departamentosCustos = ["Tecnologia",
-    "Marketing",
-    "Financeiro",
-    "RH"];
+        const departamentosCustos = [
+            "Tecnologia",
+            "Marketing",
+            "Financeiro",
+            "RH"
+        ];
 
-        const valoresCustos = [4200,
-    2800,
-    1900,
-    1100];
+        const valoresCustos = [
+            4200,
+            2800,
+            1900,
+            1100
+        ];
+
+
+        /* DADOS MOCK DOS INDICADORES */
+
+        const custoTotal =
+            valoresCustos.reduce(function(total, valor) {
+
+                return total + valor;
+
+            }, 0);
+
+
+        document
+            .getElementById("custoTotal")
+            .innerHTML =
+            custoTotal.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            );
+
+
+        document
+            .getElementById("totalDepartamentos")
+            .innerHTML =
+            departamentosCustos.length;
 
 
         if (graficoCustos && departamentosCustos.length > 0) {
@@ -269,6 +301,14 @@
 
                     }]
 
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false
+
                 }
 
             });
@@ -282,13 +322,44 @@
             document.getElementById("graficoEficiencia");
 
 
-        const indicadoresEficiencia = ["Uso adequado",
-    "Produtividade",
-    "Aproveitamento"];
+        const indicadoresEficiencia = [
+            "Uso adequado",
+            "Produtividade",
+            "Aproveitamento"
+        ];
 
-        const valoresEficiencia = [84,
-    76,
-    71];
+        const valoresEficiencia = [
+            84,
+            76,
+            71
+        ];
+
+
+        /* MEDIA DOS INDICADORES DE EFICIENCIA */
+
+        const eficienciaGeral =
+            Math.round(
+
+                valoresEficiencia.reduce(
+                    function(total, valor) {
+
+                        return total + valor;
+
+                    },
+                    0
+                )
+
+                /
+
+                valoresEficiencia.length
+
+            );
+
+
+        document
+            .getElementById("eficienciaGeral")
+            .innerHTML =
+            eficienciaGeral + "%";
 
 
         if (
@@ -316,6 +387,26 @@
                         data: valoresEficiencia
 
                     }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
+
+                        }
+
+                    }
 
                 }
 

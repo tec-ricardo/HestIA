@@ -1062,3 +1062,18 @@ th{
     font-size:12px;
     color:var(--muted);
 }
+/* AJUSTE TELA CUSTOS E EFICIENCIA */
+
+.custos-chart{
+    height:210px !important;
+    min-height:210px !important;
+    max-height:210px !important;
+    padding:12px !important;
+    overflow:hidden;
+}
+
+.custos-chart canvas{
+    width:100% !important;
+    height:185px !important;
+    max-height:185px !important;
+}

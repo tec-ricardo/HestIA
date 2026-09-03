@@ -98,3 +98,4 @@ botoes.forEach(function(botao) {
     });
 
 });
+
