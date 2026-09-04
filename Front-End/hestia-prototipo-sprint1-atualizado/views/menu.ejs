@@ -1,0 +1,180 @@
+<aside class="sidebar" id="sidebar">
+
+    <!-- LOGO -->
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            H
+        </div>
+
+        <div>
+
+            <strong>
+                HestIA
+            </strong>
+
+            <span>
+                Governança de IA
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- MENU -->
+
+    <nav class="nav">
+
+        <a
+            class="nav-link <%= active == 'dashboard' ? 'active' : '' %>"
+            href="/">
+
+            Visão geral
+
+        </a>
+
+
+        <!-- COLABORADOR -->
+
+        <% if (perfil == "colaborador") { %>
+
+            <a
+                class="nav-link <%= active == 'utilizacoes' ? 'active' : '' %>"
+                href="/utilizacoes">
+
+                Utilizações de IA
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>"
+                href="/maturidade">
+
+                AI Maturity Score
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
+                href="/creditos">
+
+                AI Credits
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'competencias' ? 'active' : '' %>"
+                href="/competencias">
+
+                Competências
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
+                href="/governanca">
+
+                Governança
+
+            </a>
+
+        <% } %>
+
+
+        <!-- GESTOR -->
+
+        <% if (perfil == "gestor") { %>
+
+            <a
+                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>"
+                href="/maturidade">
+
+                AI Maturity Score
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
+                href="/creditos">
+
+                AI Credits
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
+                href="/governanca">
+
+                Governança
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'custos' ? 'active' : '' %>"
+                href="/custos">
+
+                Custos e eficiência
+
+            </a>
+
+        <% } %>
+
+
+        <!-- ADMINISTRADOR -->
+
+        <% if (perfil == "administrador") { %>
+
+            <a
+                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
+                href="/creditos">
+
+                AI Credits
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'competencias' ? 'active' : '' %>"
+                href="/competencias">
+
+                Competências
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
+                href="/governanca">
+
+                Governança
+
+            </a>
+
+            <a
+                class="nav-link <%= active == 'administracao' ? 'active' : '' %>"
+                href="/administracao">
+
+                Administração
+
+            </a>
+
+        <% } %>
+
+    </nav>
+
+
+    <!-- RODAPE -->
+
+    <div class="sidebar-footer">
+
+        <span>
+            Uso produtivo, responsável e eficiente de IA
+        </span>
+
+        <a class="logout-link" href="/sair">
+            Sair
+        </a>
+
+    </div>
+
+</aside>
