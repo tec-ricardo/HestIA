@@ -77,6 +77,13 @@
 
             </header>
 
+            <% if (mensagem) { %>
+                <div class="feedback success"><%= mensagem %></div>
+            <% } %>
+            <% if (erro) { %>
+                <div class="feedback error"><%= erro %></div>
+            <% } %>
+
 
             <!-- INDICADORES -->
 
@@ -89,11 +96,11 @@
                     </span>
 
                     <strong>
-                        --
+                        <%= politicas.length %>
                     </strong>
 
                     <p>
-                        Nenhuma política registrada.
+                        <%= politicas.length ? "Políticas registradas no backend." : "Nenhuma política registrada." %>
                     </p>
 
                 </article>
@@ -183,15 +190,15 @@
 
 
                         <tbody>
-
-                            <tr>
-
-                                <td colspan="2">
-                                    Nenhuma política cadastrada.
-                                </td>
-
-                            </tr>
-
+                            <% politicas.forEach(function(politica) { %>
+                                <tr>
+                                    <td><%= politica.titulo %> <small>v<%= politica.versao %></small></td>
+                                    <td><%= politica.ativa ? "Ativa" : "Inativa" %></td>
+                                </tr>
+                            <% }) %>
+                            <% if (!politicas.length) { %>
+                                <tr><td colspan="2">Nenhuma política cadastrada.</td></tr>
+                            <% } %>
                         </tbody>
 
                     </table>
@@ -221,7 +228,8 @@
 
                         <form
                             class="form-grid"
-                            onsubmit="return false;">
+                            action="/governanca/politicas"
+                            method="post">
 
 
                             <label class="full">
@@ -229,15 +237,41 @@
                                 Política ou diretriz
 
                                 <input
+                                    name="titulo"
                                     type="text"
                                     required>
 
                             </label>
 
+                            <label>
+                                Empresa
+                                <select name="empresaId" required>
+                                    <option value="">Selecione</option>
+                                    <% empresas.forEach(function(empresa) { %>
+                                        <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+                                    <% }) %>
+                                </select>
+                            </label>
+
+                            <label>
+                                Versão
+                                <input name="versao" type="text" value="1.0" required>
+                            </label>
+
+                            <label class="full">
+                                Descrição
+                                <input name="descricao" type="text" required>
+                            </label>
+
+                            <label class="full">
+                                Conteúdo
+                                <textarea name="conteudo" rows="4" required></textarea>
+                            </label>
+
 
                             <button
-                                class="primary fake-save"
-                                type="button">
+                                class="primary"
+                                type="submit">
 
                                 Cadastrar
 
@@ -307,7 +341,7 @@
                 class="toast"
                 id="toast">
 
-                Ação demonstrativa do protótipo visual.
+                Dados persistidos pelo backend HestIA.
 
             </div>
 

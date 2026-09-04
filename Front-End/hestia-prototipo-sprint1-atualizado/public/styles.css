@@ -1077,3 +1077,46 @@ th{
     height:185px !important;
     max-height:185px !important;
 }
+
+/* INTEGRACAO COM A API */
+
+.feedback{
+    margin:0 0 18px;
+    padding:12px 16px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.feedback.success{
+    color:#166534;
+    background:#dcfce7;
+    border:1px solid #86efac;
+}
+
+.feedback.error{
+    color:#991b1b;
+    background:#fee2e2;
+    border:1px solid #fca5a5;
+}
+
+.integration-summary{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.integration-summary span{
+    padding:10px 14px;
+    border-radius:10px;
+    background:#f1f5f9;
+}
+
+.form-grid textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    font:inherit;
+    resize:vertical;
+}
