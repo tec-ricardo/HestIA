@@ -1,7 +1,7 @@
 package br.com.hestia.usuario.controller;
 
 import br.com.hestia.usuario.dto.UsuarioDTO;
-import br.com.hestia.usuario.model.Usuario;
+import br.com.hestia.usuario.dto.UsuarioResponseDTO;
 import br.com.hestia.usuario.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,44 +21,40 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> criar(
+    public ResponseEntity<UsuarioResponseDTO> criar(
             @Valid @RequestBody UsuarioDTO dto
     ) {
 
-        Usuario usuario = usuarioService.criar(dto);
+        var usuario = usuarioService.criar(dto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(usuario);
+                .body(UsuarioResponseDTO.from(usuario));
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarTodos() {
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
 
         return ResponseEntity.ok(
-                usuarioService.listarTodos()
+                usuarioService.listarTodos().stream().map(UsuarioResponseDTO::from).toList()
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(
             @PathVariable Long id
     ) {
 
-        return ResponseEntity.ok(
-                usuarioService.buscarPorId(id)
-        );
+        return ResponseEntity.ok(UsuarioResponseDTO.from(usuarioService.buscarPorId(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> atualizar(
+    public ResponseEntity<UsuarioResponseDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody UsuarioDTO dto
     ) {
 
-        return ResponseEntity.ok(
-                usuarioService.atualizar(id, dto)
-        );
+        return ResponseEntity.ok(UsuarioResponseDTO.from(usuarioService.atualizar(id, dto)));
     }
 
     @DeleteMapping("/{id}")

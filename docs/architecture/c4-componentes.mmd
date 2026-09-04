@@ -1,0 +1,39 @@
+flowchart LR
+    REST["API REST<br/>Controllers · DTOs · validação"]
+    APP["Casos de uso e fachadas<br/>Contratos públicos"]
+    EMP["Empresa"]
+    DEP["Departamento"]
+    USU["Usuário"]
+    POL["Política"]
+    FER["Ferramenta IA"]
+    CON["Consumo / Indicadores"]
+    GATE["NotificationGateway<br/>Adaptador externo"]
+    JPA["Persistência JPA<br/>Repository por módulo"]
+    SHARED["Recursos transversais<br/>config · segurança · logs · erros"]
+    ALERT["Alert Service Node"]
+    DB[("PostgreSQL")]
+
+    REST --> APP
+    APP --> EMP
+    APP --> DEP
+    APP --> USU
+    APP --> POL
+    APP --> FER
+    APP --> CON
+    APP --> GATE
+    EMP --> JPA
+    DEP --> JPA
+    USU --> JPA
+    POL --> JPA
+    FER --> JPA
+    CON --> JPA
+    APP --> SHARED
+    GATE -->|REST/JSON| ALERT
+    JPA --> DB
+
+    classDef internal fill:#e7f4f2,stroke:#2a8c82,color:#16324f;
+    classDef adapter fill:#e9f2f7,stroke:#246b8e,color:#16324f;
+    classDef auxiliary fill:#fff4e8,stroke:#c84f0a,color:#16324f;
+    class REST,APP,EMP,DEP,USU,POL,FER,CON internal;
+    class GATE,JPA,SHARED,DB adapter;
+    class ALERT auxiliary;

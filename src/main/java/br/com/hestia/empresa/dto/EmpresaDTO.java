@@ -1,16 +1,22 @@
 package br.com.hestia.empresa.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 public class EmpresaDTO {
 
     @NotBlank(message = "O nome da empresa é obrigatório")
+    @Size(min = 2, max = 150)
     private String nome;
 
-    private String configuracoesGerais;
+    @NotBlank(message = "O CNPJ é obrigatório")
+    @Pattern(regexp = "(?:\\d{14}|\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2})",
+            message = "O CNPJ deve conter 14 dígitos")
+    private String cnpj;
 
-    private String politicas;
+    private String configuracoesGerais;
 
     @PositiveOrZero(message = "O orçamento não pode ser negativo")
     private Double orcamento;
@@ -18,11 +24,10 @@ public class EmpresaDTO {
     public EmpresaDTO() {
     }
 
-    public EmpresaDTO(String nome, String configuracoesGerais,
-                      String politicas, Double orcamento) {
+    public EmpresaDTO(String nome, String cnpj, String configuracoesGerais, Double orcamento) {
         this.nome = nome;
+        this.cnpj = cnpj;
         this.configuracoesGerais = configuracoesGerais;
-        this.politicas = politicas;
         this.orcamento = orcamento;
     }
 
@@ -34,20 +39,20 @@ public class EmpresaDTO {
         this.nome = nome;
     }
 
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
     public String getConfiguracoesGerais() {
         return configuracoesGerais;
     }
 
     public void setConfiguracoesGerais(String configuracoesGerais) {
         this.configuracoesGerais = configuracoesGerais;
-    }
-
-    public String getPoliticas() {
-        return politicas;
-    }
-
-    public void setPoliticas(String politicas) {
-        this.politicas = politicas;
     }
 
     public Double getOrcamento() {

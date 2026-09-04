@@ -1,0 +1,21 @@
+flowchart LR
+    BASE["Estabilizar base<br/>build, inicialização, configuração, testes e CI"]
+    S150["SCRUM-150<br/>Planejamento técnico"]
+    S106["SCRUM-106<br/>Arquitetura inicial"]
+    S105["SCRUM-105<br/>Documentação C4"]
+    S159["SCRUM-159<br/>Arquitetura Node"]
+    DOM["Domínio<br/>SCRUM-54 e SCRUM-86"]
+    NOTIF["Notificações<br/>SCRUM-109 → 110 → 111"]
+    S77["SCRUM-77<br/>Homologar primeira versão do MVP"]
+
+    BASE --> S150 --> S106
+    S106 --> S105
+    S106 --> S159 --> NOTIF --> S77
+    S106 --> DOM --> S77
+
+    classDef base fill:#e9f2f7,stroke:#246b8e,color:#16324f;
+    classDef architecture fill:#e7f4f2,stroke:#2a8c82,color:#16324f;
+    classDef integration fill:#fff4e8,stroke:#c84f0a,color:#16324f;
+    class BASE,DOM,S77 base;
+    class S150,S106,S105,S159 architecture;
+    class NOTIF integration;

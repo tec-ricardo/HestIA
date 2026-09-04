@@ -1,7 +1,7 @@
 package br.com.hestia.empresa.controller;
 
 import br.com.hestia.empresa.dto.EmpresaDTO;
-import br.com.hestia.empresa.model.Empresa;
+import br.com.hestia.empresa.dto.EmpresaResponseDTO;
 import br.com.hestia.empresa.service.EmpresaService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,40 +21,36 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<Empresa> cadastrar(
+    public ResponseEntity<EmpresaResponseDTO> cadastrar(
             @Valid @RequestBody EmpresaDTO dto) {
 
-        Empresa empresa = empresaService.cadastrar(dto);
+        var empresa = empresaService.cadastrar(dto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(empresa);
+                .body(EmpresaResponseDTO.from(empresa));
     }
 
     @GetMapping
-    public ResponseEntity<List<Empresa>> listarTodas() {
+    public ResponseEntity<List<EmpresaResponseDTO>> listarTodas() {
         return ResponseEntity.ok(
-                empresaService.listarTodas()
+                empresaService.listarTodas().stream().map(EmpresaResponseDTO::from).toList()
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Empresa> buscarPorId(
+    public ResponseEntity<EmpresaResponseDTO> buscarPorId(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                empresaService.buscarPorId(id)
-        );
+        return ResponseEntity.ok(EmpresaResponseDTO.from(empresaService.buscarPorId(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Empresa> atualizar(
+    public ResponseEntity<EmpresaResponseDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody EmpresaDTO dto) {
 
-        return ResponseEntity.ok(
-                empresaService.atualizar(id, dto)
-        );
+        return ResponseEntity.ok(EmpresaResponseDTO.from(empresaService.atualizar(id, dto)));
     }
 
     @DeleteMapping("/{id}")
