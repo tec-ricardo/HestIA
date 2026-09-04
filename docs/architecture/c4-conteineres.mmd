@@ -1,0 +1,21 @@
+flowchart LR
+    U["Usuário<br/>Navegador"]
+    WEB["Interface Web / Protótipo<br/>Tecnologia a confirmar"]
+    API["API HestIA — Spring Boot<br/>Java 21 · Spring Web MVC · Validation · JPA"]
+    DB[("PostgreSQL<br/>Banco compartilhado do monólito")]
+    ALERT["Alert Service — Node.js<br/>Componente auxiliar"]
+
+    U -->|HTTPS| WEB
+    WEB -->|REST/JSON| API
+    API -->|JDBC/JPA| DB
+    API -->|REST síncrono| ALERT
+    ALERT -->|nível e mensagem| API
+
+    classDef person fill:#f2f4f7,stroke:#667085,color:#16324f;
+    classDef internal fill:#e7f4f2,stroke:#2a8c82,color:#16324f;
+    classDef ui fill:#e9f2f7,stroke:#246b8e,color:#16324f;
+    classDef auxiliary fill:#fff4e8,stroke:#c84f0a,color:#16324f;
+    class U,DB person;
+    class API internal;
+    class WEB ui;
+    class ALERT auxiliary;
