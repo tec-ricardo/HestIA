@@ -15,6 +15,20 @@ da ESPM.
 2. No Windows, execute `mvnw.cmd spring-boot:run`.
 3. No Linux ou macOS, execute `./mvnw spring-boot:run`.
 
+Em outro terminal, inicie o front-end integrado:
+
+```text
+cd Front-End/hestia-prototipo-sprint1-atualizado
+npm install
+npm start
+```
+
+O front fica disponível em `http://localhost:3000/acesso` e utiliza Axios no
+servidor Express para acessar a API configurada em `API_URL` (por padrão,
+`http://localhost:8080`). Na tela de Administração é possível cadastrar
+empresas, departamentos, usuários e ferramentas de IA; a tela de Governança
+persiste e consulta políticas de uso.
+
 Com a aplicacao iniciada, a documentacao interativa da API fica disponivel em
 `http://localhost:8080/swagger-ui/index.html`.
 
