@@ -39,28 +39,28 @@ Todas as branches revisadas e integradas
 
 | Atividade | Evidencia atual | Situacao tecnica |
 |---|---|---|
-| Estabilizacao | build, configuracao, Compose e CI | implementada em branch |
-| SCRUM-150 | plano e diagrama | branch de documentacao |
-| SCRUM-106 | arquitetura inicial | branch de documentacao |
-| SCRUM-105 | diagramas C4 | branch de documentacao |
-| SCRUM-52 | PDF e fonte Markdown | definida; ainda nao integrada |
-| SCRUM-54 | entidade, DTO, repository, migration e testes | implementada em branch |
-| SCRUM-86 | CNPJ, validacao, erros e testes | implementada em branch |
-| SCRUM-159 | limite arquitetural e OpenAPI | implementada em branch |
-| SCRUM-109 | Alert Service Node.js | implementada e testada |
-| SCRUM-110 | cliente Spring resiliente | implementada e testada |
-| SCRUM-111 | testes de contrato e ponta a ponta | aprovada tecnicamente |
-| SCRUM-118 | plano de qualidade | documentada |
-| SCRUM-132 a 136 | modelo e instancia reproduzivel | implementadas e testadas |
+| Estabilizacao | build, configuracao, Compose e CI | integrada no candidato |
+| SCRUM-150 | plano e diagrama | integrada no candidato |
+| SCRUM-106 | arquitetura inicial | integrada no candidato |
+| SCRUM-105 | diagramas C4 | integrada no candidato |
+| SCRUM-52 | PDF e fonte Markdown | integrada no candidato |
+| SCRUM-54 | entidade, DTO, repository, migration e testes | integrada no candidato |
+| SCRUM-86 | CNPJ, validacao, erros e testes | integrada no candidato |
+| SCRUM-159 | limite arquitetural e OpenAPI | integrada no candidato |
+| SCRUM-109 | Alert Service Node.js | integrada e testada |
+| SCRUM-110 | cliente Spring resiliente | integrada e testada |
+| SCRUM-111 | testes de contrato e ponta a ponta | integrada e aprovada tecnicamente |
+| SCRUM-118 | plano de qualidade | integrado no candidato |
+| SCRUM-132 a 136 | modelo e instancia reproduzivel | integradas e testadas |
 | SCRUM-77 | branch candidata integrada | aguarda revisao/homologacao |
 
 ## Pendencias humanas e de governanca
 
-1. publicar as branches locais no remoto;
-2. abrir e revisar um PR por atividade;
-3. integrar na ordem de dependencia;
-4. homologar os fluxos visiveis;
-5. reconciliar `develop` e `main` por PR;
-6. criar Release PR e tag somente depois da aprovacao.
+1. publicar as branches componentes e a branch candidata no remoto;
+2. abrir e revisar o PR da SCRUM-77 para `develop`;
+3. homologar os fluxos visiveis;
+4. integrar o candidato aprovado em `develop`;
+5. reconciliar `develop` e `main` por Release PR;
+6. criar a tag somente depois da aprovacao.
 
 Nenhuma dessas etapas deve ser confundida com a implementacao ja realizada.
