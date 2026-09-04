@@ -1,0 +1,22 @@
+flowchart LR
+    COL["Colaborador<br/>Consulta políticas e registra uso"]
+    GES["Gestor / Líder<br/>Acompanha equipe, consumo e riscos"]
+    EXE["Executivo<br/>Consulta maturidade e resultados"]
+    ADM["Administrador<br/>Mantém cadastros e permissões"]
+    H["HestIA<br/>Governança, monitoramento e uso responsável de IA"]
+    IA["Ferramentas e APIs de IA<br/>Integração futura"]
+    CAN["Canais corporativos<br/>Notificações futuras"]
+
+    COL --> H
+    GES --> H
+    EXE --> H
+    ADM --> H
+    H -.-> IA
+    H -.-> CAN
+
+    classDef person fill:#f2f4f7,stroke:#667085,color:#16324f;
+    classDef system fill:#e7f4f2,stroke:#2a8c82,color:#16324f;
+    classDef future fill:#fff4e8,stroke:#c84f0a,color:#16324f;
+    class COL,GES,EXE,ADM person;
+    class H system;
+    class IA,CAN future;
