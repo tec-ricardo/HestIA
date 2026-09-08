@@ -12,11 +12,15 @@ public class EmpresaDTO {
     private String nome;
 
     @NotBlank(message = "O CNPJ é obrigatório")
-    @Pattern(regexp = "(?:\\d{14}|\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2})",
-            message = "O CNPJ deve conter 14 dígitos")
+    @Pattern(
+            regexp = "(?:\\d{14}|\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2})",
+            message = "O CNPJ deve conter 14 dígitos"
+    )
     private String cnpj;
 
     private String configuracoesGerais;
+
+    private String politicas;
 
     @PositiveOrZero(message = "O orçamento não pode ser negativo")
     private Double orcamento;
@@ -24,10 +28,29 @@ public class EmpresaDTO {
     public EmpresaDTO() {
     }
 
-    public EmpresaDTO(String nome, String cnpj, String configuracoesGerais, Double orcamento) {
+    public EmpresaDTO(
+            String nome,
+            String cnpj,
+            String configuracoesGerais,
+            Double orcamento
+    ) {
         this.nome = nome;
         this.cnpj = cnpj;
         this.configuracoesGerais = configuracoesGerais;
+        this.orcamento = orcamento;
+    }
+
+    public EmpresaDTO(
+            String nome,
+            String cnpj,
+            String configuracoesGerais,
+            String politicas,
+            Double orcamento
+    ) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.configuracoesGerais = configuracoesGerais;
+        this.politicas = politicas;
         this.orcamento = orcamento;
     }
 
@@ -53,6 +76,14 @@ public class EmpresaDTO {
 
     public void setConfiguracoesGerais(String configuracoesGerais) {
         this.configuracoesGerais = configuracoesGerais;
+    }
+
+    public String getPoliticas() {
+        return politicas;
+    }
+
+    public void setPoliticas(String politicas) {
+        this.politicas = politicas;
     }
 
     public Double getOrcamento() {
