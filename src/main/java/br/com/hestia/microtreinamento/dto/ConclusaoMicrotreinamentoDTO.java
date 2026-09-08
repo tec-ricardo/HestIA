@@ -1,8 +1,16 @@
 package br.com.hestia.microtreinamento.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class ConclusaoMicrotreinamentoDTO {
 
+    @NotNull(message = "O usuário é obrigatório.")
+    @Positive(message = "O ID do usuário deve ser positivo.")
     private Long usuarioId;
+
+    @NotNull(message = "O microtreinamento é obrigatório.")
+    @Positive(message = "O ID do microtreinamento deve ser positivo.")
     private Long microtreinamentoId;
 
     public ConclusaoMicrotreinamentoDTO() {

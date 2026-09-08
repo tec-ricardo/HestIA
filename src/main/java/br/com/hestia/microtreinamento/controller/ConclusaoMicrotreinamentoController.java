@@ -3,6 +3,7 @@ package br.com.hestia.microtreinamento.controller;
 import br.com.hestia.microtreinamento.dto.ConclusaoMicrotreinamentoDTO;
 import br.com.hestia.microtreinamento.model.ConclusaoMicrotreinamento;
 import br.com.hestia.microtreinamento.service.ConclusaoMicrotreinamentoService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ConclusaoMicrotreinamentoController {
 
     @PostMapping
     public ConclusaoMicrotreinamento registrarConclusao(
-            @RequestBody ConclusaoMicrotreinamentoDTO dto
+            @Valid @RequestBody ConclusaoMicrotreinamentoDTO dto
     ) {
         return service.registrarConclusao(
                 dto.getUsuarioId(),
