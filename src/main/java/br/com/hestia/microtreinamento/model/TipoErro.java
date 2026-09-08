@@ -1,0 +1,12 @@
+package br.com.hestia.microtreinamento.model;
+
+public enum TipoErro {
+
+    DADOS_SENSIVEIS,
+    FERRAMENTA_NAO_AUTORIZADA,
+    VIOLACAO_POLITICA_INTERNA,
+    FINALIDADE_INADEQUADA,
+    AUSENCIA_VALIDACAO_HUMANA,
+    USO_NAO_REGISTRADO,
+    VIOLACAO_LGPD
+}
