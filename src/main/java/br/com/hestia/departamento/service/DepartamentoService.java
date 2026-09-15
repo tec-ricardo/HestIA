@@ -24,15 +24,27 @@ public class DepartamentoService {
     }
 
     public Departamento cadastrar(DepartamentoDTO dto) {
+        if (dto == null || dto.getNome() == null || dto.getNome().isBlank()) {
+            throw new IllegalArgumentException(
+                    "O nome do departamento é obrigatório");
+        }
 
         Empresa empresa = empresaRepository
                 .findById(dto.getEmpresaId())
                 .orElseThrow(() ->
                         new RuntimeException("Empresa não encontrada"));
 
+        String nome = dto.getNome().trim();
+
+        if (departamentoRepository
+                .existsByEmpresaIdAndNomeIgnoreCase(empresa.getId(), nome)) {
+            throw new IllegalArgumentException(
+                    "Já existe um departamento com esse nome na empresa");
+        }
+
         Departamento departamento = new Departamento();
 
-        departamento.setNome(dto.getNome());
+        departamento.setNome(nome);
         departamento.setResponsavel(dto.getResponsavel());
         departamento.setEstruturaHierarquica(dto.getEstruturaHierarquica());
         departamento.setEmpresa(empresa);
