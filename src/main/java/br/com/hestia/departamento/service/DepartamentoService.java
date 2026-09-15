@@ -12,6 +12,13 @@ import java.util.List;
 @Service
 public class DepartamentoService {
 
+    private static final String NOME_OBRIGATORIO =
+            "O nome do departamento é obrigatório";
+    private static final String EMPRESA_NAO_ENCONTRADA =
+            "Empresa não encontrada";
+    private static final String DEPARTAMENTO_DUPLICADO =
+            "Já existe um departamento com esse nome na empresa";
+
     private final DepartamentoRepository departamentoRepository;
     private final EmpresaRepository empresaRepository;
 
@@ -24,32 +31,45 @@ public class DepartamentoService {
     }
 
     public Departamento cadastrar(DepartamentoDTO dto) {
+        String nome = validarENormalizarNome(dto);
+        Empresa empresa = buscarEmpresaOuFalhar(dto.getEmpresaId());
+
+        validarDuplicidade(empresa.getId(), nome);
+
+        Departamento departamento = criarDepartamento(dto, nome, empresa);
+        return departamentoRepository.save(departamento);
+    }
+
+    private String validarENormalizarNome(DepartamentoDTO dto) {
         if (dto == null || dto.getNome() == null || dto.getNome().isBlank()) {
-            throw new IllegalArgumentException(
-                    "O nome do departamento é obrigatório");
+            throw new IllegalArgumentException(NOME_OBRIGATORIO);
         }
+        return dto.getNome().trim();
+    }
 
-        Empresa empresa = empresaRepository
-                .findById(dto.getEmpresaId())
-                .orElseThrow(() ->
-                        new RuntimeException("Empresa não encontrada"));
+    private Empresa buscarEmpresaOuFalhar(Long empresaId) {
+        return empresaRepository.findById(empresaId)
+                .orElseThrow(() -> new RuntimeException(EMPRESA_NAO_ENCONTRADA));
+    }
 
-        String nome = dto.getNome().trim();
-
+    private void validarDuplicidade(Long empresaId, String nome) {
         if (departamentoRepository
-                .existsByEmpresaIdAndNomeIgnoreCase(empresa.getId(), nome)) {
-            throw new IllegalArgumentException(
-                    "Já existe um departamento com esse nome na empresa");
+                .existsByEmpresaIdAndNomeIgnoreCase(empresaId, nome)) {
+            throw new IllegalArgumentException(DEPARTAMENTO_DUPLICADO);
         }
+    }
+
+    private Departamento criarDepartamento(
+            DepartamentoDTO dto,
+            String nome,
+            Empresa empresa) {
 
         Departamento departamento = new Departamento();
-
         departamento.setNome(nome);
         departamento.setResponsavel(dto.getResponsavel());
         departamento.setEstruturaHierarquica(dto.getEstruturaHierarquica());
         departamento.setEmpresa(empresa);
-
-        return departamentoRepository.save(departamento);
+        return departamento;
     }
 
     public List<Departamento> listarTodos() {
@@ -69,7 +89,7 @@ public class DepartamentoService {
         Empresa empresa = empresaRepository
                 .findById(dto.getEmpresaId())
                 .orElseThrow(() ->
-                        new RuntimeException("Empresa não encontrada"));
+                        new RuntimeException(EMPRESA_NAO_ENCONTRADA));
 
         departamento.setNome(dto.getNome());
         departamento.setResponsavel(dto.getResponsavel());
