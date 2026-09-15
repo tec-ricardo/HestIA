@@ -48,3 +48,36 @@ O mesmo comando e executado automaticamente pelo pipeline em Pull Requests.
 O Alert Service possui testes proprios em `alert-service` com `npm test`. O
 cenario matematico pode ser validado em `model/optimization` com
 `python -m unittest -v`.
+
+
+## Prática A1 - US02 Cadastro de Departamento
+
+Esta cópia independente implementa e testa a história:
+
+> Como administrador corporativo, quero cadastrar um departamento vinculado
+> a uma empresa, para organizar a estrutura empresarial e governar o uso de IA
+> por área.
+
+Critérios automatizados:
+
+- cadastro válido, com vínculo à empresa e persistência;
+- rejeição de nome vazio;
+- rejeição de empresa inexistente;
+- rejeição de nome duplicado na mesma empresa;
+- resposta HTTP 201 no endpoint de cadastro.
+
+Execute somente os testes da funcionalidade:
+
+```text
+mvn -Dtest=DepartamentoServiceTest,DepartamentoControllerTest test
+```
+
+Execute a suíte completa:
+
+```text
+mvn clean test
+```
+
+O histórico TDD pode ser reproduzido pelas tags `a1-red`, `a1-green` e
+`a1-blue`. A documentação detalhada está em
+`docs/a1/US02-BDD-ATDD.md`.
