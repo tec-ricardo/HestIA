@@ -1,5 +1,6 @@
 package br.com.hestia.shared.api;
 
+import br.com.hestia.autenticacao.service.CredenciaisInvalidasException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,12 @@ import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    @ExceptionHandler(CredenciaisInvalidasException.class)
+    ResponseEntity<ApiError> unauthorized(CredenciaisInvalidasException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiError("UNAUTHORIZED", exception.getMessage(), Instant.now()));
+    }
 
     @ExceptionHandler(NoSuchElementException.class)
     ResponseEntity<ApiError> notFound(NoSuchElementException exception) {
