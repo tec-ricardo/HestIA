@@ -40,7 +40,8 @@ public class ControleAcessoInterceptor implements HandlerInterceptor {
 
     private boolean permitido(String rota, PerfilUsuario perfil) {
         if (rota.startsWith("/usuarios") || rota.startsWith("/empresas")
-                || rota.startsWith("/departamentos") || rota.startsWith("/politicas")) {
+                || rota.startsWith("/departamentos") || rota.startsWith("/politicas")
+                || rota.startsWith("/auditoria")) {
             return perfil == PerfilUsuario.ADMIN;
         }
         if (rota.startsWith("/avaliacoes-conformidade")) {

@@ -1,5 +1,6 @@
 package br.com.hestia.registro.service;
 
+import br.com.hestia.configuracao.repository.ConfiguracaoEmpresaRepository;
 import br.com.hestia.ferramenta.model.FerramentaIA;
 import br.com.hestia.ferramenta.model.StatusFerramentaIA;
 import br.com.hestia.ferramenta.repository.FerramentaIARepository;
@@ -26,13 +27,16 @@ public class RegistroUsoIAService {
     private final RegistroUsoIARepository registroRepository;
     private final UsuarioRepository usuarioRepository;
     private final FerramentaIARepository ferramentaRepository;
+    private final ConfiguracaoEmpresaRepository configuracaoRepository;
 
     public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
                                 UsuarioRepository usuarioRepository,
-                                FerramentaIARepository ferramentaRepository) {
+                                FerramentaIARepository ferramentaRepository,
+                                ConfiguracaoEmpresaRepository configuracaoRepository) {
         this.registroRepository = registroRepository;
         this.usuarioRepository = usuarioRepository;
         this.ferramentaRepository = ferramentaRepository;
+        this.configuracaoRepository = configuracaoRepository;
     }
 
     @Transactional
@@ -113,6 +117,12 @@ public class RegistroUsoIAService {
         if (ferramenta.getStatus() == StatusFerramentaIA.BLOQUEADA
                 || ferramenta.getStatus() == StatusFerramentaIA.DESCONTINUADA) {
             throw new IllegalArgumentException("A ferramenta não está disponível para uso");
+        }
+        boolean bloquearNaoAprovadas = configuracaoRepository.findByEmpresaId(ferramenta.getEmpresa().getId())
+                .map(configuracao -> configuracao.isBloquearFerramentasNaoAprovadas())
+                .orElse(true);
+        if (bloquearNaoAprovadas && ferramenta.getStatus() != StatusFerramentaIA.APROVADA) {
+            throw new IllegalArgumentException("A configuração da empresa permite somente ferramentas aprovadas");
         }
     }
 }

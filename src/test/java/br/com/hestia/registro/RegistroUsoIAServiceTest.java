@@ -1,5 +1,6 @@
 package br.com.hestia.registro;
 
+import br.com.hestia.configuracao.repository.ConfiguracaoEmpresaRepository;
 import br.com.hestia.empresa.model.Empresa;
 import br.com.hestia.ferramenta.model.FerramentaIA;
 import br.com.hestia.ferramenta.model.StatusFerramentaIA;
@@ -31,6 +32,7 @@ class RegistroUsoIAServiceTest {
     @Mock RegistroUsoIARepository registroRepository;
     @Mock UsuarioRepository usuarioRepository;
     @Mock FerramentaIARepository ferramentaRepository;
+    @Mock ConfiguracaoEmpresaRepository configuracaoRepository;
     @Mock Usuario usuario;
     @Mock FerramentaIA ferramenta;
 
@@ -38,7 +40,7 @@ class RegistroUsoIAServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new RegistroUsoIAService(registroRepository, usuarioRepository, ferramentaRepository);
+        service = new RegistroUsoIAService(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository);
     }
 
     @Test
