@@ -82,6 +82,13 @@
 
             </header>
 
+            <% if (mensagem) { %>
+                <div class="feedback success"><%= mensagem %></div>
+            <% } %>
+            <% if (erro) { %>
+                <div class="feedback error"><%= erro %></div>
+            <% } %>
+
 
             <section class="grid two">
 
@@ -100,21 +107,33 @@
 
                     <form
                         class="form-grid"
-                        onsubmit="return false;">
+                        action="/administracao/empresas"
+                        method="post">
 
                         <label class="full">
 
                             Empresa
 
                             <input
+                                name="nome"
                                 type="text"
                                 required>
 
                         </label>
 
+                        <label>
+                            CNPJ
+                            <input name="cnpj" type="text" placeholder="00.000.000/0000-00" required>
+                        </label>
+
+                        <label>
+                            Orçamento
+                            <input name="orcamento" type="number" min="0" step="0.01">
+                        </label>
+
                         <button
-                            class="primary fake-save"
-                            type="button">
+                            class="primary"
+                            type="submit">
 
                             Cadastrar empresa
 
@@ -139,13 +158,15 @@
 
                     <form
                         class="form-grid"
-                        onsubmit="return false;">
+                        action="/administracao/departamentos"
+                        method="post">
 
                         <label>
 
                             Departamento
 
                             <input
+                                name="nome"
                                 type="text"
                                 required>
 
@@ -155,15 +176,23 @@
 
                             Empresa existente
 
-                            <input
-                                type="text"
-                                required>
+                            <select name="empresaId" required>
+                                <option value="">Selecione</option>
+                                <% empresas.forEach(function(empresa) { %>
+                                    <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+                                <% }) %>
+                            </select>
 
                         </label>
 
+                        <label>
+                            Responsável
+                            <input name="responsavel" type="text">
+                        </label>
+
                         <button
-                            class="primary fake-save"
-                            type="button">
+                            class="primary"
+                            type="submit">
 
                             Cadastrar departamento
 
@@ -188,13 +217,15 @@
 
                     <form
                         class="form-grid"
-                        onsubmit="return false;">
+                        action="/administracao/usuarios"
+                        method="post">
 
                         <label>
 
                             Usuário
 
                             <input
+                                name="nome"
                                 type="text"
                                 required>
 
@@ -202,21 +233,17 @@
 
                         <label>
 
-                            Empresa
+                            E-mail
 
-                            <input
-                                type="text"
-                                required>
+                            <input name="email" type="email" required>
 
                         </label>
 
                         <label>
 
-                            Departamento
+                            Senha
 
-                            <input
-                                type="text"
-                                required>
+                            <input name="senha" type="password" minlength="8" required>
 
                         </label>
 
@@ -224,17 +251,17 @@
 
                             Perfil
 
-                            <select required>
+                            <select name="perfil" required>
 
-                                <option>
+                                <option value="FUNCIONARIO">
                                     Colaborador
                                 </option>
 
-                                <option>
+                                <option value="GESTOR">
                                     Gestor
                                 </option>
 
-                                <option>
+                                <option value="ADMIN">
                                     Administrador
                                 </option>
 
@@ -242,9 +269,34 @@
 
                         </label>
 
+                        <label>
+                            Cargo
+                            <input name="cargo" type="text" required>
+                        </label>
+
+                        <label>
+                            Empresa
+                            <select name="empresaId" required>
+                                <option value="">Selecione</option>
+                                <% empresas.forEach(function(empresa) { %>
+                                    <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+                                <% }) %>
+                            </select>
+                        </label>
+
+                        <label>
+                            Departamento
+                            <select name="departamentoId" required>
+                                <option value="">Selecione</option>
+                                <% departamentos.forEach(function(departamento) { %>
+                                    <option value="<%= departamento.id %>"><%= departamento.nome %></option>
+                                <% }) %>
+                            </select>
+                        </label>
+
                         <button
-                            class="primary fake-save"
-                            type="button">
+                            class="primary"
+                            type="submit">
 
                             Cadastrar usuário
 
@@ -300,21 +352,63 @@
 
                     <form
                         class="form-grid"
-                        onsubmit="return false;">
+                        action="/administracao/ferramentas"
+                        method="post">
 
                         <label class="full">
 
                             Identificação
 
                             <input
+                                name="nome"
                                 type="text"
                                 required>
 
                         </label>
 
+                        <label>
+                            Fornecedor
+                            <input name="fornecedor" type="text" required>
+                        </label>
+
+                        <label>
+                            Empresa
+                            <select name="empresaId" required>
+                                <option value="">Selecione</option>
+                                <% empresas.forEach(function(empresa) { %>
+                                    <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+                                <% }) %>
+                            </select>
+                        </label>
+
+                        <label>
+                            Tipo
+                            <select name="tipo" required>
+                                <option value="CHATBOT">Chatbot</option>
+                                <option value="GERACAO_TEXTO">Geração de texto</option>
+                                <option value="GERACAO_IMAGEM">Geração de imagem</option>
+                                <option value="ASSISTENTE_CODIGO">Assistente de código</option>
+                                <option value="ANALISE_DADOS">Análise de dados</option>
+                                <option value="OUTROS">Outros</option>
+                            </select>
+                        </label>
+
+                        <label class="full">
+                            Finalidade de uso
+                            <input name="finalidadeUso" type="text" minlength="10" required>
+                        </label>
+
+                        <label>
+                            Trata dados pessoais?
+                            <select name="trataDadosPessoais" required>
+                                <option value="false">Não</option>
+                                <option value="true">Sim</option>
+                            </select>
+                        </label>
+
                         <button
-                            class="primary fake-save"
-                            type="button">
+                            class="primary"
+                            type="submit">
 
                             Cadastrar ferramenta de IA
 
@@ -326,12 +420,44 @@
 
             </section>
 
+            <section class="panel">
+                <div class="panel-head"><h3>Dados cadastrados no backend</h3></div>
+                <div class="integration-summary">
+                    <span><strong><%= empresas.length %></strong> empresas</span>
+                    <span><strong><%= departamentos.length %></strong> departamentos</span>
+                    <span><strong><%= usuarios.length %></strong> usuários</span>
+                    <span><strong><%= ferramentas.length %></strong> ferramentas de IA</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Tipo</th><th>Nome</th><th>Detalhe</th></tr></thead>
+                        <tbody>
+                            <% empresas.forEach(function(item) { %>
+                                <tr><td>Empresa</td><td><%= item.nome %></td><td><%= item.cnpj %></td></tr>
+                            <% }) %>
+                            <% departamentos.forEach(function(item) { %>
+                                <tr><td>Departamento</td><td><%= item.nome %></td><td><%= item.responsavel || "—" %></td></tr>
+                            <% }) %>
+                            <% usuarios.forEach(function(item) { %>
+                                <tr><td>Usuário</td><td><%= item.nome %></td><td><%= item.email %></td></tr>
+                            <% }) %>
+                            <% ferramentas.forEach(function(item) { %>
+                                <tr><td>Ferramenta IA</td><td><%= item.nome %></td><td><%= item.status %></td></tr>
+                            <% }) %>
+                            <% if (!empresas.length && !departamentos.length && !usuarios.length && !ferramentas.length) { %>
+                                <tr><td colspan="3">Nenhum dado cadastrado.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
 
             <div
                 class="toast"
                 id="toast">
 
-                Ação demonstrativa do protótipo visual.
+                Dados persistidos pelo backend HestIA.
 
             </div>
 

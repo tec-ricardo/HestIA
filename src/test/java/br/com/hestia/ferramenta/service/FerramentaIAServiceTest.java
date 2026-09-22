@@ -1,5 +1,6 @@
 package br.com.hestia.ferramenta.service;
 
+import br.com.hestia.empresa.repository.EmpresaRepository;
 import br.com.hestia.ferramenta.model.FerramentaIA;
 import br.com.hestia.ferramenta.model.NivelRiscoIA;
 import br.com.hestia.ferramenta.repository.FerramentaIARepository;
@@ -17,9 +18,10 @@ class FerramentaIAServiceTest {
 
         // Arrange
         FerramentaIARepository repository = mock(FerramentaIARepository.class);
+        EmpresaRepository empresaRepository = mock(EmpresaRepository.class);
 
         FerramentaIAService service =
-                new FerramentaIAService(repository);
+                new FerramentaIAService(repository, empresaRepository);
 
         when(repository.findByNivelRisco(NivelRiscoIA.ALTO))
                 .thenReturn(List.of());
