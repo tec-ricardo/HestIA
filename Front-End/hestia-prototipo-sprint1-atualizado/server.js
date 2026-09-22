@@ -93,6 +93,25 @@ app.get("/", async (req, res) => {
 
     const indicadores = await carregarIndicadores();
 
+    const indicadoresMaturidade =
+        obterIndicadoresMaturidade();
+
+    const maturityScore =
+        calcularMaturityScore(indicadoresMaturidade);
+
+    const resumoPessoal = {
+
+        maturityScore: maturityScore.toFixed(2),
+
+        aiCredits: 680,
+
+        ranking: "4º",
+
+        usoResponsavel:
+        indicadoresMaturidade.usoResponsavel
+
+    };
+
     res.render("index", {
 
         perfil: perfil,
@@ -100,39 +119,20 @@ app.get("/", async (req, res) => {
         email: email,
 
         active: "dashboard",
-        indicadores: indicadores
+
+        indicadores: indicadores,
+
+        resumoPessoal: resumoPessoal
 
     });
 
 });
 
-function calcularMaturityScore(indicadores) {
-
-    return (
-        indicadores.aiLiteracy * 0.15 +
-        indicadores.governanca * 0.15 +
-        indicadores.usoResponsavel * 0.15 +
-        indicadores.produtividade * 0.10 +
-        indicadores.finOps * 0.10 +
-        indicadores.seguranca * 0.20 +
-        indicadores.colaboracao * 0.05 +
-        indicadores.desenvolvimentoCompetencias * 0.10
-    );
-
-}
-
 /* MATURIDADE */
 
-app.get("/maturidade", (req, res) => {
+function obterIndicadoresMaturidade() {
 
-    if (perfil == "") {
-
-        return res.redirect("/acesso");
-
-    }
-
-
-    const indicadores = {
+    return {
 
         aiLiteracy: 72,
 
@@ -151,6 +151,34 @@ app.get("/maturidade", (req, res) => {
         desenvolvimentoCompetencias: 68
 
     };
+
+}
+
+function calcularMaturityScore(indicadores) {
+
+    return (
+        indicadores.aiLiteracy * 0.15 +
+        indicadores.governanca * 0.15 +
+        indicadores.usoResponsavel * 0.15 +
+        indicadores.produtividade * 0.10 +
+        indicadores.finOps * 0.10 +
+        indicadores.seguranca * 0.20 +
+        indicadores.colaboracao * 0.05 +
+        indicadores.desenvolvimentoCompetencias * 0.10
+    );
+
+}
+
+app.get("/maturidade", (req, res) => {
+
+    if (perfil == "") {
+
+        return res.redirect("/acesso");
+
+    }
+
+    const indicadores =
+        obterIndicadoresMaturidade();
 
 
     const maturityScore =
