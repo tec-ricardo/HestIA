@@ -1,9 +1,14 @@
 package br.com.hestia.reutilizavel.service;
 
 import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
+import br.com.hestia.gamificacao.model.AcaoExperiencia;
+import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -12,11 +17,14 @@ import java.util.NoSuchElementException;
 public class RespostaReutilizavelService {
 
     private final RespostaReutilizavelRepository repository;
+    private final GamificacaoService gamificacaoService;
 
     public RespostaReutilizavelService(
-            RespostaReutilizavelRepository repository
+            RespostaReutilizavelRepository repository,
+            GamificacaoService gamificacaoService
     ) {
         this.repository = repository;
+        this.gamificacaoService = gamificacaoService;
     }
 
     public RespostaReutilizavel cadastrar(
@@ -80,6 +88,7 @@ public class RespostaReutilizavelService {
                 );
     }
 
+    @Transactional
     public RespostaReutilizavel registrarReutilizacao(
             Long id
     ) {
@@ -88,7 +97,19 @@ public class RespostaReutilizavelService {
                 buscarPorId(id);
 
         resposta.registrarReutilizacao();
+        RespostaReutilizavel salva = repository.save(resposta);
+        if (salva.getUsuarioId() != null) {
+            gamificacaoService.registrarAcao(new RegistroAcaoDTO(salva.getUsuarioId(),
+                    AcaoExperiencia.REUTILIZACAO_RESPOSTA,
+                    "REUTILIZACAO:" + salva.getId() + ":" + salva.getQuantidadeReutilizacoes()));
+        }
+        return salva;
+    }
 
-        return repository.save(resposta);
+    public EconomiaReutilizacaoDTO consultarEconomia(Long empresaId) {
+        List<RespostaReutilizavel> respostas = repository.findByEmpresaId(empresaId);
+        long chamadas = respostas.stream().mapToLong(r -> r.getChamadasEvitadas()).sum();
+        long tokens = respostas.stream().mapToLong(RespostaReutilizavel::getTokensEconomizados).sum();
+        return new EconomiaReutilizacaoDTO(empresaId, chamadas, tokens);
     }
 }
