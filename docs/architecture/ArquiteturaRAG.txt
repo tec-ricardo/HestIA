@@ -1,0 +1,13 @@
+Arquitetura proposta:
+O HestIA utilizará uma arquitetura baseada em recuperação semântica de prompts
+utilizando embeddings e banco vetorial. Ao receber um novo prompt,
+o sistema realizará uma busca por interações semanticamente semelhantes.
+Caso seja encontrada uma resposta com nível de similaridade suficiente,
+o usuário poderá reutilizá-la, evitando uma nova chamada ao modelo de IA.
+Inicialmente será estudado o uso do PostgreSQL com pgvector, aproveitando a infraestrutura
+já utilizada pelo projeto. O módulo de RAG será separado da aplicação principal
+para permitir evolução futura para um microsserviço independente.
+O fluxo será: Prompt → geração de embedding → busca vetorial → análise de similaridade →
+reutilização da resposta ou nova chamada à IA → armazenamento da nova interação.
+Essa arquitetura permitirá medir economia de tokens, redução de chamadas à IA e
+indicadores de sustentabilidade.
