@@ -1,4 +1,4 @@
-package br.com.hestia.reutilizacao.dto;
+package br.com.hestia.reutilizavel.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

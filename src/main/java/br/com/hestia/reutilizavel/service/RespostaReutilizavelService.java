@@ -1,11 +1,12 @@
-package br.com.hestia.reutilizacao.service;
+package br.com.hestia.reutilizavel.service;
 
-import br.com.hestia.reutilizacao.dto.RespostaReutilizavelDTO;
-import br.com.hestia.reutilizacao.model.RespostaReutilizavel;
-import br.com.hestia.reutilizacao.repository.RespostaReutilizavelRepository;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
+import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class RespostaReutilizavelService {
@@ -18,9 +19,12 @@ public class RespostaReutilizavelService {
         this.repository = repository;
     }
 
-    public RespostaReutilizavel cadastrar(RespostaReutilizavelDTO dto) {
+    public RespostaReutilizavel cadastrar(
+            RespostaReutilizavelDTO dto
+    ) {
 
-        RespostaReutilizavel resposta = new RespostaReutilizavel();
+        RespostaReutilizavel resposta =
+                new RespostaReutilizavel();
 
         resposta.setUsuarioId(dto.getUsuarioId());
         resposta.setEmpresaId(dto.getEmpresaId());
@@ -51,28 +55,37 @@ public class RespostaReutilizavelService {
         return repository.findAll();
     }
 
-    public List<RespostaReutilizavel> listarPorEmpresa(Long empresaId) {
+    public List<RespostaReutilizavel> listarPorEmpresa(
+            Long empresaId
+    ) {
         return repository.findByEmpresaId(empresaId);
     }
 
-    public List<RespostaReutilizavel> listarReutilizaveisPorEmpresa(
+    public List<RespostaReutilizavel>
+    listarReutilizaveisPorEmpresa(
             Long empresaId
     ) {
-        return repository.findByEmpresaIdAndReutilizavelTrue(empresaId);
+        return repository
+                .findByEmpresaIdAndReutilizavelTrue(
+                        empresaId
+                );
     }
 
     public RespostaReutilizavel buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Resposta reutilizável não encontrada"
+                        new NoSuchElementException(
+                                "Resposta reutilizável não encontrada."
                         )
                 );
     }
 
-    public RespostaReutilizavel registrarReutilizacao(Long id) {
+    public RespostaReutilizavel registrarReutilizacao(
+            Long id
+    ) {
 
-        RespostaReutilizavel resposta = buscarPorId(id);
+        RespostaReutilizavel resposta =
+                buscarPorId(id);
 
         resposta.registrarReutilizacao();
 

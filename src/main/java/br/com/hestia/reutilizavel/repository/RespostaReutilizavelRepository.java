@@ -1,6 +1,6 @@
-package br.com.hestia.reutilizacao.repository;
+package br.com.hestia.reutilizavel.repository;
 
-import br.com.hestia.reutilizacao.model.RespostaReutilizavel;
+import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +12,7 @@ public interface RespostaReutilizavelRepository
 
     List<RespostaReutilizavel> findByEmpresaId(Long empresaId);
 
-    List<RespostaReutilizavel> findByEmpresaIdAndReutilizavelTrue(Long empresaId);
+    List<RespostaReutilizavel> findByEmpresaIdAndReutilizavelTrue(
+            Long empresaId
+    );
 }

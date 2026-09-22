@@ -1,4 +1,4 @@
-package br.com.hestia.reutilizacao.model;
+package br.com.hestia.reutilizavel.model;
 
 import jakarta.persistence.*;
 
@@ -24,10 +24,6 @@ public class RespostaReutilizavel {
     @Column(name = "resposta_gerada", nullable = false, columnDefinition = "TEXT")
     private String respostaGerada;
 
-    /*
-     * Estrutura temporária.
-     * Será adaptada para vetor quando o banco vetorial for implementado.
-     */
     @Column(name = "embedding", columnDefinition = "TEXT")
     private String embedding;
 
@@ -81,5 +77,111 @@ public class RespostaReutilizavel {
         this.quantidadeReutilizacoes++;
     }
 
-    // getters e setters
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public Long getEmpresaId() {
+        return empresaId;
+    }
+
+    public void setEmpresaId(Long empresaId) {
+        this.empresaId = empresaId;
+    }
+
+    public String getPromptOriginal() {
+        return promptOriginal;
+    }
+
+    public void setPromptOriginal(String promptOriginal) {
+        this.promptOriginal = promptOriginal;
+    }
+
+    public String getRespostaGerada() {
+        return respostaGerada;
+    }
+
+    public void setRespostaGerada(String respostaGerada) {
+        this.respostaGerada = respostaGerada;
+    }
+
+    public String getEmbedding() {
+        return embedding;
+    }
+
+    public void setEmbedding(String embedding) {
+        this.embedding = embedding;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getModeloIA() {
+        return modeloIA;
+    }
+
+    public void setModeloIA(String modeloIA) {
+        this.modeloIA = modeloIA;
+    }
+
+    public Integer getTokensEntrada() {
+        return tokensEntrada;
+    }
+
+    public void setTokensEntrada(Integer tokensEntrada) {
+        this.tokensEntrada = tokensEntrada;
+    }
+
+    public Integer getTokensSaida() {
+        return tokensSaida;
+    }
+
+    public void setTokensSaida(Integer tokensSaida) {
+        this.tokensSaida = tokensSaida;
+    }
+
+    public Integer getQuantidadeReutilizacoes() {
+        return quantidadeReutilizacoes;
+    }
+
+    public void setQuantidadeReutilizacoes(Integer quantidadeReutilizacoes) {
+        this.quantidadeReutilizacoes = quantidadeReutilizacoes;
+    }
+
+    public Boolean getPossuiDadosSensiveis() {
+        return possuiDadosSensiveis;
+    }
+
+    public void setPossuiDadosSensiveis(Boolean possuiDadosSensiveis) {
+        this.possuiDadosSensiveis = possuiDadosSensiveis;
+    }
+
+    public Boolean getReutilizavel() {
+        return reutilizavel;
+    }
+
+    public void setReutilizavel(Boolean reutilizavel) {
+        this.reutilizavel = reutilizavel;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 }

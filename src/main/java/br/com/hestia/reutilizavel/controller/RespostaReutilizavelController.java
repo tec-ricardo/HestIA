@@ -1,10 +1,11 @@
-package br.com.hestia.reutilizacao.controller;
+package br.com.hestia.reutilizavel.controller;
 
-import br.com.hestia.reutilizacao.dto.RespostaReutilizavelDTO;
-import br.com.hestia.reutilizacao.model.RespostaReutilizavel;
-import br.com.hestia.reutilizacao.service.RespostaReutilizavelService;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
+import br.com.hestia.reutilizavel.service.RespostaReutilizavelService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,43 +23,69 @@ public class RespostaReutilizavelController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public RespostaReutilizavel cadastrar(
+    public ResponseEntity<RespostaReutilizavel> cadastrar(
             @Valid @RequestBody RespostaReutilizavelDTO dto
     ) {
-        return service.cadastrar(dto);
+
+        var resposta = service.cadastrar(dto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(resposta);
     }
 
     @GetMapping
-    public List<RespostaReutilizavel> listarTodas() {
-        return service.listarTodas();
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarTodas() {
+
+        return ResponseEntity.ok(
+                service.listarTodas()
+        );
     }
 
     @GetMapping("/{id}")
-    public RespostaReutilizavel buscarPorId(
+    public ResponseEntity<RespostaReutilizavel>
+    buscarPorId(
             @PathVariable Long id
     ) {
-        return service.buscarPorId(id);
+
+        return ResponseEntity.ok(
+                service.buscarPorId(id)
+        );
     }
 
     @GetMapping("/empresa/{empresaId}")
-    public List<RespostaReutilizavel> listarPorEmpresa(
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarPorEmpresa(
             @PathVariable Long empresaId
     ) {
-        return service.listarPorEmpresa(empresaId);
+
+        return ResponseEntity.ok(
+                service.listarPorEmpresa(empresaId)
+        );
     }
 
     @GetMapping("/empresa/{empresaId}/reutilizaveis")
-    public List<RespostaReutilizavel> listarReutilizaveis(
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarReutilizaveis(
             @PathVariable Long empresaId
     ) {
-        return service.listarReutilizaveisPorEmpresa(empresaId);
+
+        return ResponseEntity.ok(
+                service.listarReutilizaveisPorEmpresa(
+                        empresaId
+                )
+        );
     }
 
     @PatchMapping("/{id}/reutilizar")
-    public RespostaReutilizavel registrarReutilizacao(
+    public ResponseEntity<RespostaReutilizavel>
+    registrarReutilizacao(
             @PathVariable Long id
     ) {
-        return service.registrarReutilizacao(id);
+
+        return ResponseEntity.ok(
+                service.registrarReutilizacao(id)
+        );
     }
 }
