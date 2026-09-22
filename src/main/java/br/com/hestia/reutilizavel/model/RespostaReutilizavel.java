@@ -42,6 +42,9 @@ public class RespostaReutilizavel {
     @Column(name = "quantidade_reutilizacoes", nullable = false)
     private Integer quantidadeReutilizacoes = 0;
 
+    @Column(name = "tokens_economizados", nullable = false)
+    private Long tokensEconomizados = 0L;
+
     @Column(name = "possui_dados_sensiveis", nullable = false)
     private Boolean possuiDadosSensiveis = false;
 
@@ -63,6 +66,9 @@ public class RespostaReutilizavel {
         if (quantidadeReutilizacoes == null) {
             quantidadeReutilizacoes = 0;
         }
+        if (tokensEconomizados == null) {
+            tokensEconomizados = 0L;
+        }
 
         if (possuiDadosSensiveis == null) {
             possuiDadosSensiveis = false;
@@ -75,7 +81,10 @@ public class RespostaReutilizavel {
 
     public void registrarReutilizacao() {
         this.quantidadeReutilizacoes++;
+        this.tokensEconomizados += valorSeguro(tokensEntrada) + valorSeguro(tokensSaida);
     }
+
+    private long valorSeguro(Integer valor) { return valor == null ? 0L : valor.longValue(); }
 
     public Long getId() {
         return id;
@@ -160,6 +169,9 @@ public class RespostaReutilizavel {
     public void setQuantidadeReutilizacoes(Integer quantidadeReutilizacoes) {
         this.quantidadeReutilizacoes = quantidadeReutilizacoes;
     }
+
+    public Integer getChamadasEvitadas() { return quantidadeReutilizacoes; }
+    public Long getTokensEconomizados() { return tokensEconomizados; }
 
     public Boolean getPossuiDadosSensiveis() {
         return possuiDadosSensiveis;
