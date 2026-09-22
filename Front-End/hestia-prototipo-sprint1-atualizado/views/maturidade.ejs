@@ -6,524 +6,545 @@
     <meta charset="UTF-8">
 
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
     <title>
         HestIA - AI Maturity Score
     </title>
 
     <link
-        rel="stylesheet"
-        href="/styles.css">
+            rel="stylesheet"
+            href="/styles.css">
 
 </head>
 
 <body>
 
-    <div class="app-shell">
+<div class="app-shell">
 
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
+    <%- include("menu", {
+    perfil: perfil,
+    email: email,
+    active: active
+    }) %>
 
 
-        <main class="main">
+    <main class="main">
 
-            <!-- TOPO -->
+        <!-- TOPO -->
 
-            <header class="topbar">
+        <header class="topbar">
 
-                <button
+            <button
                     class="menu-button"
                     id="menuButton">
 
-                    ☰
+                ☰
 
-                </button>
-
-
-                <div>
-
-                    <p class="eyebrow">
-                        Maturidade
-                    </p>
-
-                    <h1>
-                        AI Maturity Score
-                    </h1>
-
-                </div>
+            </button>
 
 
-                <div class="profile-switch">
+            <div>
+
+                <p class="eyebrow">
+                    Maturidade
+                </p>
+
+                <h1>
+                    AI Maturity Score
+                </h1>
+
+            </div>
+
+
+            <div class="profile-switch">
 
                     <span>
                         <%= email %>
                     </span>
 
-                    <select disabled>
+                <select disabled>
 
-                        <% if (perfil == "colaborador") { %>
+                    <% if (perfil == "colaborador") { %>
 
-                            <option selected>
-                                Colaborador
-                            </option>
+                        <option selected>
+                            Colaborador
+                        </option>
 
-                        <% } %>
-
-
-                        <% if (perfil == "gestor") { %>
-
-                            <option selected>
-                                Gestor
-                            </option>
-
-                        <% } %>
-
-                    </select>
-
-                </div>
+                    <% } %>
 
 
-                <a
+                    <% if (perfil == "gestor") { %>
+
+                        <option selected>
+                            Gestor
+                        </option>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <a
                     class="topbar-logout"
                     href="/sair">
 
-                    Sair
+                Sair
 
-                </a>
+            </a>
 
-            </header>
+        </header>
 
 
-            <!-- COLABORADOR -->
+        <!-- COLABORADOR -->
 
-            <% if (perfil == "colaborador") { %>
+        <% if (perfil == "colaborador") { %>
 
-                <section class="grid four">
+            <section class="grid two">
 
-                    <article class="metric-card">
-
-                        <span>
-                            AI Literacy
-                        </span>
-
-                        <strong>
-                            72
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Governança
-                        </span>
-
-                        <strong>
-                            65
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Uso Responsável
-                        </span>
-
-                        <strong>
-                            80
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Produtividade
-                        </span>
-
-                        <strong>
-                            76
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            FinOps
-                        </span>
-
-                        <strong>
-                            58
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Segurança
-                        </span>
-
-                        <strong>
-                            85
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Colaboração
-                        </span>
-
-                        <strong>
-                            70
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Desenvolvimento de Competências
-                        </span>
-
-                        <strong>
-                            68
-                        </strong>
-
-                        <p>
-                            Dado demonstrativo do MVP.
-                        </p>
-
-                    </article>
-
-                </section>
-
-
-                <!-- GRAFICO COLABORADOR -->
-
-                <section class="panel">
-
-                    <div class="panel-head">
-
-                        <h3>
-                            Indicadores de AI Maturity Score
-                        </h3>
-
-                    </div>
-
-
-                    <div class="dashboard-chart maturidade-chart">
-
-                        <canvas id="graficoMaturidade"></canvas>
-
-                        <div
-                            class="chart-empty"
-                            id="semMaturidade">
-
-                            Sem dados registrados para gerar o gráfico.
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-            <% } %>
-
-
-            <!-- GESTOR -->
-
-            <% if (perfil == "gestor") { %>
-
-                <section class="grid two">
-
-                    <article class="metric-card">
+                <article class="metric-card">
 
                         <span>
                             AI Maturity Score
                         </span>
 
-                        <strong>
-                            Comparação
-                        </strong>
+                    <strong>
+                        <%= maturityScore %>
+                    </strong>
 
-                        <p>
-                            Comparação da maturidade entre departamentos
-                            ou grupos da organização.
-                        </p>
+                    <p>
+                        Pontuação geral de maturidade em IA.
+                    </p>
 
-                    </article>
+                </article>
+
+            </section>
 
 
-                    <article class="metric-card">
+            <section class="grid four">
+
+                <article class="metric-card">
+
+                        <span>
+                            AI Literacy
+                        </span>
+
+                    <strong>
+                        <%= indicadores.aiLiteracy %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Governança
+                        </span>
+
+                    <strong>
+                        <%= indicadores.governanca %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Uso Responsável
+                        </span>
+
+                    <strong>
+                        <%= indicadores.usoResponsavel %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Produtividade
+                        </span>
+
+                    <strong>
+                        <%= indicadores.produtividade %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            FinOps
+                        </span>
+
+                    <strong>
+                        <%= indicadores.finOps %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Segurança
+                        </span>
+
+                    <strong>
+                        <%= indicadores.seguranca %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Colaboração
+                        </span>
+
+                    <strong>
+                        <%= indicadores.colaboracao %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Desenvolvimento de Competências
+                        </span>
+
+                    <strong>
+                        <%= indicadores.desenvolvimentoCompetencias %>
+                    </strong>
+
+                    <p>
+                        Dado demonstrativo do MVP.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- GRAFICO COLABORADOR -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Indicadores de AI Maturity Score
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoMaturidade"></canvas>
+
+                    <div
+                            class="chart-empty"
+                            id="semMaturidade">
+
+                        Sem dados registrados para gerar o gráfico.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        <% } %>
+
+
+        <!-- GESTOR -->
+
+        <% if (perfil == "gestor") { %>
+
+            <section class="grid two">
+
+                <article class="metric-card">
+
+                        <span>
+                            AI Maturity Score
+                        </span>
+
+                    <strong>
+                        Comparação
+                    </strong>
+
+                    <p>
+                        Comparação da maturidade entre departamentos
+                        ou grupos da organização.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
 
                         <span>
                             Estratégia
                         </span>
 
-                        <strong>
-                            Indicadores
-                        </strong>
+                    <strong>
+                        Indicadores
+                    </strong>
 
-                        <p>
-                            Os indicadores apoiam a definição de estratégias
-                            para ampliar a maturidade organizacional.
-                        </p>
+                    <p>
+                        Os indicadores apoiam a definição de estratégias
+                        para ampliar a maturidade organizacional.
+                    </p>
 
-                    </article>
+                </article>
 
-                </section>
-
-
-                <section class="panel">
-
-                    <div class="panel-head">
-
-                        <h3>
-                            Comparação entre departamentos
-                        </h3>
-
-                    </div>
+            </section>
 
 
-                    <div class="dashboard-chart maturidade-chart">
+            <section class="panel">
 
-                        <canvas id="graficoDepartamentos"></canvas>
+                <div class="panel-head">
 
-                        <div
+                    <h3>
+                        Comparação entre departamentos
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoDepartamentos"></canvas>
+
+                    <div
                             class="chart-empty"
                             id="semDepartamentos">
 
-                            Nenhum departamento possui dados de maturidade
-                            para comparação.
-
-                        </div>
+                        Nenhum departamento possui dados de maturidade
+                        para comparação.
 
                     </div>
 
-                </section>
+                </div>
 
-            <% } %>
+            </section>
 
-        </main>
+        <% } %>
 
-    </div>
+    </main>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-    <script>
+</div>
 
 
-        /* COLABORADOR */
-
-        const graficoMaturidade =
-            document.getElementById("graficoMaturidade");
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-        if (graficoMaturidade) {
-
-            const valoresMaturidade = [
-                72,
-                65,
-                80,
-                76,
-                58,
-                85,
-                70,
-                68
-            ];
+<script>
 
 
-            if (valoresMaturidade.length > 0) {
+    /* COLABORADOR */
 
-                document
-                    .getElementById("semMaturidade")
-                    .style.display = "none";
-
-
-                new Chart(graficoMaturidade, {
-
-                    type: "bar",
-
-                    data: {
-
-                        labels: [
-                            "AI Literacy",
-                            "Governança",
-                            "Uso Responsável",
-                            "Produtividade",
-                            "FinOps",
-                            "Segurança",
-                            "Colaboração",
-                            "Competências"
-                        ],
-
-                        datasets: [{
-
-                            label: "AI Maturity Score",
-
-                            data: valoresMaturidade
-
-                        }]
-
-                    },
+    const graficoMaturidade =
+        document.getElementById("graficoMaturidade");
 
 
-                    options: {
+    if (graficoMaturidade) {
 
-                        responsive: true,
+        const valoresMaturidade = [
+            <%= indicadores.aiLiteracy %>,
+            <%= indicadores.governanca %>,
+            <%= indicadores.usoResponsavel %>,
+            <%= indicadores.produtividade %>,
+            <%= indicadores.finOps %>,
+            <%= indicadores.seguranca %>,
+            <%= indicadores.colaboracao %>,
+            <%= indicadores.desenvolvimentoCompetencias %>
+        ];
 
-                        maintainAspectRatio: false,
 
-                        scales: {
+        if (valoresMaturidade.length > 0) {
 
-                            y: {
+            document
+                .getElementById("semMaturidade")
+                .style.display = "none";
 
-                                beginAtZero: true,
 
-                                max: 100
+            new Chart(graficoMaturidade, {
 
-                            }
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "AI Literacy",
+                        "Governança",
+                        "Uso Responsável",
+                        "Produtividade",
+                        "FinOps",
+                        "Segurança",
+                        "Colaboração",
+                        "Competências"
+                    ],
+
+                    datasets: [{
+
+                        label: "AI Maturity Score",
+
+                        data: valoresMaturidade
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
 
                         }
 
                     }
 
-                });
+                }
 
-            }
+            });
 
         }
 
+    }
 
 
-        /* GESTOR */
 
-        const graficoDepartamentos =
-            document.getElementById("graficoDepartamentos");
+    /* GESTOR */
 
-
-        if (graficoDepartamentos) {
-
-            const departamentos = [
-                "Tecnologia",
-                "Marketing",
-                "Financeiro",
-                "RH"
-            ];
+    const graficoDepartamentos =
+        document.getElementById("graficoDepartamentos");
 
 
-            const valoresDepartamentos = [
-                82,
-                74,
-                67,
-                61
-            ];
+    if (graficoDepartamentos) {
+
+        const departamentos = [
+            "Tecnologia",
+            "Marketing",
+            "Financeiro",
+            "RH"
+        ];
 
 
-            if (departamentos.length > 0) {
-
-                document
-                    .getElementById("semDepartamentos")
-                    .style.display = "none";
-
-
-                new Chart(graficoDepartamentos, {
-
-                    type: "bar",
-
-                    data: {
-
-                        labels: departamentos,
-
-                        datasets: [{
-
-                            label: "AI Maturity Score",
-
-                            data: valoresDepartamentos
-
-                        }]
-
-                    },
+        const valoresDepartamentos = [
+            82,
+            74,
+            67,
+            61
+        ];
 
 
-                    options: {
+        if (departamentos.length > 0) {
 
-                        responsive: true,
+            document
+                .getElementById("semDepartamentos")
+                .style.display = "none";
 
-                        maintainAspectRatio: false,
 
-                        scales: {
+            new Chart(graficoDepartamentos, {
 
-                            y: {
+                type: "bar",
 
-                                beginAtZero: true,
+                data: {
 
-                                max: 100
+                    labels: departamentos,
 
-                            }
+                    datasets: [{
+
+                        label: "AI Maturity Score",
+
+                        data: valoresDepartamentos
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
 
                         }
 
                     }
 
-                });
+                }
 
-            }
+            });
 
         }
 
+    }
 
-    </script>
+
+</script>
 
 
-    <script src="/app.js"></script>
+<script src="/app.js"></script>
 
 </body>
 

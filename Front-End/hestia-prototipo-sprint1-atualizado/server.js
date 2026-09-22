@@ -106,6 +106,20 @@ app.get("/", async (req, res) => {
 
 });
 
+function calcularMaturityScore(indicadores) {
+
+    return (
+        indicadores.aiLiteracy * 0.15 +
+        indicadores.governanca * 0.15 +
+        indicadores.usoResponsavel * 0.15 +
+        indicadores.produtividade * 0.10 +
+        indicadores.finOps * 0.10 +
+        indicadores.seguranca * 0.20 +
+        indicadores.colaboracao * 0.05 +
+        indicadores.desenvolvimentoCompetencias * 0.10
+    );
+
+}
 
 /* MATURIDADE */
 
@@ -117,13 +131,43 @@ app.get("/maturidade", (req, res) => {
 
     }
 
+
+    const indicadores = {
+
+        aiLiteracy: 72,
+
+        governanca: 65,
+
+        usoResponsavel: 80,
+
+        produtividade: 76,
+
+        finOps: 58,
+
+        seguranca: 85,
+
+        colaboracao: 70,
+
+        desenvolvimentoCompetencias: 68
+
+    };
+
+
+    const maturityScore =
+        calcularMaturityScore(indicadores);
+
+
     res.render("maturidade", {
 
         perfil: perfil,
 
         email: email,
 
-        active: "maturidade"
+        active: "maturidade",
+
+        indicadores: indicadores,
+
+        maturityScore: maturityScore.toFixed(2)
 
     });
 
