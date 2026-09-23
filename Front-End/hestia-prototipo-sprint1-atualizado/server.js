@@ -1133,6 +1133,163 @@ app.get(
     }
 );
 
+/* RANKING HESTIA */
+
+app.get(
+    "/ranking",
+    async (req, res) => {
+
+        if (perfil != "colaborador") {
+
+            return res.redirect("/");
+
+        }
+
+
+        /*
+            SCRUM-275 / SCRUM-277
+
+            DADOS MOCKADOS DO RANKING
+
+            O ranking utiliza a progressão
+            do HestIA Pass como referência.
+
+            Quando o backend disponibilizar
+            o endpoint definitivo, os dados
+            poderão ser carregados pelo Axios.
+
+            O endpoint /ranking deverá ser
+            confirmado com a equipe do backend.
+        */
+
+        const rankingMock = {
+
+            posicaoUsuario: 4,
+
+            totalParticipantes: 8,
+
+            usuario: {
+
+                nome: "Você",
+
+                nivel: "Consciente",
+
+                xp: 235
+
+            },
+
+
+            classificacao: [
+
+                {
+                    posicao: 1,
+                    nome: "Ana Martins",
+                    iniciais: "AM",
+                    nivel: "Proficiente",
+                    xp: 480,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 2,
+                    nome: "Lucas Ferreira",
+                    iniciais: "LF",
+                    nivel: "Proficiente",
+                    xp: 390,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 3,
+                    nome: "Mariana Costa",
+                    iniciais: "MC",
+                    nivel: "Proficiente",
+                    xp: 315,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 4,
+                    nome: "Você",
+                    iniciais: "KL",
+                    nivel: "Consciente",
+                    xp: 235,
+                    usuarioAtual: true
+                },
+
+                {
+                    posicao: 5,
+                    nome: "Rafael Souza",
+                    iniciais: "RS",
+                    nivel: "Consciente",
+                    xp: 210,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 6,
+                    nome: "Beatriz Lima",
+                    iniciais: "BL",
+                    nivel: "Consciente",
+                    xp: 180,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 7,
+                    nome: "Gabriel Rocha",
+                    iniciais: "GR",
+                    nivel: "Consciente",
+                    xp: 145,
+                    usuarioAtual: false
+                },
+
+                {
+                    posicao: 8,
+                    nome: "Camila Alves",
+                    iniciais: "CA",
+                    nivel: "Iniciante",
+                    xp: 75,
+                    usuarioAtual: false
+                }
+
+            ]
+
+        };
+
+
+        /*
+            AXIOS DO RANKING
+
+            Se o backend responder,
+            utiliza os dados reais.
+
+            Se o backend ainda estiver
+            indisponível, utiliza rankingMock.
+        */
+
+        const ranking =
+            await consultarObjetoComFallback(
+                "/ranking",
+                rankingMock
+            );
+
+
+        res.render("ranking", {
+
+            perfil: perfil,
+
+            email: email,
+
+            active: "ranking",
+
+            ranking: ranking
+
+        });
+
+    }
+);
+
 
 /* SAIR */
 
