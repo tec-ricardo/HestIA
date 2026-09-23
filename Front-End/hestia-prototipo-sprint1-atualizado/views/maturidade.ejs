@@ -298,23 +298,48 @@
 
         <!-- GESTOR -->
 
-        <% if (perfil == "gestor") { %>
+<% if (perfil == "gestor") { %>
 
-            <section class="grid two">
+    <!-- CARDS PRINCIPAIS -->
+
+    <section class="grid">
+
+        <article class="metric-card">
+
+            <span>
+                AI Maturity Score
+            </span>
+
+            <strong>
+                Comparação
+            </strong>
+
+            <p>
+                Comparação da maturidade entre departamentos
+                ou grupos da organização.
+            </p>
+
+        </article>
+
+    </section>
+
+
+            <!-- RESUMO ANALITICO -->
+
+            <section class="grid four">
 
                 <article class="metric-card">
 
                         <span>
-                            AI Maturity Score
+                            Média organizacional
                         </span>
 
                     <strong>
-                        Comparação
+                        71
                     </strong>
 
                     <p>
-                        Comparação da maturidade entre departamentos
-                        ou grupos da organização.
+                        Média do AI Maturity Score dos departamentos analisados.
                     </p>
 
                 </article>
@@ -323,22 +348,57 @@
                 <article class="metric-card">
 
                         <span>
-                            Estratégia
+                            Maior maturidade
                         </span>
 
                     <strong>
-                        Indicadores
+                        Tecnologia
                     </strong>
 
                     <p>
-                        Os indicadores apoiam a definição de estratégias
-                        para ampliar a maturidade organizacional.
+                        Score 82 — maior resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Menor maturidade
+                        </span>
+
+                    <strong>
+                        RH
+                    </strong>
+
+                    <p>
+                        Score 61 — menor resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Departamentos analisados
+                        </span>
+
+                    <strong>
+                        4
+                    </strong>
+
+                    <p>
+                        Tecnologia, Marketing, Financeiro e RH.
                     </p>
 
                 </article>
 
             </section>
 
+
+            <!-- GRAFICO GERAL DOS DEPARTAMENTOS -->
 
             <section class="panel">
 
@@ -365,6 +425,320 @@
                     </div>
 
                 </div>
+
+            </section>
+
+
+            <!-- TABELA COMPARATIVA -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Análise comparativa da maturidade
+                        </h3>
+
+                        <p>
+                            Comparação dos resultados de AI Maturity Score
+                            entre os departamentos da organização.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Departamento
+                            </th>
+
+                            <th>
+                                AI Maturity Score
+                            </th>
+
+                            <th>
+                                Comparação com a média
+                            </th>
+
+                            <th>
+                                Diferença
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <tr>
+
+                            <td>
+                                Tecnologia
+                            </td>
+
+                            <td>
+                                <strong>82</strong>
+                            </td>
+
+                            <td>
+                                Acima da média
+                            </td>
+
+                            <td>
+                                +11 pontos
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                Marketing
+                            </td>
+
+                            <td>
+                                <strong>74</strong>
+                            </td>
+
+                            <td>
+                                Acima da média
+                            </td>
+
+                            <td>
+                                +3 pontos
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                Financeiro
+                            </td>
+
+                            <td>
+                                <strong>67</strong>
+                            </td>
+
+                            <td>
+                                Abaixo da média
+                            </td>
+
+                            <td>
+                                -4 pontos
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                RH
+                            </td>
+
+                            <td>
+                                <strong>61</strong>
+                            </td>
+
+                            <td>
+                                Abaixo da média
+                            </td>
+
+                            <td>
+                                -10 pontos
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Dados demonstrativos utilizados para representação do wireframe.
+                </p>
+
+            </section>
+
+
+            <!-- INDICADORES POR DEPARTAMENTO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Indicadores de maturidade por departamento
+                        </h3>
+
+                        <p>
+                            Detalhamento dos indicadores para apoiar a comparação
+                            da maturidade entre as áreas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoIndicadoresDepartamentos"></canvas>
+
+                </div>
+
+            </section>
+
+
+            <!-- DETALHAMENTO DOS INDICADORES -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Detalhamento dos indicadores
+                        </h3>
+
+                        <p>
+                            Visão comparativa dos componentes de maturidade
+                            utilizados no cenário demonstrativo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Indicador
+                            </th>
+
+                            <th>
+                                Tecnologia
+                            </th>
+
+                            <th>
+                                Marketing
+                            </th>
+
+                            <th>
+                                Financeiro
+                            </th>
+
+                            <th>
+                                RH
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <tr>
+                            <td>AI Literacy</td>
+                            <td>88</td>
+                            <td>80</td>
+                            <td>70</td>
+                            <td>66</td>
+                        </tr>
+
+                        <tr>
+                            <td>Governança</td>
+                            <td>78</td>
+                            <td>72</td>
+                            <td>65</td>
+                            <td>59</td>
+                        </tr>
+
+                        <tr>
+                            <td>Uso Responsável</td>
+                            <td>90</td>
+                            <td>83</td>
+                            <td>75</td>
+                            <td>69</td>
+                        </tr>
+
+                        <tr>
+                            <td>Produtividade</td>
+                            <td>85</td>
+                            <td>79</td>
+                            <td>68</td>
+                            <td>63</td>
+                        </tr>
+
+                        <tr>
+                            <td>FinOps</td>
+                            <td>76</td>
+                            <td>68</td>
+                            <td>61</td>
+                            <td>55</td>
+                        </tr>
+
+                        <tr>
+                            <td>Segurança</td>
+                            <td>91</td>
+                            <td>86</td>
+                            <td>78</td>
+                            <td>73</td>
+                        </tr>
+
+                        <tr>
+                            <td>Colaboração</td>
+                            <td>79</td>
+                            <td>73</td>
+                            <td>65</td>
+                            <td>60</td>
+                        </tr>
+
+                        <tr>
+                            <td>Desenvolvimento de Competências</td>
+                            <td>80</td>
+                            <td>71</td>
+                            <td>64</td>
+                            <td>58</td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Indicadores e valores demonstrativos utilizados para representação do MVP.
+                </p>
 
             </section>
 
@@ -464,7 +838,7 @@
 
 
 
-    /* GESTOR */
+    /* GESTOR - COMPARACAO GERAL */
 
     const graficoDepartamentos =
         document.getElementById("graficoDepartamentos");
@@ -537,6 +911,92 @@
             });
 
         }
+
+    }
+
+
+
+    /* GESTOR - INDICADORES POR DEPARTAMENTO */
+
+    const graficoIndicadoresDepartamentos =
+        document.getElementById("graficoIndicadoresDepartamentos");
+
+
+    if (graficoIndicadoresDepartamentos) {
+
+        new Chart(graficoIndicadoresDepartamentos, {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "AI Literacy",
+                    "Governança",
+                    "Uso Responsável",
+                    "Produtividade",
+                    "FinOps",
+                    "Segurança",
+                    "Colaboração",
+                    "Competências"
+                ],
+
+                datasets: [
+
+                    {
+                        label: "Tecnologia",
+                        data: [88, 78, 90, 85, 76, 91, 79, 80]
+                    },
+
+                    {
+                        label: "Marketing",
+                        data: [80, 72, 83, 79, 68, 86, 73, 71]
+                    },
+
+                    {
+                        label: "Financeiro",
+                        data: [70, 65, 75, 68, 61, 78, 65, 64]
+                    },
+
+                    {
+                        label: "RH",
+                        data: [66, 59, 69, 63, 55, 73, 60, 58]
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 
