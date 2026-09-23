@@ -125,6 +125,167 @@ app.get("/", async (req, res) => {
     };
 
 
+    /*
+        SCRUM-198 / SCRUM-200
+
+        RESUMO PESSOAL DO COLABORADOR
+
+        Esta área complementa a Visão Geral
+        apresentando informações relacionadas
+        à jornada individual do colaborador.
+
+        Os dados abaixo são demonstrativos.
+
+        Quando o backend disponibilizar
+        o endpoint correspondente, os dados
+        poderão ser carregados através do Axios.
+
+        O endpoint /resumo-pessoal deverá ser
+        confirmado com a equipe do backend.
+    */
+
+    const detalhesResumoPessoalMock = {
+
+        progresso: {
+
+            nivel: "Consciente",
+
+            nivelNumero: 2,
+
+            xpAtual: 235,
+
+            xpProximoNivel: 300,
+
+            xpFaltante: 65,
+
+            proximoNivel: "Proficiente"
+
+        },
+
+
+        destaques: {
+
+            sequenciaConforme: 7,
+
+            utilizacoesConformes: 20,
+
+            utilizacoesAvaliadas: 23
+
+        },
+
+
+        atividadeRecente: [
+
+            {
+
+                titulo:
+                    "Resumo de documento",
+
+                modelo:
+                    "ChatGPT",
+
+                status:
+                    "Conforme"
+
+            },
+
+            {
+
+                titulo:
+                    "Apoio na elaboração de relatório",
+
+                modelo:
+                    "Copilot",
+
+                status:
+                    "Conforme"
+
+            },
+
+            {
+
+                titulo:
+                    "Análise de dados",
+
+                modelo:
+                    "ChatGPT",
+
+                status:
+                    "Não conforme"
+
+            }
+
+        ],
+
+
+        conquistasRecentes: [
+
+            {
+
+                descricao:
+                    "Utilização conforme",
+
+                recompensa:
+                    "+10 XP",
+
+                data:
+                    "Hoje"
+
+            },
+
+            {
+
+                descricao:
+                    "Utilização conforme",
+
+                recompensa:
+                    "+10 XP",
+
+                data:
+                    "Ontem"
+
+            },
+
+            {
+
+                descricao:
+                    "Reutilização eficiente",
+
+                recompensa:
+                    "XP conforme regra",
+
+                data:
+                    "20/09"
+
+            }
+
+        ]
+
+    };
+
+
+    /*
+        AXIOS DO RESUMO PESSOAL
+
+        Se o backend responder,
+        utiliza os dados reais.
+
+        Se o backend ainda estiver
+        indisponível, utiliza os dados
+        demonstrativos acima.
+    */
+
+    const detalhesResumoPessoal =
+        perfil == "colaborador"
+            ?
+            await consultarObjetoComFallback(
+                "/resumo-pessoal",
+                detalhesResumoPessoalMock
+            )
+            :
+            detalhesResumoPessoalMock;
+
+
     res.render("index", {
 
         perfil: perfil,
@@ -135,11 +296,15 @@ app.get("/", async (req, res) => {
 
         indicadores: indicadores,
 
-        resumoPessoal: resumoPessoal
+        resumoPessoal: resumoPessoal,
+
+        detalhesResumoPessoal:
+            detalhesResumoPessoal
 
     });
 
 });
+
 
 
 /* MATURIDADE */

@@ -3974,3 +3974,418 @@ th{
     }
 
 }
+/* =========================================================
+   SCRUM-198 / SCRUM-200
+   RESUMO PESSOAL
+   ========================================================= */
+
+.personal-details-section {
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+.personal-details-header {
+    margin-bottom: 16px;
+}
+
+.personal-details-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.personal-details-header h2 {
+    margin: 0 0 5px;
+    color: var(--ink);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.personal-details-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.personal-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.personal-card-header h3 {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.personal-card-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.personal-card-header a,
+.personal-card-link {
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.personal-card-header a:hover,
+.personal-card-link:hover {
+    text-decoration: underline;
+}
+
+.personal-activity-card {
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.personal-activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-activity-item {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.personal-activity-item:last-child {
+    border-bottom: none;
+}
+
+.personal-activity-status {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-right: 11px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.personal-status-success {
+    background: #e7f6ef;
+    color: #247a5a;
+}
+
+.personal-status-warning {
+    background: #fff0ef;
+    color: #c84a44;
+}
+
+.personal-activity-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.personal-activity-info strong {
+    color: var(--ink);
+    font-size: 11px;
+}
+
+.personal-activity-info span {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.personal-status-badge {
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.personal-badge-success {
+    background: #e7f6ef;
+    color: #247a5a;
+}
+
+.personal-badge-warning {
+    background: #fff0ef;
+    color: #c84a44;
+}
+
+.personal-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.personal-progress-card {
+    padding: 20px;
+    background: var(--nav);
+    border-radius: 12px;
+    color: #ffffff;
+}
+
+.personal-progress-card .personal-card-label {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.personal-card-label {
+    display: block;
+    margin-bottom: 17px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.personal-level-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 19px;
+}
+
+.personal-level-circle {
+    display: flex;
+    width: 56px;
+    height: 56px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+}
+
+.personal-level-circle small {
+    margin-bottom: 1px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 7px;
+    font-weight: 700;
+}
+
+.personal-level-circle strong {
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.personal-level-caption {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.personal-level-row h3 {
+    margin: 2px 0 0;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.personal-xp-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+.personal-xp-row strong {
+    font-size: 11px;
+}
+
+.personal-xp-row span {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 9px;
+}
+
+.personal-xp-progress {
+    width: 100%;
+    height: 6px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+}
+
+.personal-xp-progress-value {
+    height: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+}
+
+.personal-xp-message {
+    margin: 9px 0 16px;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 9px;
+}
+
+.personal-xp-message strong {
+    color: #ffffff;
+}
+
+.personal-progress-card .personal-card-link {
+    color: #ffffff;
+}
+
+.personal-highlights-card {
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.personal-highlights-card h3 {
+    margin: -7px 0 14px;
+    color: var(--ink);
+    font-size: 15px;
+}
+
+.personal-highlights-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-highlight-item {
+    display: flex;
+    min-height: 51px;
+    align-items: center;
+    gap: 11px;
+    border-bottom: 1px solid var(--line);
+}
+
+.personal-highlight-item:last-child {
+    border-bottom: none;
+}
+
+.personal-highlight-icon {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: #e7f6ef;
+    border-radius: 50%;
+    color: var(--success);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.personal-highlight-item > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-highlight-item strong {
+    color: var(--ink);
+    font-size: 14px;
+}
+
+.personal-highlight-item span {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+.personal-achievements-card {
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.personal-achievements-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.personal-achievement-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: #f7f9fc;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+}
+
+.personal-achievement-icon {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin-right: 9px;
+    background: var(--accent-soft);
+    border-radius: 7px;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.personal-achievement-info {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.personal-achievement-info strong {
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.personal-achievement-info span {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.personal-achievement-date {
+    margin-left: 8px;
+    color: var(--muted);
+    font-size: 8px;
+}
+
+@media (max-width: 950px) {
+    .personal-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .personal-achievements-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .personal-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .personal-activity-item {
+        flex-wrap: wrap;
+    }
+
+    .personal-status-badge {
+        margin-left: 39px;
+        margin-top: 6px;
+    }
+}
