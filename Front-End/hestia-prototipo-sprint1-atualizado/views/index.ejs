@@ -31,7 +31,6 @@
             active: active
         }) %>
 
-
         <main class="main">
 
             <!-- TOPO -->
@@ -364,6 +363,350 @@
                     </article>
 
                 </section>
+
+
+                <!-- =====================================================
+                     SCRUM-198 / SCRUM-200
+                     RESUMO PESSOAL
+                     ===================================================== -->
+
+                <section class="personal-details-section">
+
+                    <div class="personal-details-header">
+
+                        <span class="personal-details-label">
+                            SUA JORNADA
+                        </span>
+
+                        <h2>
+                            Resumo pessoal
+                        </h2>
+
+                        <p>
+                            Acompanhe suas atividades recentes e sua evolução
+                            no uso responsável de Inteligência Artificial.
+                        </p>
+
+                    </div>
+
+
+                    <!-- ATIVIDADE RECENTE -->
+
+                    <article class="personal-activity-card">
+
+                        <div class="personal-card-header">
+
+                            <div>
+
+                                <h3>
+                                    Atividade recente
+                                </h3>
+
+                                <p>
+                                    Suas últimas utilizações avaliadas.
+                                </p>
+
+                            </div>
+
+                            <a href="/utilizacoes">
+                                Ver histórico →
+                            </a>
+
+                        </div>
+
+
+                        <div class="personal-activity-list">
+
+                            <% detalhesResumoPessoal.atividadeRecente.forEach(function(atividade) { %>
+
+                                <div class="personal-activity-item">
+
+                                    <div
+                                        class="personal-activity-status
+                                        <%= atividade.status == 'Conforme'
+                                            ? 'personal-status-success'
+                                            : 'personal-status-warning' %>">
+
+                                        <%= atividade.status == "Conforme" ? "✓" : "!" %>
+
+                                    </div>
+
+
+                                    <div class="personal-activity-info">
+
+                                        <strong>
+                                            <%= atividade.titulo %>
+                                        </strong>
+
+                                        <span>
+                                            <%= atividade.modelo %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="personal-status-badge
+                                        <%= atividade.status == 'Conforme'
+                                            ? 'personal-badge-success'
+                                            : 'personal-badge-warning' %>">
+
+                                        <%= atividade.status %>
+
+                                    </span>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- EVOLUCAO + DESTAQUES -->
+
+                    <div class="personal-details-grid">
+
+
+                        <!-- SUA EVOLUCAO -->
+
+                        <article class="personal-progress-card">
+
+                            <span class="personal-card-label">
+                                SUA EVOLUÇÃO
+                            </span>
+
+
+                            <div class="personal-level-row">
+
+                                <div class="personal-level-circle">
+
+                                    <small>
+                                        NÍVEL
+                                    </small>
+
+                                    <strong>
+                                        <%= detalhesResumoPessoal.progresso.nivelNumero %>
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span class="personal-level-caption">
+                                        Nível atual
+                                    </span>
+
+                                    <h3>
+                                        <%= detalhesResumoPessoal.progresso.nivel %>
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="personal-xp-row">
+
+                                <strong>
+                                    <%= detalhesResumoPessoal.progresso.xpAtual %> XP
+                                </strong>
+
+                                <span>
+                                    <%= detalhesResumoPessoal.progresso.xpProximoNivel %> XP
+                                </span>
+
+                            </div>
+
+
+                            <div class="personal-xp-progress">
+
+                                <div
+                                    class="personal-xp-progress-value"
+                                    style="width:
+                                    <%= Math.min(
+                                        (detalhesResumoPessoal.progresso.xpAtual /
+                                        detalhesResumoPessoal.progresso.xpProximoNivel) * 100,
+                                        100
+                                    ) %>%;">
+                                </div>
+
+                            </div>
+
+
+                            <p class="personal-xp-message">
+
+                                Faltam
+
+                                <strong>
+                                    <%= detalhesResumoPessoal.progresso.xpFaltante %> XP
+                                </strong>
+
+                                para alcançar
+
+                                <%= detalhesResumoPessoal.progresso.proximoNivel %>.
+
+                            </p>
+
+
+                            <a
+                                class="personal-card-link"
+                                href="/passe-hestia">
+
+                                Ver HestIA Pass →
+
+                            </a>
+
+                        </article>
+
+
+                        <!-- DESTAQUES -->
+
+                        <article class="personal-highlights-card">
+
+                            <span class="personal-card-label">
+                                DESTAQUES DA JORNADA
+                            </span>
+
+                            <h3>
+                                Seu desempenho recente
+                            </h3>
+
+
+                            <div class="personal-highlights-list">
+
+
+                                <div class="personal-highlight-item">
+
+                                    <div class="personal-highlight-icon">
+                                        ✓
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            <%= detalhesResumoPessoal.destaques.sequenciaConforme %>
+                                        </strong>
+
+                                        <span>
+                                            utilizações conformes consecutivas
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="personal-highlight-item">
+
+                                    <div class="personal-highlight-icon">
+                                        ✓
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            <%= detalhesResumoPessoal.destaques.utilizacoesConformes %>
+                                        </strong>
+
+                                        <span>
+                                            utilizações conformes
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="personal-highlight-item">
+
+                                    <div class="personal-highlight-icon">
+                                        ✓
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            <%= detalhesResumoPessoal.destaques.utilizacoesAvaliadas %>
+                                        </strong>
+
+                                        <span>
+                                            utilizações avaliadas
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+
+                    <!-- CONQUISTAS -->
+
+                    <article class="personal-achievements-card">
+
+                        <div class="personal-card-header">
+
+                            <div>
+
+                                <h3>
+                                    Últimas conquistas
+                                </h3>
+
+                                <p>
+                                    Eventos recentes da sua evolução no HestIA Pass.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="personal-achievements-list">
+
+                            <% detalhesResumoPessoal.conquistasRecentes.forEach(function(conquista) { %>
+
+                                <div class="personal-achievement-item">
+
+                                    <div class="personal-achievement-icon">
+                                        +
+                                    </div>
+
+
+                                    <div class="personal-achievement-info">
+
+                                        <strong>
+                                            <%= conquista.descricao %>
+                                        </strong>
+
+                                        <span>
+                                            <%= conquista.recompensa %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <span class="personal-achievement-date">
+                                        <%= conquista.data %>
+                                    </span>
+
+                                </div>
+
+                            <% }) %>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
 
             <% } %>
 
