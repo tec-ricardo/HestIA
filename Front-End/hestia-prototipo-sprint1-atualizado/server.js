@@ -243,18 +243,209 @@ app.get("/utilizacoes", (req, res) => {
     }
 
 
+    /*
+        DADOS MOCKADOS DO HISTORICO
+
+        Estes dados representam o retorno que futuramente
+        poderá vir do backend.
+
+        Quando a API de utilizações estiver pronta,
+        este array poderá ser substituído pela consulta
+        ao endpoint correspondente.
+    */
+
+    const historico = [
+
+        {
+
+            id: 1,
+
+            modelo: "ChatGPT",
+
+            data: "22/09/2026",
+
+            dataFiltro: "2026-09-22",
+
+            hora: "14:32",
+
+            consumo: 1250,
+
+            finalidade: "Resumo de documento",
+
+            conformidade: "Conforme",
+
+            prompt:
+                "Resuma os principais pontos deste documento para apoiar minha análise.",
+
+            resposta:
+                "A IA apresentou um resumo dos principais pontos e organizou as informações solicitadas.",
+
+            justificativa:
+                "Nenhuma violação de política foi identificada nesta utilização."
+
+        },
+
+        {
+
+            id: 2,
+
+            modelo: "Copilot",
+
+            data: "21/09/2026",
+
+            dataFiltro: "2026-09-21",
+
+            hora: "10:18",
+
+            consumo: 980,
+
+            finalidade: "Apoio na elaboração de relatório",
+
+            conformidade: "Conforme",
+
+            prompt:
+                "Ajude a organizar a estrutura deste relatório em tópicos.",
+
+            resposta:
+                "A IA sugeriu uma estrutura com introdução, desenvolvimento, resultados e conclusão.",
+
+            justificativa:
+                "A utilização está de acordo com as políticas de uso de IA."
+
+        },
+
+        {
+
+            id: 3,
+
+            modelo: "ChatGPT",
+
+            data: "20/09/2026",
+
+            dataFiltro: "2026-09-20",
+
+            hora: "16:45",
+
+            consumo: 1540,
+
+            finalidade: "Análise de dados",
+
+            conformidade: "Não conforme",
+
+            prompt:
+                "Analise os dados informados e apresente os principais padrões encontrados.",
+
+            resposta:
+                "A IA realizou a análise solicitada e apresentou os principais padrões identificados.",
+
+            justificativa:
+                "A utilização foi classificada como não conforme após a avaliação das regras aplicáveis."
+
+        },
+
+        {
+
+            id: 4,
+
+            modelo: "Copilot",
+
+            data: "23/09/2026",
+
+            dataFiltro: "2026-09-23",
+
+            hora: "09:12",
+
+            consumo: 760,
+
+            finalidade: "Geração de apresentação",
+
+            conformidade: "Aguardando avaliação",
+
+            prompt:
+                "Organize estes tópicos em uma estrutura para apresentação.",
+
+            resposta:
+                "A IA sugeriu a divisão do conteúdo em uma sequência de slides.",
+
+            justificativa:
+                "A utilização ainda está aguardando avaliação de conformidade."
+
+        }
+
+    ];
+
+
+    const utilizacoesAvaliadas =
+        historico.filter(function(utilizacao) {
+
+            return utilizacao.conformidade !=
+                "Aguardando avaliação";
+
+        });
+
+
+    const utilizacoesConformes =
+        historico.filter(function(utilizacao) {
+
+            return utilizacao.conformidade ==
+                "Conforme";
+
+        });
+
+
+    const consumoTotal =
+        historico.reduce(
+            function(total, utilizacao) {
+
+                return total + utilizacao.consumo;
+
+            },
+            0
+        );
+
+
+    const taxaConformidade =
+        utilizacoesAvaliadas.length > 0
+            ?
+            Math.round(
+                (
+                    utilizacoesConformes.length /
+                    utilizacoesAvaliadas.length
+                ) * 100
+            )
+            :
+            0;
+
+
+    const resumoHistorico = {
+
+        totalUtilizacoes:
+            historico.length,
+
+        taxaConformidade:
+            taxaConformidade,
+
+        consumoTotal:
+            consumoTotal
+
+    };
+
+
     res.render("utilizacoes", {
 
         perfil: perfil,
 
         email: email,
 
-        active: "utilizacoes"
+        active: "utilizacoes",
+
+        historico: historico,
+
+        resumoHistorico: resumoHistorico
 
     });
 
 });
-
 
 /* COMPETENCIAS */
 

@@ -174,7 +174,7 @@
 
             <!-- HISTORICO -->
 
-            <section class="panel">
+            <section class="panel utilizacoes-history">
 
                 <div class="panel-head">
 
@@ -185,7 +185,7 @@
                         </h3>
 
                         <p class="conformidade-description">
-                            Consulte suas utilizações de IA e o status de conformidade.
+                            Acompanhe suas utilizações anteriores de IA, consumo e status de conformidade.
                         </p>
 
                     </div>
@@ -193,16 +193,172 @@
                 </div>
 
 
+                <!-- RESUMO DO HISTORICO -->
+
+                <div class="history-summary">
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Utilizações
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.totalUtilizacoes %>
+                        </strong>
+
+                        <p>
+                            Registros encontrados no histórico.
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Uso conforme
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.taxaConformidade %>%
+                        </strong>
+
+                        <p>
+                            Entre as utilizações que já foram avaliadas.
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Consumo total
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.consumoTotal.toLocaleString("pt-BR") %> tokens
+                        </strong>
+
+                        <p>
+                            Soma do consumo das utilizações registradas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTROS -->
+
+                <div class="history-filter">
+
+                    <div class="history-filter-head">
+
+                        <div>
+
+                            <strong>
+                                Filtrar histórico
+                            </strong>
+
+                            <span>
+                                Localize utilizações específicas.
+                            </span>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="history-clear"
+                            id="limparFiltros">
+
+                            Limpar filtros
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="history-filter-grid">
+
+                        <label>
+
+                            Modelo
+
+                            <select id="filtroModelo">
+
+                                <option value="">
+                                    Todos os modelos
+                                </option>
+
+                                <option value="ChatGPT">
+                                    ChatGPT
+                                </option>
+
+                                <option value="Copilot">
+                                    Copilot
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <label>
+
+                            Conformidade
+
+                            <select id="filtroConformidade">
+
+                                <option value="">
+                                    Todos os status
+                                </option>
+
+                                <option value="Conforme">
+                                    Conforme
+                                </option>
+
+                                <option value="Não conforme">
+                                    Não conforme
+                                </option>
+
+                                <option value="Aguardando avaliação">
+                                    Aguardando avaliação
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <label>
+
+                            Data
+
+                            <input
+                                type="date"
+                                id="filtroData">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TABELA -->
+
                 <div class="table-wrap">
 
-                    <table>
+                    <table class="history-table">
 
                         <thead>
 
                             <tr>
 
                                 <th>
-                                    Usuário
+                                    Data
                                 </th>
 
                                 <th>
@@ -210,7 +366,7 @@
                                 </th>
 
                                 <th>
-                                    Data
+                                    Finalidade
                                 </th>
 
                                 <th>
@@ -218,11 +374,11 @@
                                 </th>
 
                                 <th>
-                                    Finalidade
+                                    Conformidade
                                 </th>
 
                                 <th>
-                                    Conformidade
+                                    Detalhes
                                 </th>
 
                             </tr>
@@ -230,148 +386,97 @@
                         </thead>
 
 
-                        <tbody>
+                        <tbody id="historicoTabela">
+
+                            <% historico.forEach(function(utilizacao) { %>
+
+                                <tr
+                                    class="history-row"
+                                    data-modelo="<%= utilizacao.modelo %>"
+                                    data-conformidade="<%= utilizacao.conformidade %>"
+                                    data-data="<%= utilizacao.dataFiltro %>">
+
+                                    <td>
+
+                                        <div class="history-date">
+
+                                            <strong>
+                                                <%= utilizacao.data %>
+                                            </strong>
+
+                                            <span>
+                                                <%= utilizacao.hora %>
+                                            </span>
+
+                                        </div>
+
+                                    </td>
 
 
-                            <!-- CONFORME -->
+                                    <td>
 
-                            <tr>
+                                        <span class="history-model">
+                                            <%= utilizacao.modelo %>
+                                        </span>
 
-                                <td>
-                                    w@colaborador
-                                </td>
-
-                                <td>
-                                    ChatGPT
-                                </td>
-
-                                <td>
-                                    22/09/2026
-                                </td>
-
-                                <td>
-                                    1.250 tokens
-                                </td>
-
-                                <td>
-                                    Resumo de documento
-                                </td>
-
-                                <td>
-
-                                    <strong style="color: #198754;">
-                                        Conforme
-                                    </strong>
-
-                                </td>
-
-                            </tr>
+                                    </td>
 
 
-                            <!-- CONFORME -->
-
-                            <tr>
-
-                                <td>
-                                    w@colaborador
-                                </td>
-
-                                <td>
-                                    Copilot
-                                </td>
-
-                                <td>
-                                    21/09/2026
-                                </td>
-
-                                <td>
-                                    980 tokens
-                                </td>
-
-                                <td>
-                                    Apoio na elaboração de relatório
-                                </td>
-
-                                <td>
-
-                                    <strong style="color: #198754;">
-                                        Conforme
-                                    </strong>
-
-                                </td>
-
-                            </tr>
+                                    <td>
+                                        <%= utilizacao.finalidade %>
+                                    </td>
 
 
-                            <!-- NAO CONFORME -->
+                                    <td>
 
-                            <tr>
+                                        <strong>
+                                            <%= utilizacao.consumo.toLocaleString("pt-BR") %> tokens
+                                        </strong>
 
-                                <td>
-                                    w@colaborador
-                                </td>
-
-                                <td>
-                                    ChatGPT
-                                </td>
-
-                                <td>
-                                    20/09/2026
-                                </td>
-
-                                <td>
-                                    1.540 tokens
-                                </td>
-
-                                <td>
-                                    Análise de dados
-                                </td>
-
-                                <td>
-
-                                    <strong style="color: #dc3545;">
-                                        Não conforme
-                                    </strong>
-
-                                </td>
-
-                            </tr>
+                                    </td>
 
 
-                            <!-- AGUARDANDO AVALIACAO -->
+                                    <td>
 
-                            <tr>
+                                        <% if (utilizacao.conformidade == "Conforme") { %>
 
-                                <td>
-                                    w@colaborador
-                                </td>
+                                            <span class="history-status history-status-success">
+                                                Conforme
+                                            </span>
 
-                                <td>
-                                    Copilot
-                                </td>
+                                        <% } else if (utilizacao.conformidade == "Não conforme") { %>
 
-                                <td>
-                                    23/09/2026
-                                </td>
+                                            <span class="history-status history-status-danger">
+                                                Não conforme
+                                            </span>
 
-                                <td>
-                                    760 tokens
-                                </td>
+                                        <% } else { %>
 
-                                <td>
-                                    Geração de apresentação
-                                </td>
+                                            <span class="history-status history-status-pending">
+                                                Aguardando avaliação
+                                            </span>
 
-                                <td>
+                                        <% } %>
 
-                                    <strong style="color: #6c757d;">
-                                        Aguardando avaliação
-                                    </strong>
+                                    </td>
 
-                                </td>
 
-                            </tr>
+                                    <td>
 
+                                        <button
+                                            type="button"
+                                            class="history-details-button"
+                                            data-id="<%= utilizacao.id %>">
+
+                                            Ver detalhes
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
 
                         </tbody>
 
@@ -380,11 +485,181 @@
                 </div>
 
 
-                <p class="dashboard-demo">
-                    Dados demonstrativos utilizados para representação do wireframe.
-                </p>
+                <div
+                    class="history-empty"
+                    id="historicoVazio">
+
+                    Nenhuma utilização encontrada para os filtros selecionados.
+
+                </div>
 
             </section>
+
+
+            <!-- MODAL DETALHES -->
+
+            <div
+                class="history-modal"
+                id="historyModal">
+
+                <div
+                    class="history-modal-overlay"
+                    id="historyModalOverlay">
+                </div>
+
+
+                <div class="history-modal-card">
+
+                    <div class="history-modal-head">
+
+                        <div>
+
+                            <p class="eyebrow">
+                                Utilização de IA
+                            </p>
+
+                            <h3>
+                                Detalhes da utilização
+                            </h3>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="history-modal-close"
+                            id="historyModalClose">
+
+                            ×
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="history-detail-grid">
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Modelo
+                            </span>
+
+                            <strong id="detalheModelo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Data e horário
+                            </span>
+
+                            <strong id="detalheData">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Finalidade
+                            </span>
+
+                            <strong id="detalheFinalidade">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Consumo
+                            </span>
+
+                            <strong id="detalheConsumo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item full">
+
+                            <span>
+                                Conformidade
+                            </span>
+
+                            <strong id="detalheConformidade">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Prompt
+                        </span>
+
+                        <p id="detalhePrompt">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Resposta
+                        </span>
+
+                        <p id="detalheResposta">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Avaliação de conformidade
+                        </span>
+
+                        <p id="detalheJustificativa">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-modal-footer">
+
+                        <button
+                            type="button"
+                            class="primary"
+                            id="historyModalCloseFooter">
+
+                            Fechar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
 
 
             <div
@@ -398,6 +673,246 @@
         </main>
 
     </div>
+
+
+    <script>
+
+        const historicoUtilizacoes =
+            <%- JSON.stringify(historico) %>;
+
+
+        const filtroModelo =
+            document.getElementById("filtroModelo");
+
+        const filtroConformidade =
+            document.getElementById("filtroConformidade");
+
+        const filtroData =
+            document.getElementById("filtroData");
+
+        const limparFiltros =
+            document.getElementById("limparFiltros");
+
+        const historicoVazio =
+            document.getElementById("historicoVazio");
+
+
+        function filtrarHistorico() {
+
+            const modelo =
+                filtroModelo.value;
+
+            const conformidade =
+                filtroConformidade.value;
+
+            const data =
+                filtroData.value;
+
+
+            const linhas =
+                document.querySelectorAll(".history-row");
+
+
+            let quantidadeVisivel = 0;
+
+
+            linhas.forEach(function(linha) {
+
+                const correspondeModelo =
+                    modelo == "" ||
+                    linha.dataset.modelo == modelo;
+
+                const correspondeConformidade =
+                    conformidade == "" ||
+                    linha.dataset.conformidade == conformidade;
+
+                const correspondeData =
+                    data == "" ||
+                    linha.dataset.data == data;
+
+
+                const mostrar =
+                    correspondeModelo &&
+                    correspondeConformidade &&
+                    correspondeData;
+
+
+                linha.style.display =
+                    mostrar ? "" : "none";
+
+
+                if (mostrar) {
+
+                    quantidadeVisivel++;
+
+                }
+
+            });
+
+
+            historicoVazio.style.display =
+                quantidadeVisivel == 0 ? "block" : "none";
+
+        }
+
+
+        filtroModelo.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        filtroConformidade.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        filtroData.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        limparFiltros.addEventListener(
+            "click",
+            function() {
+
+                filtroModelo.value = "";
+
+                filtroConformidade.value = "";
+
+                filtroData.value = "";
+
+                filtrarHistorico();
+
+            }
+        );
+
+
+        const historyModal =
+            document.getElementById("historyModal");
+
+        const historyModalOverlay =
+            document.getElementById("historyModalOverlay");
+
+        const historyModalClose =
+            document.getElementById("historyModalClose");
+
+        const historyModalCloseFooter =
+            document.getElementById("historyModalCloseFooter");
+
+
+        function abrirDetalhes(id) {
+
+            const utilizacao =
+                historicoUtilizacoes.find(
+                    function(item) {
+
+                        return item.id == id;
+
+                    }
+                );
+
+
+            if (!utilizacao) {
+
+                return;
+
+            }
+
+
+            document.getElementById("detalheModelo").textContent =
+                utilizacao.modelo;
+
+            document.getElementById("detalheData").textContent =
+                utilizacao.data + " - " + utilizacao.hora;
+
+            document.getElementById("detalheFinalidade").textContent =
+                utilizacao.finalidade;
+
+            document.getElementById("detalheConsumo").textContent =
+                utilizacao.consumo.toLocaleString("pt-BR") + " tokens";
+
+            document.getElementById("detalheConformidade").textContent =
+                utilizacao.conformidade;
+
+            document.getElementById("detalhePrompt").textContent =
+                utilizacao.prompt;
+
+            document.getElementById("detalheResposta").textContent =
+                utilizacao.resposta;
+
+            document.getElementById("detalheJustificativa").textContent =
+                utilizacao.justificativa;
+
+
+            historyModal.classList.add("show");
+
+            document.body.classList.add("modal-open");
+
+        }
+
+
+        function fecharDetalhes() {
+
+            historyModal.classList.remove("show");
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+
+        document
+            .querySelectorAll(".history-details-button")
+            .forEach(function(botao) {
+
+                botao.addEventListener(
+                    "click",
+                    function() {
+
+                        abrirDetalhes(
+                            Number(botao.dataset.id)
+                        );
+
+                    }
+                );
+
+            });
+
+
+        historyModalClose.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        historyModalCloseFooter.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        historyModalOverlay.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key == "Escape") {
+
+                    fecharDetalhes();
+
+                }
+
+            }
+        );
+
+    </script>
 
 
     <script src="/app.js"></script>
