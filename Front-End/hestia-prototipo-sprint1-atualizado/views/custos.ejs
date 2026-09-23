@@ -152,7 +152,7 @@
                     </strong>
 
                     <p>
-                        Média dos indicadores de eficiência.
+                        Média da eficiência dos departamentos.
                     </p>
 
                 </article>
@@ -166,9 +166,17 @@
 
                 <div class="panel-head">
 
-                    <h3>
-                        Custos por departamento
-                    </h3>
+                    <div>
+
+                        <h3>
+                            Custos por departamento
+                        </h3>
+
+                        <p>
+                            Comparação dos custos de utilização de IA entre as áreas da organização.
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -190,7 +198,7 @@
             </section>
 
 
-            <!-- EFICIENCIA -->
+            <!-- EFICIENCIA POR DEPARTAMENTO -->
 
             <section class="panel">
 
@@ -199,11 +207,11 @@
                     <div>
 
                         <h3>
-                            Indicadores de eficiência - Visão Geral
+                            Eficiência por departamento
                         </h3>
 
                         <p>
-                            Média dos indicadores de eficiência dos departamentos da organização.
+                            Comparação do indicador de eficiência entre os departamentos da organização.
                         </p>
 
                     </div>
@@ -228,6 +236,67 @@
             </section>
 
 
+            <!-- ECONOMIA NO USO DE IA -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Economia no uso de IA
+                        </h3>
+
+                        <p>
+                            Indicadores para acompanhar o consumo financeiro das ferramentas de IA.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <section class="grid two">
+
+                    <article class="metric-card">
+
+                        <span>
+                            Custo médio por utilização
+                        </span>
+
+                        <strong id="custoMedioUtilizacao">
+                            --
+                        </strong>
+
+                        <p>
+                            Valor médio gasto por registro de utilização de IA.
+                        </p>
+
+                    </article>
+
+
+                    <article class="metric-card">
+
+                        <span>
+                            Menor custo total
+                        </span>
+
+                        <strong id="departamentoMenorCusto">
+                            --
+                        </strong>
+
+                        <p id="valorMenorCusto">
+                            Departamento com menor custo registrado de IA.
+                        </p>
+
+                    </article>
+
+                </section>
+
+            </section>
+
+
             <!-- COMPARACAO POR DEPARTAMENTO -->
 
             <section class="panel">
@@ -241,8 +310,8 @@
                         </h3>
 
                         <p>
-                            Compare os indicadores de eficiência
-                            entre as áreas da organização.
+                            Compare utilização, uso adequado, produtividade,
+                            custos e eficiência entre as áreas da organização.
                         </p>
 
                     </div>
@@ -275,7 +344,7 @@
                                 </th>
 
                                 <th>
-                                    Aproveitamento
+                                    Custo IA
                                 </th>
 
                                 <th>
@@ -323,28 +392,6 @@
         */
 
 
-        /* CUSTOS */
-
-        const graficoCustos =
-            document.getElementById("graficoCustos");
-
-
-        const departamentosCustos = [
-            "Tecnologia",
-            "Marketing",
-            "Financeiro",
-            "RH"
-        ];
-
-
-        const valoresCustos = [
-            4200,
-            2800,
-            1900,
-            1100
-        ];
-
-
         /* DADOS DOS DEPARTAMENTOS */
 
         const dadosDepartamentos = [
@@ -359,7 +406,7 @@
 
                 produtividade: 86,
 
-                aproveitamento: 83
+                custoIA: 4200
 
             },
 
@@ -373,7 +420,7 @@
 
                 produtividade: 78,
 
-                aproveitamento: 74
+                custoIA: 2800
 
             },
 
@@ -387,7 +434,7 @@
 
                 produtividade: 72,
 
-                aproveitamento: 68
+                custoIA: 1900
 
             },
 
@@ -401,20 +448,71 @@
 
                 produtividade: 69,
 
-                aproveitamento: 66
+                custoIA: 1100
 
             }
 
         ];
 
 
+        /*
+            EFICIENCIA POR DEPARTAMENTO
+
+            Regra adotada no projeto:
+            média simples entre uso adequado
+            e produtividade.
+        */
+
+        dadosDepartamentos.forEach(
+            function(departamento) {
+
+                departamento.eficiencia =
+                    Math.round(
+                        (
+                            departamento.usoAdequado +
+                            departamento.produtividade
+                        )
+                        /
+                        2
+                    );
+
+            }
+        );
+
+
+        /* CUSTOS */
+
+        const graficoCustos =
+            document.getElementById("graficoCustos");
+
+
+        const departamentosCustos =
+            dadosDepartamentos.map(
+                function(departamento) {
+
+                    return departamento.departamento;
+
+                }
+            );
+
+
+        const valoresCustos =
+            dadosDepartamentos.map(
+                function(departamento) {
+
+                    return departamento.custoIA;
+
+                }
+            );
+
+
         /* CUSTO TOTAL */
 
         const custoTotal =
-            valoresCustos.reduce(
-                function(total, valor) {
+            dadosDepartamentos.reduce(
+                function(total, departamento) {
 
-                    return total + valor;
+                    return total + departamento.custoIA;
 
                 },
                 0
@@ -460,6 +558,91 @@
             totalUtilizacoes;
 
 
+        /* EFICIENCIA GERAL */
+
+        const eficienciaGeral =
+            Math.round(
+
+                dadosDepartamentos.reduce(
+                    function(total, departamento) {
+
+                        return total + departamento.eficiencia;
+
+                    },
+                    0
+                )
+
+                /
+
+                dadosDepartamentos.length
+
+            );
+
+
+        document
+            .getElementById("eficienciaGeral")
+            .innerHTML =
+            eficienciaGeral + "%";
+
+
+        /* ECONOMIA - CUSTO MEDIO POR UTILIZACAO */
+
+        const custoMedioUtilizacao =
+            custoTotal / totalUtilizacoes;
+
+
+        document
+            .getElementById("custoMedioUtilizacao")
+            .innerHTML =
+            custoMedioUtilizacao.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            );
+
+
+        /* ECONOMIA - DEPARTAMENTO COM MENOR CUSTO */
+
+        const departamentoMenorCusto =
+            dadosDepartamentos.reduce(
+                function(menor, departamento) {
+
+                    if (
+                        departamento.custoIA <
+                        menor.custoIA
+                    ) {
+
+                        return departamento;
+
+                    }
+
+                    return menor;
+
+                }
+            );
+
+
+        document
+            .getElementById("departamentoMenorCusto")
+            .innerHTML =
+            departamentoMenorCusto.departamento;
+
+
+        document
+            .getElementById("valorMenorCusto")
+            .innerHTML =
+            departamentoMenorCusto.custoIA.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            ) +
+            " de custo total registrado de IA.";
+
+
         /* GRAFICO DE CUSTOS */
 
         if (
@@ -503,64 +686,35 @@
         }
 
 
-        /* EFICIENCIA */
+        /* GRAFICO DE EFICIENCIA POR DEPARTAMENTO */
 
         const graficoEficiencia =
             document.getElementById("graficoEficiencia");
 
 
-        const indicadoresEficiencia = [
-            "Uso adequado",
-            "Produtividade",
-            "Aproveitamento"
-        ];
+        const departamentosEficiencia =
+            dadosDepartamentos.map(
+                function(departamento) {
 
+                    return departamento.departamento;
 
-        const valoresEficiencia = [
-            84,
-            76,
-            71
-        ];
-
-
-        /*
-            EFICIENCIA GERAL
-
-            Regra adotada no projeto:
-            média simples entre uso adequado,
-            produtividade e aproveitamento.
-        */
-
-        const eficienciaGeral =
-            Math.round(
-
-                valoresEficiencia.reduce(
-                    function(total, valor) {
-
-                        return total + valor;
-
-                    },
-                    0
-                )
-
-                /
-
-                valoresEficiencia.length
-
+                }
             );
 
 
-        document
-            .getElementById("eficienciaGeral")
-            .innerHTML =
-            eficienciaGeral + "%";
+        const valoresEficiencia =
+            dadosDepartamentos.map(
+                function(departamento) {
 
+                    return departamento.eficiencia;
 
-        /* GRAFICO DE EFICIENCIA */
+                }
+            );
+
 
         if (
             graficoEficiencia &&
-            indicadoresEficiencia.length > 0
+            departamentosEficiencia.length > 0
         ) {
 
             document
@@ -574,7 +728,7 @@
 
                 data: {
 
-                    labels: indicadoresEficiencia,
+                    labels: departamentosEficiencia,
 
                     datasets: [{
 
@@ -620,22 +774,6 @@
         dadosDepartamentos.forEach(
             function(departamento) {
 
-                const eficienciaDepartamento =
-                    Math.round(
-
-                        (
-                            departamento.usoAdequado +
-                            departamento.produtividade +
-                            departamento.aproveitamento
-                        )
-
-                        /
-
-                        3
-
-                    );
-
-
                 const linha =
                     document.createElement("tr");
 
@@ -661,12 +799,17 @@
                     "</td>" +
 
                     "<td>" +
-                        departamento.aproveitamento +
-                        "%" +
+                        departamento.custoIA.toLocaleString(
+                            "pt-BR",
+                            {
+                                style: "currency",
+                                currency: "BRL"
+                            }
+                        ) +
                     "</td>" +
 
                     "<td>" +
-                        eficienciaDepartamento +
+                        departamento.eficiencia +
                         "%" +
                     "</td>";
 
