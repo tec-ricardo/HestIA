@@ -77,11 +77,22 @@
 
             </header>
 
+
             <% if (mensagem) { %>
-                <div class="feedback success"><%= mensagem %></div>
+
+                <div class="feedback success">
+                    <%= mensagem %>
+                </div>
+
             <% } %>
+
+
             <% if (erro) { %>
-                <div class="feedback error"><%= erro %></div>
+
+                <div class="feedback error">
+                    <%= erro %>
+                </div>
+
             <% } %>
 
 
@@ -96,11 +107,11 @@
                     </span>
 
                     <strong>
-                        <%= politicas.length %>
+                        <%= politicas.length ? politicas.length : 3 %>
                     </strong>
 
                     <p>
-                        <%= politicas.length ? "Políticas registradas no backend." : "Nenhuma política registrada." %>
+                        <%= politicas.length ? "Políticas registradas no backend." : "Políticas demonstrativas do protótipo." %>
                     </p>
 
                 </article>
@@ -113,11 +124,11 @@
                     </span>
 
                     <strong>
-                        --
+                        82%
                     </strong>
 
                     <p>
-                        Nenhuma utilização avaliada.
+                        82 de 100 utilizações estão conformes.
                     </p>
 
                 </article>
@@ -190,15 +201,72 @@
 
 
                         <tbody>
+
                             <% politicas.forEach(function(politica) { %>
+
                                 <tr>
-                                    <td><%= politica.titulo %> <small>v<%= politica.versao %></small></td>
-                                    <td><%= politica.ativa ? "Ativa" : "Inativa" %></td>
+
+                                    <td>
+                                        <%= politica.titulo %>
+                                        <small>
+                                            v<%= politica.versao %>
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        <%= politica.ativa ? "Ativa" : "Inativa" %>
+                                    </td>
+
                                 </tr>
+
                             <% }) %>
+
+
                             <% if (!politicas.length) { %>
-                                <tr><td colspan="2">Nenhuma política cadastrada.</td></tr>
+
+                                <tr>
+
+                                    <td>
+                                        Uso responsável de IA
+                                        <small>v1.0</small>
+                                    </td>
+
+                                    <td>
+                                        Ativa
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Proteção de dados
+                                        <small>v1.0</small>
+                                    </td>
+
+                                    <td>
+                                        Ativa
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Uso de informações corporativas
+                                        <small>v1.0</small>
+                                    </td>
+
+                                    <td>
+                                        Ativa
+                                    </td>
+
+                                </tr>
+
                             <% } %>
+
                         </tbody>
 
                     </table>
@@ -243,29 +311,66 @@
 
                             </label>
 
+
                             <label>
+
                                 Empresa
-                                <select name="empresaId" required>
-                                    <option value="">Selecione</option>
+
+                                <select
+                                    name="empresaId"
+                                    required>
+
+                                    <option value="">
+                                        Selecione
+                                    </option>
+
                                     <% empresas.forEach(function(empresa) { %>
-                                        <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+
+                                        <option value="<%= empresa.id %>">
+                                            <%= empresa.nome %>
+                                        </option>
+
                                     <% }) %>
+
                                 </select>
+
                             </label>
+
 
                             <label>
+
                                 Versão
-                                <input name="versao" type="text" value="1.0" required>
+
+                                <input
+                                    name="versao"
+                                    type="text"
+                                    value="1.0"
+                                    required>
+
                             </label>
 
+
                             <label class="full">
+
                                 Descrição
-                                <input name="descricao" type="text" required>
+
+                                <input
+                                    name="descricao"
+                                    type="text"
+                                    required>
+
                             </label>
 
+
                             <label class="full">
+
                                 Conteúdo
-                                <textarea name="conteudo" rows="4" required></textarea>
+
+                                <textarea
+                                    name="conteudo"
+                                    rows="4"
+                                    required></textarea>
+
                             </label>
 
 
@@ -300,24 +405,56 @@
 
                             <label>
 
-                                Utilização de IA
+    Utilização de IA
 
-                                <input
-                                    type="text"
-                                    required>
+    <select required>
 
-                            </label>
+        <option value="">
+            Selecione uma utilização
+        </option>
+
+        <option>
+            Resumo de documento - w@colaborador
+        </option>
+
+        <option>
+            Apoio na elaboração de relatório - w@colaborador
+        </option>
+
+        <option>
+            Análise de dados - w@colaborador
+        </option>
+
+        <option>
+            Geração de apresentação - w@colaborador
+        </option>
+
+    </select>
+
+</label>
 
 
-                            <label>
+<label>
 
-                                Conformidade
+    Conformidade
 
-                                <input
-                                    type="text"
-                                    required>
+    <select required>
 
-                            </label>
+        <option value="">
+            Selecione
+        </option>
+
+        <option value="conforme">
+            Conforme
+        </option>
+
+        <option value="nao-conforme">
+            Não conforme
+        </option>
+
+    </select>
+
+</label>
 
 
                             <button
