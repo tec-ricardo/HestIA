@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - Configurações
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css">
+
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <%- include("menu", {
+            perfil: perfil,
+            email: email,
+            active: active
+        }) %>
+
+
+        <main class="main">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <button
+                    class="menu-button"
+                    id="menuButton">
+
+                    ☰
+
+                </button>
+
+                <div>
+
+                    <p class="eyebrow">
+                        Administrador
+                    </p>
+
+                    <h1>
+                        Configurações
+                    </h1>
+
+                </div>
+
+                <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                    <select disabled>
+
+                        <option selected>
+                            Administrador
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                    Sair
+
+                </a>
+
+            </header>
+
+
+            <!-- CONFIGURACOES -->
+
+            <section class="grid two">
+
+
+                <!-- ACESSOS E PERMISSOES -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Acessos e permissões
+                        </h3>
+
+                    </div>
+
+
+                    <form class="form-grid">
+
+
+                        <label class="full">
+
+                            Perfil
+
+                            <select>
+
+                                <option>
+                                    Colaborador
+                                </option>
+
+                                <option>
+                                    Gestor
+                                </option>
+
+                                <option>
+                                    Administrador
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <div class="full">
+
+                            <strong>
+                                Permissões
+                            </strong>
+
+                        </div>
+
+
+                        <label class="config-check full">
+
+                            <input
+                                type="checkbox"
+                                checked>
+
+                            Utilizações de IA
+
+                        </label>
+
+
+                        <label class="config-check full">
+
+                            <input
+                                type="checkbox"
+                                checked>
+
+                            AI Maturity Score
+
+                        </label>
+
+
+                        <label class="config-check full">
+
+                            <input
+                                type="checkbox"
+                                checked>
+
+                            AI Credits
+
+                        </label>
+
+
+                        <label class="config-check full">
+
+                            <input
+                                type="checkbox">
+
+                            Administração
+
+                        </label>
+
+
+                        <label class="config-check full">
+
+                            <input
+                                type="checkbox">
+
+                            Configurações
+
+                        </label>
+
+
+                        <button
+                            type="button"
+                            class="primary fake-save">
+
+                            Salvar permissões
+
+                        </button>
+
+
+                    </form>
+
+                </article>
+
+
+                <!-- LIMITES DE UTILIZACAO -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Limites de utilização
+                        </h3>
+
+                    </div>
+
+
+                    <form class="form-grid">
+
+
+                        <label class="full">
+
+                            Perfil
+
+                            <select>
+
+                                <option>
+                                    Colaborador
+                                </option>
+
+                                <option>
+                                    Gestor
+                                </option>
+
+                                <option>
+                                    Administrador
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <label class="full">
+
+                            Limite de utilização
+
+                            <input
+                                type="number"
+                                min="0"
+                                placeholder="Informe o limite">
+
+                        </label>
+
+
+                        <div class="empty-state full">
+
+                            Defina limites para utilização de IA na organização.
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="primary fake-save">
+
+                            Salvar limite
+
+                        </button>
+
+
+                    </form>
+
+                </article>
+
+
+                <!-- MODELOS E FERRAMENTAS -->
+
+                <article class="panel">
+
+                    <div class="panel-head">
+
+                        <h3>
+                            Modelos e ferramentas de IA
+                        </h3>
+
+                    </div>
+
+
+                    <% if (ferramentas.length == 0) { %>
+
+                        <div class="empty-state">
+
+                            Nenhuma ferramenta de IA cadastrada.
+
+                        </div>
+
+                    <% } else { %>
+
+
+                        <form class="form-grid">
+
+
+                            <div class="full">
+
+                                <strong>
+                                    Ferramentas disponíveis
+                                </strong>
+
+                            </div>
+
+
+                            <% ferramentas.forEach(function(ferramenta) { %>
+
+                                <label class="config-check full">
+
+                                    <input
+                                        type="checkbox"
+                                        checked>
+
+                                    <span>
+
+                                        <strong>
+                                            <%= ferramenta.nome %>
+                                        </strong>
+
+                                        <% if (ferramenta.fornecedor) { %>
+
+                                            <small>
+                                                <%= ferramenta.fornecedor %>
+                                            </small>
+
+                                        <% } %>
+
+                                    </span>
+
+                                </label>
+
+                            <% }) %>
+
+
+                            <button
+                                type="button"
+                                class="primary fake-save">
+
+                                Salvar disponibilidade
+
+                            </button>
+
+
+                        </form>
+
+
+                    <% } %>
+
+                </article>
+
+
+            </section>
+
+
+            <!-- MENSAGEM DO PROTOTIPO -->
+
+            <div
+                class="toast"
+                id="toast">
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>
