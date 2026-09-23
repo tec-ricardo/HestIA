@@ -1120,3 +1120,46 @@ th{
     font:inherit;
     resize:vertical;
 }
+
+/* CONFIGURACOES */
+
+.config-check{
+    display:flex !important;
+    grid-template-columns:none !important;
+    align-items:center;
+    gap:10px !important;
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fafbfc;
+    cursor:pointer;
+}
+
+
+.config-check input{
+    width:18px;
+    height:18px;
+    margin:0;
+    cursor:pointer;
+}
+
+
+.config-check span{
+    display:block;
+}
+
+
+.config-check strong{
+    display:block;
+    font-size:13px;
+}
+
+
+.config-check small{
+    display:block;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:12px;
+    font-weight:400;
+}
+

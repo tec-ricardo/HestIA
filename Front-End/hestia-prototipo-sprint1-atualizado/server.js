@@ -128,6 +128,7 @@ app.get("/", async (req, res) => {
 
 });
 
+
 /* MATURIDADE */
 
 function obterIndicadoresMaturidade() {
@@ -154,6 +155,7 @@ function obterIndicadoresMaturidade() {
 
 }
 
+
 function calcularMaturityScore(indicadores) {
 
     return (
@@ -168,6 +170,7 @@ function calcularMaturityScore(indicadores) {
     );
 
 }
+
 
 app.get("/maturidade", (req, res) => {
 
@@ -362,6 +365,34 @@ app.get("/administracao", async (req, res) => {
 });
 
 
+/* CONFIGURACOES */
+
+app.get("/configuracoes", async (req, res) => {
+
+    if (perfil != "administrador") {
+
+        return res.redirect("/");
+
+    }
+
+    const ferramentas =
+        await consultar("/ferramentas-ia");
+
+    res.render("configuracoes", {
+
+        perfil: perfil,
+
+        email: email,
+
+        active: "configuracoes",
+
+        ferramentas: ferramentas
+
+    });
+
+});
+
+
 /* SAIR */
 
 app.get("/sair", (req, res) => {
@@ -385,6 +416,7 @@ app.post("/administracao/empresas", exigirAdministrador, async (req, res) => {
     }, "/administracao", "Empresa cadastrada com sucesso.");
 });
 
+
 app.post("/administracao/departamentos", exigirAdministrador, async (req, res) => {
     await executarCadastro(res, "/departamentos", {
         nome: req.body.nome,
@@ -393,6 +425,7 @@ app.post("/administracao/departamentos", exigirAdministrador, async (req, res) =
         empresaId: Number(req.body.empresaId)
     }, "/administracao", "Departamento cadastrado com sucesso.");
 });
+
 
 app.post("/administracao/usuarios", exigirAdministrador, async (req, res) => {
     await executarCadastro(res, "/usuarios", {
@@ -407,6 +440,7 @@ app.post("/administracao/usuarios", exigirAdministrador, async (req, res) => {
     }, "/administracao", "Usuário cadastrado com sucesso.");
 });
 
+
 app.post("/administracao/ferramentas", exigirAdministrador, async (req, res) => {
     await executarCadastro(res, "/ferramentas-ia", {
         nome: req.body.nome,
@@ -420,6 +454,7 @@ app.post("/administracao/ferramentas", exigirAdministrador, async (req, res) => 
     }, "/administracao", "Ferramenta de IA cadastrada com sucesso.");
 });
 
+
 app.post("/governanca/politicas", exigirAdministrador, async (req, res) => {
     await executarCadastro(res, "/politicas", {
         titulo: req.body.titulo,
@@ -431,12 +466,14 @@ app.post("/governanca/politicas", exigirAdministrador, async (req, res) => {
     }, "/governanca", "Política cadastrada com sucesso.");
 });
 
+
 function exigirAdministrador(req, res, next) {
     if (perfil !== "administrador") {
         return res.redirect("/acesso");
     }
     next();
 }
+
 
 async function executarCadastro(res, endpoint, dados, retorno, sucesso) {
     try {
@@ -448,6 +485,7 @@ async function executarCadastro(res, endpoint, dados, retorno, sucesso) {
     }
 }
 
+
 async function consultar(endpoint) {
     try {
         const response = await api.get(endpoint);
@@ -458,6 +496,7 @@ async function consultar(endpoint) {
     }
 }
 
+
 async function carregarIndicadores() {
     const [empresas, departamentos, usuarios, politicas, ferramentas] = await Promise.all([
         consultar("/empresas"),
@@ -466,6 +505,7 @@ async function carregarIndicadores() {
         consultar("/politicas"),
         consultar("/ferramentas-ia")
     ]);
+
     return {
         empresas: empresas.length,
         departamentos: departamentos.length,
@@ -475,14 +515,18 @@ async function carregarIndicadores() {
     };
 }
 
+
 function mensagemDaApi(error) {
     const data = error.response && error.response.data;
+
     if (data && Array.isArray(data.errors)) {
         return data.errors.map(item => item.message || item).join(" ");
     }
+
     return (data && (data.message || data.error)) ||
         (error.code === "ECONNREFUSED" ? "Backend indisponível." : error.message);
 }
+
 
 function numeroOpcional(valor) {
     return valor === undefined || valor === "" ? null : Number(valor);
