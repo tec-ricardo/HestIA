@@ -387,6 +387,8 @@
                     </article>
 
 
+                    <!-- REGISTRAR CONFORMIDADE -->
+
                     <article class="panel">
 
                         <div class="panel-head">
@@ -405,56 +407,112 @@
 
                             <label>
 
-    Utilização de IA
+                                Utilização de IA
 
-    <select required>
+                                <select required>
 
-        <option value="">
-            Selecione uma utilização
-        </option>
+                                    <option value="">
+                                        Selecione uma utilização
+                                    </option>
 
-        <option>
-            Resumo de documento - w@colaborador
-        </option>
+                                    <option>
+                                        Resumo de documento - w@colaborador
+                                    </option>
 
-        <option>
-            Apoio na elaboração de relatório - w@colaborador
-        </option>
+                                    <option>
+                                        Apoio na elaboração de relatório - w@colaborador
+                                    </option>
 
-        <option>
-            Análise de dados - w@colaborador
-        </option>
+                                    <option>
+                                        Análise de dados - w@colaborador
+                                    </option>
 
-        <option>
-            Geração de apresentação - w@colaborador
-        </option>
+                                    <option>
+                                        Geração de apresentação - w@colaborador
+                                    </option>
 
-    </select>
+                                </select>
 
-</label>
+                            </label>
 
 
-<label>
+                            <label>
 
-    Conformidade
+                                Conformidade
 
-    <select required>
+                                <select required>
 
-        <option value="">
-            Selecione
-        </option>
+                                    <option value="">
+                                        Selecione
+                                    </option>
 
-        <option value="conforme">
-            Conforme
-        </option>
+                                    <option value="conforme">
+                                        Conforme
+                                    </option>
 
-        <option value="nao-conforme">
-            Não conforme
-        </option>
+                                    <option value="nao-conforme">
+                                        Não conforme
+                                    </option>
 
-    </select>
+                                </select>
 
-</label>
+                            </label>
+
+
+                            <!-- SCRUM 194 - DETALHES DA CONFORMIDADE -->
+
+                            <label class="full">
+
+                                Política / regra acionada
+
+                                <select required>
+
+                                    <option value="">
+                                        Selecione uma política ou regra
+                                    </option>
+
+
+                                    <% if (politicas.length) { %>
+
+                                        <% politicas.forEach(function(politica) { %>
+
+                                            <option value="<%= politica.id %>">
+                                                <%= politica.titulo %> - v<%= politica.versao %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } else { %>
+
+                                        <option>
+                                            Uso responsável de IA - v1.0
+                                        </option>
+
+                                        <option>
+                                            Proteção de dados - v1.0
+                                        </option>
+
+                                        <option>
+                                            Uso de informações corporativas - v1.0
+                                        </option>
+
+                                    <% } %>
+
+                                </select>
+
+                            </label>
+
+
+                            <label class="full">
+
+                                Justificativa
+
+                                <textarea
+                                    rows="4"
+                                    placeholder="Informe a justificativa da avaliação de conformidade"
+                                    required></textarea>
+
+                            </label>
 
 
                             <button
