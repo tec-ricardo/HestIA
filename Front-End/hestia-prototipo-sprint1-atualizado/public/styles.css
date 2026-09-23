@@ -1358,3 +1358,429 @@ th{
     }
 
 }
+
+/* HISTORICO DE UTILIZACOES */
+
+.utilizacoes-history{
+    margin-top:16px;
+}
+
+
+.conformidade-description{
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.5;
+}
+
+
+/* RESUMO DO HISTORICO */
+
+.history-summary{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+    margin-bottom:18px;
+}
+
+
+.history-summary-card{
+    padding:16px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fafbfc;
+    transition:.2s;
+}
+
+
+.history-summary-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(20,32,51,.06);
+}
+
+
+.history-summary-card span{
+    display:block;
+    color:var(--accent);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+}
+
+
+.history-summary-card strong{
+    display:block;
+    margin:7px 0 4px;
+    font-size:23px;
+}
+
+
+.history-summary-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.45;
+}
+
+
+/* FILTROS DO HISTORICO */
+
+.history-filter{
+    margin-bottom:18px;
+    padding:16px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:#fafbfc;
+}
+
+
+.history-filter-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:14px;
+}
+
+
+.history-filter-head strong{
+    display:block;
+    font-size:14px;
+}
+
+
+.history-filter-head span{
+    display:block;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+
+.history-clear{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    border-radius:8px;
+    padding:8px 12px;
+    font:inherit;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+
+.history-clear:hover{
+    background:#eef1f5;
+}
+
+
+.history-filter-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+}
+
+
+.history-filter-grid label{
+    display:grid;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+}
+
+
+.history-filter-grid select,
+.history-filter-grid input{
+    width:100%;
+}
+
+
+/* TABELA DO HISTORICO */
+
+.history-date strong{
+    display:block;
+    font-size:13px;
+}
+
+
+.history-date span{
+    display:block;
+    margin-top:3px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+
+.history-model{
+    display:inline-flex;
+    padding:5px 9px;
+    border-radius:7px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+}
+
+
+/* STATUS */
+
+.history-status{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 9px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+
+.history-status-success{
+    color:#166534;
+    background:#dcfce7;
+}
+
+
+.history-status-danger{
+    color:#991b1b;
+    background:#fee2e2;
+}
+
+
+.history-status-pending{
+    color:#475569;
+    background:#e2e8f0;
+}
+
+
+/* BOTAO DE DETALHES */
+
+.history-details-button{
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--accent);
+    border-radius:8px;
+    padding:7px 10px;
+    font:inherit;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+}
+
+
+.history-details-button:hover{
+    background:var(--accent-soft);
+    border-color:#c7d2fe;
+}
+
+
+/* HISTORICO VAZIO */
+
+.history-empty{
+    display:none;
+    margin-top:14px;
+    padding:18px;
+    border:1px dashed #cbd3dd;
+    border-radius:9px;
+    background:#fafbfc;
+    color:var(--muted);
+    text-align:center;
+    font-size:13px;
+}
+
+
+/* MODAL */
+
+.modal-open{
+    overflow:hidden;
+}
+
+
+.history-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:100;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+}
+
+
+.history-modal.show{
+    display:flex;
+}
+
+
+.history-modal-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(15,23,42,.48);
+}
+
+
+.history-modal-card{
+    position:relative;
+    z-index:1;
+    width:min(100%,720px);
+    max-height:90vh;
+    overflow:auto;
+    padding:22px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--surface);
+    box-shadow:0 24px 60px rgba(15,23,42,.20);
+}
+
+
+.history-modal-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+}
+
+
+.history-modal-head h3{
+    margin:4px 0 0;
+    font-size:19px;
+}
+
+
+.history-modal-close{
+    width:36px;
+    height:36px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--muted);
+    font-size:22px;
+    line-height:1;
+    cursor:pointer;
+}
+
+
+.history-modal-close:hover{
+    background:#eef1f5;
+    color:var(--ink);
+}
+
+
+/* INFORMACOES DO MODAL */
+
+.history-detail-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:18px;
+}
+
+
+.history-detail-item{
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:9px;
+    background:#fafbfc;
+}
+
+
+.history-detail-item.full{
+    grid-column:1/-1;
+}
+
+
+.history-detail-item span{
+    display:block;
+    margin-bottom:5px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+
+.history-detail-item strong{
+    display:block;
+    font-size:13px;
+}
+
+
+.history-detail-block{
+    margin-top:12px;
+    padding:14px;
+    border:1px solid var(--line);
+    border-radius:9px;
+}
+
+
+.history-detail-block span{
+    display:block;
+    margin-bottom:7px;
+    color:var(--accent);
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+
+.history-detail-block p{
+    margin:0;
+    color:var(--ink);
+    font-size:13px;
+    line-height:1.6;
+}
+
+
+.history-modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+}
+
+
+/* RESPONSIVO HISTORICO */
+
+@media(max-width:900px){
+
+    .history-summary{
+        grid-template-columns:1fr;
+    }
+
+
+    .history-filter-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+@media(max-width:760px){
+
+    .history-filter-head{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+
+    .history-detail-grid{
+        grid-template-columns:1fr;
+    }
+
+
+    .history-detail-item.full{
+        grid-column:auto;
+    }
+
+
+    .history-modal{
+        padding:12px;
+    }
+
+}
