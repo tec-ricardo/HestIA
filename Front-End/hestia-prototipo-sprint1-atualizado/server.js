@@ -958,29 +958,31 @@ app.get(
 
 
     regrasXp: [
-
-        {
-            titulo: "Utilização conforme",
-            descricao: "Após avaliação de conformidade.",
-            xp: "+10 XP",
-            tipo: "positivo"
-        },
-
-        {
-            titulo: "Utilização não conforme",
-            descricao: "Após avaliação de conformidade.",
-            xp: "-5 XP",
-            tipo: "negativo"
-        },
-
-        {
-            titulo: "Desafio concluído",
-            descricao: "Receba o XP indicado no desafio.",
-            xp: "Bônus XP",
-            tipo: "bonus"
-        }
-
-    ],
+    {
+        titulo: "Utilização conforme",
+        descricao: "Após avaliação de conformidade.",
+        xp: "+10 XP",
+        tipo: "positivo"
+    },
+    {
+        titulo: "Utilização não conforme",
+        descricao: "Após avaliação de conformidade.",
+        xp: "-5 XP",
+        tipo: "negativo"
+    },
+    {
+        titulo: "Desafio concluído",
+        descricao: "Receba o XP indicado no desafio.",
+        xp: "Bônus XP",
+        tipo: "bonus"
+    },
+    {
+        titulo: "Reutilização eficiente",
+        descricao: "Reutilização válida de uma resposta de IA já existente.",
+        xp: "XP conforme regra",
+        tipo: "reutilizacao"
+    }
+],
 
 
     proximoNivel: {
@@ -1661,3 +1663,26 @@ app.listen(3000, () => {
     );
 
 });
+
+async function consultarReutilizacoes() {
+
+    /*
+        SCRUM-303
+
+        Integração preparada para o backend.
+
+        Quando o endpoint de reutilização estiver definido
+        pela equipe de backend, esta função poderá utilizar:
+
+        return await consultar("/endpoint-definido-pelo-backend");
+
+        Por enquanto, retornamos os dados demonstrativos
+        utilizados pelo front.
+    */
+
+    return {
+        totalReutilizacoes: 0,
+        reutilizacoesValidas: 0,
+        xpRecebido: 0
+    };
+}

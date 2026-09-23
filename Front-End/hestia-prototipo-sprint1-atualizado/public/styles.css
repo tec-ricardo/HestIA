@@ -3481,3 +3481,36 @@ th{
     }
 
 }
+
+/* =========================================================
+   SCRUM-303 - REUTILIZAÇÃO EFICIENTE
+   ========================================================= */
+
+.pass-xp-rules {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.pass-xp-rule-reutilizacao {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+}
+
+.pass-xp-rule-reutilizacao b {
+    color: #3157d5;
+}
+
+@media (max-width: 1200px) {
+
+    .pass-xp-rules {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pass-xp-rules {
+        grid-template-columns: 1fr;
+    }
+
+}
