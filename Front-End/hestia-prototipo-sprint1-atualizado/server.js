@@ -308,6 +308,8 @@ app.get("/governanca", async (req, res) => {
 
 /* CUSTOS */
 
+/* CUSTOS */
+
 app.get("/custos", (req, res) => {
 
     if (perfil != "gestor") {
@@ -316,13 +318,79 @@ app.get("/custos", (req, res) => {
 
     }
 
+
+    /* DADOS MOCK DOS INDICADORES DE EFICIENCIA */
+
+    const dadosEficiencia = [
+
+        {
+
+            departamento: "Tecnologia",
+
+            utilizacoes: 320,
+
+            usoAdequado: 91,
+
+            produtividade: 86,
+
+            aproveitamento: 83
+
+        },
+
+        {
+
+            departamento: "Marketing",
+
+            utilizacoes: 245,
+
+            usoAdequado: 84,
+
+            produtividade: 78,
+
+            aproveitamento: 74
+
+        },
+
+        {
+
+            departamento: "Financeiro",
+
+            utilizacoes: 180,
+
+            usoAdequado: 79,
+
+            produtividade: 72,
+
+            aproveitamento: 68
+
+        },
+
+        {
+
+            departamento: "RH",
+
+            utilizacoes: 120,
+
+            usoAdequado: 82,
+
+            produtividade: 69,
+
+            aproveitamento: 66
+
+        }
+
+    ];
+
+
     res.render("custos", {
 
         perfil: perfil,
 
         email: email,
 
-        active: "custos"
+        active: "custos",
+
+        dadosEficiencia: dadosEficiencia
 
     });
 
