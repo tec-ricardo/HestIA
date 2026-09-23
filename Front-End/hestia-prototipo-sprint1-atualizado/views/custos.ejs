@@ -101,7 +101,7 @@
                     </strong>
 
                     <p>
-                        Nenhuma informação de custo registrada.
+                        Custo total das utilizações de IA.
                     </p>
 
                 </article>
@@ -130,12 +130,12 @@
                         Utilizações
                     </span>
 
-                    <strong>
+                    <strong id="totalUtilizacoes">
                         --
                     </strong>
 
                     <p>
-                        Registros utilizados na análise de custo.
+                        Registros utilizados na análise.
                     </p>
 
                 </article>
@@ -152,7 +152,7 @@
                     </strong>
 
                     <p>
-                        Indicador disponível conforme os dados registrados.
+                        Média dos indicadores de eficiência.
                     </p>
 
                 </article>
@@ -196,9 +196,17 @@
 
                 <div class="panel-head">
 
-                    <h3>
-                        Indicadores de eficiência
-                    </h3>
+                    <div>
+
+                        <h3>
+                            Indicadores de eficiência - Visão Geral
+                        </h3>
+
+                        <p>
+                            Média dos indicadores de eficiência dos departamentos da organização.
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -219,6 +227,81 @@
 
             </section>
 
+
+            <!-- COMPARACAO POR DEPARTAMENTO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Comparação de eficiência por departamento
+                        </h3>
+
+                        <p>
+                            Compare os indicadores de eficiência
+                            entre as áreas da organização.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Departamento
+                                </th>
+
+                                <th>
+                                    Utilizações
+                                </th>
+
+                                <th>
+                                    Uso adequado
+                                </th>
+
+                                <th>
+                                    Produtividade
+                                </th>
+
+                                <th>
+                                    Aproveitamento
+                                </th>
+
+                                <th>
+                                    Eficiência
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tabelaEficiencia">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <p class="muted">
+                    Dados demonstrativos utilizados para representação do wireframe.
+                </p>
+
+            </section>
+
         </main>
 
     </div>
@@ -228,6 +311,17 @@
 
 
     <script>
+
+        /*
+            DADOS DEMONSTRATIVOS
+
+            Estes dados são utilizados enquanto os indicadores
+            reais ainda não são fornecidos pelo backend.
+
+            Futuramente estes valores poderão ser substituídos
+            pelos dados recebidos pelo servidor.
+        */
+
 
         /* CUSTOS */
 
@@ -242,6 +336,7 @@
             "RH"
         ];
 
+
         const valoresCustos = [
             4200,
             2800,
@@ -250,14 +345,80 @@
         ];
 
 
-        /* DADOS MOCK DOS INDICADORES */
+        /* DADOS DOS DEPARTAMENTOS */
+
+        const dadosDepartamentos = [
+
+            {
+
+                departamento: "Tecnologia",
+
+                utilizacoes: 320,
+
+                usoAdequado: 91,
+
+                produtividade: 86,
+
+                aproveitamento: 83
+
+            },
+
+            {
+
+                departamento: "Marketing",
+
+                utilizacoes: 245,
+
+                usoAdequado: 84,
+
+                produtividade: 78,
+
+                aproveitamento: 74
+
+            },
+
+            {
+
+                departamento: "Financeiro",
+
+                utilizacoes: 180,
+
+                usoAdequado: 79,
+
+                produtividade: 72,
+
+                aproveitamento: 68
+
+            },
+
+            {
+
+                departamento: "RH",
+
+                utilizacoes: 120,
+
+                usoAdequado: 82,
+
+                produtividade: 69,
+
+                aproveitamento: 66
+
+            }
+
+        ];
+
+
+        /* CUSTO TOTAL */
 
         const custoTotal =
-            valoresCustos.reduce(function(total, valor) {
+            valoresCustos.reduce(
+                function(total, valor) {
 
-                return total + valor;
+                    return total + valor;
 
-            }, 0);
+                },
+                0
+            );
 
 
         document
@@ -272,13 +433,39 @@
             );
 
 
+        /* TOTAL DE DEPARTAMENTOS */
+
         document
             .getElementById("totalDepartamentos")
             .innerHTML =
-            departamentosCustos.length;
+            dadosDepartamentos.length;
 
 
-        if (graficoCustos && departamentosCustos.length > 0) {
+        /* TOTAL DE UTILIZACOES */
+
+        const totalUtilizacoes =
+            dadosDepartamentos.reduce(
+                function(total, departamento) {
+
+                    return total + departamento.utilizacoes;
+
+                },
+                0
+            );
+
+
+        document
+            .getElementById("totalUtilizacoes")
+            .innerHTML =
+            totalUtilizacoes;
+
+
+        /* GRAFICO DE CUSTOS */
+
+        if (
+            graficoCustos &&
+            departamentosCustos.length > 0
+        ) {
 
             document
                 .getElementById("semCustos")
@@ -328,6 +515,7 @@
             "Aproveitamento"
         ];
 
+
         const valoresEficiencia = [
             84,
             76,
@@ -335,7 +523,13 @@
         ];
 
 
-        /* MEDIA DOS INDICADORES DE EFICIENCIA */
+        /*
+            EFICIENCIA GERAL
+
+            Regra adotada no projeto:
+            média simples entre uso adequado,
+            produtividade e aproveitamento.
+        */
 
         const eficienciaGeral =
             Math.round(
@@ -361,6 +555,8 @@
             .innerHTML =
             eficienciaGeral + "%";
 
+
+        /* GRAFICO DE EFICIENCIA */
 
         if (
             graficoEficiencia &&
@@ -413,6 +609,72 @@
             });
 
         }
+
+
+        /* TABELA DE EFICIENCIA POR DEPARTAMENTO */
+
+        const tabelaEficiencia =
+            document.getElementById("tabelaEficiencia");
+
+
+        dadosDepartamentos.forEach(
+            function(departamento) {
+
+                const eficienciaDepartamento =
+                    Math.round(
+
+                        (
+                            departamento.usoAdequado +
+                            departamento.produtividade +
+                            departamento.aproveitamento
+                        )
+
+                        /
+
+                        3
+
+                    );
+
+
+                const linha =
+                    document.createElement("tr");
+
+
+                linha.innerHTML =
+
+                    "<td>" +
+                        departamento.departamento +
+                    "</td>" +
+
+                    "<td>" +
+                        departamento.utilizacoes +
+                    "</td>" +
+
+                    "<td>" +
+                        departamento.usoAdequado +
+                        "%" +
+                    "</td>" +
+
+                    "<td>" +
+                        departamento.produtividade +
+                        "%" +
+                    "</td>" +
+
+                    "<td>" +
+                        departamento.aproveitamento +
+                        "%" +
+                    "</td>" +
+
+                    "<td>" +
+                        eficienciaDepartamento +
+                        "%" +
+                    "</td>";
+
+
+                tabelaEficiencia.appendChild(linha);
+
+            }
+        );
 
     </script>
 
