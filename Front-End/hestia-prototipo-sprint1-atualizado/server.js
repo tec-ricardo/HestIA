@@ -7,6 +7,7 @@ const api = axios.create({
     timeout: 5000
 });
 
+
 app.set("view engine", "ejs");
 
 app.use(express.static("public"));
@@ -92,24 +93,34 @@ app.get("/", async (req, res) => {
     }
 
 
-    const indicadores = await carregarIndicadores();
+    const indicadores =
+        await carregarIndicadores();
+
 
     const indicadoresMaturidade =
-        obterIndicadoresMaturidade();
+        await consultarObjetoComFallback(
+            "/indicadores/maturidade",
+            obterIndicadoresMaturidade()
+        );
+
 
     const maturityScore =
-        calcularMaturityScore(indicadoresMaturidade);
+        calcularMaturityScore(
+            indicadoresMaturidade
+        );
+
 
     const resumoPessoal = {
 
-        maturityScore: maturityScore.toFixed(2),
+        maturityScore:
+            maturityScore.toFixed(2),
 
         aiCredits: 680,
 
         ranking: "4º",
 
         usoResponsavel:
-        indicadoresMaturidade.usoResponsavel
+            indicadoresMaturidade.usoResponsavel
 
     };
 
@@ -161,20 +172,29 @@ function obterIndicadoresMaturidade() {
 function calcularMaturityScore(indicadores) {
 
     return (
+
         indicadores.aiLiteracy * 0.15 +
+
         indicadores.governanca * 0.15 +
+
         indicadores.usoResponsavel * 0.15 +
+
         indicadores.produtividade * 0.10 +
+
         indicadores.finOps * 0.10 +
+
         indicadores.seguranca * 0.20 +
+
         indicadores.colaboracao * 0.05 +
+
         indicadores.desenvolvimentoCompetencias * 0.10
+
     );
 
 }
 
 
-app.get("/maturidade", (req, res) => {
+app.get("/maturidade", async (req, res) => {
 
     if (perfil == "") {
 
@@ -184,11 +204,16 @@ app.get("/maturidade", (req, res) => {
 
 
     const indicadores =
-        obterIndicadoresMaturidade();
+        await consultarObjetoComFallback(
+            "/indicadores/maturidade",
+            obterIndicadoresMaturidade()
+        );
 
 
     const maturityScore =
-        calcularMaturityScore(indicadores);
+        calcularMaturityScore(
+            indicadores
+        );
 
 
     res.render("maturidade", {
@@ -201,7 +226,8 @@ app.get("/maturidade", (req, res) => {
 
         indicadores: indicadores,
 
-        maturityScore: maturityScore.toFixed(2)
+        maturityScore:
+            maturityScore.toFixed(2)
 
     });
 
@@ -234,7 +260,7 @@ app.get("/creditos", (req, res) => {
 
 /* UTILIZACOES */
 
-app.get("/utilizacoes", (req, res) => {
+app.get("/utilizacoes", async (req, res) => {
 
     if (perfil != "colaborador") {
 
@@ -246,15 +272,15 @@ app.get("/utilizacoes", (req, res) => {
     /*
         DADOS MOCKADOS DO HISTORICO
 
-        Estes dados representam o retorno que futuramente
-        poderá vir do backend.
+        Estes dados representam o retorno
+        que futuramente poderá vir do backend.
 
-        Quando a API de utilizações estiver pronta,
-        este array poderá ser substituído pela consulta
-        ao endpoint correspondente.
+        Quando a API de utilizações estiver
+        pronta, os dados reais serão utilizados
+        através do Axios.
     */
 
-    const historico = [
+    const historicoMock = [
 
         {
 
@@ -299,7 +325,8 @@ app.get("/utilizacoes", (req, res) => {
 
             consumo: 980,
 
-            finalidade: "Apoio na elaboração de relatório",
+            finalidade:
+                "Apoio na elaboração de relatório",
 
             conformidade: "Conforme",
 
@@ -357,9 +384,11 @@ app.get("/utilizacoes", (req, res) => {
 
             consumo: 760,
 
-            finalidade: "Geração de apresentação",
+            finalidade:
+                "Geração de apresentação",
 
-            conformidade: "Aguardando avaliação",
+            conformidade:
+                "Aguardando avaliação",
 
             prompt:
                 "Organize estes tópicos em uma estrutura para apresentação.",
@@ -375,32 +404,47 @@ app.get("/utilizacoes", (req, res) => {
     ];
 
 
+    const historico =
+        await consultarListaComFallback(
+            "/utilizacoes",
+            historicoMock
+        );
+
+
     const utilizacoesAvaliadas =
-        historico.filter(function(utilizacao) {
+        historico.filter(
+            function(utilizacao) {
 
-            return utilizacao.conformidade !=
-                "Aguardando avaliação";
+                return utilizacao.conformidade !=
+                    "Aguardando avaliação";
 
-        });
+            }
+        );
 
 
     const utilizacoesConformes =
-        historico.filter(function(utilizacao) {
+        historico.filter(
+            function(utilizacao) {
 
-            return utilizacao.conformidade ==
-                "Conforme";
+                return utilizacao.conformidade ==
+                    "Conforme";
 
-        });
+            }
+        );
 
 
     const consumoTotal =
         historico.reduce(
+
             function(total, utilizacao) {
 
-                return total + utilizacao.consumo;
+                return total +
+                    utilizacao.consumo;
 
             },
+
             0
+
         );
 
 
@@ -441,17 +485,22 @@ app.get("/utilizacoes", (req, res) => {
 
         historico: historico,
 
-        resumoHistorico: resumoHistorico
+        resumoHistorico:
+            resumoHistorico
 
     });
 
 });
 
+
 /* COMPETENCIAS */
 
 app.get("/competencias", (req, res) => {
 
-    if (perfil != "colaborador" && perfil != "administrador") {
+    if (
+        perfil != "colaborador" &&
+        perfil != "administrador"
+    ) {
 
         return res.redirect("/");
 
@@ -482,10 +531,14 @@ app.get("/governanca", async (req, res) => {
     }
 
 
-    const [politicas, empresas] = await Promise.all([
-        consultar("/politicas"),
-        consultar("/empresas")
-    ]);
+    const [politicas, empresas] =
+        await Promise.all([
+
+            consultar("/politicas"),
+
+            consultar("/empresas")
+
+        ]);
 
 
     res.render("governanca", {
@@ -500,9 +553,11 @@ app.get("/governanca", async (req, res) => {
 
         empresas: empresas,
 
-        mensagem: req.query.mensagem || "",
+        mensagem:
+            req.query.mensagem || "",
 
-        erro: req.query.erro || ""
+        erro:
+            req.query.erro || ""
 
     });
 
@@ -511,7 +566,7 @@ app.get("/governanca", async (req, res) => {
 
 /* CUSTOS */
 
-app.get("/custos", (req, res) => {
+app.get("/custos", async (req, res) => {
 
     if (perfil != "gestor") {
 
@@ -520,13 +575,20 @@ app.get("/custos", (req, res) => {
     }
 
 
-    /* DADOS MOCK DOS INDICADORES DE EFICIENCIA */
+    /*
+        DADOS MOCKADOS DE EFICIENCIA
 
-    const dadosEficiencia = [
+        O Axios tentará utilizar os dados
+        reais quando o backend disponibilizar
+        o endpoint correspondente.
+    */
+
+    const dadosEficienciaMock = [
 
         {
 
-            departamento: "Tecnologia",
+            departamento:
+                "Tecnologia",
 
             utilizacoes: 320,
 
@@ -540,7 +602,8 @@ app.get("/custos", (req, res) => {
 
         {
 
-            departamento: "Marketing",
+            departamento:
+                "Marketing",
 
             utilizacoes: 245,
 
@@ -554,7 +617,8 @@ app.get("/custos", (req, res) => {
 
         {
 
-            departamento: "Financeiro",
+            departamento:
+                "Financeiro",
 
             utilizacoes: 180,
 
@@ -568,7 +632,8 @@ app.get("/custos", (req, res) => {
 
         {
 
-            departamento: "RH",
+            departamento:
+                "RH",
 
             utilizacoes: 120,
 
@@ -583,6 +648,13 @@ app.get("/custos", (req, res) => {
     ];
 
 
+    const dadosEficiencia =
+        await consultarListaComFallback(
+            "/indicadores/eficiencia",
+            dadosEficienciaMock
+        );
+
+
     res.render("custos", {
 
         perfil: perfil,
@@ -591,7 +663,8 @@ app.get("/custos", (req, res) => {
 
         active: "custos",
 
-        dadosEficiencia: dadosEficiencia
+        dadosEficiencia:
+            dadosEficiencia
 
     });
 
@@ -600,180 +673,463 @@ app.get("/custos", (req, res) => {
 
 /* ADMINISTRACAO */
 
-app.get("/administracao", async (req, res) => {
+app.get(
+    "/administracao",
+    async (req, res) => {
 
-    if (perfil != "administrador") {
+        if (perfil != "administrador") {
 
-        return res.redirect("/");
+            return res.redirect("/");
+
+        }
+
+
+        const [
+            empresas,
+            departamentos,
+            usuarios,
+            ferramentas
+        ] =
+            await Promise.all([
+
+                consultar("/empresas"),
+
+                consultar("/departamentos"),
+
+                consultar("/usuarios"),
+
+                consultar("/ferramentas-ia")
+
+            ]);
+
+
+        res.render("administracao", {
+
+            perfil: perfil,
+
+            email: email,
+
+            active: "administracao",
+
+            empresas: empresas,
+
+            departamentos: departamentos,
+
+            usuarios: usuarios,
+
+            ferramentas: ferramentas,
+
+            mensagem:
+                req.query.mensagem || "",
+
+            erro:
+                req.query.erro || ""
+
+        });
 
     }
-
-
-    const [empresas, departamentos, usuarios, ferramentas] = await Promise.all([
-        consultar("/empresas"),
-        consultar("/departamentos"),
-        consultar("/usuarios"),
-        consultar("/ferramentas-ia")
-    ]);
-
-
-    res.render("administracao", {
-
-        perfil: perfil,
-
-        email: email,
-
-        active: "administracao",
-
-        empresas: empresas,
-
-        departamentos: departamentos,
-
-        usuarios: usuarios,
-
-        ferramentas: ferramentas,
-
-        mensagem: req.query.mensagem || "",
-
-        erro: req.query.erro || ""
-
-    });
-
-});
+);
 
 
 /* CONFIGURACOES */
 
-app.get("/configuracoes", async (req, res) => {
+app.get(
+    "/configuracoes",
+    async (req, res) => {
 
-    if (perfil != "administrador") {
+        if (perfil != "administrador") {
 
-        return res.redirect("/");
+            return res.redirect("/");
+
+        }
+
+
+        const ferramentas =
+            await consultar(
+                "/ferramentas-ia"
+            );
+
+
+        res.render("configuracoes", {
+
+            perfil: perfil,
+
+            email: email,
+
+            active: "configuracoes",
+
+            ferramentas:
+                ferramentas
+
+        });
 
     }
-
-
-    const ferramentas =
-        await consultar("/ferramentas-ia");
-
-
-    res.render("configuracoes", {
-
-        perfil: perfil,
-
-        email: email,
-
-        active: "configuracoes",
-
-        ferramentas: ferramentas
-
-    });
-
-});
+);
 
 
 /* MAPA DE RISCO */
 
-app.get("/mapa-risco", (req, res) => {
+app.get(
+    "/mapa-risco",
+    async (req, res) => {
 
-    if (
-        perfil != "gestor" &&
-        perfil != "administrador"
-    ) {
+        if (
+            perfil != "gestor" &&
+            perfil != "administrador"
+        ) {
 
-        return res.redirect("/");
-
-    }
-
-
-    const mapaRisco = [
-
-        {
-
-            departamento: "Tecnologia",
-
-            nivel: "Baixo",
-
-            classe: "low",
-
-            descricao: "Uso de IA com menor nível de atenção."
-
-        },
-
-        {
-
-            departamento: "Marketing",
-
-            nivel: "Médio",
-
-            classe: "medium",
-
-            descricao: "Uso de IA que requer acompanhamento."
-
-        },
-
-        {
-
-            departamento: "Financeiro",
-
-            nivel: "Alto",
-
-            classe: "high",
-
-            descricao: "Uso de IA que requer maior atenção."
-
-        },
-
-        {
-
-            departamento: "RH",
-
-            nivel: "Médio",
-
-            classe: "medium",
-
-            descricao: "Uso de IA que requer acompanhamento."
+            return res.redirect("/");
 
         }
 
-    ];
+
+        const mapaRiscoMock = [
+
+            {
+
+                departamento:
+                    "Tecnologia",
+
+                nivel: "Baixo",
+
+                classe: "low",
+
+                descricao:
+                    "Uso de IA com menor nível de atenção."
+
+            },
+
+            {
+
+                departamento:
+                    "Marketing",
+
+                nivel: "Médio",
+
+                classe: "medium",
+
+                descricao:
+                    "Uso de IA que requer acompanhamento."
+
+            },
+
+            {
+
+                departamento:
+                    "Financeiro",
+
+                nivel: "Alto",
+
+                classe: "high",
+
+                descricao:
+                    "Uso de IA que requer maior atenção."
+
+            },
+
+            {
+
+                departamento:
+                    "RH",
+
+                nivel: "Médio",
+
+                classe: "medium",
+
+                descricao:
+                    "Uso de IA que requer acompanhamento."
+
+            }
+
+        ];
 
 
-    const resumoRisco = {
-
-        baixo:
-            mapaRisco.filter(function(item) {
-                return item.classe == "low";
-            }).length,
-
-        medio:
-            mapaRisco.filter(function(item) {
-                return item.classe == "medium";
-            }).length,
-
-        alto:
-            mapaRisco.filter(function(item) {
-                return item.classe == "high";
-            }).length
-
-    };
+        const mapaRisco =
+            await consultarListaComFallback(
+                "/indicadores/mapa-risco",
+                mapaRiscoMock
+            );
 
 
-    res.render("mapa-risco", {
+        const resumoRisco = {
 
-        perfil: perfil,
+            baixo:
+                mapaRisco.filter(
+                    function(item) {
 
-        email: email,
+                        return item.classe ==
+                            "low";
 
-        active: "mapa-risco",
+                    }
+                ).length,
 
-        mapaRisco: mapaRisco,
+            medio:
+                mapaRisco.filter(
+                    function(item) {
 
-        resumoRisco: resumoRisco
+                        return item.classe ==
+                            "medium";
 
-    });
+                    }
+                ).length,
 
-});
+            alto:
+                mapaRisco.filter(
+                    function(item) {
+
+                        return item.classe ==
+                            "high";
+
+                    }
+                ).length
+
+        };
+
+
+        res.render("mapa-risco", {
+
+            perfil: perfil,
+
+            email: email,
+
+            active: "mapa-risco",
+
+            mapaRisco:
+                mapaRisco,
+
+            resumoRisco:
+                resumoRisco
+
+        });
+
+    }
+);
+
+
+/* HESTIA PASS */
+
+app.get(
+    "/passe-hestia",
+    async (req, res) => {
+
+        if (perfil != "colaborador") {
+
+            return res.redirect("/");
+
+        }
+
+
+        /*
+            DADOS MOCKADOS DO HESTIA PASS
+
+            Estes dados representam o retorno
+            que futuramente deverá vir do backend.
+
+            A avaliação de conformidade acontece
+            no fluxo de Governança.
+
+            O HestIA utiliza essas informações
+            para calcular a progressão do usuário.
+
+            O endpoint /passe-hestia está
+            preparado para integração.
+
+            O caminho definitivo deverá ser
+            confirmado com a equipe do backend.
+        */
+
+        const passeMock = {
+
+    nivelAtual: 2,
+
+    nomeNivel: "Consciente",
+
+    xpAtual: 235,
+
+    xpProximoNivel: 300,
+
+    taxaConformidade: 87,
+
+    totalUtilizacoesAvaliadas: 23,
+
+    totalUtilizacoesConformes: 20,
+
+    sequenciaConforme: 7,
+
+
+    regrasXp: [
+
+        {
+            titulo: "Utilização conforme",
+            descricao: "Após avaliação de conformidade.",
+            xp: "+10 XP",
+            tipo: "positivo"
+        },
+
+        {
+            titulo: "Utilização não conforme",
+            descricao: "Após avaliação de conformidade.",
+            xp: "-5 XP",
+            tipo: "negativo"
+        },
+
+        {
+            titulo: "Desafio concluído",
+            descricao: "Receba o XP indicado no desafio.",
+            xp: "Bônus XP",
+            tipo: "bonus"
+        }
+
+    ],
+
+
+    proximoNivel: {
+
+        nivel: 3,
+
+        nome: "Proficiente",
+
+        xpNecessario: 300,
+
+        descricao:
+            "Amplie sua experiência mantendo práticas responsáveis no uso de IA."
+
+    },
+
+
+    niveis: [
+
+        {
+            nivel: 1,
+            nome: "Iniciante",
+            xpNecessario: 0,
+            status: "concluido"
+        },
+
+        {
+            nivel: 2,
+            nome: "Consciente",
+            xpNecessario: 100,
+            status: "atual"
+        },
+
+        {
+            nivel: 3,
+            nome: "Proficiente",
+            xpNecessario: 300,
+            status: "bloqueado"
+        },
+
+        {
+            nivel: 4,
+            nome: "Especialista",
+            xpNecessario: 700,
+            status: "bloqueado"
+        },
+
+        {
+            nivel: 5,
+            nome: "Embaixador HestIA",
+            xpNecessario: 1200,
+            status: "bloqueado"
+        }
+
+    ],
+
+
+    desafios: [
+
+        {
+            id: 1,
+            titulo: "Uso Responsável",
+            descricao:
+                "Alcance 25 utilizações avaliadas como conformes.",
+            progressoAtual: 20,
+            meta: 25,
+            recompensaXp: 25,
+            concluido: false
+        },
+
+        {
+            id: 2,
+            titulo: "Consistência",
+            descricao:
+                "Alcance 10 utilizações conformes consecutivas.",
+            progressoAtual: 7,
+            meta: 10,
+            recompensaXp: 30,
+            concluido: false
+        },
+
+        {
+            id: 3,
+            titulo: "Experiência em IA",
+            descricao:
+                "Complete 20 utilizações avaliadas.",
+            progressoAtual: 20,
+            meta: 20,
+            recompensaXp: 25,
+            concluido: true
+        }
+
+    ],
+
+
+    reconhecimentoMaximo: {
+
+        titulo: "Embaixador HestIA",
+
+        descricao:
+            "Reconhecimento institucional pela evolução e pelo uso responsável de IA.",
+
+        reconhecimento:
+            "Reconhecimento institucional HestIA",
+
+        requisitos: [
+
+            "Alcançar o nível máximo do HestIA Pass",
+
+            "Cumprir os requisitos de experiência do programa",
+
+            "Manter o nível de conformidade definido para o programa"
+
+        ]
+
+    }
+
+};
+
+        /*
+            AXIOS DO HESTIA PASS
+
+            Se o backend responder,
+            utiliza os dados reais.
+
+            Se ainda não existir ou estiver
+            indisponível, utiliza passeMock.
+        */
+
+        const passe =
+            await consultarObjetoComFallback(
+                "/passe-hestia",
+                passeMock
+            );
+
+
+        res.render("passe-hestia", {
+
+            perfil: perfil,
+
+            email: email,
+
+            active: "passe-hestia",
+
+            passe: passe
+
+        });
+
+    }
+);
 
 
 /* SAIR */
@@ -791,154 +1147,300 @@ app.get("/sair", (req, res) => {
 
 /* INTEGRACAO COM O BACKEND */
 
-app.post("/administracao/empresas", exigirAdministrador, async (req, res) => {
+app.post(
+    "/administracao/empresas",
+    exigirAdministrador,
+    async (req, res) => {
 
-    await executarCadastro(res, "/empresas", {
+        await executarCadastro(
+            res,
+            "/empresas",
+            {
 
-        nome: req.body.nome,
+                nome:
+                    req.body.nome,
 
-        cnpj: req.body.cnpj,
+                cnpj:
+                    req.body.cnpj,
 
-        configuracoesGerais: req.body.configuracoesGerais || null,
+                configuracoesGerais:
+                    req.body.configuracoesGerais ||
+                    null,
 
-        orcamento: numeroOpcional(req.body.orcamento)
+                orcamento:
+                    numeroOpcional(
+                        req.body.orcamento
+                    )
 
-    }, "/administracao", "Empresa cadastrada com sucesso.");
-
-});
-
-
-app.post("/administracao/departamentos", exigirAdministrador, async (req, res) => {
-
-    await executarCadastro(res, "/departamentos", {
-
-        nome: req.body.nome,
-
-        responsavel: req.body.responsavel || null,
-
-        estruturaHierarquica: req.body.estruturaHierarquica || null,
-
-        empresaId: Number(req.body.empresaId)
-
-    }, "/administracao", "Departamento cadastrado com sucesso.");
-
-});
-
-
-app.post("/administracao/usuarios", exigirAdministrador, async (req, res) => {
-
-    await executarCadastro(res, "/usuarios", {
-
-        nome: req.body.nome,
-
-        email: req.body.email,
-
-        senha: req.body.senha,
-
-        cargo: req.body.cargo,
-
-        perfil: req.body.perfil,
-
-        ativo: true,
-
-        empresaId: Number(req.body.empresaId),
-
-        departamentoId: Number(req.body.departamentoId)
-
-    }, "/administracao", "Usuário cadastrado com sucesso.");
-
-});
-
-
-app.post("/administracao/ferramentas", exigirAdministrador, async (req, res) => {
-
-    await executarCadastro(res, "/ferramentas-ia", {
-
-        nome: req.body.nome,
-
-        fornecedor: req.body.fornecedor,
-
-        descricao: req.body.descricao || null,
-
-        tipo: req.body.tipo,
-
-        finalidadeUso: req.body.finalidadeUso,
-
-        urlAcesso: req.body.urlAcesso || null,
-
-        trataDadosPessoais: req.body.trataDadosPessoais === "true",
-
-        empresaId: Number(req.body.empresaId)
-
-    }, "/administracao", "Ferramenta de IA cadastrada com sucesso.");
-
-});
-
-
-app.post("/governanca/politicas", exigirAdministrador, async (req, res) => {
-
-    await executarCadastro(res, "/politicas", {
-
-        titulo: req.body.titulo,
-
-        descricao: req.body.descricao,
-
-        conteudo: req.body.conteudo,
-
-        versao: req.body.versao,
-
-        ativa: true,
-
-        empresaId: Number(req.body.empresaId)
-
-    }, "/governanca", "Política cadastrada com sucesso.");
-
-});
-
-
-function exigirAdministrador(req, res, next) {
-
-    if (perfil !== "administrador") {
-
-        return res.redirect("/acesso");
+            },
+            "/administracao",
+            "Empresa cadastrada com sucesso."
+        );
 
     }
+);
+
+
+app.post(
+    "/administracao/departamentos",
+    exigirAdministrador,
+    async (req, res) => {
+
+        await executarCadastro(
+            res,
+            "/departamentos",
+            {
+
+                nome:
+                    req.body.nome,
+
+                responsavel:
+                    req.body.responsavel ||
+                    null,
+
+                estruturaHierarquica:
+                    req.body.estruturaHierarquica ||
+                    null,
+
+                empresaId:
+                    Number(
+                        req.body.empresaId
+                    )
+
+            },
+            "/administracao",
+            "Departamento cadastrado com sucesso."
+        );
+
+    }
+);
+
+
+app.post(
+    "/administracao/usuarios",
+    exigirAdministrador,
+    async (req, res) => {
+
+        await executarCadastro(
+            res,
+            "/usuarios",
+            {
+
+                nome:
+                    req.body.nome,
+
+                email:
+                    req.body.email,
+
+                senha:
+                    req.body.senha,
+
+                cargo:
+                    req.body.cargo,
+
+                perfil:
+                    req.body.perfil,
+
+                ativo: true,
+
+                empresaId:
+                    Number(
+                        req.body.empresaId
+                    ),
+
+                departamentoId:
+                    Number(
+                        req.body.departamentoId
+                    )
+
+            },
+            "/administracao",
+            "Usuário cadastrado com sucesso."
+        );
+
+    }
+);
+
+
+app.post(
+    "/administracao/ferramentas",
+    exigirAdministrador,
+    async (req, res) => {
+
+        await executarCadastro(
+            res,
+            "/ferramentas-ia",
+            {
+
+                nome:
+                    req.body.nome,
+
+                fornecedor:
+                    req.body.fornecedor,
+
+                descricao:
+                    req.body.descricao ||
+                    null,
+
+                tipo:
+                    req.body.tipo,
+
+                finalidadeUso:
+                    req.body.finalidadeUso,
+
+                urlAcesso:
+                    req.body.urlAcesso ||
+                    null,
+
+                trataDadosPessoais:
+                    req.body.trataDadosPessoais ===
+                    "true",
+
+                empresaId:
+                    Number(
+                        req.body.empresaId
+                    )
+
+            },
+            "/administracao",
+            "Ferramenta de IA cadastrada com sucesso."
+        );
+
+    }
+);
+
+
+app.post(
+    "/governanca/politicas",
+    exigirAdministrador,
+    async (req, res) => {
+
+        await executarCadastro(
+            res,
+            "/politicas",
+            {
+
+                titulo:
+                    req.body.titulo,
+
+                descricao:
+                    req.body.descricao,
+
+                conteudo:
+                    req.body.conteudo,
+
+                versao:
+                    req.body.versao,
+
+                ativa: true,
+
+                empresaId:
+                    Number(
+                        req.body.empresaId
+                    )
+
+            },
+            "/governanca",
+            "Política cadastrada com sucesso."
+        );
+
+    }
+);
+
+
+/* PROTECAO ADMIN */
+
+function exigirAdministrador(
+    req,
+    res,
+    next
+) {
+
+    if (
+        perfil !== "administrador"
+    ) {
+
+        return res.redirect(
+            "/acesso"
+        );
+
+    }
+
 
     next();
 
 }
 
 
-async function executarCadastro(res, endpoint, dados, retorno, sucesso) {
+/* POST COM AXIOS */
+
+async function executarCadastro(
+    res,
+    endpoint,
+    dados,
+    retorno,
+    sucesso
+) {
 
     try {
 
-        await api.post(endpoint, dados);
+        await api.post(
+            endpoint,
+            dados
+        );
 
-        res.redirect(`${retorno}?mensagem=${encodeURIComponent(sucesso)}`);
 
-    } catch (error) {
+        res.redirect(
+            `${retorno}?mensagem=${encodeURIComponent(
+                sucesso
+            )}`
+        );
 
-        const detalhe = mensagemDaApi(error);
+    }
 
-        res.redirect(`${retorno}?erro=${encodeURIComponent(detalhe)}`);
+    catch (error) {
+
+        const detalhe =
+            mensagemDaApi(error);
+
+
+        res.redirect(
+            `${retorno}?erro=${encodeURIComponent(
+                detalhe
+            )}`
+        );
 
     }
 
 }
 
 
+/* GET COM AXIOS */
+
 async function consultar(endpoint) {
 
     try {
 
-        const response = await api.get(endpoint);
+        const response =
+            await api.get(endpoint);
 
-        return Array.isArray(response.data) ? response.data : [];
 
-    } catch (error) {
+        return Array.isArray(
+            response.data
+        )
+            ?
+            response.data
+            :
+            [];
 
-        console.error(`Falha ao consultar ${endpoint}: ${mensagemDaApi(error)}`);
+    }
+
+    catch (error) {
+
+        console.error(
+            `Falha ao consultar ${endpoint}: ${mensagemDaApi(error)}`
+        );
+
 
         return [];
 
@@ -947,56 +1449,205 @@ async function consultar(endpoint) {
 }
 
 
+/*
+    CONSULTAS COM FALLBACK
+
+    Estas funções deixam as telas
+    preparadas para dados reais.
+
+    Se o backend responder:
+    -> usa response.data
+
+    Se o backend não responder:
+    -> mantém os mocks atuais.
+
+    Os endpoints dos indicadores
+    precisam ser confirmados com
+    a equipe responsável pelo backend.
+*/
+
+async function consultarListaComFallback(
+    endpoint,
+    fallback
+) {
+
+    try {
+
+        const response =
+            await api.get(endpoint);
+
+
+        return Array.isArray(
+            response.data
+        )
+            ?
+            response.data
+            :
+            fallback;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            `Falha ao consultar ${endpoint}: ${mensagemDaApi(error)}. Utilizando dados locais.`
+        );
+
+
+        return fallback;
+
+    }
+
+}
+
+
+async function consultarObjetoComFallback(
+    endpoint,
+    fallback
+) {
+
+    try {
+
+        const response =
+            await api.get(endpoint);
+
+
+        return (
+            response.data &&
+            typeof response.data ===
+                "object" &&
+            !Array.isArray(
+                response.data
+            )
+        )
+            ?
+            response.data
+            :
+            fallback;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            `Falha ao consultar ${endpoint}: ${mensagemDaApi(error)}. Utilizando dados locais.`
+        );
+
+
+        return fallback;
+
+    }
+
+}
+
+
+/* INDICADORES GERAIS */
+
 async function carregarIndicadores() {
 
-    const [empresas, departamentos, usuarios, politicas, ferramentas] = await Promise.all([
-        consultar("/empresas"),
-        consultar("/departamentos"),
-        consultar("/usuarios"),
-        consultar("/politicas"),
-        consultar("/ferramentas-ia")
-    ]);
+    const [
+        empresas,
+        departamentos,
+        usuarios,
+        politicas,
+        ferramentas
+    ] =
+        await Promise.all([
+
+            consultar("/empresas"),
+
+            consultar("/departamentos"),
+
+            consultar("/usuarios"),
+
+            consultar("/politicas"),
+
+            consultar("/ferramentas-ia")
+
+        ]);
 
 
     return {
 
-        empresas: empresas.length,
+        empresas:
+            empresas.length,
 
-        departamentos: departamentos.length,
+        departamentos:
+            departamentos.length,
 
-        usuarios: usuarios.length,
+        usuarios:
+            usuarios.length,
 
-        politicas: politicas.length,
+        politicas:
+            politicas.length,
 
-        ferramentas: ferramentas.length
+        ferramentas:
+            ferramentas.length
 
     };
 
 }
 
 
+/* MENSAGEM DA API */
+
 function mensagemDaApi(error) {
 
-    const data = error.response && error.response.data;
+    const data =
+        error.response &&
+        error.response.data;
 
 
-    if (data && Array.isArray(data.errors)) {
+    if (
+        data &&
+        Array.isArray(
+            data.errors
+        )
+    ) {
 
-        return data.errors.map(item => item.message || item).join(" ");
+        return data.errors
+            .map(
+                item =>
+                    item.message ||
+                    item
+            )
+            .join(" ");
 
     }
 
 
-    return (data && (data.message || data.error)) ||
-
-        (error.code === "ECONNREFUSED" ? "Backend indisponível." : error.message);
+    return (
+        data &&
+        (
+            data.message ||
+            data.error
+        )
+    )
+        ||
+        (
+            error.code ===
+            "ECONNREFUSED"
+                ?
+                "Backend indisponível."
+                :
+                error.message
+        );
 
 }
 
 
+/* NUMERO OPCIONAL */
+
 function numeroOpcional(valor) {
 
-    return valor === undefined || valor === "" ? null : Number(valor);
+    return (
+        valor === undefined ||
+        valor === ""
+    )
+        ?
+        null
+        :
+        Number(valor);
 
 }
 
@@ -1005,6 +1656,8 @@ function numeroOpcional(valor) {
 
 app.listen(3000, () => {
 
-    console.log("Servidor rodando");
+    console.log(
+        "Servidor rodando"
+    );
 
 });
