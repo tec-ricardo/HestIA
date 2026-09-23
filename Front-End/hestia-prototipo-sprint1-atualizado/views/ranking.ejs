@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Ranking HestIA</title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css"
+    >
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <%- include("menu", {
+        active: active,
+        perfil: perfil
+    }) %>
+
+
+    <main class="main-content ranking-page">
+
+
+        <!-- CABECALHO -->
+
+        <header class="page-header">
+
+            <div>
+
+                <h1>
+                    Ranking HestIA
+                </h1>
+
+                <p>
+                    Acompanhe sua posição e a evolução dos colaboradores
+                    na jornada de uso responsável de Inteligência Artificial.
+                </p>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- RESUMO PESSOAL -->
+
+        <section class="ranking-personal-card">
+
+            <div class="ranking-personal-position">
+
+                <span>
+                    Sua posição
+                </span>
+
+                <strong>
+                    <%= ranking.posicaoUsuario %>º
+                </strong>
+
+            </div>
+
+
+            <div class="ranking-personal-info">
+
+                <span class="ranking-small-label">
+                    Seu desempenho
+                </span>
+
+                <h2>
+                    <%= ranking.usuario.nome %>
+                </h2>
+
+                <div class="ranking-personal-details">
+
+                    <div>
+
+                        <span>
+                            Nível
+                        </span>
+
+                        <strong>
+                            <%= ranking.usuario.nivel %>
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            XP acumulado
+                        </span>
+
+                        <strong>
+                            <%= ranking.usuario.xp %> XP
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- EXPLICACAO -->
+
+        <section class="ranking-info-card">
+
+            <div>
+
+                <span class="ranking-info-icon">
+                    ★
+                </span>
+
+            </div>
+
+            <div>
+
+                <strong>
+                    Ranking baseado na evolução do HestIA Pass
+                </strong>
+
+                <p>
+                    A posição considera o XP acumulado durante a jornada.
+                    O XP é atualizado conforme as regras de progressão
+                    definidas pelo programa HestIA.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- RANKING -->
+
+        <section class="ranking-section">
+
+            <div class="ranking-section-header">
+
+                <div>
+
+                    <h2>
+                        Classificação
+                    </h2>
+
+                    <p>
+                        Colaboradores ordenados pelo XP acumulado.
+                    </p>
+
+                </div>
+
+                <span class="ranking-total">
+                    <%= ranking.totalParticipantes %> participantes
+                </span>
+
+            </div>
+
+
+            <div class="ranking-table-wrapper">
+
+                <table class="ranking-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Posição
+                            </th>
+
+                            <th>
+                                Colaborador
+                            </th>
+
+                            <th>
+                                Nível
+                            </th>
+
+                            <th>
+                                XP
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <% ranking.classificacao.forEach(function(item) { %>
+
+                            <tr class="<%= item.usuarioAtual ? 'ranking-current-user' : '' %>">
+
+                                <td>
+
+                                    <div class="ranking-position">
+
+                                        <% if (item.posicao == 1) { %>
+
+                                            <span class="ranking-medal">
+                                                ★
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <strong>
+                                                <%= item.posicao %>º
+                                            </strong>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="ranking-user">
+
+                                        <div class="ranking-avatar">
+
+                                            <%= item.iniciais %>
+
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                <%= item.nome %>
+                                            </strong>
+
+                                            <% if (item.usuarioAtual) { %>
+
+                                                <span>
+                                                    Você
+                                                </span>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="ranking-level">
+                                        <%= item.nivel %>
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <strong class="ranking-xp">
+                                        <%= item.xp %> XP
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        <% }); %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- PRIVACIDADE -->
+
+        <section class="ranking-note">
+
+            <strong>
+                Evolução individual
+            </strong>
+
+            <p>
+                O ranking apresenta somente informações relacionadas
+                à progressão no HestIA Pass.
+            </p>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
