@@ -392,6 +392,88 @@ app.get("/configuracoes", async (req, res) => {
 
 });
 
+/* MAPA DE RISCO */
+
+app.get("/mapa-risco", (req, res) => {
+
+    if (
+        perfil != "gestor" &&
+        perfil != "administrador"
+    ) {
+
+        return res.redirect("/");
+
+    }
+
+
+    const mapaRisco = [
+
+        {
+            departamento: "Tecnologia",
+            nivel: "Baixo",
+            classe: "low",
+            descricao: "Uso de IA com menor nível de atenção."
+        },
+
+        {
+            departamento: "Marketing",
+            nivel: "Médio",
+            classe: "medium",
+            descricao: "Uso de IA que requer acompanhamento."
+        },
+
+        {
+            departamento: "Financeiro",
+            nivel: "Alto",
+            classe: "high",
+            descricao: "Uso de IA que requer maior atenção."
+        },
+
+        {
+            departamento: "RH",
+            nivel: "Médio",
+            classe: "medium",
+            descricao: "Uso de IA que requer acompanhamento."
+        }
+
+    ];
+
+
+    const resumoRisco = {
+
+        baixo:
+            mapaRisco.filter(function(item) {
+                return item.classe == "low";
+            }).length,
+
+        medio:
+            mapaRisco.filter(function(item) {
+                return item.classe == "medium";
+            }).length,
+
+        alto:
+            mapaRisco.filter(function(item) {
+                return item.classe == "high";
+            }).length
+
+    };
+
+
+    res.render("mapa-risco", {
+
+        perfil: perfil,
+
+        email: email,
+
+        active: "mapa-risco",
+
+        mapaRisco: mapaRisco,
+
+        resumoRisco: resumoRisco
+
+    });
+
+});
 
 /* SAIR */
 
