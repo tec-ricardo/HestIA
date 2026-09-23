@@ -91,6 +91,7 @@ app.get("/", async (req, res) => {
 
     }
 
+
     const indicadores = await carregarIndicadores();
 
     const indicadoresMaturidade =
@@ -111,6 +112,7 @@ app.get("/", async (req, res) => {
         indicadoresMaturidade.usoResponsavel
 
     };
+
 
     res.render("index", {
 
@@ -180,6 +182,7 @@ app.get("/maturidade", (req, res) => {
 
     }
 
+
     const indicadores =
         obterIndicadoresMaturidade();
 
@@ -215,6 +218,7 @@ app.get("/creditos", (req, res) => {
 
     }
 
+
     res.render("creditos", {
 
         perfil: perfil,
@@ -237,6 +241,7 @@ app.get("/utilizacoes", (req, res) => {
         return res.redirect("/");
 
     }
+
 
     res.render("utilizacoes", {
 
@@ -261,6 +266,7 @@ app.get("/competencias", (req, res) => {
 
     }
 
+
     res.render("competencias", {
 
         perfil: perfil,
@@ -284,10 +290,12 @@ app.get("/governanca", async (req, res) => {
 
     }
 
+
     const [politicas, empresas] = await Promise.all([
         consultar("/politicas"),
         consultar("/empresas")
     ]);
+
 
     res.render("governanca", {
 
@@ -296,17 +304,19 @@ app.get("/governanca", async (req, res) => {
         email: email,
 
         active: "governanca",
+
         politicas: politicas,
+
         empresas: empresas,
+
         mensagem: req.query.mensagem || "",
+
         erro: req.query.erro || ""
 
     });
 
 });
 
-
-/* CUSTOS */
 
 /* CUSTOS */
 
@@ -333,7 +343,7 @@ app.get("/custos", (req, res) => {
 
             produtividade: 86,
 
-            aproveitamento: 83
+            custoIA: 4200
 
         },
 
@@ -347,7 +357,7 @@ app.get("/custos", (req, res) => {
 
             produtividade: 78,
 
-            aproveitamento: 74
+            custoIA: 2800
 
         },
 
@@ -361,7 +371,7 @@ app.get("/custos", (req, res) => {
 
             produtividade: 72,
 
-            aproveitamento: 68
+            custoIA: 1900
 
         },
 
@@ -375,7 +385,7 @@ app.get("/custos", (req, res) => {
 
             produtividade: 69,
 
-            aproveitamento: 66
+            custoIA: 1100
 
         }
 
@@ -407,12 +417,14 @@ app.get("/administracao", async (req, res) => {
 
     }
 
+
     const [empresas, departamentos, usuarios, ferramentas] = await Promise.all([
         consultar("/empresas"),
         consultar("/departamentos"),
         consultar("/usuarios"),
         consultar("/ferramentas-ia")
     ]);
+
 
     res.render("administracao", {
 
@@ -421,11 +433,17 @@ app.get("/administracao", async (req, res) => {
         email: email,
 
         active: "administracao",
+
         empresas: empresas,
+
         departamentos: departamentos,
+
         usuarios: usuarios,
+
         ferramentas: ferramentas,
+
         mensagem: req.query.mensagem || "",
+
         erro: req.query.erro || ""
 
     });
@@ -443,8 +461,10 @@ app.get("/configuracoes", async (req, res) => {
 
     }
 
+
     const ferramentas =
         await consultar("/ferramentas-ia");
+
 
     res.render("configuracoes", {
 
@@ -459,6 +479,7 @@ app.get("/configuracoes", async (req, res) => {
     });
 
 });
+
 
 /* MAPA DE RISCO */
 
@@ -477,31 +498,51 @@ app.get("/mapa-risco", (req, res) => {
     const mapaRisco = [
 
         {
+
             departamento: "Tecnologia",
+
             nivel: "Baixo",
+
             classe: "low",
+
             descricao: "Uso de IA com menor nível de atenção."
+
         },
 
         {
+
             departamento: "Marketing",
+
             nivel: "Médio",
+
             classe: "medium",
+
             descricao: "Uso de IA que requer acompanhamento."
+
         },
 
         {
+
             departamento: "Financeiro",
+
             nivel: "Alto",
+
             classe: "high",
+
             descricao: "Uso de IA que requer maior atenção."
+
         },
 
         {
+
             departamento: "RH",
+
             nivel: "Médio",
+
             classe: "medium",
+
             descricao: "Uso de IA que requer acompanhamento."
+
         }
 
     ];
@@ -543,11 +584,13 @@ app.get("/mapa-risco", (req, res) => {
 
 });
 
+
 /* SAIR */
 
 app.get("/sair", (req, res) => {
 
     email = "";
+
     perfil = "";
 
     res.redirect("/acesso");
@@ -558,96 +601,163 @@ app.get("/sair", (req, res) => {
 /* INTEGRACAO COM O BACKEND */
 
 app.post("/administracao/empresas", exigirAdministrador, async (req, res) => {
+
     await executarCadastro(res, "/empresas", {
+
         nome: req.body.nome,
+
         cnpj: req.body.cnpj,
+
         configuracoesGerais: req.body.configuracoesGerais || null,
+
         orcamento: numeroOpcional(req.body.orcamento)
+
     }, "/administracao", "Empresa cadastrada com sucesso.");
+
 });
 
 
 app.post("/administracao/departamentos", exigirAdministrador, async (req, res) => {
+
     await executarCadastro(res, "/departamentos", {
+
         nome: req.body.nome,
+
         responsavel: req.body.responsavel || null,
+
         estruturaHierarquica: req.body.estruturaHierarquica || null,
+
         empresaId: Number(req.body.empresaId)
+
     }, "/administracao", "Departamento cadastrado com sucesso.");
+
 });
 
 
 app.post("/administracao/usuarios", exigirAdministrador, async (req, res) => {
+
     await executarCadastro(res, "/usuarios", {
+
         nome: req.body.nome,
+
         email: req.body.email,
+
         senha: req.body.senha,
+
         cargo: req.body.cargo,
+
         perfil: req.body.perfil,
+
         ativo: true,
+
         empresaId: Number(req.body.empresaId),
+
         departamentoId: Number(req.body.departamentoId)
+
     }, "/administracao", "Usuário cadastrado com sucesso.");
+
 });
 
 
 app.post("/administracao/ferramentas", exigirAdministrador, async (req, res) => {
+
     await executarCadastro(res, "/ferramentas-ia", {
+
         nome: req.body.nome,
+
         fornecedor: req.body.fornecedor,
+
         descricao: req.body.descricao || null,
+
         tipo: req.body.tipo,
+
         finalidadeUso: req.body.finalidadeUso,
+
         urlAcesso: req.body.urlAcesso || null,
+
         trataDadosPessoais: req.body.trataDadosPessoais === "true",
+
         empresaId: Number(req.body.empresaId)
+
     }, "/administracao", "Ferramenta de IA cadastrada com sucesso.");
+
 });
 
 
 app.post("/governanca/politicas", exigirAdministrador, async (req, res) => {
+
     await executarCadastro(res, "/politicas", {
+
         titulo: req.body.titulo,
+
         descricao: req.body.descricao,
+
         conteudo: req.body.conteudo,
+
         versao: req.body.versao,
+
         ativa: true,
+
         empresaId: Number(req.body.empresaId)
+
     }, "/governanca", "Política cadastrada com sucesso.");
+
 });
 
 
 function exigirAdministrador(req, res, next) {
+
     if (perfil !== "administrador") {
+
         return res.redirect("/acesso");
+
     }
+
     next();
+
 }
 
 
 async function executarCadastro(res, endpoint, dados, retorno, sucesso) {
+
     try {
+
         await api.post(endpoint, dados);
+
         res.redirect(`${retorno}?mensagem=${encodeURIComponent(sucesso)}`);
+
     } catch (error) {
+
         const detalhe = mensagemDaApi(error);
+
         res.redirect(`${retorno}?erro=${encodeURIComponent(detalhe)}`);
+
     }
+
 }
 
 
 async function consultar(endpoint) {
+
     try {
+
         const response = await api.get(endpoint);
+
         return Array.isArray(response.data) ? response.data : [];
+
     } catch (error) {
+
         console.error(`Falha ao consultar ${endpoint}: ${mensagemDaApi(error)}`);
+
         return [];
+
     }
+
 }
 
 
 async function carregarIndicadores() {
+
     const [empresas, departamentos, usuarios, politicas, ferramentas] = await Promise.all([
         consultar("/empresas"),
         consultar("/departamentos"),
@@ -656,35 +766,54 @@ async function carregarIndicadores() {
         consultar("/ferramentas-ia")
     ]);
 
+
     return {
+
         empresas: empresas.length,
+
         departamentos: departamentos.length,
+
         usuarios: usuarios.length,
+
         politicas: politicas.length,
+
         ferramentas: ferramentas.length
+
     };
+
 }
 
 
 function mensagemDaApi(error) {
+
     const data = error.response && error.response.data;
 
+
     if (data && Array.isArray(data.errors)) {
+
         return data.errors.map(item => item.message || item).join(" ");
+
     }
 
+
     return (data && (data.message || data.error)) ||
+
         (error.code === "ECONNREFUSED" ? "Backend indisponível." : error.message);
+
 }
 
 
 function numeroOpcional(valor) {
+
     return valor === undefined || valor === "" ? null : Number(valor);
+
 }
 
 
 /* SERVIDOR */
 
 app.listen(3000, () => {
+
     console.log("Servidor rodando");
+
 });
