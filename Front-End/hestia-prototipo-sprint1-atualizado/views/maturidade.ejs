@@ -137,7 +137,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Conhecimento e compreensão sobre o uso de Inteligência Artificial.
                     </p>
 
                 </article>
@@ -154,7 +154,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Aderência às políticas e diretrizes de uso de IA da organização.
                     </p>
 
                 </article>
@@ -171,7 +171,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Uso da IA de forma adequada, segura e em conformidade.
                     </p>
 
                 </article>
@@ -188,7 +188,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Contribuição da IA para apoiar e otimizar as atividades realizadas.
                     </p>
 
                 </article>
@@ -205,7 +205,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Eficiência no consumo e nos custos relacionados ao uso de IA.
                     </p>
 
                 </article>
@@ -222,7 +222,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Cuidados com dados, privacidade e uso seguro das ferramentas de IA.
                     </p>
 
                 </article>
@@ -239,7 +239,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Uso e compartilhamento de conhecimentos sobre IA entre colaboradores.
                     </p>
 
                 </article>
@@ -256,7 +256,7 @@
                     </strong>
 
                     <p>
-                        Dado demonstrativo do MVP.
+                        Evolução das habilidades e conhecimentos relacionados à IA.
                     </p>
 
                 </article>
@@ -300,13 +300,15 @@
 
         <% if (perfil == "gestor") { %>
 
-            <section class="grid two">
+            <!-- CARDS PRINCIPAIS -->
+
+            <section class="grid">
 
                 <article class="metric-card">
 
-                        <span>
-                            AI Maturity Score
-                        </span>
+                    <span>
+                        AI Maturity Score
+                    </span>
 
                     <strong>
                         Comparação
@@ -319,26 +321,84 @@
 
                 </article>
 
+            </section>
+
+
+            <!-- RESUMO ANALITICO -->
+
+            <section class="grid four">
 
                 <article class="metric-card">
 
-                        <span>
-                            Estratégia
-                        </span>
+                    <span>
+                        Média organizacional
+                    </span>
 
                     <strong>
-                        Indicadores
+                        <%= mediaDepartamental %>
                     </strong>
 
                     <p>
-                        Os indicadores apoiam a definição de estratégias
-                        para ampliar a maturidade organizacional.
+                        Média do AI Maturity Score dos departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Maior maturidade
+                    </span>
+
+                    <strong>
+                        <%= maiorMaturidade.nome %>
+                    </strong>
+
+                    <p>
+                        Score <%= maiorMaturidade.score.toFixed(2) %> — maior resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Menor maturidade
+                    </span>
+
+                    <strong>
+                        <%= menorMaturidade.nome %>
+                    </strong>
+
+                    <p>
+                        Score <%= menorMaturidade.score.toFixed(2) %> — menor resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Departamentos analisados
+                    </span>
+
+                    <strong>
+                        <%= departamentosMaturidade.length %>
+                    </strong>
+
+                    <p>
+                        Tecnologia, Marketing, Financeiro e RH.
                     </p>
 
                 </article>
 
             </section>
 
+
+            <!-- GRAFICO GERAL DOS DEPARTAMENTOS -->
 
             <section class="panel">
 
@@ -365,6 +425,276 @@
                     </div>
 
                 </div>
+
+            </section>
+
+
+            <!-- TABELA COMPARATIVA -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Análise comparativa da maturidade
+                        </h3>
+
+                        <p>
+                            Comparação dos resultados de AI Maturity Score
+                            entre os departamentos da organização.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Departamento
+                            </th>
+
+                            <th>
+                                AI Maturity Score
+                            </th>
+
+                            <th>
+                                Comparação com a média
+                            </th>
+
+                            <th>
+                                Diferença
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <% departamentosMaturidade.forEach(function(departamento) { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= departamento.nome %>
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        <%= departamento.score.toFixed(2) %>
+                                    </strong>
+                                </td>
+
+                                <td>
+
+                                    <% if (departamento.score >= mediaDepartamental) { %>
+
+                                        Acima da média
+
+                                    <% } else { %>
+
+                                        Abaixo da média
+
+                                    <% } %>
+
+                                </td>
+
+                                <td>
+
+                                    <%= (departamento.score - mediaDepartamental).toFixed(2) %>
+                                    pontos
+
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Dados demonstrativos utilizados para representação do wireframe.
+                </p>
+
+            </section>
+
+
+            <!-- INDICADORES POR DEPARTAMENTO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Indicadores de maturidade por departamento
+                        </h3>
+
+                        <p>
+                            Detalhamento dos indicadores para apoiar a comparação
+                            da maturidade entre as áreas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoIndicadoresDepartamentos"></canvas>
+
+                </div>
+
+            </section>
+
+
+            <!-- DETALHAMENTO DOS INDICADORES -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Detalhamento dos indicadores
+                        </h3>
+
+                        <p>
+                            Visão comparativa dos componentes de maturidade
+                            utilizados no cenário demonstrativo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Indicador
+                            </th>
+
+                            <th>
+                                Tecnologia
+                            </th>
+
+                            <th>
+                                Marketing
+                            </th>
+
+                            <th>
+                                Financeiro
+                            </th>
+
+                            <th>
+                                RH
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <tr>
+                            <td>AI Literacy</td>
+                            <td><%= departamentosMaturidade[0].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.aiLiteracy %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Governança</td>
+                            <td><%= departamentosMaturidade[0].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.governanca %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Uso Responsável</td>
+                            <td><%= departamentosMaturidade[0].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.usoResponsavel %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Produtividade</td>
+                            <td><%= departamentosMaturidade[0].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.produtividade %></td>
+                        </tr>
+
+                        <tr>
+                            <td>FinOps</td>
+                            <td><%= departamentosMaturidade[0].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.finOps %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Segurança</td>
+                            <td><%= departamentosMaturidade[0].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.seguranca %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Colaboração</td>
+                            <td><%= departamentosMaturidade[0].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.colaboracao %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Desenvolvimento de Competências</td>
+                            <td><%= departamentosMaturidade[0].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.desenvolvimentoCompetencias %></td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Indicadores e valores demonstrativos utilizados para representação do MVP.
+                </p>
 
             </section>
 
@@ -464,7 +794,7 @@
 
 
 
-    /* GESTOR */
+    /* GESTOR - COMPARACAO GERAL */
 
     const graficoDepartamentos =
         document.getElementById("graficoDepartamentos");
@@ -473,18 +803,26 @@
     if (graficoDepartamentos) {
 
         const departamentos = [
-            "Tecnologia",
-            "Marketing",
-            "Financeiro",
-            "RH"
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            "<%= departamento.nome %>"
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
         ];
 
 
         const valoresDepartamentos = [
-            82,
-            74,
-            67,
-            61
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            <%= departamento.score.toFixed(2) %>
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
         ];
 
 
@@ -537,6 +875,98 @@
             });
 
         }
+
+    }
+
+
+
+    /* GESTOR - INDICADORES POR DEPARTAMENTO */
+
+    const graficoIndicadoresDepartamentos =
+        document.getElementById("graficoIndicadoresDepartamentos");
+
+
+    if (graficoIndicadoresDepartamentos) {
+
+        new Chart(graficoIndicadoresDepartamentos, {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "AI Literacy",
+                    "Governança",
+                    "Uso Responsável",
+                    "Produtividade",
+                    "FinOps",
+                    "Segurança",
+                    "Colaboração",
+                    "Competências"
+                ],
+
+                datasets: [
+
+                    <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+                    {
+
+                        label:
+                            "<%= departamento.nome %>",
+
+                        data: [
+
+                            <%= departamento.indicadores.aiLiteracy %>,
+                            <%= departamento.indicadores.governanca %>,
+                            <%= departamento.indicadores.usoResponsavel %>,
+                            <%= departamento.indicadores.produtividade %>,
+                            <%= departamento.indicadores.finOps %>,
+                            <%= departamento.indicadores.seguranca %>,
+                            <%= departamento.indicadores.colaboracao %>,
+                            <%= departamento.indicadores.desenvolvimentoCompetencias %>
+
+                        ]
+
+                    }
+
+                    <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+                    <% }) %>
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 
