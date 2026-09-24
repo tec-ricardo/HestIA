@@ -21,6 +21,7 @@ app.use(express.urlencoded({
 
 let email = "";
 let perfil = "";
+const empresaAtualId = Number(process.env.HESTIA_EMPRESA_ID || 1);
 
 
 /* LOGIN */
@@ -987,11 +988,44 @@ app.get("/utilizacoes", async (req, res) => {
 
         historico: historico,
 
+        respostasReutilizaveis:
+            await consultarReutilizacoes(empresaAtualId),
+
         resumoHistorico:
             resumoHistorico
 
     });
 
+});
+
+app.get("/reutilizacoes/buscar", async (req, res) => {
+    const prompt = String(req.query.prompt || "").trim();
+    if (!prompt) {
+        return res.status(400).json({ erro: "Informe o prompt para buscar uma resposta anterior." });
+    }
+
+    try {
+        const response = await api.get(
+            `/api/respostas-reutilizaveis/empresa/${empresaAtualId}/buscar`,
+            { params: { prompt } }
+        );
+        return res.json(response.data);
+    } catch (error) {
+        console.error(`Falha ao buscar respostas anteriores: ${mensagemDaApi(error)}`);
+        return res.status(502).json({ erro: "Não foi possível consultar respostas anteriores." });
+    }
+});
+
+app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
+    try {
+        const response = await api.patch(
+            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`
+        );
+        return res.json(response.data);
+    } catch (error) {
+        console.error(`Falha ao registrar reutilização: ${mensagemDaApi(error)}`);
+        return res.status(502).json({ erro: "Não foi possível registrar a reutilização." });
+    }
 });
 
 
@@ -1613,11 +1647,19 @@ app.get(
             indisponível, utiliza passeMock.
         */
 
-        const passe =
-            await consultarObjetoComFallback(
-                "/passe-hestia",
-                passeMock
-            );
+        const usuarios = await consultar("/usuarios");
+        const usuarioAtual = usuarios.find(
+            usuario => String(usuario.email || "").toLowerCase() === String(email).toLowerCase()
+        );
+        const passeApi = usuarioAtual
+            ? await consultarObjetoComFallback(
+                `/gamificacao/usuarios/${usuarioAtual.id}/passe`,
+                null
+            )
+            : null;
+        const passe = passeApi
+            ? adaptarPasseHestIA(passeApi, passeMock)
+            : passeMock;
 
 
         res.render("passe-hestia", {
@@ -2323,25 +2365,52 @@ app.listen(3000, () => {
 
 });
 
-async function consultarReutilizacoes() {
+async function consultarReutilizacoes(empresaId) {
+    try {
+        const response = await api.get(
+            `/api/respostas-reutilizaveis/empresa/${empresaId}/reutilizaveis`
+        );
+        return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+        console.error(`Falha ao consultar respostas reutilizáveis: ${mensagemDaApi(error)}`);
+        return [];
+    }
+}
 
-    /*
-        SCRUM-303
-
-        Integração preparada para o backend.
-
-        Quando o endpoint de reutilização estiver definido
-        pela equipe de backend, esta função poderá utilizar:
-
-        return await consultar("/endpoint-definido-pelo-backend");
-
-        Por enquanto, retornamos os dados demonstrativos
-        utilizados pelo front.
-    */
+function adaptarPasseHestIA(passeApi, fallback) {
+    const nomesNiveis = {
+        APRENDIZ: { nivel: 1, nome: "Aprendiz" },
+        CONSCIENTE: { nivel: 2, nome: "Consciente" },
+        GUARDIAO: { nivel: 3, nome: "Guardião" },
+        EMBAIXADOR: { nivel: 4, nome: "Embaixador" }
+    };
+    const nivelApi = nomesNiveis[String(passeApi.nivel || "").toUpperCase()];
+    const nivelAtual = nivelApi ? nivelApi.nivel : fallback.nivelAtual;
+    const xpAtual = Number(passeApi.xpTotal || 0);
+    const xpProximoNivel = passeApi.xpProximoNivel || fallback.xpProximoNivel;
+    const missoes = Array.isArray(passeApi.missoes) ? passeApi.missoes : [];
 
     return {
-        totalReutilizacoes: 0,
-        reutilizacoesValidas: 0,
-        xpRecebido: 0
+        ...fallback,
+        nivelAtual,
+        nomeNivel: nivelApi ? nivelApi.nome : fallback.nomeNivel,
+        xpAtual,
+        xpProximoNivel,
+        desafios: missoes.map(missao => ({
+            titulo: missao.titulo,
+            descricao: missao.descricao,
+            progressoAtual: missao.progresso,
+            meta: missao.meta,
+            recompensaXp: missao.recompensaXp,
+            concluido: missao.concluida
+        })),
+        niveis: fallback.niveis.map(nivel => ({
+            ...nivel,
+            status: nivel.nivel < nivelAtual
+                ? "concluido"
+                : nivel.nivel === nivelAtual
+                    ? "atual"
+                    : "bloqueado"
+        }))
     };
 }

@@ -79,6 +79,16 @@ public class RespostaReutilizavelController {
         );
     }
 
+    @GetMapping("/empresa/{empresaId}/buscar")
+    public ResponseEntity<List<RespostaReutilizavel>> buscarRespostasAnteriores(
+            @PathVariable Long empresaId,
+            @RequestParam String prompt
+    ) {
+        return ResponseEntity.ok(
+                service.buscarRespostasAnteriores(empresaId, prompt)
+        );
+    }
+
     @PatchMapping("/{id}/reutilizar")
     public ResponseEntity<RespostaReutilizavel>
     registrarReutilizacao(
