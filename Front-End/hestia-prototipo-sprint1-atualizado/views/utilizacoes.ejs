@@ -108,7 +108,7 @@
                         <input
                             type="text"
                             value="<%= email %>"
-                            readonly>
+                            required>
 
                     </label>
 
@@ -171,34 +171,241 @@
 
             </section>
 
+            <section class="panel reutilizaveis-panel">
+
+                <div class="panel-head">
+                    <div>
+                        <h3>Reutilizar resposta anterior</h3>
+                        <p class="conformidade-description">
+                            Encontre uma resposta já gerada antes de fazer uma nova chamada à IA.
+                        </p>
+                    </div>
+                </div>
+
+                <form class="form-grid" id="buscarRespostaForm">
+                    <label class="full">
+                        O que você precisa recuperar?
+                        <input id="promptResposta" type="text" minlength="3"
+                               placeholder="Digite palavras do prompt ou do assunto anterior" required>
+                    </label>
+                    <button class="primary" type="submit">Buscar respostas anteriores</button>
+                </form>
+
+                <div id="respostasReutilizaveis" class="reutilizaveis-list">
+                    <% respostasReutilizaveis.forEach(function(resposta) { %>
+                        <article class="reutilizavel-card" data-resposta-id="<%= resposta.id %>">
+                            <div>
+                                <strong><%= resposta.categoria || "Resposta salva" %></strong>
+                                <p><%= resposta.respostaGerada %></p>
+                                <small><%= resposta.quantidadeReutilizacoes || 0 %> reutilizações</small>
+                            </div>
+                            <button class="secondary reutilizar-resposta" type="button"
+                                    data-id="<%= resposta.id %>">Usar esta resposta</button>
+                        </article>
+                    <% }); %>
+                    <% if (respostasReutilizaveis.length === 0) { %>
+                        <p class="conformidade-description">Nenhuma resposta reutilizável encontrada.</p>
+                    <% } %>
+                </div>
+                <p id="reutilizacaoMensagem" class="conformidade-description" aria-live="polite"></p>
+            </section>
+
 
             <!-- HISTORICO -->
 
-            <section class="panel">
+            <section class="panel utilizacoes-history">
 
                 <div class="panel-head">
 
-                    <h3>
-                        Histórico de utilizações
-                    </h3>
+                    <div>
+
+                        <h3>
+                            Histórico de utilizações
+                        </h3>
+
+                        <p class="conformidade-description">
+                            Acompanhe suas utilizações anteriores de IA, consumo e status de conformidade.
+                        </p>
+
+                    </div>
 
                 </div>
 
 
+                <!-- RESUMO DO HISTORICO -->
+
+                <div class="history-summary">
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Utilizações
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.totalUtilizacoes %>
+                        </strong>
+
+                        <p>
+                            Registros encontrados no histórico.
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Uso conforme
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.taxaConformidade %>%
+                        </strong>
+
+                        <p>
+                            Entre as utilizações que já foram avaliadas.
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-summary-card">
+
+                        <span>
+                            Consumo total
+                        </span>
+
+                        <strong>
+                            <%= resumoHistorico.consumoTotal.toLocaleString("pt-BR") %> tokens
+                        </strong>
+
+                        <p>
+                            Soma do consumo das utilizações registradas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILTROS -->
+
+                <div class="history-filter">
+
+                    <div class="history-filter-head">
+
+                        <div>
+
+                            <strong>
+                                Filtrar histórico
+                            </strong>
+
+                            <span>
+                                Localize utilizações específicas.
+                            </span>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="history-clear"
+                            id="limparFiltros">
+
+                            Limpar filtros
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="history-filter-grid">
+
+                        <label>
+
+                            Modelo
+
+                            <select id="filtroModelo">
+
+                                <option value="">
+                                    Todos os modelos
+                                </option>
+
+                                <option value="ChatGPT">
+                                    ChatGPT
+                                </option>
+
+                                <option value="Copilot">
+                                    Copilot
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <label>
+
+                            Conformidade
+
+                            <select id="filtroConformidade">
+
+                                <option value="">
+                                    Todos os status
+                                </option>
+
+                                <option value="Conforme">
+                                    Conforme
+                                </option>
+
+                                <option value="Não conforme">
+                                    Não conforme
+                                </option>
+
+                                <option value="Aguardando avaliação">
+                                    Aguardando avaliação
+                                </option>
+
+                            </select>
+
+                        </label>
+
+
+                        <label>
+
+                            Data
+
+                            <input
+                                type="date"
+                                id="filtroData">
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TABELA -->
+
                 <div class="table-wrap">
 
-                    <table>
+                    <table class="history-table">
 
                         <thead>
 
                             <tr>
 
                                 <th>
+                                    Data
+                                </th>
+
+                                <th>
                                     Modelo
                                 </th>
 
                                 <th>
-                                    Data
+                                    Finalidade
                                 </th>
 
                                 <th>
@@ -206,7 +413,11 @@
                                 </th>
 
                                 <th>
-                                    Finalidade
+                                    Conformidade
+                                </th>
+
+                                <th>
+                                    Detalhes
                                 </th>
 
                             </tr>
@@ -214,15 +425,97 @@
                         </thead>
 
 
-                        <tbody>
+                        <tbody id="historicoTabela">
 
-                            <tr>
+                            <% historico.forEach(function(utilizacao) { %>
 
-                                <td colspan="4">
-                                    Nenhum registro exibido no protótipo.
-                                </td>
+                                <tr
+                                    class="history-row"
+                                    data-modelo="<%= utilizacao.modelo %>"
+                                    data-conformidade="<%= utilizacao.conformidade %>"
+                                    data-data="<%= utilizacao.dataFiltro %>">
 
-                            </tr>
+                                    <td>
+
+                                        <div class="history-date">
+
+                                            <strong>
+                                                <%= utilizacao.data %>
+                                            </strong>
+
+                                            <span>
+                                                <%= utilizacao.hora %>
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="history-model">
+                                            <%= utilizacao.modelo %>
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+                                        <%= utilizacao.finalidade %>
+                                    </td>
+
+
+                                    <td>
+
+                                        <strong>
+                                            <%= utilizacao.consumo.toLocaleString("pt-BR") %> tokens
+                                        </strong>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <% if (utilizacao.conformidade == "Conforme") { %>
+
+                                            <span class="history-status history-status-success">
+                                                Conforme
+                                            </span>
+
+                                        <% } else if (utilizacao.conformidade == "Não conforme") { %>
+
+                                            <span class="history-status history-status-danger">
+                                                Não conforme
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <span class="history-status history-status-pending">
+                                                Aguardando avaliação
+                                            </span>
+
+                                        <% } %>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <button
+                                            type="button"
+                                            class="history-details-button"
+                                            data-id="<%= utilizacao.id %>">
+
+                                            Ver detalhes
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
 
                         </tbody>
 
@@ -230,7 +523,182 @@
 
                 </div>
 
+
+                <div
+                    class="history-empty"
+                    id="historicoVazio">
+
+                    Nenhuma utilização encontrada para os filtros selecionados.
+
+                </div>
+
             </section>
+
+
+            <!-- MODAL DETALHES -->
+
+            <div
+                class="history-modal"
+                id="historyModal">
+
+                <div
+                    class="history-modal-overlay"
+                    id="historyModalOverlay">
+                </div>
+
+
+                <div class="history-modal-card">
+
+                    <div class="history-modal-head">
+
+                        <div>
+
+                            <p class="eyebrow">
+                                Utilização de IA
+                            </p>
+
+                            <h3>
+                                Detalhes da utilização
+                            </h3>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="history-modal-close"
+                            id="historyModalClose">
+
+                            ×
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="history-detail-grid">
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Modelo
+                            </span>
+
+                            <strong id="detalheModelo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Data e horário
+                            </span>
+
+                            <strong id="detalheData">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Finalidade
+                            </span>
+
+                            <strong id="detalheFinalidade">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item">
+
+                            <span>
+                                Consumo
+                            </span>
+
+                            <strong id="detalheConsumo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="history-detail-item full">
+
+                            <span>
+                                Conformidade
+                            </span>
+
+                            <strong id="detalheConformidade">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Prompt
+                        </span>
+
+                        <p id="detalhePrompt">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Resposta
+                        </span>
+
+                        <p id="detalheResposta">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-detail-block">
+
+                        <span>
+                            Avaliação de conformidade
+                        </span>
+
+                        <p id="detalheJustificativa">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="history-modal-footer">
+
+                        <button
+                            type="button"
+                            class="primary"
+                            id="historyModalCloseFooter">
+
+                            Fechar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
 
 
             <div
@@ -246,8 +714,298 @@
     </div>
 
 
+    <script>
+
+        const historicoUtilizacoes =
+            <%- JSON.stringify(historico) %>;
+
+
+        const filtroModelo =
+            document.getElementById("filtroModelo");
+
+        const filtroConformidade =
+            document.getElementById("filtroConformidade");
+
+        const filtroData =
+            document.getElementById("filtroData");
+
+        const limparFiltros =
+            document.getElementById("limparFiltros");
+
+        const historicoVazio =
+            document.getElementById("historicoVazio");
+
+
+        function filtrarHistorico() {
+
+            const modelo =
+                filtroModelo.value;
+
+            const conformidade =
+                filtroConformidade.value;
+
+            const data =
+                filtroData.value;
+
+
+            const linhas =
+                document.querySelectorAll(".history-row");
+
+
+            let quantidadeVisivel = 0;
+
+
+            linhas.forEach(function(linha) {
+
+                const correspondeModelo =
+                    modelo == "" ||
+                    linha.dataset.modelo == modelo;
+
+                const correspondeConformidade =
+                    conformidade == "" ||
+                    linha.dataset.conformidade == conformidade;
+
+                const correspondeData =
+                    data == "" ||
+                    linha.dataset.data == data;
+
+
+                const mostrar =
+                    correspondeModelo &&
+                    correspondeConformidade &&
+                    correspondeData;
+
+
+                linha.style.display =
+                    mostrar ? "" : "none";
+
+
+                if (mostrar) {
+
+                    quantidadeVisivel++;
+
+                }
+
+            });
+
+
+            historicoVazio.style.display =
+                quantidadeVisivel == 0 ? "block" : "none";
+
+        }
+
+
+        filtroModelo.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        filtroConformidade.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        filtroData.addEventListener(
+            "change",
+            filtrarHistorico
+        );
+
+
+        limparFiltros.addEventListener(
+            "click",
+            function() {
+
+                filtroModelo.value = "";
+
+                filtroConformidade.value = "";
+
+                filtroData.value = "";
+
+                filtrarHistorico();
+
+            }
+        );
+
+
+        const historyModal =
+            document.getElementById("historyModal");
+
+        const historyModalOverlay =
+            document.getElementById("historyModalOverlay");
+
+        const historyModalClose =
+            document.getElementById("historyModalClose");
+
+        const historyModalCloseFooter =
+            document.getElementById("historyModalCloseFooter");
+
+
+        function abrirDetalhes(id) {
+
+            const utilizacao =
+                historicoUtilizacoes.find(
+                    function(item) {
+
+                        return item.id == id;
+
+                    }
+                );
+
+
+            if (!utilizacao) {
+
+                return;
+
+            }
+
+
+            document.getElementById("detalheModelo").textContent =
+                utilizacao.modelo;
+
+            document.getElementById("detalheData").textContent =
+                utilizacao.data + " - " + utilizacao.hora;
+
+            document.getElementById("detalheFinalidade").textContent =
+                utilizacao.finalidade;
+
+            document.getElementById("detalheConsumo").textContent =
+                utilizacao.consumo.toLocaleString("pt-BR") + " tokens";
+
+            document.getElementById("detalheConformidade").textContent =
+                utilizacao.conformidade;
+
+            document.getElementById("detalhePrompt").textContent =
+                utilizacao.prompt;
+
+            document.getElementById("detalheResposta").textContent =
+                utilizacao.resposta;
+
+            document.getElementById("detalheJustificativa").textContent =
+                utilizacao.justificativa;
+
+
+            historyModal.classList.add("show");
+
+            document.body.classList.add("modal-open");
+
+        }
+
+
+        function fecharDetalhes() {
+
+            historyModal.classList.remove("show");
+
+            document.body.classList.remove("modal-open");
+
+        }
+
+
+        document
+            .querySelectorAll(".history-details-button")
+            .forEach(function(botao) {
+
+                botao.addEventListener(
+                    "click",
+                    function() {
+
+                        abrirDetalhes(
+                            Number(botao.dataset.id)
+                        );
+
+                    }
+                );
+
+            });
+
+
+        historyModalClose.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        historyModalCloseFooter.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        historyModalOverlay.addEventListener(
+            "click",
+            fecharDetalhes
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key == "Escape") {
+
+                    fecharDetalhes();
+
+                }
+
+            }
+        );
+
+    </script>
+
+
     <script src="/app.js"></script>
 
 </body>
+
+<script>
+    const buscaForm = document.getElementById("buscarRespostaForm");
+    const listaRespostas = document.getElementById("respostasReutilizaveis");
+    const mensagemReutilizacao = document.getElementById("reutilizacaoMensagem");
+
+    function renderizarRespostas(respostas) {
+        if (!respostas.length) {
+            listaRespostas.innerHTML = "<p class='conformidade-description'>Nenhuma resposta compatível encontrada.</p>";
+            return;
+        }
+        listaRespostas.innerHTML = respostas.map(resposta => `
+            <article class="reutilizavel-card" data-resposta-id="${resposta.id}">
+                <div>
+                    <strong>${resposta.categoria || "Resposta salva"}</strong>
+                    <p>${resposta.respostaGerada}</p>
+                    <small>${resposta.quantidadeReutilizacoes || 0} reutilizações</small>
+                </div>
+                <button class="secondary reutilizar-resposta" type="button" data-id="${resposta.id}">
+                    Usar esta resposta
+                </button>
+            </article>`).join("");
+    }
+
+    buscaForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        mensagemReutilizacao.textContent = "Buscando respostas anteriores...";
+        const prompt = document.getElementById("promptResposta").value;
+        const response = await fetch(`/reutilizacoes/buscar?prompt=${encodeURIComponent(prompt)}`);
+        const respostas = await response.json();
+        if (!response.ok) {
+            mensagemReutilizacao.textContent = respostas.erro || "Não foi possível realizar a busca.";
+            return;
+        }
+        renderizarRespostas(respostas);
+        mensagemReutilizacao.textContent = `${respostas.length} resposta(s) encontrada(s).`;
+    });
+
+    listaRespostas.addEventListener("click", async event => {
+        const button = event.target.closest(".reutilizar-resposta");
+        if (!button) return;
+        button.disabled = true;
+        const response = await fetch(`/reutilizacoes/${button.dataset.id}/reutilizar`, { method: "POST" });
+        const resultado = await response.json();
+        mensagemReutilizacao.textContent = response.ok
+            ? "Resposta reutilizada e experiência registrada no HestIA Pass."
+            : (resultado.erro || "Não foi possível registrar a reutilização.");
+        button.disabled = false;
+    });
+</script>
 
 </html>

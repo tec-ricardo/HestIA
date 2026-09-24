@@ -15,4 +15,10 @@ public interface RespostaReutilizavelRepository
     List<RespostaReutilizavel> findByEmpresaIdAndReutilizavelTrue(
             Long empresaId
     );
+
+    List<RespostaReutilizavel>
+    findTop10ByEmpresaIdAndReutilizavelTrueAndPromptOriginalContainingIgnoreCaseOrderByDataCriacaoDesc(
+            Long empresaId,
+            String prompt
+    );
 }

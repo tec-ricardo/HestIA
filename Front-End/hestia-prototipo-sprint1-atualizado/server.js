@@ -121,7 +121,7 @@ app.get("/", async (req, res) => {
         ranking: "4º",
 
         usoResponsavel:
-        indicadoresMaturidade.usoResponsavel
+            indicadoresMaturidade.usoResponsavel
 
     };
 
@@ -300,7 +300,7 @@ app.get("/", async (req, res) => {
         resumoPessoal: resumoPessoal,
 
         detalhesResumoPessoal:
-        detalhesResumoPessoal
+            detalhesResumoPessoal
 
     });
 
@@ -967,13 +967,13 @@ app.get("/utilizacoes", async (req, res) => {
     const resumoHistorico = {
 
         totalUtilizacoes:
-        historico.length,
+            historico.length,
 
         taxaConformidade:
-        taxaConformidade,
+            taxaConformidade,
 
         consumoTotal:
-        consumoTotal
+            consumoTotal
 
     };
 
@@ -992,7 +992,7 @@ app.get("/utilizacoes", async (req, res) => {
             await consultarReutilizacoes(empresaAtualId),
 
         resumoHistorico:
-        resumoHistorico
+            resumoHistorico
 
     });
 
@@ -1200,7 +1200,7 @@ app.get("/custos", async (req, res) => {
         active: "custos",
 
         dadosEficiencia:
-        dadosEficiencia
+            dadosEficiencia
 
     });
 
@@ -1295,7 +1295,7 @@ app.get(
             active: "configuracoes",
 
             ferramentas:
-            ferramentas
+                ferramentas
 
         });
 
@@ -1633,166 +1633,166 @@ app.get(
 
         const passeMock = {
 
-            nivelAtual: 2,
+    nivelAtual: 2,
 
-            nomeNivel: "Consciente",
+    nomeNivel: "Consciente",
 
-            xpAtual: 235,
+    xpAtual: 235,
 
-            xpProximoNivel: 300,
+    xpProximoNivel: 300,
 
-            taxaConformidade: 87,
+    taxaConformidade: 87,
 
-            totalUtilizacoesAvaliadas: 23,
+    totalUtilizacoesAvaliadas: 23,
 
-            totalUtilizacoesConformes: 20,
+    totalUtilizacoesConformes: 20,
 
-            sequenciaConforme: 7,
-
-
-            regrasXp: [
-                {
-                    titulo: "Utilização conforme",
-                    descricao: "Após avaliação de conformidade.",
-                    xp: "+10 XP",
-                    tipo: "positivo"
-                },
-                {
-                    titulo: "Utilização não conforme",
-                    descricao: "Após avaliação de conformidade.",
-                    xp: "-5 XP",
-                    tipo: "negativo"
-                },
-                {
-                    titulo: "Desafio concluído",
-                    descricao: "Receba o XP indicado no desafio.",
-                    xp: "Bônus XP",
-                    tipo: "bonus"
-                },
-                {
-                    titulo: "Reutilização eficiente",
-                    descricao: "Reutilização válida de uma resposta de IA já existente.",
-                    xp: "XP conforme regra",
-                    tipo: "reutilizacao"
-                }
-            ],
+    sequenciaConforme: 7,
 
 
-            proximoNivel: {
-
-                nivel: 3,
-
-                nome: "Proficiente",
-
-                xpNecessario: 300,
-
-                descricao:
-                    "Amplie sua experiência mantendo práticas responsáveis no uso de IA."
-
-            },
-
-
-            niveis: [
-
-                {
-                    nivel: 1,
-                    nome: "Iniciante",
-                    xpNecessario: 0,
-                    status: "concluido"
-                },
-
-                {
-                    nivel: 2,
-                    nome: "Consciente",
-                    xpNecessario: 100,
-                    status: "atual"
-                },
-
-                {
-                    nivel: 3,
-                    nome: "Proficiente",
-                    xpNecessario: 300,
-                    status: "bloqueado"
-                },
-
-                {
-                    nivel: 4,
-                    nome: "Especialista",
-                    xpNecessario: 700,
-                    status: "bloqueado"
-                },
-
-                {
-                    nivel: 5,
-                    nome: "Embaixador HestIA",
-                    xpNecessario: 1200,
-                    status: "bloqueado"
-                }
-
-            ],
+    regrasXp: [
+    {
+        titulo: "Utilização conforme",
+        descricao: "Após avaliação de conformidade.",
+        xp: "+10 XP",
+        tipo: "positivo"
+    },
+    {
+        titulo: "Utilização não conforme",
+        descricao: "Após avaliação de conformidade.",
+        xp: "-5 XP",
+        tipo: "negativo"
+    },
+    {
+        titulo: "Desafio concluído",
+        descricao: "Receba o XP indicado no desafio.",
+        xp: "Bônus XP",
+        tipo: "bonus"
+    },
+    {
+        titulo: "Reutilização eficiente",
+        descricao: "Reutilização válida de uma resposta de IA já existente.",
+        xp: "XP conforme regra",
+        tipo: "reutilizacao"
+    }
+],
 
 
-            desafios: [
+    proximoNivel: {
 
-                {
-                    id: 1,
-                    titulo: "Uso Responsável",
-                    descricao:
-                        "Alcance 25 utilizações avaliadas como conformes.",
-                    progressoAtual: 20,
-                    meta: 25,
-                    recompensaXp: 25,
-                    concluido: false
-                },
+        nivel: 3,
 
-                {
-                    id: 2,
-                    titulo: "Consistência",
-                    descricao:
-                        "Alcance 10 utilizações conformes consecutivas.",
-                    progressoAtual: 7,
-                    meta: 10,
-                    recompensaXp: 30,
-                    concluido: false
-                },
+        nome: "Proficiente",
 
-                {
-                    id: 3,
-                    titulo: "Experiência em IA",
-                    descricao:
-                        "Complete 20 utilizações avaliadas.",
-                    progressoAtual: 20,
-                    meta: 20,
-                    recompensaXp: 25,
-                    concluido: true
-                }
+        xpNecessario: 300,
 
-            ],
+        descricao:
+            "Amplie sua experiência mantendo práticas responsáveis no uso de IA."
+
+    },
 
 
-            reconhecimentoMaximo: {
+    niveis: [
 
-                titulo: "Embaixador HestIA",
+        {
+            nivel: 1,
+            nome: "Iniciante",
+            xpNecessario: 0,
+            status: "concluido"
+        },
 
-                descricao:
-                    "Reconhecimento institucional pela evolução e pelo uso responsável de IA.",
+        {
+            nivel: 2,
+            nome: "Consciente",
+            xpNecessario: 100,
+            status: "atual"
+        },
 
-                reconhecimento:
-                    "Reconhecimento institucional HestIA",
+        {
+            nivel: 3,
+            nome: "Proficiente",
+            xpNecessario: 300,
+            status: "bloqueado"
+        },
 
-                requisitos: [
+        {
+            nivel: 4,
+            nome: "Especialista",
+            xpNecessario: 700,
+            status: "bloqueado"
+        },
 
-                    "Alcançar o nível máximo do HestIA Pass",
+        {
+            nivel: 5,
+            nome: "Embaixador HestIA",
+            xpNecessario: 1200,
+            status: "bloqueado"
+        }
 
-                    "Cumprir os requisitos de experiência do programa",
+    ],
 
-                    "Manter o nível de conformidade definido para o programa"
 
-                ]
+    desafios: [
 
-            }
+        {
+            id: 1,
+            titulo: "Uso Responsável",
+            descricao:
+                "Alcance 25 utilizações avaliadas como conformes.",
+            progressoAtual: 20,
+            meta: 25,
+            recompensaXp: 25,
+            concluido: false
+        },
 
-        };
+        {
+            id: 2,
+            titulo: "Consistência",
+            descricao:
+                "Alcance 10 utilizações conformes consecutivas.",
+            progressoAtual: 7,
+            meta: 10,
+            recompensaXp: 30,
+            concluido: false
+        },
+
+        {
+            id: 3,
+            titulo: "Experiência em IA",
+            descricao:
+                "Complete 20 utilizações avaliadas.",
+            progressoAtual: 20,
+            meta: 20,
+            recompensaXp: 25,
+            concluido: true
+        }
+
+    ],
+
+
+    reconhecimentoMaximo: {
+
+        titulo: "Embaixador HestIA",
+
+        descricao:
+            "Reconhecimento institucional pela evolução e pelo uso responsável de IA.",
+
+        reconhecimento:
+            "Reconhecimento institucional HestIA",
+
+        requisitos: [
+
+            "Alcançar o nível máximo do HestIA Pass",
+
+            "Cumprir os requisitos de experiência do programa",
+
+            "Manter o nível de conformidade definido para o programa"
+
+        ]
+
+    }
+
+};
 
         /*
             AXIOS DO HESTIA PASS
@@ -2018,10 +2018,10 @@ app.post(
             {
 
                 nome:
-                req.body.nome,
+                    req.body.nome,
 
                 cnpj:
-                req.body.cnpj,
+                    req.body.cnpj,
 
                 configuracoesGerais:
                     req.body.configuracoesGerais ||
@@ -2052,7 +2052,7 @@ app.post(
             {
 
                 nome:
-                req.body.nome,
+                    req.body.nome,
 
                 responsavel:
                     req.body.responsavel ||
@@ -2087,19 +2087,19 @@ app.post(
             {
 
                 nome:
-                req.body.nome,
+                    req.body.nome,
 
                 email:
-                req.body.email,
+                    req.body.email,
 
                 senha:
-                req.body.senha,
+                    req.body.senha,
 
                 cargo:
-                req.body.cargo,
+                    req.body.cargo,
 
                 perfil:
-                req.body.perfil,
+                    req.body.perfil,
 
                 ativo: true,
 
@@ -2133,20 +2133,20 @@ app.post(
             {
 
                 nome:
-                req.body.nome,
+                    req.body.nome,
 
                 fornecedor:
-                req.body.fornecedor,
+                    req.body.fornecedor,
 
                 descricao:
                     req.body.descricao ||
                     null,
 
                 tipo:
-                req.body.tipo,
+                    req.body.tipo,
 
                 finalidadeUso:
-                req.body.finalidadeUso,
+                    req.body.finalidadeUso,
 
                 urlAcesso:
                     req.body.urlAcesso ||
@@ -2181,16 +2181,16 @@ app.post(
             {
 
                 titulo:
-                req.body.titulo,
+                    req.body.titulo,
 
                 descricao:
-                req.body.descricao,
+                    req.body.descricao,
 
                 conteudo:
-                req.body.conteudo,
+                    req.body.conteudo,
 
                 versao:
-                req.body.versao,
+                    req.body.versao,
 
                 ativa: true,
 
@@ -2375,7 +2375,7 @@ async function consultarObjetoComFallback(
         return (
             response.data &&
             typeof response.data ===
-            "object" &&
+                "object" &&
             !Array.isArray(
                 response.data
             )
@@ -2430,19 +2430,19 @@ async function carregarIndicadores() {
     return {
 
         empresas:
-        empresas.length,
+            empresas.length,
 
         departamentos:
-        departamentos.length,
+            departamentos.length,
 
         usuarios:
-        usuarios.length,
+            usuarios.length,
 
         politicas:
-        politicas.length,
+            politicas.length,
 
         ferramentas:
-        ferramentas.length
+            ferramentas.length
 
     };
 
@@ -2477,12 +2477,12 @@ function mensagemDaApi(error) {
 
 
     return (
-            data &&
-            (
-                data.message ||
-                data.error
-            )
+        data &&
+        (
+            data.message ||
+            data.error
         )
+    )
         ||
         (
             error.code ===
