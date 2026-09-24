@@ -1305,6 +1305,147 @@ app.get(
 
 /* MAPA DE RISCO */
 
+function calcularRiscoDepartamental(fatores) {
+
+    if (
+        fatores == null ||
+        typeof fatores.conformidade != "number" ||
+        typeof fatores.nivelRiscoFerramenta != "number" ||
+        typeof fatores.tratamentoDadosPessoais != "number" ||
+        typeof fatores.statusFerramenta != "number"
+    ) {
+
+        return null;
+
+    }
+
+    return (
+        fatores.conformidade * 0.35 +
+        fatores.nivelRiscoFerramenta * 0.30 +
+        fatores.tratamentoDadosPessoais * 0.20 +
+        fatores.statusFerramenta * 0.15
+    );
+
+}
+
+
+function classificarNivelRisco(pontuacao) {
+
+    if (
+        pontuacao == null ||
+        typeof pontuacao != "number"
+    ) {
+
+        return {
+            nivel: "Não avaliado",
+            classe: "not-evaluated",
+            descricao:
+                "Não existem dados suficientes para avaliar o risco."
+        };
+
+    }
+
+
+    if (pontuacao <= 25) {
+
+        return {
+            nivel: "Baixo",
+            classe: "low",
+            descricao:
+                "Uso de IA com menor nível de atenção."
+        };
+
+    }
+
+
+    if (pontuacao <= 50) {
+
+        return {
+            nivel: "Médio",
+            classe: "medium",
+            descricao:
+                "Uso de IA que requer acompanhamento."
+        };
+
+    }
+
+
+    if (pontuacao <= 75) {
+
+        return {
+            nivel: "Alto",
+            classe: "high",
+            descricao:
+                "Uso de IA que requer maior atenção."
+        };
+
+    }
+
+
+    return {
+        nivel: "Crítico",
+        classe: "critical",
+        descricao:
+            "Uso de IA que requer prioridade de análise e tratamento."
+    };
+
+}
+
+
+function calcularNivelRiscoDepartamento(item) {
+
+    let pontuacao = null;
+
+
+    if (typeof item.pontuacao == "number") {
+
+        pontuacao =
+            item.pontuacao;
+
+    } else if (item.fatores) {
+
+        pontuacao =
+            calcularRiscoDepartamental(
+                item.fatores
+            );
+
+    }
+
+
+    if (pontuacao == null) {
+
+        return item;
+
+    }
+
+
+    const classificacao =
+        classificarNivelRisco(
+            pontuacao
+        );
+
+
+    return {
+        ...item,
+
+        pontuacao:
+            Math.round(
+                pontuacao * 100
+            ) / 100,
+
+        nivel:
+        classificacao.nivel,
+
+        classe:
+        classificacao.classe,
+
+        descricao:
+        classificacao.descricao
+    };
+
+}
+
+
 app.get(
     "/mapa-risco",
     async (req, res) => {
@@ -1380,44 +1521,60 @@ app.get(
         ];
 
 
-        const mapaRisco =
+        const mapaRiscoRecebido =
             await consultarListaComFallback(
                 "/indicadores/mapa-risco",
                 mapaRiscoMock
             );
 
 
+        const mapaRisco =
+            mapaRiscoRecebido.map(
+                calcularNivelRiscoDepartamento
+            );
+
+
         const resumoRisco = {
 
             baixo:
-                mapaRisco.filter(
-                    function(item) {
+            mapaRisco.filter(
+                function(item) {
 
-                        return item.classe ==
-                            "low";
+                    return item.classe ==
+                        "low";
 
-                    }
-                ).length,
+                }
+            ).length,
 
             medio:
-                mapaRisco.filter(
-                    function(item) {
+            mapaRisco.filter(
+                function(item) {
 
-                        return item.classe ==
-                            "medium";
+                    return item.classe ==
+                        "medium";
 
-                    }
-                ).length,
+                }
+            ).length,
 
             alto:
-                mapaRisco.filter(
-                    function(item) {
+            mapaRisco.filter(
+                function(item) {
 
-                        return item.classe ==
-                            "high";
+                    return item.classe ==
+                        "high";
 
-                    }
-                ).length
+                }
+            ).length,
+
+            critico:
+            mapaRisco.filter(
+                function(item) {
+
+                    return item.classe ==
+                        "critical";
+
+                }
+            ).length
 
         };
 
@@ -1431,10 +1588,10 @@ app.get(
             active: "mapa-risco",
 
             mapaRisco:
-                mapaRisco,
+            mapaRisco,
 
             resumoRisco:
-                resumoRisco
+            resumoRisco
 
         });
 

@@ -6,16 +6,16 @@
     <meta charset="UTF-8">
 
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
 
     <title>
         HestIA - Visão Geral
     </title>
 
     <link
-        rel="stylesheet"
-        href="/styles.css">
+            rel="stylesheet"
+            href="/styles.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -23,1438 +23,1436 @@
 
 <body>
 
-    <div class="app-shell">
+<div class="app-shell">
 
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
+    <%- include("menu", {
+    perfil: perfil,
+    email: email,
+    active: active
+    }) %>
 
         <main class="main">
 
-            <!-- TOPO -->
+        <header class="topbar">
 
-            <header class="topbar">
-
-                <button
+            <button
                     class="menu-button"
                     id="menuButton">
 
-                    ☰
+                ☰
 
-                </button>
-
-
-                <div>
-
-                    <p class="eyebrow">
-                        Plataforma corporativa
-                    </p>
-
-                    <h1>
-                        Visão geral
-                    </h1>
-
-                </div>
+            </button>
 
 
-                <div class="profile-switch">
+            <div>
+
+                <p class="eyebrow">
+                    Plataforma corporativa
+                </p>
+
+                <h1>
+                    Visão geral
+                </h1>
+
+            </div>
+
+
+            <div class="profile-switch">
 
                     <span>
                         <%= email %>
                     </span>
 
-                    <select disabled>
+                <select disabled>
 
-                        <% if (perfil == "colaborador") { %>
+                    <% if (perfil == "colaborador") { %>
 
-                            <option selected>
-                                Colaborador
-                            </option>
+                        <option selected>
+                            Colaborador
+                        </option>
 
-                        <% } %>
-
-
-                        <% if (perfil == "gestor") { %>
-
-                            <option selected>
-                                Gestor
-                            </option>
-
-                        <% } %>
+                    <% } %>
 
 
-                        <% if (perfil == "administrador") { %>
+                    <% if (perfil == "gestor") { %>
 
-                            <option selected>
-                                Administrador
-                            </option>
+                        <option selected>
+                            Gestor
+                        </option>
 
-                        <% } %>
-
-                    </select>
-
-                </div>
+                    <% } %>
 
 
-                <a
+                    <% if (perfil == "administrador") { %>
+
+                        <option selected>
+                            Administrador
+                        </option>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <a
                     class="topbar-logout"
                     href="/sair">
 
-                    Sair
+                Sair
 
-                </a>
+            </a>
 
-            </header>
-
-
-
-            <!-- COLABORADOR -->
-
-            <% if (perfil == "colaborador") { %>
-
-                <section class="hero-card">
-
-                    <p class="eyebrow">
-                        Colaborador
-                    </p>
-
-                    <h2>
-                        Acompanhe seu uso de Inteligência Artificial
-                    </h2>
-
-                    <p>
-                        Consulte seus principais indicadores relacionados
-                        à utilização de Inteligência Artificial.
-                    </p>
-
-                </section>
+        </header>
 
 
-                <!-- KPIS -->
 
-                <section class="dashboard-summary">
+        <!-- COLABORADOR -->
 
-                    <article class="dashboard-summary-card">
+        <% if (perfil == "colaborador") { %>
+
+            <section class="hero-card">
+
+                <p class="eyebrow">
+                    Colaborador
+                </p>
+
+                <h2>
+                    Acompanhe seu uso de Inteligência Artificial
+                </h2>
+
+                <p>
+                    Consulte seus principais indicadores relacionados
+                    à utilização de Inteligência Artificial.
+                </p>
+
+            </section>
+
+
+            <!-- KPIS -->
+
+            <section class="dashboard-summary">
+
+                <article class="dashboard-summary-card">
 
                         <span>
                             AI Maturity Score
                         </span>
 
-                        <strong>
-                            <%= resumoPessoal.maturityScore %>
-                        </strong>
+                    <strong>
+                        <%= resumoPessoal.maturityScore %>
+                    </strong>
 
-                        <p>
-                            Indicador de maturidade
-                        </p>
+                    <p>
+                        Indicador de maturidade
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             AI Credits
                         </span>
 
-                        <strong>
-                            <%= resumoPessoal.aiCredits %>
-                        </strong>
+                    <strong>
+                        <%= resumoPessoal.aiCredits %>
+                    </strong>
 
-                        <p>
-                            Saldo atual
-                        </p>
+                    <p>
+                        Saldo atual
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Ranking
                         </span>
 
-                        <strong>
-                            <%= resumoPessoal.ranking %>
-                        </strong>
+                    <strong>
+                        <%= resumoPessoal.ranking %>
+                    </strong>
 
-                        <p>
-                            Classificação atual
-                        </p>
+                    <p>
+                        Classificação atual
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Uso responsável
                         </span>
 
-                        <strong>
-                            <%= resumoPessoal.usoResponsavel %>
-                        </strong>
+                    <strong>
+                        <%= resumoPessoal.usoResponsavel %>
+                    </strong>
 
-                        <p>
-                            Indicador de conformidade
-                        </p>
+                    <p>
+                        Indicador de conformidade
+                    </p>
 
-                    </article>
+                </article>
 
-                </section>
+            </section>
 
 
-                <!-- GRAFICOS -->
+            <!-- GRAFICOS -->
 
-                <section class="dashboard-grid">
+            <section class="dashboard-grid">
 
-                    <article class="dashboard-panel">
+                <article class="dashboard-panel">
 
-                        <div class="dashboard-title">
+                    <div class="dashboard-title">
 
-                            <div>
+                        <div>
 
-                                <h3>
-                                    Indicadores de maturidade
-                                </h3>
+                            <h3>
+                                Indicadores de maturidade
+                            </h3>
 
-                                <span>
+                            <span>
                                     AI Maturity Score
                                 </span>
 
-                            </div>
-
                         </div>
 
-
-                        <div class="dashboard-chart">
-
-                            <canvas id="graficoColaborador"></canvas>
-
-                        </div>
-
-                    </article>
+                    </div>
 
 
-                    <article class="dashboard-panel">
+                    <div class="dashboard-chart">
 
-                        <div class="dashboard-title">
+                        <canvas id="graficoColaborador"></canvas>
 
-                            <div>
+                    </div>
 
-                                <h3>
-                                    Ranking de AI Credits
-                                </h3>
+                </article>
 
-                                <span>
+
+                <article class="dashboard-panel">
+
+                    <div class="dashboard-title">
+
+                        <div>
+
+                            <h3>
+                                Ranking de AI Credits
+                            </h3>
+
+                            <span>
                                     Classificação
                                 </span>
 
+                        </div>
+
+                    </div>
+
+
+                    <div class="ranking-list">
+
+                        <div class="ranking-item">
+
+                            <div class="ranking-position">
+                                1
+                            </div>
+
+                            <div class="ranking-info">
+
+                                <strong>
+                                    Ana
+                                </strong>
+
+                                <span>
+                                        AI Credits
+                                    </span>
+
+                            </div>
+
+                            <div class="ranking-value">
+                                920
                             </div>
 
                         </div>
 
 
-                        <div class="ranking-list">
+                        <div class="ranking-item">
 
-                            <div class="ranking-item">
+                            <div class="ranking-position">
+                                2
+                            </div>
 
-                                <div class="ranking-position">
-                                    1
-                                </div>
+                            <div class="ranking-info">
 
-                                <div class="ranking-info">
+                                <strong>
+                                    Carlos
+                                </strong>
 
-                                    <strong>
-                                        Ana
-                                    </strong>
-
-                                    <span>
+                                <span>
                                         AI Credits
                                     </span>
-
-                                </div>
-
-                                <div class="ranking-value">
-                                    920
-                                </div>
 
                             </div>
 
-
-                            <div class="ranking-item">
-
-                                <div class="ranking-position">
-                                    2
-                                </div>
-
-                                <div class="ranking-info">
-
-                                    <strong>
-                                        Carlos
-                                    </strong>
-
-                                    <span>
-                                        AI Credits
-                                    </span>
-
-                                </div>
-
-                                <div class="ranking-value">
-                                    810
-                                </div>
-
-                            </div>
-
-
-                            <div class="ranking-item">
-
-                                <div class="ranking-position">
-                                    3
-                                </div>
-
-                                <div class="ranking-info">
-
-                                    <strong>
-                                        Mariana
-                                    </strong>
-
-                                    <span>
-                                        AI Credits
-                                    </span>
-
-                                </div>
-
-                                <div class="ranking-value">
-                                    750
-                                </div>
-
-                            </div>
-
-
-                            <div class="ranking-item">
-
-                                <div class="ranking-position">
-                                    4
-                                </div>
-
-                                <div class="ranking-info">
-
-                                    <strong>
-                                        Você
-                                    </strong>
-
-                                    <span>
-                                        AI Credits
-                                    </span>
-
-                                </div>
-
-                                <div class="ranking-value">
-                                    680
-                                </div>
-
+                            <div class="ranking-value">
+                                810
                             </div>
 
                         </div>
 
-                    </article>
 
-                </section>
+                        <div class="ranking-item">
+
+                            <div class="ranking-position">
+                                3
+                            </div>
+
+                            <div class="ranking-info">
+
+                                <strong>
+                                    Mariana
+                                </strong>
+
+                                <span>
+                                        AI Credits
+                                    </span>
+
+                            </div>
+
+                            <div class="ranking-value">
+                                750
+                            </div>
+
+                        </div>
 
 
-                <!-- =====================================================
-                     SCRUM-198 / SCRUM-200
-                     RESUMO PESSOAL
-                     ===================================================== -->
+                        <div class="ranking-item">
 
-                <section class="personal-details-section">
+                            <div class="ranking-position">
+                                4
+                            </div>
 
-                    <div class="personal-details-header">
+                            <div class="ranking-info">
+
+                                <strong>
+                                    Você
+                                </strong>
+
+                                <span>
+                                        AI Credits
+                                    </span>
+
+                            </div>
+
+                            <div class="ranking-value">
+                                680
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- =====================================================
+                 SCRUM-198 / SCRUM-200
+                 RESUMO PESSOAL
+                 ===================================================== -->
+
+            <section class="personal-details-section">
+
+                <div class="personal-details-header">
 
                         <span class="personal-details-label">
                             SUA JORNADA
                         </span>
 
-                        <h2>
-                            Resumo pessoal
-                        </h2>
+                    <h2>
+                        Resumo pessoal
+                    </h2>
 
-                        <p>
-                            Acompanhe suas atividades recentes e sua evolução
-                            no uso responsável de Inteligência Artificial.
-                        </p>
+                    <p>
+                        Acompanhe suas atividades recentes e sua evolução
+                        no uso responsável de Inteligência Artificial.
+                    </p>
+
+                </div>
+
+
+                <!-- ATIVIDADE RECENTE -->
+
+                <article class="personal-activity-card">
+
+                    <div class="personal-card-header">
+
+                        <div>
+
+                            <h3>
+                                Atividade recente
+                            </h3>
+
+                            <p>
+                                Suas últimas utilizações avaliadas.
+                            </p>
+
+                        </div>
+
+                        <a href="/utilizacoes">
+                            Ver histórico →
+                        </a>
 
                     </div>
 
 
-                    <!-- ATIVIDADE RECENTE -->
+                    <div class="personal-activity-list">
 
-                    <article class="personal-activity-card">
+                        <% detalhesResumoPessoal.atividadeRecente.forEach(function(atividade) { %>
 
-                        <div class="personal-card-header">
+                            <div class="personal-activity-item">
 
-                            <div>
-
-                                <h3>
-                                    Atividade recente
-                                </h3>
-
-                                <p>
-                                    Suas últimas utilizações avaliadas.
-                                </p>
-
-                            </div>
-
-                            <a href="/utilizacoes">
-                                Ver histórico →
-                            </a>
-
-                        </div>
-
-
-                        <div class="personal-activity-list">
-
-                            <% detalhesResumoPessoal.atividadeRecente.forEach(function(atividade) { %>
-
-                                <div class="personal-activity-item">
-
-                                    <div
+                                <div
                                         class="personal-activity-status
                                         <%= atividade.status == 'Conforme'
-                                            ? 'personal-status-success'
-                                            : 'personal-status-warning' %>">
+                                                ? 'personal-status-success'
+                                                : 'personal-status-warning' %>">
 
-                                        <%= atividade.status == "Conforme" ? "✓" : "!" %>
+                                    <%= atividade.status == "Conforme" ? "✓" : "!" %>
 
-                                    </div>
+                                </div>
 
 
-                                    <div class="personal-activity-info">
+                                <div class="personal-activity-info">
 
-                                        <strong>
-                                            <%= atividade.titulo %>
-                                        </strong>
+                                    <strong>
+                                        <%= atividade.titulo %>
+                                    </strong>
 
-                                        <span>
+                                    <span>
                                             <%= atividade.modelo %>
                                         </span>
 
-                                    </div>
+                                </div>
 
 
-                                    <span
+                                <span
                                         class="personal-status-badge
                                         <%= atividade.status == 'Conforme'
-                                            ? 'personal-badge-success'
-                                            : 'personal-badge-warning' %>">
+                                                ? 'personal-badge-success'
+                                                : 'personal-badge-warning' %>">
 
                                         <%= atividade.status %>
 
                                     </span>
 
-                                </div>
+                            </div>
 
-                            <% }) %>
+                        <% }) %>
 
-                        </div>
+                    </div>
 
-                    </article>
-
-
-                    <!-- EVOLUCAO + DESTAQUES -->
-
-                    <div class="personal-details-grid">
+                </article>
 
 
-                        <!-- SUA EVOLUCAO -->
+                <!-- EVOLUCAO + DESTAQUES -->
 
-                        <article class="personal-progress-card">
+                <div class="personal-details-grid">
+
+
+                    <!-- SUA EVOLUCAO -->
+
+                    <article class="personal-progress-card">
 
                             <span class="personal-card-label">
                                 SUA EVOLUÇÃO
                             </span>
 
 
-                            <div class="personal-level-row">
+                        <div class="personal-level-row">
 
-                                <div class="personal-level-circle">
+                            <div class="personal-level-circle">
 
-                                    <small>
-                                        NÍVEL
-                                    </small>
+                                <small>
+                                    NÍVEL
+                                </small>
 
-                                    <strong>
-                                        <%= detalhesResumoPessoal.progresso.nivelNumero %>
-                                    </strong>
+                                <strong>
+                                    <%= detalhesResumoPessoal.progresso.nivelNumero %>
+                                </strong>
 
-                                </div>
+                            </div>
 
 
-                                <div>
+                            <div>
 
                                     <span class="personal-level-caption">
                                         Nível atual
                                     </span>
 
-                                    <h3>
-                                        <%= detalhesResumoPessoal.progresso.nivel %>
-                                    </h3>
-
-                                </div>
+                                <h3>
+                                    <%= detalhesResumoPessoal.progresso.nivel %>
+                                </h3>
 
                             </div>
 
+                        </div>
 
-                            <div class="personal-xp-row">
 
-                                <strong>
-                                    <%= detalhesResumoPessoal.progresso.xpAtual %> XP
-                                </strong>
+                        <div class="personal-xp-row">
 
-                                <span>
+                            <strong>
+                                <%= detalhesResumoPessoal.progresso.xpAtual %> XP
+                            </strong>
+
+                            <span>
                                     <%= detalhesResumoPessoal.progresso.xpProximoNivel %> XP
                                 </span>
 
-                            </div>
+                        </div>
 
 
-                            <div class="personal-xp-progress">
+                        <div class="personal-xp-progress">
 
-                                <div
+                            <div
                                     class="personal-xp-progress-value"
                                     style="width:
                                     <%= Math.min(
-                                        (detalhesResumoPessoal.progresso.xpAtual /
-                                        detalhesResumoPessoal.progresso.xpProximoNivel) * 100,
-                                        100
+                                            (detalhesResumoPessoal.progresso.xpAtual /
+                                                    detalhesResumoPessoal.progresso.xpProximoNivel) * 100,
+                                            100
                                     ) %>%;">
-                                </div>
-
                             </div>
 
-
-                            <p class="personal-xp-message">
-
-                                Faltam
-
-                                <strong>
-                                    <%= detalhesResumoPessoal.progresso.xpFaltante %> XP
-                                </strong>
-
-                                para alcançar
-
-                                <%= detalhesResumoPessoal.progresso.proximoNivel %>.
-
-                            </p>
+                        </div>
 
 
-                            <a
+                        <p class="personal-xp-message">
+
+                            Faltam
+
+                            <strong>
+                                <%= detalhesResumoPessoal.progresso.xpFaltante %> XP
+                            </strong>
+
+                            para alcançar
+
+                            <%= detalhesResumoPessoal.progresso.proximoNivel %>.
+
+                        </p>
+
+
+                        <a
                                 class="personal-card-link"
                                 href="/passe-hestia">
 
-                                Ver HestIA Pass →
+                            Ver HestIA Pass →
 
-                            </a>
+                        </a>
 
-                        </article>
+                    </article>
 
 
-                        <!-- DESTAQUES -->
+                    <!-- DESTAQUES -->
 
-                        <article class="personal-highlights-card">
+                    <article class="personal-highlights-card">
 
                             <span class="personal-card-label">
                                 DESTAQUES DA JORNADA
                             </span>
 
-                            <h3>
-                                Seu desempenho recente
-                            </h3>
+                        <h3>
+                            Seu desempenho recente
+                        </h3>
 
 
-                            <div class="personal-highlights-list">
+                        <div class="personal-highlights-list">
 
 
-                                <div class="personal-highlight-item">
+                            <div class="personal-highlight-item">
 
-                                    <div class="personal-highlight-icon">
-                                        ✓
-                                    </div>
+                                <div class="personal-highlight-icon">
+                                    ✓
+                                </div>
 
-                                    <div>
+                                <div>
 
-                                        <strong>
-                                            <%= detalhesResumoPessoal.destaques.sequenciaConforme %>
-                                        </strong>
+                                    <strong>
+                                        <%= detalhesResumoPessoal.destaques.sequenciaConforme %>
+                                    </strong>
 
-                                        <span>
+                                    <span>
                                             utilizações conformes consecutivas
                                         </span>
 
-                                    </div>
-
                                 </div>
 
+                            </div>
 
-                                <div class="personal-highlight-item">
 
-                                    <div class="personal-highlight-icon">
-                                        ✓
-                                    </div>
+                            <div class="personal-highlight-item">
 
-                                    <div>
+                                <div class="personal-highlight-icon">
+                                    ✓
+                                </div>
 
-                                        <strong>
-                                            <%= detalhesResumoPessoal.destaques.utilizacoesConformes %>
-                                        </strong>
+                                <div>
 
-                                        <span>
+                                    <strong>
+                                        <%= detalhesResumoPessoal.destaques.utilizacoesConformes %>
+                                    </strong>
+
+                                    <span>
                                             utilizações conformes
                                         </span>
 
-                                    </div>
-
                                 </div>
 
+                            </div>
 
-                                <div class="personal-highlight-item">
 
-                                    <div class="personal-highlight-icon">
-                                        ✓
-                                    </div>
+                            <div class="personal-highlight-item">
 
-                                    <div>
+                                <div class="personal-highlight-icon">
+                                    ✓
+                                </div>
 
-                                        <strong>
-                                            <%= detalhesResumoPessoal.destaques.utilizacoesAvaliadas %>
-                                        </strong>
+                                <div>
 
-                                        <span>
+                                    <strong>
+                                        <%= detalhesResumoPessoal.destaques.utilizacoesAvaliadas %>
+                                    </strong>
+
+                                    <span>
                                             utilizações avaliadas
                                         </span>
 
-                                    </div>
-
                                 </div>
-
 
                             </div>
 
-                        </article>
-
-                    </div>
-
-
-                    <!-- CONQUISTAS -->
-
-                    <article class="personal-achievements-card">
-
-                        <div class="personal-card-header">
-
-                            <div>
-
-                                <h3>
-                                    Últimas conquistas
-                                </h3>
-
-                                <p>
-                                    Eventos recentes da sua evolução no HestIA Pass.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="personal-achievements-list">
-
-                            <% detalhesResumoPessoal.conquistasRecentes.forEach(function(conquista) { %>
-
-                                <div class="personal-achievement-item">
-
-                                    <div class="personal-achievement-icon">
-                                        +
-                                    </div>
-
-
-                                    <div class="personal-achievement-info">
-
-                                        <strong>
-                                            <%= conquista.descricao %>
-                                        </strong>
-
-                                        <span>
-                                            <%= conquista.recompensa %>
-                                        </span>
-
-                                    </div>
-
-
-                                    <span class="personal-achievement-date">
-                                        <%= conquista.data %>
-                                    </span>
-
-                                </div>
-
-                            <% }) %>
 
                         </div>
 
                     </article>
 
-                </section>
+                </div>
 
 
-            <% } %>
+                <!-- CONQUISTAS -->
+
+                <article class="personal-achievements-card">
+
+                    <div class="personal-card-header">
+
+                        <div>
+
+                            <h3>
+                                Últimas conquistas
+                            </h3>
+
+                            <p>
+                                Eventos recentes da sua evolução no HestIA Pass.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="personal-achievements-list">
+
+                        <% detalhesResumoPessoal.conquistasRecentes.forEach(function(conquista) { %>
+
+                            <div class="personal-achievement-item">
+
+                                <div class="personal-achievement-icon">
+                                    +
+                                </div>
+
+
+                                <div class="personal-achievement-info">
+
+                                    <strong>
+                                        <%= conquista.descricao %>
+                                    </strong>
+
+                                    <span>
+                                            <%= conquista.recompensa %>
+                                        </span>
+
+                                </div>
+
+
+                                <span class="personal-achievement-date">
+                                        <%= conquista.data %>
+                                    </span>
+
+                            </div>
+
+                        <% }) %>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+        <% } %>
 
 
 
-            <!-- GESTOR -->
+        <!-- GESTOR -->
 
-            <% if (perfil == "gestor") { %>
+        <% if (perfil == "gestor") { %>
 
-                <section class="hero-card">
+            <section class="hero-card">
 
-                    <p class="eyebrow">
-                        Gestor
-                    </p>
+                <p class="eyebrow">
+                    Gestor
+                </p>
 
-                    <h2>
-                        Acompanhe maturidade, custos e eficiência
-                    </h2>
+                <h2>
+                    Acompanhe maturidade, custos e eficiência
+                </h2>
 
-                    <p>
-                        Visualize os principais indicadores relacionados
-                        ao uso de Inteligência Artificial e acompanhe
-                        informações para apoiar a tomada de decisão.
-                    </p>
+                <p>
+                    Visualize os principais indicadores relacionados
+                    ao uso de Inteligência Artificial e acompanhe
+                    informações para apoiar a tomada de decisão.
+                </p>
 
-                </section>
+            </section>
 
 
-                <!-- KPIS -->
+            <!-- KPIS -->
 
-                <section class="dashboard-summary">
+            <section class="dashboard-summary">
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             AI Maturity Score
                         </span>
 
-                        <strong>
-                            74
-                        </strong>
+                    <strong>
+                        74
+                    </strong>
 
-                        <p>
-                            Indicador de maturidade
-                        </p>
+                    <p>
+                        Indicador de maturidade
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Custos
                         </span>
 
-                        <strong>
-                            R$ 10.000
-                        </strong>
+                    <strong>
+                        R$ 10.000
+                    </strong>
 
-                        <p>
-                            Utilização de IA
-                        </p>
+                    <p>
+                        Utilização de IA
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Departamentos
                         </span>
 
-                        <strong>
-                            <%= indicadores.departamentos %>
-                        </strong>
+                    <strong>
+                        <%= indicadores.departamentos %>
+                    </strong>
 
-                        <p>
-                            Áreas analisadas
-                        </p>
+                    <p>
+                        Áreas analisadas
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Produtividade
                         </span>
 
-                        <strong>
-                            76
-                        </strong>
+                    <strong>
+                        76
+                    </strong>
 
-                        <p>
-                            Indicador de maturidade
-                        </p>
+                    <p>
+                        Indicador de maturidade
+                    </p>
 
-                    </article>
+                </article>
 
-                </section>
+            </section>
 
 
-                <!-- GRAFICOS -->
+            <!-- GRAFICOS -->
 
-                <section class="dashboard-grid">
+            <section class="dashboard-grid">
 
-                    <article class="dashboard-panel">
+                <article class="dashboard-panel">
 
-                        <div class="dashboard-title">
+                    <div class="dashboard-title">
 
-                            <div>
+                        <div>
 
-                                <h3>
-                                    Maturidade por departamento
-                                </h3>
+                            <h3>
+                                Maturidade por departamento
+                            </h3>
 
-                                <span>
+                            <span>
                                     AI Maturity Score
                                 </span>
 
-                            </div>
-
                         </div>
 
-
-                        <div class="dashboard-chart">
-
-                            <canvas id="graficoMaturidadeGestor"></canvas>
-
-                        </div>
-
-                    </article>
+                    </div>
 
 
-                    <article class="dashboard-panel">
+                    <div class="dashboard-chart">
 
-                        <div class="dashboard-title">
+                        <canvas id="graficoMaturidadeGestor"></canvas>
 
-                            <div>
+                    </div>
 
-                                <h3>
-                                    Custos por departamento
-                                </h3>
+                </article>
 
-                                <span>
+
+                <article class="dashboard-panel">
+
+                    <div class="dashboard-title">
+
+                        <div>
+
+                            <h3>
+                                Custos por departamento
+                            </h3>
+
+                            <span>
                                     Distribuição dos custos
                                 </span>
 
-                            </div>
-
                         </div>
 
-
-                        <div class="dashboard-chart">
-
-                            <canvas id="graficoCustos"></canvas>
-
-                        </div>
-
-                    </article>
-
-                </section>
-
-            <% } %>
+                    </div>
 
 
+                    <div class="dashboard-chart">
 
-            <!-- ADMINISTRADOR -->
+                        <canvas id="graficoCustos"></canvas>
 
-            <% if (perfil == "administrador") { %>
+                    </div>
 
-                <section class="hero-card">
+                </article>
 
-                    <p class="eyebrow">
-                        Administrador
-                    </p>
+            </section>
 
-                    <h2>
-                        Administração e governança da plataforma
-                    </h2>
-
-                    <p>
-                        Acompanhe a estrutura organizacional,
-                        usuários, ferramentas e políticas da plataforma.
-                    </p>
-
-                </section>
+        <% } %>
 
 
-                <!-- KPIS -->
 
-                <section class="dashboard-summary">
+        <!-- ADMINISTRADOR -->
 
-                    <article class="dashboard-summary-card">
+        <% if (perfil == "administrador") { %>
+
+            <section class="hero-card">
+
+                <p class="eyebrow">
+                    Administrador
+                </p>
+
+                <h2>
+                    Administração e governança da plataforma
+                </h2>
+
+                <p>
+                    Acompanhe a estrutura organizacional,
+                    usuários, ferramentas e políticas da plataforma.
+                </p>
+
+            </section>
+
+
+            <!-- KPIS -->
+
+            <section class="dashboard-summary">
+
+                <article class="dashboard-summary-card">
 
                         <span>
                             Empresas
                         </span>
 
-                        <strong>
-                            <%= indicadores.empresas %>
-                        </strong>
+                    <strong>
+                        <%= indicadores.empresas %>
+                    </strong>
 
-                        <p>
-                            Organizações cadastradas
-                        </p>
+                    <p>
+                        Organizações cadastradas
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Usuários
                         </span>
 
-                        <strong>
-                            <%= indicadores.usuarios %>
-                        </strong>
+                    <strong>
+                        <%= indicadores.usuarios %>
+                    </strong>
 
-                        <p>
-                            Usuários cadastrados
-                        </p>
+                    <p>
+                        Usuários cadastrados
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Ferramentas de IA
                         </span>
 
-                        <strong>
-                            <%= indicadores.ferramentas %>
-                        </strong>
+                    <strong>
+                        <%= indicadores.ferramentas %>
+                    </strong>
 
-                        <p>
-                            Modelos e ferramentas
-                        </p>
+                    <p>
+                        Modelos e ferramentas
+                    </p>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-summary-card">
+                <article class="dashboard-summary-card">
 
                         <span>
                             Políticas
                         </span>
 
-                        <strong>
-                            <%= indicadores.politicas %>
-                        </strong>
+                    <strong>
+                        <%= indicadores.politicas %>
+                    </strong>
 
-                        <p>
-                            Políticas cadastradas
-                        </p>
+                    <p>
+                        Políticas cadastradas
+                    </p>
 
-                    </article>
+                </article>
 
-                </section>
+            </section>
 
 
-                <!-- GRAFICOS DO ADMINISTRADOR -->
+            <!-- GRAFICOS DO ADMINISTRADOR -->
 
-                <section class="dashboard-grid">
+            <section class="dashboard-grid">
 
-                    <article class="dashboard-panel">
+                <article class="dashboard-panel">
 
-                        <div class="dashboard-title">
+                    <div class="dashboard-title">
 
-                            <div>
+                        <div>
 
-                                <h3>
-                                    Usuários por departamento
-                                </h3>
+                            <h3>
+                                Usuários por departamento
+                            </h3>
 
-                                <span>
+                            <span>
                                     Estrutura organizacional
                                 </span>
 
-                            </div>
-
                         </div>
 
-
-                        <div class="dashboard-chart">
-
-                            <canvas id="graficoUsuariosAdmin"></canvas>
-
-                        </div>
-
-                    </article>
+                    </div>
 
 
-                    <article class="dashboard-panel">
+                    <div class="dashboard-chart">
 
-                        <div class="dashboard-title">
+                        <canvas id="graficoUsuariosAdmin"></canvas>
 
-                            <div>
+                    </div>
 
-                                <h3>
-                                    Conformidade das utilizações
-                                </h3>
+                </article>
 
-                                <span>
+
+                <article class="dashboard-panel">
+
+                    <div class="dashboard-title">
+
+                        <div>
+
+                            <h3>
+                                Conformidade das utilizações
+                            </h3>
+
+                            <span>
                                     Governança de IA
                                 </span>
 
-                            </div>
-
                         </div>
 
-
-                        <div class="dashboard-chart governanca-chart">
-
-                            <canvas id="graficoGovernancaAdmin"></canvas>
-
-                        </div>
-
-                    </article>
-
-                </section>
+                    </div>
 
 
-                <!-- PAINEIS -->
+                    <div class="dashboard-chart governanca-chart">
 
-                <section class="dashboard-grid">
+                        <canvas id="graficoGovernancaAdmin"></canvas>
 
-                    <article class="dashboard-panel">
+                    </div>
 
-                        <div class="dashboard-title">
+                </article>
 
-                            <div>
+            </section>
 
-                                <h3>
-                                    Estrutura organizacional
-                                </h3>
 
-                                <span>
+            <!-- PAINEIS -->
+
+            <section class="dashboard-grid">
+
+                <article class="dashboard-panel">
+
+                    <div class="dashboard-title">
+
+                        <div>
+
+                            <h3>
+                                Estrutura organizacional
+                            </h3>
+
+                            <span>
                                     Administração
                                 </span>
 
-                            </div>
-
                         </div>
 
+                    </div>
 
-                        <div class="list-clean">
+
+                    <div class="list-clean">
 
                             <span>
                                 Cadastro de empresas
                             </span>
 
-                            <span>
+                        <span>
                                 Cadastro de departamentos
                             </span>
 
-                            <span>
+                        <span>
                                 Cadastro de usuários
                             </span>
 
-                            <span>
+                        <span>
                                 Perfis e permissões
                             </span>
 
-                        </div>
+                    </div>
 
-                    </article>
+                </article>
 
 
-                    <article class="dashboard-panel">
+                <article class="dashboard-panel">
 
-                        <div class="dashboard-title">
+                    <div class="dashboard-title">
 
-                            <div>
+                        <div>
 
-                                <h3>
-                                    Governança de IA
-                                </h3>
+                            <h3>
+                                Governança de IA
+                            </h3>
 
-                                <span>
+                            <span>
                                     Administração
                                 </span>
 
-                            </div>
-
                         </div>
 
+                    </div>
 
-                        <div class="list-clean">
+
+                    <div class="list-clean">
 
                             <span>
                                 Modelos e ferramentas de IA
                             </span>
 
-                            <span>
+                        <span>
                                 Competências
                             </span>
 
-                            <span>
+                        <span>
                                 Políticas
                             </span>
 
-                            <span>
+                        <span>
                                 Conformidade
                             </span>
 
-                        </div>
+                    </div>
 
-                    </article>
+                </article>
 
-                </section>
+            </section>
 
-            <% } %>
-
-
-            <!-- AVISO -->
-
-            <p class="dashboard-demo">
-                Dados demonstrativos do MVP.
-            </p>
+        <% } %>
 
 
-        </main>
+        <!-- AVISO -->
 
-    </div>
-
-
-
-    <!-- GRAFICOS -->
-
-    <script>
+        <p class="dashboard-demo">
+            Dados demonstrativos do MVP.
+        </p>
 
 
-        /* COLABORADOR */
+    </main>
 
-        const graficoColaborador =
-            document.getElementById("graficoColaborador");
+</div>
 
 
-        if (graficoColaborador) {
 
-            new Chart(graficoColaborador, {
+<!-- GRAFICOS -->
 
-                type: "bar",
+<script>
 
-                data: {
 
-                    labels: [
-                        "AI Literacy",
-                        "Governança",
-                        "Uso Responsável",
-                        "Produtividade",
-                        "FinOps",
-                        "Segurança",
-                        "Colaboração",
-                        "Competências"
-                    ],
+    /* COLABORADOR */
 
-                    datasets: [{
+    const graficoColaborador =
+        document.getElementById("graficoColaborador");
 
-                        label: "Score",
 
-                        data: [
-                            72,
-                            65,
-                            80,
-                            76,
-                            58,
-                            85,
-                            70,
-                            68
-                        ]
+    if (graficoColaborador) {
 
-                    }]
+        new Chart(graficoColaborador, {
 
-                },
+            type: "bar",
 
-                options: {
+            data: {
 
-                    responsive: true,
+                labels: [
+                    "AI Literacy",
+                    "Governança",
+                    "Uso Responsável",
+                    "Produtividade",
+                    "FinOps",
+                    "Segurança",
+                    "Colaboração",
+                    "Competências"
+                ],
 
-                    maintainAspectRatio: false,
+                datasets: [{
 
-                    scales: {
+                    label: "Score",
 
-                        y: {
+                    data: [
+                        72,
+                        65,
+                        80,
+                        76,
+                        58,
+                        85,
+                        70,
+                        68
+                    ]
 
-                            beginAtZero: true,
+                }]
 
-                            max: 100
+            },
 
-                        }
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
 
                     }
 
                 }
 
-            });
+            }
 
-        }
+        });
 
-
-
-        /* GESTOR - MATURIDADE */
-
-        const graficoMaturidadeGestor =
-            document.getElementById("graficoMaturidadeGestor");
-
-
-        if (graficoMaturidadeGestor) {
-
-            new Chart(graficoMaturidadeGestor, {
-
-                type: "bar",
-
-                data: {
-
-                    labels: [
-                        "Tecnologia",
-                        "Marketing",
-                        "Financeiro",
-                        "RH"
-                    ],
-
-                    datasets: [{
-
-                        label: "AI Maturity Score",
-
-                        data: [
-                            82,
-                            74,
-                            67,
-                            61
-                        ]
-
-                    }]
-
-                },
-
-                options: {
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true,
-
-                            max: 100
-
-                        }
-
-                    }
-
-                }
-
-            });
-
-        }
+    }
 
 
 
-        /* GESTOR - CUSTOS */
+    /* GESTOR - MATURIDADE */
 
-        const graficoCustos =
-            document.getElementById("graficoCustos");
+    const graficoMaturidadeGestor =
+        document.getElementById("graficoMaturidadeGestor");
 
 
-        if (graficoCustos) {
+    if (graficoMaturidadeGestor) {
 
-            new Chart(graficoCustos, {
+        new Chart(graficoMaturidadeGestor, {
 
-                type: "doughnut",
+            type: "bar",
 
-                data: {
+            data: {
 
-                    labels: [
-                        "Tecnologia",
-                        "Marketing",
-                        "Financeiro",
-                        "RH"
-                    ],
+                labels: [
+                    "Tecnologia",
+                    "Marketing",
+                    "Financeiro",
+                    "RH"
+                ],
 
-                    datasets: [{
+                datasets: [{
 
-                        data: [
-                            4200,
-                            2800,
-                            1900,
-                            1100
-                        ]
+                    label: "AI Maturity Score",
 
-                    }]
+                    data: [
+                        82,
+                        74,
+                        67,
+                        61
+                    ]
 
-                },
+                }]
 
-                options: {
+            },
 
-                    responsive: true,
+            options: {
 
-                    maintainAspectRatio: false,
+                responsive: true,
 
-                    cutout: "65%",
+                maintainAspectRatio: false,
 
-                    plugins: {
+                scales: {
 
-                        legend: {
+                    y: {
 
-                            position: "top"
+                        beginAtZero: true,
 
-                        }
+                        max: 100
 
                     }
 
                 }
 
-            });
+            }
 
-        }
+        });
 
-
-
-        /* ADMINISTRADOR - USUARIOS */
-
-        const graficoUsuariosAdmin =
-            document.getElementById("graficoUsuariosAdmin");
+    }
 
 
-        if (graficoUsuariosAdmin) {
 
-            new Chart(graficoUsuariosAdmin, {
+    /* GESTOR - CUSTOS */
 
-                type: "bar",
+    const graficoCustos =
+        document.getElementById("graficoCustos");
 
-                data: {
 
-                    labels: [
-                        "Tecnologia",
-                        "Marketing",
-                        "Financeiro",
-                        "RH"
-                    ],
+    if (graficoCustos) {
 
-                    datasets: [{
+        new Chart(graficoCustos, {
 
-                        label: "Usuários",
+            type: "doughnut",
 
-                        data: [
-                            42,
-                            35,
-                            28,
-                            23
-                        ]
+            data: {
 
-                    }]
+                labels: [
+                    "Tecnologia",
+                    "Marketing",
+                    "Financeiro",
+                    "RH"
+                ],
 
-                },
+                datasets: [{
 
-                options: {
+                    data: [
+                        4200,
+                        2800,
+                        1900,
+                        1100
+                    ]
 
-                    responsive: true,
+                }]
 
-                    maintainAspectRatio: false,
+            },
 
-                    scales: {
+            options: {
 
-                        y: {
+                responsive: true,
 
-                            beginAtZero: true,
+                maintainAspectRatio: false,
 
-                            max: 50
+                cutout: "65%",
 
-                        }
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
 
                     }
 
                 }
 
-            });
+            }
 
-        }
+        });
 
-
-
-        /* ADMINISTRADOR - GOVERNANCA */
-
-        const graficoGovernancaAdmin =
-            document.getElementById("graficoGovernancaAdmin");
+    }
 
 
-        if (graficoGovernancaAdmin) {
 
-            new Chart(graficoGovernancaAdmin, {
+    /* ADMINISTRADOR - USUARIOS */
 
-                type: "doughnut",
+    const graficoUsuariosAdmin =
+        document.getElementById("graficoUsuariosAdmin");
 
-                data: {
 
-                    labels: [
-                        "Conforme",
-                        "Não conforme"
-                    ],
+    if (graficoUsuariosAdmin) {
 
-                    datasets: [{
+        new Chart(graficoUsuariosAdmin, {
 
-                        data: [
-                            82,
-                            18
-                        ]
+            type: "bar",
 
-                    }]
+            data: {
 
-                },
+                labels: [
+                    "Tecnologia",
+                    "Marketing",
+                    "Financeiro",
+                    "RH"
+                ],
 
-                options: {
+                datasets: [{
 
-                    responsive: true,
+                    label: "Usuários",
 
-                    maintainAspectRatio: false,
+                    data: [
+                        42,
+                        35,
+                        28,
+                        23
+                    ]
 
-                    cutout: "65%",
+                }]
 
-                    plugins: {
+            },
 
-                        legend: {
+            options: {
 
-                            position: "top"
+                responsive: true,
 
-                        }
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 50
 
                     }
 
                 }
 
-            });
+            }
 
-        }
+        });
+
+    }
 
 
-    </script>
+
+    /* ADMINISTRADOR - GOVERNANCA */
+
+    const graficoGovernancaAdmin =
+        document.getElementById("graficoGovernancaAdmin");
 
 
-    <script src="/app.js"></script>
+    if (graficoGovernancaAdmin) {
+
+        new Chart(graficoGovernancaAdmin, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Conforme",
+                    "Não conforme"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        82,
+                        18
+                    ]
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "65%",
+
+                plugins: {
+
+                    legend: {
+
+                        position: "top"
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+</script>
+
+
+<script src="/app.js"></script>
 
 </body>
 
