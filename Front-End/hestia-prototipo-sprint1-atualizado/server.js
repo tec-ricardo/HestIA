@@ -359,6 +359,25 @@ function calcularMaturityScore(indicadores) {
 }
 
 
+function calcularPontuacaoRankingDepartamento(
+    maturityScore,
+    eficiencia,
+    usoResponsavel
+) {
+
+    return (
+
+        maturityScore * 0.50 +
+
+        eficiencia * 0.30 +
+
+        usoResponsavel * 0.20
+
+    );
+
+}
+
+
 function obterIndicadoresDepartamentais() {
 
     return [
@@ -526,6 +545,118 @@ app.get("/maturidade", async (req, res) => {
         );
 
 
+    const eficienciaDepartamentos =
+        await consultarListaComFallback(
+            "/registros-uso-ia/eficiencia",
+            []
+        );
+
+
+    const rankingDepartamentos =
+        departamentosMaturidade
+            .map(function(departamento) {
+
+                const eficienciaEncontrada =
+                    eficienciaDepartamentos.find(
+                        function(item) {
+
+                            return item.departamento ==
+                                departamento.nome;
+
+                        }
+                    );
+
+
+                const eficiencia =
+                    eficienciaEncontrada
+                        ?
+                        eficienciaEncontrada.eficiencia
+                        :
+                        0;
+
+
+                const departamentoBase =
+                    departamentosCalculados.find(
+                        function(item) {
+
+                            return item.nome ==
+                                departamento.nome;
+
+                        }
+                    );
+
+
+                const usoResponsavel =
+                    departamento.indicadores
+                        ?
+                        departamento.indicadores.usoResponsavel
+                        :
+                        departamentoBase.indicadores.usoResponsavel;
+
+
+                const pontuacao =
+                    calcularPontuacaoRankingDepartamento(
+                        departamento.score,
+                        eficiencia,
+                        usoResponsavel
+                    );
+
+
+                return {
+
+                    nome:
+                    departamento.nome,
+
+                    maturityScore:
+                    departamento.score,
+
+                    eficiencia:
+                    eficiencia,
+
+                    usoResponsavel:
+                    usoResponsavel,
+
+                    pontuacao:
+                        Math.round(
+                            pontuacao * 100
+                        ) / 100
+
+                };
+
+            })
+            .sort(function(a, b) {
+
+                return b.pontuacao -
+                    a.pontuacao;
+
+            })
+            .map(function(departamento, index) {
+
+                return {
+
+                    posicao:
+                        index + 1,
+
+                    nome:
+                    departamento.nome,
+
+                    maturityScore:
+                    departamento.maturityScore,
+
+                    eficiencia:
+                    departamento.eficiencia,
+
+                    usoResponsavel:
+                    departamento.usoResponsavel,
+
+                    pontuacao:
+                    departamento.pontuacao
+
+                };
+
+            });
+
+
     const mediaDepartamental =
         departamentosMaturidade.reduce(
             function(total, departamento) {
@@ -587,6 +718,9 @@ app.get("/maturidade", async (req, res) => {
 
         departamentosMaturidade:
         departamentosMaturidade,
+
+        rankingDepartamentos:
+        rankingDepartamentos,
 
         mediaDepartamental:
             mediaDepartamental.toFixed(2),
