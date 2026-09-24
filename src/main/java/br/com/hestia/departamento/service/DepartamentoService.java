@@ -1,5 +1,8 @@
 package br.com.hestia.departamento.service;
 
+import br.com.hestia.auditoria.model.ResultadoAuditoria;
+import br.com.hestia.auditoria.model.TipoAcaoAuditoria;
+import br.com.hestia.auditoria.service.LogAuditoriaService;
 import br.com.hestia.departamento.dto.DepartamentoDTO;
 import br.com.hestia.departamento.model.Departamento;
 import br.com.hestia.departamento.repository.DepartamentoRepository;
@@ -14,30 +17,71 @@ public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
     private final EmpresaRepository empresaRepository;
+    private final LogAuditoriaService logAuditoriaService;
 
     public DepartamentoService(
             DepartamentoRepository departamentoRepository,
-            EmpresaRepository empresaRepository) {
+            EmpresaRepository empresaRepository,
+            LogAuditoriaService logAuditoriaService
+    ) {
+        this.departamentoRepository =
+                departamentoRepository;
 
-        this.departamentoRepository = departamentoRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaRepository =
+                empresaRepository;
+
+        this.logAuditoriaService =
+                logAuditoriaService;
     }
 
-    public Departamento cadastrar(DepartamentoDTO dto) {
+    public Departamento cadastrar(
+            DepartamentoDTO dto
+    ) {
 
-        Empresa empresa = empresaRepository
-                .findById(dto.getEmpresaId())
-                .orElseThrow(() ->
-                        new RuntimeException("Empresa não encontrada"));
+        Empresa empresa =
+                empresaRepository
+                        .findById(dto.getEmpresaId())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Empresa não encontrada"
+                                )
+                        );
 
-        Departamento departamento = new Departamento();
+        Departamento departamento =
+                new Departamento();
 
-        departamento.setNome(dto.getNome());
-        departamento.setResponsavel(dto.getResponsavel());
-        departamento.setEstruturaHierarquica(dto.getEstruturaHierarquica());
+        departamento.setNome(
+                dto.getNome()
+        );
+
+        departamento.setResponsavel(
+                dto.getResponsavel()
+        );
+
+        departamento.setEstruturaHierarquica(
+                dto.getEstruturaHierarquica()
+        );
+
         departamento.setEmpresa(empresa);
 
-        return departamentoRepository.save(departamento);
+        Departamento departamentoSalvo =
+                departamentoRepository
+                        .save(departamento);
+
+        logAuditoriaService.registrar(
+                null,
+                TipoAcaoAuditoria.CRIAR,
+                "DEPARTAMENTO",
+                departamentoSalvo.getId(),
+                "Departamento cadastrado",
+                ResultadoAuditoria.SUCESSO,
+                null,
+                dadosDepartamento(
+                        departamentoSalvo
+                )
+        );
+
+        return departamentoSalvo;
     }
 
     public List<Departamento> listarTodos() {
@@ -45,32 +89,113 @@ public class DepartamentoService {
     }
 
     public Departamento buscarPorId(Long id) {
-        return departamentoRepository.findById(id)
+
+        return departamentoRepository
+                .findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Departamento não encontrado"));
+                        new RuntimeException(
+                                "Departamento não encontrado"
+                        )
+                );
     }
 
-    public Departamento atualizar(Long id, DepartamentoDTO dto) {
+    public Departamento atualizar(
+            Long id,
+            DepartamentoDTO dto
+    ) {
 
-        Departamento departamento = buscarPorId(id);
+        Departamento departamento =
+                buscarPorId(id);
 
-        Empresa empresa = empresaRepository
-                .findById(dto.getEmpresaId())
-                .orElseThrow(() ->
-                        new RuntimeException("Empresa não encontrada"));
+        String dadosAnteriores =
+                dadosDepartamento(departamento);
 
-        departamento.setNome(dto.getNome());
-        departamento.setResponsavel(dto.getResponsavel());
-        departamento.setEstruturaHierarquica(dto.getEstruturaHierarquica());
+        Empresa empresa =
+                empresaRepository
+                        .findById(dto.getEmpresaId())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Empresa não encontrada"
+                                )
+                        );
+
+        departamento.setNome(
+                dto.getNome()
+        );
+
+        departamento.setResponsavel(
+                dto.getResponsavel()
+        );
+
+        departamento.setEstruturaHierarquica(
+                dto.getEstruturaHierarquica()
+        );
+
         departamento.setEmpresa(empresa);
 
-        return departamentoRepository.save(departamento);
+        Departamento departamentoSalvo =
+                departamentoRepository
+                        .save(departamento);
+
+        logAuditoriaService.registrar(
+                null,
+                TipoAcaoAuditoria.ALTERAR,
+                "DEPARTAMENTO",
+                departamentoSalvo.getId(),
+                "Departamento atualizado",
+                ResultadoAuditoria.SUCESSO,
+                dadosAnteriores,
+                dadosDepartamento(
+                        departamentoSalvo
+                )
+        );
+
+        return departamentoSalvo;
     }
 
     public void excluir(Long id) {
 
-        Departamento departamento = buscarPorId(id);
+        Departamento departamento =
+                buscarPorId(id);
 
-        departamentoRepository.delete(departamento);
+        String dadosAnteriores =
+                dadosDepartamento(departamento);
+
+        departamentoRepository
+                .delete(departamento);
+
+        logAuditoriaService.registrar(
+                null,
+                TipoAcaoAuditoria.EXCLUIR,
+                "DEPARTAMENTO",
+                id,
+                "Departamento excluído",
+                ResultadoAuditoria.SUCESSO,
+                dadosAnteriores,
+                null
+        );
+    }
+
+    private String dadosDepartamento(
+            Departamento departamento
+    ) {
+
+        Long empresaId = null;
+
+        if (departamento.getEmpresa() != null) {
+            empresaId =
+                    departamento
+                            .getEmpresa()
+                            .getId();
+        }
+
+        return "nome="
+                + departamento.getNome()
+                + "; responsavel="
+                + departamento.getResponsavel()
+                + "; estruturaHierarquica="
+                + departamento.getEstruturaHierarquica()
+                + "; empresaId="
+                + empresaId;
     }
 }
