@@ -6,11 +6,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class EmbeddingServiceTest {
 
     @Test
     void deveGerarEmbeddingCom1536Dimensoes() {
+
+        String apiKey = System.getenv("OPENAI_API_KEY");
+
+        assumeTrue(
+                apiKey != null && !apiKey.isBlank(),
+                "OPENAI_API_KEY não configurada"
+        );
 
         EmbeddingService service = new EmbeddingService();
 
