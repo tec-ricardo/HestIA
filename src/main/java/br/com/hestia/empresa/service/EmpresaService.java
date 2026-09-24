@@ -1,9 +1,11 @@
 package br.com.hestia.empresa.service;
 
+import br.com.hestia.auditoria.service.AuditoriaService;
 import br.com.hestia.empresa.dto.EmpresaDTO;
 import br.com.hestia.empresa.model.Empresa;
 import br.com.hestia.empresa.repository.EmpresaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -11,9 +13,16 @@ import java.util.List;
 public class EmpresaService {
 
     private final EmpresaRepository empresaRepository;
+    private final AuditoriaService auditoriaService;
+
+    @Autowired
+    public EmpresaService(EmpresaRepository empresaRepository, AuditoriaService auditoriaService) {
+        this.empresaRepository = empresaRepository;
+        this.auditoriaService = auditoriaService;
+    }
 
     public EmpresaService(EmpresaRepository empresaRepository) {
-        this.empresaRepository = empresaRepository;
+        this(empresaRepository, null);
     }
 
     public Empresa cadastrar(EmpresaDTO dto) {
@@ -29,7 +38,9 @@ public class EmpresaService {
         empresa.setConfiguracoesGerais(dto.getConfiguracoesGerais());
         empresa.setOrcamento(dto.getOrcamento());
 
-        return empresaRepository.save(empresa);
+        Empresa salva = empresaRepository.save(empresa);
+        registrar("POST", salva.getId());
+        return salva;
     }
 
     public List<Empresa> listarTodas() {
@@ -53,15 +64,24 @@ public class EmpresaService {
         empresa.setConfiguracoesGerais(dto.getConfiguracoesGerais());
         empresa.setOrcamento(dto.getOrcamento());
 
-        return empresaRepository.save(empresa);
+        Empresa salva = empresaRepository.save(empresa);
+        registrar("PUT", salva.getId());
+        return salva;
     }
 
     public void excluir(Long id) {
         Empresa empresa = buscarPorId(id);
         empresaRepository.delete(empresa);
+        registrar("DELETE", id);
     }
 
     private String normalizarCnpj(String cnpj) {
         return cnpj.replaceAll("\\D", "");
+    }
+
+    private void registrar(String metodo, Long id) {
+        if (auditoriaService != null) {
+            auditoriaService.registrarOperacao(metodo, "/empresas/" + id, 200);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package br.com.hestia.microtreinamento.service;
 
+import br.com.hestia.auditoria.service.AuditoriaService;
 import br.com.hestia.microtreinamento.model.ConclusaoMicrotreinamento;
 import br.com.hestia.microtreinamento.repository.ConclusaoMicrotreinamentoRepository;
 import br.com.hestia.usuario.model.Usuario;
@@ -7,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,18 +22,30 @@ public class ConclusaoMicrotreinamentoService {
     private final ConclusaoMicrotreinamentoRepository repository;
     private final HistoricoMicrotreinamentoService historicoService;
     private final EntityManager entityManager;
+    private final AuditoriaService auditoriaService;
 
     private final MicrotreinamentoFicticioService catalogo =
             new MicrotreinamentoFicticioService();
+
+    @Autowired
+    public ConclusaoMicrotreinamentoService(
+            ConclusaoMicrotreinamentoRepository repository,
+            HistoricoMicrotreinamentoService historicoService,
+            EntityManager entityManager,
+            AuditoriaService auditoriaService
+    ) {
+        this.repository = repository;
+        this.historicoService = historicoService;
+        this.entityManager = entityManager;
+        this.auditoriaService = auditoriaService;
+    }
 
     public ConclusaoMicrotreinamentoService(
             ConclusaoMicrotreinamentoRepository repository,
             HistoricoMicrotreinamentoService historicoService,
             EntityManager entityManager
     ) {
-        this.repository = repository;
-        this.historicoService = historicoService;
-        this.entityManager = entityManager;
+        this(repository, historicoService, entityManager, null);
     }
 
     @Transactional
@@ -98,6 +112,11 @@ public class ConclusaoMicrotreinamentoService {
                 repository.save(conclusao);
 
         historicoService.atualizarHistorico(conclusaoSalva);
+
+        if (auditoriaService != null) {
+            auditoriaService.registrarOperacao(
+                    "POST", "/microtreinamentos/" + microtreinamentoId + "/conclusoes", 200);
+        }
 
         return conclusaoSalva;
     }
