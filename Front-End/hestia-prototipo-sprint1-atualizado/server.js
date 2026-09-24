@@ -497,7 +497,7 @@ app.get("/maturidade", async (req, res) => {
         );
 
 
-    const departamentosMaturidade =
+    const departamentosCalculados =
         obterIndicadoresDepartamentais()
             .map(function(departamento) {
 
@@ -517,6 +517,13 @@ app.get("/maturidade", async (req, res) => {
                 };
 
             });
+
+
+    const departamentosMaturidade =
+        await consultarListaComFallback(
+            "/indicadores/maturidade/departamentos",
+            departamentosCalculados
+        );
 
 
     const mediaDepartamental =
