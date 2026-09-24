@@ -359,6 +359,122 @@ function calcularMaturityScore(indicadores) {
 }
 
 
+function obterIndicadoresDepartamentais() {
+
+    return [
+
+        {
+
+            nome: "Tecnologia",
+
+            indicadores: {
+
+                aiLiteracy: 88,
+
+                governanca: 78,
+
+                usoResponsavel: 90,
+
+                produtividade: 85,
+
+                finOps: 76,
+
+                seguranca: 91,
+
+                colaboracao: 79,
+
+                desenvolvimentoCompetencias: 80
+
+            }
+
+        },
+
+
+        {
+
+            nome: "Marketing",
+
+            indicadores: {
+
+                aiLiteracy: 80,
+
+                governanca: 72,
+
+                usoResponsavel: 83,
+
+                produtividade: 79,
+
+                finOps: 68,
+
+                seguranca: 86,
+
+                colaboracao: 73,
+
+                desenvolvimentoCompetencias: 71
+
+            }
+
+        },
+
+
+        {
+
+            nome: "Financeiro",
+
+            indicadores: {
+
+                aiLiteracy: 70,
+
+                governanca: 65,
+
+                usoResponsavel: 75,
+
+                produtividade: 68,
+
+                finOps: 61,
+
+                seguranca: 78,
+
+                colaboracao: 65,
+
+                desenvolvimentoCompetencias: 64
+
+            }
+
+        },
+
+
+        {
+
+            nome: "RH",
+
+            indicadores: {
+
+                aiLiteracy: 66,
+
+                governanca: 59,
+
+                usoResponsavel: 69,
+
+                produtividade: 63,
+
+                finOps: 55,
+
+                seguranca: 73,
+
+                colaboracao: 60,
+
+                desenvolvimentoCompetencias: 58
+
+            }
+
+        }
+
+    ];
+
+}
+
+
 app.get("/maturidade", async (req, res) => {
 
     if (perfil == "") {
@@ -381,6 +497,74 @@ app.get("/maturidade", async (req, res) => {
         );
 
 
+    const departamentosMaturidade =
+        obterIndicadoresDepartamentais()
+            .map(function(departamento) {
+
+                return {
+
+                    nome:
+                    departamento.nome,
+
+                    indicadores:
+                    departamento.indicadores,
+
+                    score:
+                        calcularMaturityScore(
+                            departamento.indicadores
+                        )
+
+                };
+
+            });
+
+
+    const mediaDepartamental =
+        departamentosMaturidade.reduce(
+            function(total, departamento) {
+
+                return total +
+                    departamento.score;
+
+            },
+
+            0
+
+        ) / departamentosMaturidade.length;
+
+
+    const maiorMaturidade =
+        departamentosMaturidade.reduce(
+            function(maior, departamento) {
+
+                if (departamento.score > maior.score) {
+
+                    return departamento;
+
+                }
+
+                return maior;
+
+            }
+        );
+
+
+    const menorMaturidade =
+        departamentosMaturidade.reduce(
+            function(menor, departamento) {
+
+                if (departamento.score < menor.score) {
+
+                    return departamento;
+
+                }
+
+                return menor;
+
+            }
+        );
+
+
     res.render("maturidade", {
 
         perfil: perfil,
@@ -392,7 +576,19 @@ app.get("/maturidade", async (req, res) => {
         indicadores: indicadores,
 
         maturityScore:
-            maturityScore.toFixed(2)
+            maturityScore.toFixed(2),
+
+        departamentosMaturidade:
+        departamentosMaturidade,
+
+        mediaDepartamental:
+            mediaDepartamental.toFixed(2),
+
+        maiorMaturidade:
+        maiorMaturidade,
+
+        menorMaturidade:
+        menorMaturidade
 
     });
 

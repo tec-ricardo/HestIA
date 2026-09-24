@@ -298,30 +298,30 @@
 
         <!-- GESTOR -->
 
-<% if (perfil == "gestor") { %>
+        <% if (perfil == "gestor") { %>
 
-    <!-- CARDS PRINCIPAIS -->
+            <!-- CARDS PRINCIPAIS -->
 
-    <section class="grid">
+            <section class="grid">
 
-        <article class="metric-card">
+                <article class="metric-card">
 
-            <span>
-                AI Maturity Score
-            </span>
+                    <span>
+                        AI Maturity Score
+                    </span>
 
-            <strong>
-                Comparação
-            </strong>
+                    <strong>
+                        Comparação
+                    </strong>
 
-            <p>
-                Comparação da maturidade entre departamentos
-                ou grupos da organização.
-            </p>
+                    <p>
+                        Comparação da maturidade entre departamentos
+                        ou grupos da organização.
+                    </p>
 
-        </article>
+                </article>
 
-    </section>
+            </section>
 
 
             <!-- RESUMO ANALITICO -->
@@ -330,12 +330,12 @@
 
                 <article class="metric-card">
 
-                        <span>
-                            Média organizacional
-                        </span>
+                    <span>
+                        Média organizacional
+                    </span>
 
                     <strong>
-                        71
+                        <%= mediaDepartamental %>
                     </strong>
 
                     <p>
@@ -347,16 +347,16 @@
 
                 <article class="metric-card">
 
-                        <span>
-                            Maior maturidade
-                        </span>
+                    <span>
+                        Maior maturidade
+                    </span>
 
                     <strong>
-                        Tecnologia
+                        <%= maiorMaturidade.nome %>
                     </strong>
 
                     <p>
-                        Score 82 — maior resultado entre os departamentos analisados.
+                        Score <%= maiorMaturidade.score.toFixed(2) %> — maior resultado entre os departamentos analisados.
                     </p>
 
                 </article>
@@ -364,16 +364,16 @@
 
                 <article class="metric-card">
 
-                        <span>
-                            Menor maturidade
-                        </span>
+                    <span>
+                        Menor maturidade
+                    </span>
 
                     <strong>
-                        RH
+                        <%= menorMaturidade.nome %>
                     </strong>
 
                     <p>
-                        Score 61 — menor resultado entre os departamentos analisados.
+                        Score <%= menorMaturidade.score.toFixed(2) %> — menor resultado entre os departamentos analisados.
                     </p>
 
                 </article>
@@ -381,12 +381,12 @@
 
                 <article class="metric-card">
 
-                        <span>
-                            Departamentos analisados
-                        </span>
+                    <span>
+                        Departamentos analisados
+                    </span>
 
                     <strong>
-                        4
+                        <%= departamentosMaturidade.length %>
                     </strong>
 
                     <p>
@@ -482,88 +482,44 @@
 
                         <tbody>
 
-                        <tr>
+                        <% departamentosMaturidade.forEach(function(departamento) { %>
 
-                            <td>
-                                Tecnologia
-                            </td>
+                            <tr>
 
-                            <td>
-                                <strong>82</strong>
-                            </td>
+                                <td>
+                                    <%= departamento.nome %>
+                                </td>
 
-                            <td>
-                                Acima da média
-                            </td>
+                                <td>
+                                    <strong>
+                                        <%= departamento.score.toFixed(2) %>
+                                    </strong>
+                                </td>
 
-                            <td>
-                                +11 pontos
-                            </td>
+                                <td>
 
-                        </tr>
+                                    <% if (departamento.score >= mediaDepartamental) { %>
 
+                                        Acima da média
 
-                        <tr>
+                                    <% } else { %>
 
-                            <td>
-                                Marketing
-                            </td>
+                                        Abaixo da média
 
-                            <td>
-                                <strong>74</strong>
-                            </td>
+                                    <% } %>
 
-                            <td>
-                                Acima da média
-                            </td>
+                                </td>
 
-                            <td>
-                                +3 pontos
-                            </td>
+                                <td>
 
-                        </tr>
+                                    <%= (departamento.score - mediaDepartamental).toFixed(2) %>
+                                    pontos
 
+                                </td>
 
-                        <tr>
+                            </tr>
 
-                            <td>
-                                Financeiro
-                            </td>
-
-                            <td>
-                                <strong>67</strong>
-                            </td>
-
-                            <td>
-                                Abaixo da média
-                            </td>
-
-                            <td>
-                                -4 pontos
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                RH
-                            </td>
-
-                            <td>
-                                <strong>61</strong>
-                            </td>
-
-                            <td>
-                                Abaixo da média
-                            </td>
-
-                            <td>
-                                -10 pontos
-                            </td>
-
-                        </tr>
+                        <% }) %>
 
                         </tbody>
 
@@ -668,66 +624,66 @@
 
                         <tr>
                             <td>AI Literacy</td>
-                            <td>88</td>
-                            <td>80</td>
-                            <td>70</td>
-                            <td>66</td>
+                            <td><%= departamentosMaturidade[0].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.aiLiteracy %></td>
                         </tr>
 
                         <tr>
                             <td>Governança</td>
-                            <td>78</td>
-                            <td>72</td>
-                            <td>65</td>
-                            <td>59</td>
+                            <td><%= departamentosMaturidade[0].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.governanca %></td>
                         </tr>
 
                         <tr>
                             <td>Uso Responsável</td>
-                            <td>90</td>
-                            <td>83</td>
-                            <td>75</td>
-                            <td>69</td>
+                            <td><%= departamentosMaturidade[0].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.usoResponsavel %></td>
                         </tr>
 
                         <tr>
                             <td>Produtividade</td>
-                            <td>85</td>
-                            <td>79</td>
-                            <td>68</td>
-                            <td>63</td>
+                            <td><%= departamentosMaturidade[0].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.produtividade %></td>
                         </tr>
 
                         <tr>
                             <td>FinOps</td>
-                            <td>76</td>
-                            <td>68</td>
-                            <td>61</td>
-                            <td>55</td>
+                            <td><%= departamentosMaturidade[0].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.finOps %></td>
                         </tr>
 
                         <tr>
                             <td>Segurança</td>
-                            <td>91</td>
-                            <td>86</td>
-                            <td>78</td>
-                            <td>73</td>
+                            <td><%= departamentosMaturidade[0].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.seguranca %></td>
                         </tr>
 
                         <tr>
                             <td>Colaboração</td>
-                            <td>79</td>
-                            <td>73</td>
-                            <td>65</td>
-                            <td>60</td>
+                            <td><%= departamentosMaturidade[0].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.colaboracao %></td>
                         </tr>
 
                         <tr>
                             <td>Desenvolvimento de Competências</td>
-                            <td>80</td>
-                            <td>71</td>
-                            <td>64</td>
-                            <td>58</td>
+                            <td><%= departamentosMaturidade[0].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.desenvolvimentoCompetencias %></td>
                         </tr>
 
                         </tbody>
@@ -847,18 +803,26 @@
     if (graficoDepartamentos) {
 
         const departamentos = [
-            "Tecnologia",
-            "Marketing",
-            "Financeiro",
-            "RH"
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            "<%= departamento.nome %>"
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
         ];
 
 
         const valoresDepartamentos = [
-            82,
-            74,
-            67,
-            61
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            <%= departamento.score.toFixed(2) %>
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
         ];
 
 
@@ -943,25 +907,31 @@
 
                 datasets: [
 
-                    {
-                        label: "Tecnologia",
-                        data: [88, 78, 90, 85, 76, 91, 79, 80]
-                    },
+                    <% departamentosMaturidade.forEach(function(departamento, index) { %>
 
                     {
-                        label: "Marketing",
-                        data: [80, 72, 83, 79, 68, 86, 73, 71]
-                    },
 
-                    {
-                        label: "Financeiro",
-                        data: [70, 65, 75, 68, 61, 78, 65, 64]
-                    },
+                        label:
+                            "<%= departamento.nome %>",
 
-                    {
-                        label: "RH",
-                        data: [66, 59, 69, 63, 55, 73, 60, 58]
+                        data: [
+
+                            <%= departamento.indicadores.aiLiteracy %>,
+                            <%= departamento.indicadores.governanca %>,
+                            <%= departamento.indicadores.usoResponsavel %>,
+                            <%= departamento.indicadores.produtividade %>,
+                            <%= departamento.indicadores.finOps %>,
+                            <%= departamento.indicadores.seguranca %>,
+                            <%= departamento.indicadores.colaboracao %>,
+                            <%= departamento.indicadores.desenvolvimentoCompetencias %>
+
+                        ]
+
                     }
+
+                    <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+                    <% }) %>
 
                 ]
 
