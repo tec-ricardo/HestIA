@@ -10,32 +10,25 @@ import java.util.List;
 @Service
 public class EmbeddingService {
 
-    private static final String MODELO =
-            "text-embedding-3-small";
+    private static final String MODELO = "text-embedding-3-small";
 
     public List<Float> gerarEmbedding(String texto) {
 
         if (texto == null || texto.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O texto não pode estar vazio."
-            );
+            throw new IllegalArgumentException("O texto não pode estar vazio.");
         }
 
-        OpenAIClient client =
-                OpenAIOkHttpClient.fromEnv();
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
-        var resposta =
-                client.embeddings()
-                        .create(
-                                EmbeddingCreateParams
-                                        .builder()
-                                        .model(MODELO)
-                                        .input(texto)
-                                        .build()
-                        );
+        var resposta = client.embeddings()
+                .create(
+                        EmbeddingCreateParams.builder()
+                                .model(MODELO)
+                                .input(texto)
+                                .build()
+                );
 
-        return resposta
-                .data()
+        return resposta.data()
                 .get(0)
                 .embedding();
     }
