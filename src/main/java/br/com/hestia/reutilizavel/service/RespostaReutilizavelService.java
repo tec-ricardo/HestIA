@@ -81,6 +81,25 @@ public class RespostaReutilizavelService {
                 );
     }
 
+    @Transactional(readOnly = true)
+    public List<RespostaReutilizavel> buscarRespostasAnteriores(
+            Long empresaId,
+            String prompt
+    ) {
+        if (empresaId == null || empresaId <= 0
+                || prompt == null || prompt.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Informe uma empresa válida e o prompt para recuperar respostas anteriores."
+            );
+        }
+
+        return repository
+                .findTop10ByEmpresaIdAndReutilizavelTrueAndPromptOriginalContainingIgnoreCaseOrderByDataCriacaoDesc(
+                        empresaId,
+                        prompt.trim()
+                );
+    }
+
     public RespostaReutilizavel buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
@@ -97,6 +116,12 @@ public class RespostaReutilizavelService {
 
         RespostaReutilizavel resposta =
                 buscarPorId(id);
+
+        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+            throw new IllegalStateException(
+                    "A resposta selecionada não está disponível para reutilização."
+            );
+        }
 
         resposta.registrarReutilizacao();
         RespostaReutilizavel salva = repository.save(resposta);

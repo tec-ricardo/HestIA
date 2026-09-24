@@ -18,4 +18,13 @@ class EconomiaReutilizacaoTest {
         assertEquals(2, resposta.getChamadasEvitadas());
         assertEquals(400L, resposta.getTokensEconomizados());
     }
+
+    @Test
+    void respostaPodeSerDesabilitadaParaReutilizacao() {
+        RespostaReutilizavel resposta = new RespostaReutilizavel();
+        resposta.setReutilizavel(false);
+        resposta.prePersist();
+
+        assertFalse(resposta.getReutilizavel());
+    }
 }

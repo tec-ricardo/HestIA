@@ -171,6 +171,45 @@
 
             </section>
 
+            <section class="panel reutilizaveis-panel">
+
+                <div class="panel-head">
+                    <div>
+                        <h3>Reutilizar resposta anterior</h3>
+                        <p class="conformidade-description">
+                            Encontre uma resposta já gerada antes de fazer uma nova chamada à IA.
+                        </p>
+                    </div>
+                </div>
+
+                <form class="form-grid" id="buscarRespostaForm">
+                    <label class="full">
+                        O que você precisa recuperar?
+                        <input id="promptResposta" type="text" minlength="3"
+                               placeholder="Digite palavras do prompt ou do assunto anterior" required>
+                    </label>
+                    <button class="primary" type="submit">Buscar respostas anteriores</button>
+                </form>
+
+                <div id="respostasReutilizaveis" class="reutilizaveis-list">
+                    <% respostasReutilizaveis.forEach(function(resposta) { %>
+                        <article class="reutilizavel-card" data-resposta-id="<%= resposta.id %>">
+                            <div>
+                                <strong><%= resposta.categoria || "Resposta salva" %></strong>
+                                <p><%= resposta.respostaGerada %></p>
+                                <small><%= resposta.quantidadeReutilizacoes || 0 %> reutilizações</small>
+                            </div>
+                            <button class="secondary reutilizar-resposta" type="button"
+                                    data-id="<%= resposta.id %>">Usar esta resposta</button>
+                        </article>
+                    <% }); %>
+                    <% if (respostasReutilizaveis.length === 0) { %>
+                        <p class="conformidade-description">Nenhuma resposta reutilizável encontrada.</p>
+                    <% } %>
+                </div>
+                <p id="reutilizacaoMensagem" class="conformidade-description" aria-live="polite"></p>
+            </section>
+
 
             <!-- HISTORICO -->
 
@@ -918,5 +957,55 @@
     <script src="/app.js"></script>
 
 </body>
+
+<script>
+    const buscaForm = document.getElementById("buscarRespostaForm");
+    const listaRespostas = document.getElementById("respostasReutilizaveis");
+    const mensagemReutilizacao = document.getElementById("reutilizacaoMensagem");
+
+    function renderizarRespostas(respostas) {
+        if (!respostas.length) {
+            listaRespostas.innerHTML = "<p class='conformidade-description'>Nenhuma resposta compatível encontrada.</p>";
+            return;
+        }
+        listaRespostas.innerHTML = respostas.map(resposta => `
+            <article class="reutilizavel-card" data-resposta-id="${resposta.id}">
+                <div>
+                    <strong>${resposta.categoria || "Resposta salva"}</strong>
+                    <p>${resposta.respostaGerada}</p>
+                    <small>${resposta.quantidadeReutilizacoes || 0} reutilizações</small>
+                </div>
+                <button class="secondary reutilizar-resposta" type="button" data-id="${resposta.id}">
+                    Usar esta resposta
+                </button>
+            </article>`).join("");
+    }
+
+    buscaForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        mensagemReutilizacao.textContent = "Buscando respostas anteriores...";
+        const prompt = document.getElementById("promptResposta").value;
+        const response = await fetch(`/reutilizacoes/buscar?prompt=${encodeURIComponent(prompt)}`);
+        const respostas = await response.json();
+        if (!response.ok) {
+            mensagemReutilizacao.textContent = respostas.erro || "Não foi possível realizar a busca.";
+            return;
+        }
+        renderizarRespostas(respostas);
+        mensagemReutilizacao.textContent = `${respostas.length} resposta(s) encontrada(s).`;
+    });
+
+    listaRespostas.addEventListener("click", async event => {
+        const button = event.target.closest(".reutilizar-resposta");
+        if (!button) return;
+        button.disabled = true;
+        const response = await fetch(`/reutilizacoes/${button.dataset.id}/reutilizar`, { method: "POST" });
+        const resultado = await response.json();
+        mensagemReutilizacao.textContent = response.ok
+            ? "Resposta reutilizada e experiência registrada no HestIA Pass."
+            : (resultado.erro || "Não foi possível registrar a reutilização.");
+        button.disabled = false;
+    });
+</script>
 
 </html>
