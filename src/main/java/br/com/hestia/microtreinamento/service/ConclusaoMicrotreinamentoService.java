@@ -1,6 +1,9 @@
 package br.com.hestia.microtreinamento.service;
 
 import br.com.hestia.auditoria.service.AuditoriaService;
+import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
+import br.com.hestia.gamificacao.model.AcaoExperiencia;
+import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.microtreinamento.model.ConclusaoMicrotreinamento;
 import br.com.hestia.microtreinamento.repository.ConclusaoMicrotreinamentoRepository;
 import br.com.hestia.usuario.model.Usuario;
@@ -23,6 +26,7 @@ public class ConclusaoMicrotreinamentoService {
     private final HistoricoMicrotreinamentoService historicoService;
     private final EntityManager entityManager;
     private final AuditoriaService auditoriaService;
+    private final GamificacaoService gamificacaoService;
 
     private final MicrotreinamentoFicticioService catalogo =
             new MicrotreinamentoFicticioService();
@@ -32,12 +36,14 @@ public class ConclusaoMicrotreinamentoService {
             ConclusaoMicrotreinamentoRepository repository,
             HistoricoMicrotreinamentoService historicoService,
             EntityManager entityManager,
-            AuditoriaService auditoriaService
+            AuditoriaService auditoriaService,
+            GamificacaoService gamificacaoService
     ) {
         this.repository = repository;
         this.historicoService = historicoService;
         this.entityManager = entityManager;
         this.auditoriaService = auditoriaService;
+        this.gamificacaoService = gamificacaoService;
     }
 
     public ConclusaoMicrotreinamentoService(
@@ -45,7 +51,16 @@ public class ConclusaoMicrotreinamentoService {
             HistoricoMicrotreinamentoService historicoService,
             EntityManager entityManager
     ) {
-        this(repository, historicoService, entityManager, null);
+        this(repository, historicoService, entityManager, null, null);
+    }
+
+    public ConclusaoMicrotreinamentoService(
+            ConclusaoMicrotreinamentoRepository repository,
+            HistoricoMicrotreinamentoService historicoService,
+            EntityManager entityManager,
+            AuditoriaService auditoriaService
+    ) {
+        this(repository, historicoService, entityManager, auditoriaService, null);
     }
 
     @Transactional
@@ -112,6 +127,14 @@ public class ConclusaoMicrotreinamentoService {
                 repository.save(conclusao);
 
         historicoService.atualizarHistorico(conclusaoSalva);
+
+        if (gamificacaoService != null) {
+            gamificacaoService.registrarAcao(new RegistroAcaoDTO(
+                    usuarioId,
+                    AcaoExperiencia.MICRO_TREINAMENTO,
+                    "MICROTREINAMENTO:" + microtreinamentoId
+            ));
+        }
 
         if (auditoriaService != null) {
             auditoriaService.registrarOperacao(
