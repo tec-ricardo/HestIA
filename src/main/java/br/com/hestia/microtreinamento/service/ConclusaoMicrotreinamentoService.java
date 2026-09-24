@@ -1,5 +1,9 @@
 package br.com.hestia.microtreinamento.service;
 
+import br.com.hestia.auditoria.service.AuditoriaService;
+import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
+import br.com.hestia.gamificacao.model.AcaoExperiencia;
+import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.microtreinamento.model.ConclusaoMicrotreinamento;
 import br.com.hestia.microtreinamento.repository.ConclusaoMicrotreinamentoRepository;
 import br.com.hestia.usuario.model.Usuario;
@@ -7,6 +11,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,18 +25,42 @@ public class ConclusaoMicrotreinamentoService {
     private final ConclusaoMicrotreinamentoRepository repository;
     private final HistoricoMicrotreinamentoService historicoService;
     private final EntityManager entityManager;
+    private final AuditoriaService auditoriaService;
+    private final GamificacaoService gamificacaoService;
 
     private final MicrotreinamentoFicticioService catalogo =
             new MicrotreinamentoFicticioService();
+
+    @Autowired
+    public ConclusaoMicrotreinamentoService(
+            ConclusaoMicrotreinamentoRepository repository,
+            HistoricoMicrotreinamentoService historicoService,
+            EntityManager entityManager,
+            AuditoriaService auditoriaService,
+            GamificacaoService gamificacaoService
+    ) {
+        this.repository = repository;
+        this.historicoService = historicoService;
+        this.entityManager = entityManager;
+        this.auditoriaService = auditoriaService;
+        this.gamificacaoService = gamificacaoService;
+    }
 
     public ConclusaoMicrotreinamentoService(
             ConclusaoMicrotreinamentoRepository repository,
             HistoricoMicrotreinamentoService historicoService,
             EntityManager entityManager
     ) {
-        this.repository = repository;
-        this.historicoService = historicoService;
-        this.entityManager = entityManager;
+        this(repository, historicoService, entityManager, null, null);
+    }
+
+    public ConclusaoMicrotreinamentoService(
+            ConclusaoMicrotreinamentoRepository repository,
+            HistoricoMicrotreinamentoService historicoService,
+            EntityManager entityManager,
+            AuditoriaService auditoriaService
+    ) {
+        this(repository, historicoService, entityManager, auditoriaService, null);
     }
 
     @Transactional
@@ -98,6 +127,19 @@ public class ConclusaoMicrotreinamentoService {
                 repository.save(conclusao);
 
         historicoService.atualizarHistorico(conclusaoSalva);
+
+        if (gamificacaoService != null) {
+            gamificacaoService.registrarAcao(new RegistroAcaoDTO(
+                    usuarioId,
+                    AcaoExperiencia.MICRO_TREINAMENTO,
+                    "MICROTREINAMENTO:" + microtreinamentoId
+            ));
+        }
+
+        if (auditoriaService != null) {
+            auditoriaService.registrarOperacao(
+                    "POST", "/microtreinamentos/" + microtreinamentoId + "/conclusoes", 200);
+        }
 
         return conclusaoSalva;
     }

@@ -1,9 +1,14 @@
 package br.com.hestia.reutilizavel.service;
 
 import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
+import br.com.hestia.gamificacao.model.AcaoExperiencia;
+import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -11,12 +16,17 @@ import java.util.NoSuchElementException;
 @Service
 public class RespostaReutilizavelService {
 
+    static final int LIMITE_RECOMPENSAS_REUTILIZACAO = 10;
+
     private final RespostaReutilizavelRepository repository;
+    private final GamificacaoService gamificacaoService;
 
     public RespostaReutilizavelService(
-            RespostaReutilizavelRepository repository
+            RespostaReutilizavelRepository repository,
+            GamificacaoService gamificacaoService
     ) {
         this.repository = repository;
+        this.gamificacaoService = gamificacaoService;
     }
 
     public RespostaReutilizavel cadastrar(
@@ -71,6 +81,25 @@ public class RespostaReutilizavelService {
                 );
     }
 
+    @Transactional(readOnly = true)
+    public List<RespostaReutilizavel> buscarRespostasAnteriores(
+            Long empresaId,
+            String prompt
+    ) {
+        if (empresaId == null || empresaId <= 0
+                || prompt == null || prompt.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Informe uma empresa válida e o prompt para recuperar respostas anteriores."
+            );
+        }
+
+        return repository
+                .findTop10ByEmpresaIdAndReutilizavelTrueAndPromptOriginalContainingIgnoreCaseOrderByDataCriacaoDesc(
+                        empresaId,
+                        prompt.trim()
+                );
+    }
+
     public RespostaReutilizavel buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
@@ -80,6 +109,7 @@ public class RespostaReutilizavelService {
                 );
     }
 
+    @Transactional
     public RespostaReutilizavel registrarReutilizacao(
             Long id
     ) {
@@ -87,8 +117,27 @@ public class RespostaReutilizavelService {
         RespostaReutilizavel resposta =
                 buscarPorId(id);
 
-        resposta.registrarReutilizacao();
+        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+            throw new IllegalStateException(
+                    "A resposta selecionada não está disponível para reutilização."
+            );
+        }
 
-        return repository.save(resposta);
+        resposta.registrarReutilizacao();
+        RespostaReutilizavel salva = repository.save(resposta);
+        if (salva.getUsuarioId() != null
+                && salva.getQuantidadeReutilizacoes() <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
+            gamificacaoService.registrarAcao(new RegistroAcaoDTO(salva.getUsuarioId(),
+                    AcaoExperiencia.REUTILIZACAO_RESPOSTA,
+                    "REUTILIZACAO:" + salva.getId() + ":" + salva.getQuantidadeReutilizacoes()));
+        }
+        return salva;
+    }
+
+    public EconomiaReutilizacaoDTO consultarEconomia(Long empresaId) {
+        List<RespostaReutilizavel> respostas = repository.findByEmpresaId(empresaId);
+        long chamadas = respostas.stream().mapToLong(r -> r.getChamadasEvitadas()).sum();
+        long tokens = respostas.stream().mapToLong(RespostaReutilizavel::getTokensEconomizados).sum();
+        return new EconomiaReutilizacaoDTO(empresaId, chamadas, tokens);
     }
 }

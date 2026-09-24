@@ -1,6 +1,7 @@
 package br.com.hestia.reutilizavel.controller;
 
 import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.service.RespostaReutilizavelService;
 import jakarta.validation.Valid;
@@ -78,6 +79,16 @@ public class RespostaReutilizavelController {
         );
     }
 
+    @GetMapping("/empresa/{empresaId}/buscar")
+    public ResponseEntity<List<RespostaReutilizavel>> buscarRespostasAnteriores(
+            @PathVariable Long empresaId,
+            @RequestParam String prompt
+    ) {
+        return ResponseEntity.ok(
+                service.buscarRespostasAnteriores(empresaId, prompt)
+        );
+    }
+
     @PatchMapping("/{id}/reutilizar")
     public ResponseEntity<RespostaReutilizavel>
     registrarReutilizacao(
@@ -87,5 +98,10 @@ public class RespostaReutilizavelController {
         return ResponseEntity.ok(
                 service.registrarReutilizacao(id)
         );
+    }
+
+    @GetMapping("/empresa/{empresaId}/economia")
+    public ResponseEntity<EconomiaReutilizacaoDTO> consultarEconomia(@PathVariable Long empresaId) {
+        return ResponseEntity.ok(service.consultarEconomia(empresaId));
     }
 }
