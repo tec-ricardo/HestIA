@@ -21,4 +21,9 @@ public interface RespostaReutilizavelRepository
             Long empresaId,
             String prompt
     );
+
+    List<RespostaReutilizavel>
+    findByEmpresaIdAndReutilizavelTrueAndPossuiDadosSensiveisFalseAndEmbeddingIsNotNull(
+            Long empresaId
+    );
 }

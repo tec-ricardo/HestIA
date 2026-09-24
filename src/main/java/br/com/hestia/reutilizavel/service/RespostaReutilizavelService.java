@@ -100,6 +100,23 @@ public class RespostaReutilizavelService {
                 );
     }
 
+    @Transactional(readOnly = true)
+    public List<RespostaReutilizavel> recuperarPerguntasSemelhantes(
+            Long empresaId
+    ) {
+
+        if (empresaId == null || empresaId <= 0) {
+            throw new IllegalArgumentException(
+                    "Informe uma empresa válida para recuperar perguntas semelhantes."
+            );
+        }
+
+        return repository
+                .findByEmpresaIdAndReutilizavelTrueAndPossuiDadosSensiveisFalseAndEmbeddingIsNotNull(
+                        empresaId
+                );
+    }
+
     public RespostaReutilizavel buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
