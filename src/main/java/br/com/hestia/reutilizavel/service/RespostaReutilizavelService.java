@@ -1,15 +1,17 @@
 package br.com.hestia.reutilizavel.service;
 
-import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
-import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
 import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
 import br.com.hestia.gamificacao.model.AcaoExperiencia;
 import br.com.hestia.gamificacao.service.GamificacaoService;
+import br.com.hestia.registro.repository.RegistroUsoIARepository;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -20,13 +22,16 @@ public class RespostaReutilizavelService {
 
     private final RespostaReutilizavelRepository repository;
     private final GamificacaoService gamificacaoService;
+    private final RegistroUsoIARepository registroUsoIARepository;
 
     public RespostaReutilizavelService(
             RespostaReutilizavelRepository repository,
-            GamificacaoService gamificacaoService
+            GamificacaoService gamificacaoService,
+            RegistroUsoIARepository registroUsoIARepository
     ) {
         this.repository = repository;
         this.gamificacaoService = gamificacaoService;
+        this.registroUsoIARepository = registroUsoIARepository;
     }
 
     public RespostaReutilizavel cadastrar(
@@ -45,6 +50,7 @@ public class RespostaReutilizavelService {
         resposta.setModeloIA(dto.getModeloIA());
         resposta.setTokensEntrada(dto.getTokensEntrada());
         resposta.setTokensSaida(dto.getTokensSaida());
+        resposta.setCustoEstimado(dto.getCustoEstimado());
 
         if (dto.getPossuiDadosSensiveis() != null) {
             resposta.setPossuiDadosSensiveis(
@@ -86,8 +92,10 @@ public class RespostaReutilizavelService {
             Long empresaId,
             String prompt
     ) {
+
         if (empresaId == null || empresaId <= 0
                 || prompt == null || prompt.isBlank()) {
+
             throw new IllegalArgumentException(
                     "Informe uma empresa válida e o prompt para recuperar respostas anteriores."
             );
@@ -118,6 +126,7 @@ public class RespostaReutilizavelService {
     }
 
     public RespostaReutilizavel buscarPorId(Long id) {
+
         return repository.findById(id)
                 .orElseThrow(() ->
                         new NoSuchElementException(
@@ -135,26 +144,90 @@ public class RespostaReutilizavelService {
                 buscarPorId(id);
 
         if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+
             throw new IllegalStateException(
                     "A resposta selecionada não está disponível para reutilização."
             );
         }
 
         resposta.registrarReutilizacao();
-        RespostaReutilizavel salva = repository.save(resposta);
+
+        RespostaReutilizavel salva =
+                repository.save(resposta);
+
         if (salva.getUsuarioId() != null
-                && salva.getQuantidadeReutilizacoes() <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
-            gamificacaoService.registrarAcao(new RegistroAcaoDTO(salva.getUsuarioId(),
-                    AcaoExperiencia.REUTILIZACAO_RESPOSTA,
-                    "REUTILIZACAO:" + salva.getId() + ":" + salva.getQuantidadeReutilizacoes()));
+                && salva.getQuantidadeReutilizacoes()
+                <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
+
+            gamificacaoService.registrarAcao(
+                    new RegistroAcaoDTO(
+                            salva.getUsuarioId(),
+                            AcaoExperiencia.REUTILIZACAO_RESPOSTA,
+                            "REUTILIZACAO:"
+                                    + salva.getId()
+                                    + ":"
+                                    + salva.getQuantidadeReutilizacoes()
+                    )
+            );
         }
+
         return salva;
     }
 
-    public EconomiaReutilizacaoDTO consultarEconomia(Long empresaId) {
-        List<RespostaReutilizavel> respostas = repository.findByEmpresaId(empresaId);
-        long chamadas = respostas.stream().mapToLong(r -> r.getChamadasEvitadas()).sum();
-        long tokens = respostas.stream().mapToLong(RespostaReutilizavel::getTokensEconomizados).sum();
-        return new EconomiaReutilizacaoDTO(empresaId, chamadas, tokens);
+    public EconomiaReutilizacaoDTO consultarEconomia(
+            Long empresaId
+    ) {
+
+        List<RespostaReutilizavel> respostas =
+                repository.findByEmpresaId(empresaId);
+
+        long chamadasEvitadas =
+                respostas.stream()
+                        .mapToLong(
+                                RespostaReutilizavel::getChamadasEvitadas
+                        )
+                        .sum();
+
+        long tokensEconomizados =
+                respostas.stream()
+                        .mapToLong(
+                                RespostaReutilizavel::getTokensEconomizados
+                        )
+                        .sum();
+
+        BigDecimal custoEstimadoEvitado =
+                respostas.stream()
+                        .map(
+                                RespostaReutilizavel::getCustoEstimadoEvitado
+                        )
+                        .reduce(
+                                BigDecimal.ZERO,
+                                BigDecimal::add
+                        );
+
+        long chamadasRealizadas =
+                registroUsoIARepository
+                        .countByUsuarioEmpresaId(
+                                empresaId
+                        );
+
+        long totalInteracoes =
+                chamadasRealizadas
+                        + chamadasEvitadas;
+
+        double percentualReutilizacao =
+                totalInteracoes == 0
+                        ? 0
+                        : chamadasEvitadas
+                        * 100.0
+                        / totalInteracoes;
+
+        return new EconomiaReutilizacaoDTO(
+                empresaId,
+                chamadasEvitadas,
+                tokensEconomizados,
+                custoEstimadoEvitado,
+                percentualReutilizacao
+        );
     }
 }

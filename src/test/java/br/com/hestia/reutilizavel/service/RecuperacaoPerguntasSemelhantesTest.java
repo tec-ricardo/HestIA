@@ -1,6 +1,7 @@
 package br.com.hestia.reutilizavel.service;
 
 import br.com.hestia.gamificacao.service.GamificacaoService;
+import br.com.hestia.registro.repository.RegistroUsoIARepository;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,14 @@ class RecuperacaoPerguntasSemelhantesTest {
         GamificacaoService gamificacaoService =
                 mock(GamificacaoService.class);
 
+        RegistroUsoIARepository registroUsoIARepository =
+                mock(RegistroUsoIARepository.class);
+
         RespostaReutilizavelService service =
                 new RespostaReutilizavelService(
                         repository,
-                        gamificacaoService
+                        gamificacaoService,
+                        registroUsoIARepository
                 );
 
         RespostaReutilizavel resposta =
@@ -48,7 +53,10 @@ class RecuperacaoPerguntasSemelhantesTest {
                 service.recuperarPerguntasSemelhantes(1L);
 
         assertEquals(1, resultado.size());
-        assertEquals(1L, resultado.get(0).getEmpresaId());
+        assertEquals(
+                1L,
+                resultado.get(0).getEmpresaId()
+        );
 
         verify(repository)
                 .findByEmpresaIdAndReutilizavelTrueAndPossuiDadosSensiveisFalseAndEmbeddingIsNotNull(

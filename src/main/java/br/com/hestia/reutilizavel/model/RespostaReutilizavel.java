@@ -2,6 +2,7 @@ package br.com.hestia.reutilizavel.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -39,6 +40,9 @@ public class RespostaReutilizavel {
     @Column(name = "tokens_saida")
     private Integer tokensSaida;
 
+    @Column(name = "custo_estimado", precision = 15, scale = 6)
+    private BigDecimal custoEstimado;
+
     @Column(name = "quantidade_reutilizacoes", nullable = false)
     private Integer quantidadeReutilizacoes = 0;
 
@@ -59,6 +63,7 @@ public class RespostaReutilizavel {
 
     @PrePersist
     public void prePersist() {
+
         if (dataCriacao == null) {
             dataCriacao = LocalDateTime.now();
         }
@@ -66,6 +71,7 @@ public class RespostaReutilizavel {
         if (quantidadeReutilizacoes == null) {
             quantidadeReutilizacoes = 0;
         }
+
         if (tokensEconomizados == null) {
             tokensEconomizados = 0L;
         }
@@ -81,10 +87,30 @@ public class RespostaReutilizavel {
 
     public void registrarReutilizacao() {
         this.quantidadeReutilizacoes++;
-        this.tokensEconomizados += valorSeguro(tokensEntrada) + valorSeguro(tokensSaida);
+        this.tokensEconomizados +=
+                valorSeguro(tokensEntrada)
+                        + valorSeguro(tokensSaida);
     }
 
-    private long valorSeguro(Integer valor) { return valor == null ? 0L : valor.longValue(); }
+    private long valorSeguro(Integer valor) {
+        return valor == null
+                ? 0L
+                : valor.longValue();
+    }
+
+    public BigDecimal getCustoEstimadoEvitado() {
+
+        if (custoEstimado == null
+                || quantidadeReutilizacoes == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return custoEstimado.multiply(
+                BigDecimal.valueOf(
+                        quantidadeReutilizacoes
+                )
+        );
+    }
 
     public Long getId() {
         return id;
@@ -162,23 +188,42 @@ public class RespostaReutilizavel {
         this.tokensSaida = tokensSaida;
     }
 
+    public BigDecimal getCustoEstimado() {
+        return custoEstimado;
+    }
+
+    public void setCustoEstimado(BigDecimal custoEstimado) {
+        this.custoEstimado = custoEstimado;
+    }
+
     public Integer getQuantidadeReutilizacoes() {
         return quantidadeReutilizacoes;
     }
 
-    public void setQuantidadeReutilizacoes(Integer quantidadeReutilizacoes) {
-        this.quantidadeReutilizacoes = quantidadeReutilizacoes;
+    public void setQuantidadeReutilizacoes(
+            Integer quantidadeReutilizacoes
+    ) {
+        this.quantidadeReutilizacoes =
+                quantidadeReutilizacoes;
     }
 
-    public Integer getChamadasEvitadas() { return quantidadeReutilizacoes; }
-    public Long getTokensEconomizados() { return tokensEconomizados; }
+    public Integer getChamadasEvitadas() {
+        return quantidadeReutilizacoes;
+    }
+
+    public Long getTokensEconomizados() {
+        return tokensEconomizados;
+    }
 
     public Boolean getPossuiDadosSensiveis() {
         return possuiDadosSensiveis;
     }
 
-    public void setPossuiDadosSensiveis(Boolean possuiDadosSensiveis) {
-        this.possuiDadosSensiveis = possuiDadosSensiveis;
+    public void setPossuiDadosSensiveis(
+            Boolean possuiDadosSensiveis
+    ) {
+        this.possuiDadosSensiveis =
+                possuiDadosSensiveis;
     }
 
     public Boolean getReutilizavel() {
@@ -193,7 +238,9 @@ public class RespostaReutilizavel {
         return dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    public void setDataCriacao(
+            LocalDateTime dataCriacao
+    ) {
         this.dataCriacao = dataCriacao;
     }
 }
