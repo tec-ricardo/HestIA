@@ -1,7 +1,8 @@
 package br.com.hestia.reutilizavel.controller;
 
-import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
 import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.SustentabilidadeDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.service.RespostaReutilizavelService;
 import jakarta.validation.Valid;
@@ -80,12 +81,17 @@ public class RespostaReutilizavelController {
     }
 
     @GetMapping("/empresa/{empresaId}/buscar")
-    public ResponseEntity<List<RespostaReutilizavel>> buscarRespostasAnteriores(
+    public ResponseEntity<List<RespostaReutilizavel>>
+    buscarRespostasAnteriores(
             @PathVariable Long empresaId,
             @RequestParam String prompt
     ) {
+
         return ResponseEntity.ok(
-                service.buscarRespostasAnteriores(empresaId, prompt)
+                service.buscarRespostasAnteriores(
+                        empresaId,
+                        prompt
+                )
         );
     }
 
@@ -101,7 +107,26 @@ public class RespostaReutilizavelController {
     }
 
     @GetMapping("/empresa/{empresaId}/economia")
-    public ResponseEntity<EconomiaReutilizacaoDTO> consultarEconomia(@PathVariable Long empresaId) {
-        return ResponseEntity.ok(service.consultarEconomia(empresaId));
+    public ResponseEntity<EconomiaReutilizacaoDTO>
+    consultarEconomia(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.consultarEconomia(empresaId)
+        );
+    }
+
+    @GetMapping("/empresa/{empresaId}/sustentabilidade")
+    public ResponseEntity<SustentabilidadeDTO>
+    consultarSustentabilidade(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.consultarSustentabilidade(
+                        empresaId
+                )
+        );
     }
 }
