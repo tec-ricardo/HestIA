@@ -1,10 +1,11 @@
 package br.com.hestia.reutilizavel.service;
 
-import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
-import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
 import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
 import br.com.hestia.gamificacao.model.AcaoExperiencia;
 import br.com.hestia.gamificacao.service.GamificacaoService;
+import br.com.hestia.registro.repository.RegistroUsoIARepository;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,16 @@ public class RespostaReutilizavelService {
 
     private final RespostaReutilizavelRepository repository;
     private final GamificacaoService gamificacaoService;
+    private final RegistroUsoIARepository registroUsoIARepository;
 
     public RespostaReutilizavelService(
             RespostaReutilizavelRepository repository,
-            GamificacaoService gamificacaoService
+            GamificacaoService gamificacaoService,
+            RegistroUsoIARepository registroUsoIARepository
     ) {
         this.repository = repository;
         this.gamificacaoService = gamificacaoService;
+        this.registroUsoIARepository = registroUsoIARepository;
     }
 
     public RespostaReutilizavel cadastrar(
@@ -88,8 +92,10 @@ public class RespostaReutilizavelService {
             Long empresaId,
             String prompt
     ) {
+
         if (empresaId == null || empresaId <= 0
                 || prompt == null || prompt.isBlank()) {
+
             throw new IllegalArgumentException(
                     "Informe uma empresa válida e o prompt para recuperar respostas anteriores."
             );
@@ -120,6 +126,7 @@ public class RespostaReutilizavelService {
     }
 
     public RespostaReutilizavel buscarPorId(Long id) {
+
         return repository.findById(id)
                 .orElseThrow(() ->
                         new NoSuchElementException(
@@ -137,6 +144,7 @@ public class RespostaReutilizavelService {
                 buscarPorId(id);
 
         if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+
             throw new IllegalStateException(
                     "A resposta selecionada não está disponível para reutilização."
             );
@@ -173,17 +181,19 @@ public class RespostaReutilizavelService {
         List<RespostaReutilizavel> respostas =
                 repository.findByEmpresaId(empresaId);
 
-        long chamadas = respostas.stream()
-                .mapToLong(
-                        RespostaReutilizavel::getChamadasEvitadas
-                )
-                .sum();
+        long chamadasEvitadas =
+                respostas.stream()
+                        .mapToLong(
+                                RespostaReutilizavel::getChamadasEvitadas
+                        )
+                        .sum();
 
-        long tokens = respostas.stream()
-                .mapToLong(
-                        RespostaReutilizavel::getTokensEconomizados
-                )
-                .sum();
+        long tokensEconomizados =
+                respostas.stream()
+                        .mapToLong(
+                                RespostaReutilizavel::getTokensEconomizados
+                        )
+                        .sum();
 
         BigDecimal custoEstimadoEvitado =
                 respostas.stream()
@@ -195,11 +205,29 @@ public class RespostaReutilizavelService {
                                 BigDecimal::add
                         );
 
+        long chamadasRealizadas =
+                registroUsoIARepository
+                        .countByUsuarioEmpresaId(
+                                empresaId
+                        );
+
+        long totalInteracoes =
+                chamadasRealizadas
+                        + chamadasEvitadas;
+
+        double percentualReutilizacao =
+                totalInteracoes == 0
+                        ? 0
+                        : chamadasEvitadas
+                        * 100.0
+                        / totalInteracoes;
+
         return new EconomiaReutilizacaoDTO(
                 empresaId,
-                chamadas,
-                tokens,
-                custoEstimadoEvitado
+                chamadasEvitadas,
+                tokensEconomizados,
+                custoEstimadoEvitado,
+                percentualReutilizacao
         );
     }
 }

@@ -6,6 +6,7 @@ public record EconomiaReutilizacaoDTO(
         Long empresaId,
         long chamadasEvitadas,
         long tokensEconomizados,
-        BigDecimal custoEstimadoEvitado
+        BigDecimal custoEstimadoEvitado,
+        double percentualReutilizacao
 ) {
 }
