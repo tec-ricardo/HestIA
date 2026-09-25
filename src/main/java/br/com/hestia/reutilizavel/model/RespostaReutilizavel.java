@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "respostas_reutilizaveis")
@@ -225,25 +224,6 @@ public class RespostaReutilizavel {
     ) {
         this.possuiDadosSensiveis =
                 possuiDadosSensiveis;
-    }
-
-    public BigDecimal getCustoEstimado() {
-        return custoEstimado;
-    }
-
-    public void setCustoEstimado(BigDecimal custoEstimado) {
-        this.custoEstimado = custoEstimado;
-    }
-
-    public BigDecimal getCustoEstimadoEvitado() {
-
-        if (custoEstimado == null || quantidadeReutilizacoes == null) {
-            return BigDecimal.ZERO;
-        }
-
-        return custoEstimado.multiply(
-                BigDecimal.valueOf(quantidadeReutilizacoes)
-        );
     }
 
     public Boolean getReutilizavel() {
