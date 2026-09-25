@@ -20,8 +20,8 @@ class FlywayMigrationTest {
         flyway.migrate();
 
         var aplicadas = flyway.info().applied();
-        assertEquals(9, aplicadas.length);
-        assertEquals("9", aplicadas[aplicadas.length - 1].getVersion().getVersion());
+        assertEquals(10, aplicadas.length);
+        assertEquals("10", aplicadas[aplicadas.length - 1].getVersion().getVersion());
 
         try (var conexao = flyway.getConfiguration().getDataSource().getConnection();
              var tabelas = conexao.getMetaData().getTables(null, null, "%", new String[]{"TABLE"})) {

@@ -3,6 +3,7 @@ package br.com.hestia.reutilizavel.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "respostas_reutilizaveis")
@@ -38,6 +39,9 @@ public class RespostaReutilizavel {
 
     @Column(name = "tokens_saida")
     private Integer tokensSaida;
+
+    @Column(name = "custo_estimado", precision = 15, scale = 6)
+    private BigDecimal custoEstimado;
 
     @Column(name = "quantidade_reutilizacoes", nullable = false)
     private Integer quantidadeReutilizacoes = 0;
@@ -179,6 +183,25 @@ public class RespostaReutilizavel {
 
     public void setPossuiDadosSensiveis(Boolean possuiDadosSensiveis) {
         this.possuiDadosSensiveis = possuiDadosSensiveis;
+    }
+
+    public BigDecimal getCustoEstimado() {
+        return custoEstimado;
+    }
+
+    public void setCustoEstimado(BigDecimal custoEstimado) {
+        this.custoEstimado = custoEstimado;
+    }
+
+    public BigDecimal getCustoEstimadoEvitado() {
+
+        if (custoEstimado == null || quantidadeReutilizacoes == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return custoEstimado.multiply(
+                BigDecimal.valueOf(quantidadeReutilizacoes)
+        );
     }
 
     public Boolean getReutilizavel() {
