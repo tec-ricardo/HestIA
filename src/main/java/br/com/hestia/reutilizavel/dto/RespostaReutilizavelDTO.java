@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.math.BigDecimal;
+
 public class RespostaReutilizavelDTO {
 
     private Long usuarioId;
@@ -28,6 +30,9 @@ public class RespostaReutilizavelDTO {
 
     @PositiveOrZero(message = "A quantidade de tokens de saída não pode ser negativa")
     private Integer tokensSaida;
+
+    @PositiveOrZero(message = "O custo estimado não pode ser negativo")
+    private BigDecimal custoEstimado;
 
     private Boolean possuiDadosSensiveis;
 
@@ -106,6 +111,14 @@ public class RespostaReutilizavelDTO {
 
     public void setTokensSaida(Integer tokensSaida) {
         this.tokensSaida = tokensSaida;
+    }
+
+    public BigDecimal getCustoEstimado() {
+        return custoEstimado;
+    }
+
+    public void setCustoEstimado(BigDecimal custoEstimado) {
+        this.custoEstimado = custoEstimado;
     }
 
     public Boolean getPossuiDadosSensiveis() {

@@ -10,6 +10,7 @@ import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -45,6 +46,7 @@ public class RespostaReutilizavelService {
         resposta.setModeloIA(dto.getModeloIA());
         resposta.setTokensEntrada(dto.getTokensEntrada());
         resposta.setTokensSaida(dto.getTokensSaida());
+        resposta.setCustoEstimado(dto.getCustoEstimado());
 
         if (dto.getPossuiDadosSensiveis() != null) {
             resposta.setPossuiDadosSensiveis(
@@ -141,20 +143,63 @@ public class RespostaReutilizavelService {
         }
 
         resposta.registrarReutilizacao();
-        RespostaReutilizavel salva = repository.save(resposta);
+
+        RespostaReutilizavel salva =
+                repository.save(resposta);
+
         if (salva.getUsuarioId() != null
-                && salva.getQuantidadeReutilizacoes() <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
-            gamificacaoService.registrarAcao(new RegistroAcaoDTO(salva.getUsuarioId(),
-                    AcaoExperiencia.REUTILIZACAO_RESPOSTA,
-                    "REUTILIZACAO:" + salva.getId() + ":" + salva.getQuantidadeReutilizacoes()));
+                && salva.getQuantidadeReutilizacoes()
+                <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
+
+            gamificacaoService.registrarAcao(
+                    new RegistroAcaoDTO(
+                            salva.getUsuarioId(),
+                            AcaoExperiencia.REUTILIZACAO_RESPOSTA,
+                            "REUTILIZACAO:"
+                                    + salva.getId()
+                                    + ":"
+                                    + salva.getQuantidadeReutilizacoes()
+                    )
+            );
         }
+
         return salva;
     }
 
-    public EconomiaReutilizacaoDTO consultarEconomia(Long empresaId) {
-        List<RespostaReutilizavel> respostas = repository.findByEmpresaId(empresaId);
-        long chamadas = respostas.stream().mapToLong(r -> r.getChamadasEvitadas()).sum();
-        long tokens = respostas.stream().mapToLong(RespostaReutilizavel::getTokensEconomizados).sum();
-        return new EconomiaReutilizacaoDTO(empresaId, chamadas, tokens);
+    public EconomiaReutilizacaoDTO consultarEconomia(
+            Long empresaId
+    ) {
+
+        List<RespostaReutilizavel> respostas =
+                repository.findByEmpresaId(empresaId);
+
+        long chamadas = respostas.stream()
+                .mapToLong(
+                        RespostaReutilizavel::getChamadasEvitadas
+                )
+                .sum();
+
+        long tokens = respostas.stream()
+                .mapToLong(
+                        RespostaReutilizavel::getTokensEconomizados
+                )
+                .sum();
+
+        BigDecimal custoEstimadoEvitado =
+                respostas.stream()
+                        .map(
+                                RespostaReutilizavel::getCustoEstimadoEvitado
+                        )
+                        .reduce(
+                                BigDecimal.ZERO,
+                                BigDecimal::add
+                        );
+
+        return new EconomiaReutilizacaoDTO(
+                empresaId,
+                chamadas,
+                tokens,
+                custoEstimadoEvitado
+        );
     }
 }
