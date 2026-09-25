@@ -6,6 +6,7 @@ import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.registro.repository.RegistroUsoIARepository;
 import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
 import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.SustentabilidadeDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.stereotype.Service;
@@ -228,6 +229,22 @@ public class RespostaReutilizavelService {
                 tokensEconomizados,
                 custoEstimadoEvitado,
                 percentualReutilizacao
+        );
+    }
+
+    public SustentabilidadeDTO consultarSustentabilidade(
+            Long empresaId
+    ) {
+
+        EconomiaReutilizacaoDTO economia =
+                consultarEconomia(empresaId);
+
+        return new SustentabilidadeDTO(
+                economia.empresaId(),
+                economia.chamadasEvitadas(),
+                economia.tokensEconomizados(),
+                economia.custoEstimadoEvitado(),
+                economia.percentualReutilizacao()
         );
     }
 }
