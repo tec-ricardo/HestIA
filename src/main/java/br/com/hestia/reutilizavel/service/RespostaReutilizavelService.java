@@ -1,5 +1,6 @@
 package br.com.hestia.reutilizavel.service;
 
+import br.com.hestia.autenticacao.contexto.EmpresaAtual;
 import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
 import br.com.hestia.gamificacao.model.AcaoExperiencia;
 import br.com.hestia.gamificacao.service.GamificacaoService;
@@ -9,6 +10,7 @@ import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
 import br.com.hestia.reutilizavel.dto.SustentabilidadeDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +26,37 @@ public class RespostaReutilizavelService {
     private final RespostaReutilizavelRepository repository;
     private final GamificacaoService gamificacaoService;
     private final RegistroUsoIARepository registroUsoIARepository;
+    private final EmpresaAtual empresaAtual;
+
+    @Autowired
+    public RespostaReutilizavelService(
+            RespostaReutilizavelRepository repository,
+            GamificacaoService gamificacaoService,
+            RegistroUsoIARepository registroUsoIARepository,
+            EmpresaAtual empresaAtual
+    ) {
+        this.repository = repository;
+        this.gamificacaoService = gamificacaoService;
+        this.registroUsoIARepository = registroUsoIARepository;
+        this.empresaAtual = empresaAtual;
+    }
 
     public RespostaReutilizavelService(
             RespostaReutilizavelRepository repository,
             GamificacaoService gamificacaoService,
             RegistroUsoIARepository registroUsoIARepository
     ) {
-        this.repository = repository;
-        this.gamificacaoService = gamificacaoService;
-        this.registroUsoIARepository = registroUsoIARepository;
+        this(repository, gamificacaoService, registroUsoIARepository, null);
     }
+
 
     public RespostaReutilizavel cadastrar(
             RespostaReutilizavelDTO dto
     ) {
+
+        if (empresaAtual != null) {
+            empresaAtual.validar(dto.getEmpresaId());
+        }
 
         RespostaReutilizavel resposta =
                 new RespostaReutilizavel();
@@ -69,12 +88,15 @@ public class RespostaReutilizavelService {
     }
 
     public List<RespostaReutilizavel> listarTodas() {
-        return repository.findAll();
+        return empresaAtual == null
+                ? repository.findAll()
+                : repository.findByEmpresaId(empresaAtual.obterId());
     }
 
     public List<RespostaReutilizavel> listarPorEmpresa(
             Long empresaId
     ) {
+        validarEmpresa(empresaId);
         return repository.findByEmpresaId(empresaId);
     }
 
@@ -82,6 +104,7 @@ public class RespostaReutilizavelService {
     listarReutilizaveisPorEmpresa(
             Long empresaId
     ) {
+        validarEmpresa(empresaId);
         return repository
                 .findByEmpresaIdAndReutilizavelTrue(
                         empresaId
@@ -94,6 +117,7 @@ public class RespostaReutilizavelService {
             String prompt
     ) {
 
+        validarEmpresa(empresaId);
         if (empresaId == null || empresaId <= 0
                 || prompt == null || prompt.isBlank()) {
 
@@ -114,6 +138,7 @@ public class RespostaReutilizavelService {
             Long empresaId
     ) {
 
+        validarEmpresa(empresaId);
         if (empresaId == null || empresaId <= 0) {
             throw new IllegalArgumentException(
                     "Informe uma empresa válida para recuperar perguntas semelhantes."
@@ -128,12 +153,14 @@ public class RespostaReutilizavelService {
 
     public RespostaReutilizavel buscarPorId(Long id) {
 
-        return repository.findById(id)
+        RespostaReutilizavel resposta = repository.findById(id)
                 .orElseThrow(() ->
                         new NoSuchElementException(
                                 "Resposta reutilizável não encontrada."
                         )
                 );
+        validarEmpresa(resposta.getEmpresaId());
+        return resposta;
     }
 
     @Transactional
@@ -179,6 +206,7 @@ public class RespostaReutilizavelService {
             Long empresaId
     ) {
 
+        validarEmpresa(empresaId);
         List<RespostaReutilizavel> respostas =
                 repository.findByEmpresaId(empresaId);
 
@@ -236,6 +264,7 @@ public class RespostaReutilizavelService {
             Long empresaId
     ) {
 
+        validarEmpresa(empresaId);
         EconomiaReutilizacaoDTO economia =
                 consultarEconomia(empresaId);
 
@@ -246,5 +275,11 @@ public class RespostaReutilizavelService {
                 economia.custoEstimadoEvitado(),
                 economia.percentualReutilizacao()
         );
+    }
+
+    private void validarEmpresa(Long empresaId) {
+        if (empresaAtual != null) {
+            empresaAtual.validar(empresaId);
+        }
     }
 }
