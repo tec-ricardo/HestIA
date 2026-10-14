@@ -25,4 +25,10 @@ public class EmpresaAtual {
     public Long obterId() {
         return obterContexto().empresaId();
     }
+
+    public void validar(Long empresaId) {
+        if (empresaId == null || !obterId().equals(empresaId)) {
+            throw new IllegalArgumentException("A operação não pertence à empresa autenticada");
+        }
+    }
 }
