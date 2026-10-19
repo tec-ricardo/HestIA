@@ -1,5 +1,6 @@
 package br.com.hestia.registro;
 
+import br.com.hestia.autenticacao.contexto.EmpresaAtual;
 import br.com.hestia.configuracao.repository.ConfiguracaoEmpresaRepository;
 import br.com.hestia.empresa.model.Empresa;
 import br.com.hestia.ferramenta.model.FerramentaIA;
@@ -33,6 +34,7 @@ class RegistroUsoIAServiceTest {
     @Mock UsuarioRepository usuarioRepository;
     @Mock FerramentaIARepository ferramentaRepository;
     @Mock ConfiguracaoEmpresaRepository configuracaoRepository;
+    @Mock EmpresaAtual empresaAtual;
     @Mock Usuario usuario;
     @Mock FerramentaIA ferramenta;
 
@@ -78,6 +80,26 @@ class RegistroUsoIAServiceTest {
         var excecao = assertThrows(IllegalArgumentException.class, () -> service.criar(dtoPadrao()));
 
         assertTrue(excecao.getMessage().contains("mesma empresa"));
+        verifyNoInteractions(registroRepository);
+    }
+
+    @Test
+    void deveImpedirRegistroForaDaEmpresaAutenticada() {
+        Empresa empresa = new Empresa(20L, "Outra", "98765432000199", null, null);
+        when(empresaAtual.obterId()).thenReturn(10L);
+        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
+        when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
+        when(usuario.getEmpresa()).thenReturn(empresa);
+        when(ferramenta.getEmpresa()).thenReturn(empresa);
+
+        RegistroUsoIAService isolado = new RegistroUsoIAService(
+                registroRepository, usuarioRepository, ferramentaRepository,
+                configuracaoRepository, empresaAtual);
+
+        var excecao = assertThrows(IllegalArgumentException.class,
+                () -> isolado.criar(dtoPadrao()));
+
+        assertTrue(excecao.getMessage().contains("empresa autenticada"));
         verifyNoInteractions(registroRepository);
     }
 

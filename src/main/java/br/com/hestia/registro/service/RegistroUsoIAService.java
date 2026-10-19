@@ -1,5 +1,6 @@
 package br.com.hestia.registro.service;
 
+import br.com.hestia.autenticacao.contexto.EmpresaAtual;
 import br.com.hestia.configuracao.repository.ConfiguracaoEmpresaRepository;
 import br.com.hestia.ferramenta.model.FerramentaIA;
 import br.com.hestia.ferramenta.model.StatusFerramentaIA;
@@ -14,6 +15,7 @@ import br.com.hestia.registro.repository.RegistroUsoIARepository;
 import br.com.hestia.usuario.model.Usuario;
 import br.com.hestia.usuario.repository.UsuarioRepository;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,15 +35,26 @@ public class RegistroUsoIAService {
     private final UsuarioRepository usuarioRepository;
     private final FerramentaIARepository ferramentaRepository;
     private final ConfiguracaoEmpresaRepository configuracaoRepository;
+    private final EmpresaAtual empresaAtual;
+
+    @Autowired
+    public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
+                                UsuarioRepository usuarioRepository,
+                                FerramentaIARepository ferramentaRepository,
+                                ConfiguracaoEmpresaRepository configuracaoRepository,
+                                EmpresaAtual empresaAtual) {
+        this.registroRepository = registroRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.ferramentaRepository = ferramentaRepository;
+        this.configuracaoRepository = configuracaoRepository;
+        this.empresaAtual = empresaAtual;
+    }
 
     public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
                                 UsuarioRepository usuarioRepository,
                                 FerramentaIARepository ferramentaRepository,
                                 ConfiguracaoEmpresaRepository configuracaoRepository) {
-        this.registroRepository = registroRepository;
-        this.usuarioRepository = usuarioRepository;
-        this.ferramentaRepository = ferramentaRepository;
-        this.configuracaoRepository = configuracaoRepository;
+        this(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository, null);
     }
 
     @Transactional
@@ -52,6 +65,7 @@ public class RegistroUsoIAService {
         FerramentaIA ferramenta = ferramentaRepository.findById(dto.ferramentaId())
                 .orElseThrow(() -> new NoSuchElementException("Ferramenta de IA não encontrada"));
 
+        validarEmpresa(usuario.getEmpresa().getId());
         validarMesmoTenant(usuario, ferramenta);
         validarFerramentaDisponivel(ferramenta);
 
@@ -76,6 +90,8 @@ public class RegistroUsoIAService {
     @Transactional(readOnly = true)
     public RegistroUsoIAResponseDTO buscar(Long id) {
         return registroRepository.findById(id)
+                .filter(registro -> empresaAtual == null
+                        || registro.getUsuario().getEmpresa().getId().equals(empresaAtual.obterId()))
                 .map(RegistroUsoIAResponseDTO::from)
                 .orElseThrow(() ->
                         new NoSuchElementException(
@@ -106,6 +122,10 @@ public class RegistroUsoIAService {
 
                     List<Predicate> predicates =
                             new ArrayList<>();
+
+                    if (empresaAtual != null) {
+                        predicates.add(cb.equal(root.get("usuario").get("empresa").get("id"), empresaAtual.obterId()));
+                    }
 
                     if (usuarioId != null) {
                         predicates.add(
@@ -172,8 +192,10 @@ public class RegistroUsoIAService {
     @Transactional(readOnly = true)
     public List<EficienciaUsoDTO> calcularEficiencia() {
 
-        List<RegistroUsoIA> registros =
-                registroRepository.findAll();
+        List<RegistroUsoIA> registros = empresaAtual == null
+                ? registroRepository.findAll()
+                : registroRepository.findAll((root, query, cb) ->
+                        cb.equal(root.get("usuario").get("empresa").get("id"), empresaAtual.obterId()));
 
         return registros.stream()
                 .collect(
@@ -234,6 +256,12 @@ public class RegistroUsoIAService {
 
                 })
                 .toList();
+    }
+
+    private void validarEmpresa(Long empresaId) {
+        if (empresaAtual != null) {
+            empresaAtual.validar(empresaId);
+        }
     }
 
     private void validarMesmoTenant(
