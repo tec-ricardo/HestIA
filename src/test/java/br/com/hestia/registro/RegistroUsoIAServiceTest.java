@@ -1,3 +1,4 @@
+
 package br.com.hestia.registro;
 
 import br.com.hestia.autenticacao.contexto.EmpresaAtual;
@@ -42,12 +43,18 @@ class RegistroUsoIAServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new RegistroUsoIAService(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository);
+        service = new RegistroUsoIAService(
+                registroRepository,
+                usuarioRepository,
+                ferramentaRepository,
+                configuracaoRepository
+        );
     }
 
     @Test
     void deveRegistrarUsoECalcularTotalDeTokens() {
         Empresa empresa = new Empresa(10L, "HestIA", "12345678000199", null, null);
+
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
         when(usuario.getEmpresa()).thenReturn(empresa);
@@ -55,15 +62,19 @@ class RegistroUsoIAServiceTest {
         when(ferramenta.getStatus()).thenReturn(StatusFerramentaIA.APROVADA);
         when(usuario.getNome()).thenReturn("Ricardo");
         when(ferramenta.getNome()).thenReturn("Assistente");
-        when(registroRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(registroRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         var dto = new RegistroUsoIACriacaoDTO(
                 1L, 2L, "modelo-x", null, FinalidadeUso.GERACAO_CODIGO,
-                120, 80, new BigDecimal("0.015"), StatusExecucao.SUCESSO, 900L);
+                120, 80, new BigDecimal("0.015"), StatusExecucao.SUCESSO, 900L
+        );
 
         var resposta = service.criar(dto);
 
-        ArgumentCaptor<RegistroUsoIA> captor = ArgumentCaptor.forClass(RegistroUsoIA.class);
+        ArgumentCaptor<RegistroUsoIA> captor =
+                ArgumentCaptor.forClass(RegistroUsoIA.class);
+
         verify(registroRepository).save(captor.capture());
         assertEquals(200, captor.getValue().getTokensTotal());
         assertEquals(200, resposta.tokensTotal());
@@ -74,10 +85,19 @@ class RegistroUsoIAServiceTest {
     void deveImpedirRegistroEntreEmpresasDiferentes() {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
-        when(usuario.getEmpresa()).thenReturn(new Empresa(10L, "A", "12345678000199", null, null));
-        when(ferramenta.getEmpresa()).thenReturn(new Empresa(20L, "B", "98765432000199", null, null));
 
-        var excecao = assertThrows(IllegalArgumentException.class, () -> service.criar(dtoPadrao()));
+        when(usuario.getEmpresa()).thenReturn(
+                new Empresa(10L, "A", "12345678000199", null, null)
+        );
+
+        when(ferramenta.getEmpresa()).thenReturn(
+                new Empresa(20L, "B", "98765432000199", null, null)
+        );
+
+        var excecao = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.criar(dtoPadrao())
+        );
 
         assertTrue(excecao.getMessage().contains("mesma empresa"));
         verifyNoInteractions(registroRepository);
@@ -85,19 +105,29 @@ class RegistroUsoIAServiceTest {
 
     @Test
     void deveImpedirRegistroForaDaEmpresaAutenticada() {
-        Empresa empresa = new Empresa(20L, "Outra", "98765432000199", null, null);
+        Empresa empresa = new Empresa(
+                20L, "Outra", "98765432000199", null, null
+        );
+
         when(empresaAtual.obterId()).thenReturn(10L);
+        doCallRealMethod().when(empresaAtual).validar(anyLong());
+
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
         when(usuario.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getEmpresa()).thenReturn(empresa);
 
         RegistroUsoIAService isolado = new RegistroUsoIAService(
-                registroRepository, usuarioRepository, ferramentaRepository,
-                configuracaoRepository, empresaAtual);
+                registroRepository,
+                usuarioRepository,
+                ferramentaRepository,
+                configuracaoRepository,
+                empresaAtual
+        );
 
-        var excecao = assertThrows(IllegalArgumentException.class,
-                () -> isolado.criar(dtoPadrao()));
+        var excecao = assertThrows(
+                IllegalArgumentException.class,
+                () -> isolado.criar(dtoPadrao())
+        );
 
         assertTrue(excecao.getMessage().contains("empresa autenticada"));
         verifyNoInteractions(registroRepository);
@@ -105,20 +135,28 @@ class RegistroUsoIAServiceTest {
 
     @Test
     void deveImpedirUsoDeFerramentaBloqueada() {
-        Empresa empresa = new Empresa(10L, "HestIA", "12345678000199", null, null);
+        Empresa empresa = new Empresa(
+                10L, "HestIA", "12345678000199", null, null
+        );
+
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
         when(usuario.getEmpresa()).thenReturn(empresa);
         when(ferramenta.getEmpresa()).thenReturn(empresa);
         when(ferramenta.getStatus()).thenReturn(StatusFerramentaIA.BLOQUEADA);
 
-        assertThrows(IllegalArgumentException.class, () -> service.criar(dtoPadrao()));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.criar(dtoPadrao())
+        );
+
         verifyNoInteractions(registroRepository);
     }
 
     private RegistroUsoIACriacaoDTO dtoPadrao() {
         return new RegistroUsoIACriacaoDTO(
                 1L, 2L, "modelo-x", null, FinalidadeUso.PESQUISA,
-                10, 20, null, StatusExecucao.SUCESSO, null);
+                10, 20, null, StatusExecucao.SUCESSO, null
+        );
     }
 }
