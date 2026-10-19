@@ -1,3 +1,4 @@
+
 package br.com.hestia.reutilizavel.service;
 
 import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
@@ -5,6 +6,7 @@ import br.com.hestia.gamificacao.model.AcaoExperiencia;
 import br.com.hestia.gamificacao.service.GamificacaoService;
 import br.com.hestia.registro.repository.RegistroUsoIARepository;
 import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.reutilizavel.dto.IndicadoresQualidadeDTO;
 import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
 import br.com.hestia.reutilizavel.dto.SustentabilidadeDTO;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
@@ -229,6 +231,54 @@ public class RespostaReutilizavelService {
                 tokensEconomizados,
                 custoEstimadoEvitado,
                 percentualReutilizacao
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public IndicadoresQualidadeDTO consultarQualidade(Long empresaId) {
+
+        if (empresaId == null || empresaId <= 0) {
+            throw new IllegalArgumentException(
+                    "Informe uma empresa válida."
+            );
+        }
+
+        List<RespostaReutilizavel> respostas =
+                repository.findByEmpresaId(empresaId);
+
+        long totalRespostas = respostas.size();
+
+        long respostasDisponiveis = respostas.stream()
+                .filter(r -> Boolean.TRUE.equals(r.getReutilizavel()))
+                .count();
+
+        long respostasSeguras = respostas.stream()
+                .filter(r -> Boolean.TRUE.equals(r.getReutilizavel())
+                        && Boolean.FALSE.equals(r.getPossuiDadosSensiveis()))
+                .count();
+
+        long respostasReutilizadas = respostas.stream()
+                .filter(r -> r.getQuantidadeReutilizacoes() != null
+                        && r.getQuantidadeReutilizacoes() > 0)
+                .count();
+
+        long totalReutilizacoes = respostas.stream()
+                .mapToLong(r -> r.getQuantidadeReutilizacoes() == null
+                        ? 0 : r.getQuantidadeReutilizacoes())
+                .sum();
+
+        double percentualDisponivel = totalRespostas == 0
+                ? 0
+                : respostasDisponiveis * 100.0 / totalRespostas;
+
+        return new IndicadoresQualidadeDTO(
+                empresaId,
+                totalRespostas,
+                respostasDisponiveis,
+                respostasSeguras,
+                respostasReutilizadas,
+                totalReutilizacoes,
+                percentualDisponivel
         );
     }
 
