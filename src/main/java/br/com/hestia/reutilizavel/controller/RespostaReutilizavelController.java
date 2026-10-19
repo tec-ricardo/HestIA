@@ -1,164 +1,144 @@
 
-package br.com.hestia.registro;
+package br.com.hestia.reutilizavel.controller;
 
-import br.com.hestia.autenticacao.contexto.EmpresaAtual;
-import br.com.hestia.configuracao.repository.ConfiguracaoEmpresaRepository;
-import br.com.hestia.empresa.model.Empresa;
-import br.com.hestia.ferramenta.model.FerramentaIA;
-import br.com.hestia.ferramenta.model.StatusFerramentaIA;
-import br.com.hestia.ferramenta.repository.FerramentaIARepository;
-import br.com.hestia.registro.dto.RegistroUsoIACriacaoDTO;
-import br.com.hestia.registro.model.FinalidadeUso;
-import br.com.hestia.registro.model.RegistroUsoIA;
-import br.com.hestia.registro.model.StatusExecucao;
-import br.com.hestia.registro.repository.RegistroUsoIARepository;
-import br.com.hestia.registro.service.RegistroUsoIAService;
-import br.com.hestia.usuario.model.Usuario;
-import br.com.hestia.usuario.repository.UsuarioRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import br.com.hestia.reutilizavel.dto.EconomiaReutilizacaoDTO;
+import br.com.hestia.reutilizavel.dto.IndicadoresQualidadeDTO;
+import br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO;
+import br.com.hestia.reutilizavel.dto.SustentabilidadeDTO;
+import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
+import br.com.hestia.reutilizavel.service.RespostaReutilizavelService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+@RestController
+@RequestMapping("/api/respostas-reutilizaveis")
+public class RespostaReutilizavelController {
 
-@ExtendWith(MockitoExtension.class)
-class RegistroUsoIAServiceTest {
+    private final RespostaReutilizavelService service;
 
-    @Mock RegistroUsoIARepository registroRepository;
-    @Mock UsuarioRepository usuarioRepository;
-    @Mock FerramentaIARepository ferramentaRepository;
-    @Mock ConfiguracaoEmpresaRepository configuracaoRepository;
-    @Mock EmpresaAtual empresaAtual;
-    @Mock Usuario usuario;
-    @Mock FerramentaIA ferramenta;
+    public RespostaReutilizavelController(
+            RespostaReutilizavelService service
+    ) {
+        this.service = service;
+    }
 
-    private RegistroUsoIAService service;
+    @PostMapping
+    public ResponseEntity<RespostaReutilizavel> cadastrar(
+            @Valid @RequestBody RespostaReutilizavelDTO dto
+    ) {
 
-    @BeforeEach
-    void setUp() {
-        service = new RegistroUsoIAService(
-                registroRepository,
-                usuarioRepository,
-                ferramentaRepository,
-                configuracaoRepository
+        var resposta = service.cadastrar(dto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(resposta);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarTodas() {
+
+        return ResponseEntity.ok(
+                service.listarTodas()
         );
     }
 
-    @Test
-    void deveRegistrarUsoECalcularTotalDeTokens() {
-        Empresa empresa = new Empresa(10L, "HestIA", "12345678000199", null, null);
+    @GetMapping("/{id}")
+    public ResponseEntity<RespostaReutilizavel>
+    buscarPorId(
+            @PathVariable Long id
+    ) {
 
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
-        when(usuario.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getStatus()).thenReturn(StatusFerramentaIA.APROVADA);
-        when(usuario.getNome()).thenReturn("Ricardo");
-        when(ferramenta.getNome()).thenReturn("Assistente");
-        when(registroRepository.save(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
-        var dto = new RegistroUsoIACriacaoDTO(
-                1L, 2L, "modelo-x", null, FinalidadeUso.GERACAO_CODIGO,
-                120, 80, new BigDecimal("0.015"), StatusExecucao.SUCESSO, 900L
+        return ResponseEntity.ok(
+                service.buscarPorId(id)
         );
-
-        var resposta = service.criar(dto);
-
-        ArgumentCaptor<RegistroUsoIA> captor =
-                ArgumentCaptor.forClass(RegistroUsoIA.class);
-
-        verify(registroRepository).save(captor.capture());
-
-        assertEquals(200, captor.getValue().getTokensTotal());
-        assertEquals(200, resposta.tokensTotal());
-        assertEquals("Ricardo", resposta.usuarioNome());
     }
 
-    @Test
-    void deveImpedirRegistroEntreEmpresasDiferentes() {
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
+    @GetMapping("/empresa/{empresaId}")
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarPorEmpresa(
+            @PathVariable Long empresaId
+    ) {
 
-        when(usuario.getEmpresa()).thenReturn(
-                new Empresa(10L, "A", "12345678000199", null, null)
+        return ResponseEntity.ok(
+                service.listarPorEmpresa(empresaId)
         );
-
-        when(ferramenta.getEmpresa()).thenReturn(
-                new Empresa(20L, "B", "98765432000199", null, null)
-        );
-
-        var excecao = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.criar(dtoPadrao())
-        );
-
-        assertTrue(excecao.getMessage().contains("mesma empresa"));
-        verifyNoInteractions(registroRepository);
     }
 
-    @Test
-    void deveImpedirRegistroForaDaEmpresaAutenticada() {
-        Empresa empresa = new Empresa(
-                20L, "Outra", "98765432000199", null, null
+    @GetMapping("/empresa/{empresaId}/reutilizaveis")
+    public ResponseEntity<List<RespostaReutilizavel>>
+    listarReutilizaveis(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.listarReutilizaveisPorEmpresa(
+                        empresaId
+                )
         );
-
-        when(empresaAtual.obterId()).thenReturn(10L);
-        doCallRealMethod().when(empresaAtual).validar(anyLong());
-
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
-        when(usuario.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getEmpresa()).thenReturn(empresa);
-
-        RegistroUsoIAService isolado = new RegistroUsoIAService(
-                registroRepository,
-                usuarioRepository,
-                ferramentaRepository,
-                configuracaoRepository,
-                empresaAtual
-        );
-
-        var excecao = assertThrows(
-                IllegalArgumentException.class,
-                () -> isolado.criar(dtoPadrao())
-        );
-
-        assertTrue(excecao.getMessage().contains("empresa autenticada"));
-        verifyNoInteractions(registroRepository);
     }
 
-    @Test
-    void deveImpedirUsoDeFerramentaBloqueada() {
-        Empresa empresa = new Empresa(
-                10L, "HestIA", "12345678000199", null, null
+    @GetMapping("/empresa/{empresaId}/buscar")
+    public ResponseEntity<List<RespostaReutilizavel>>
+    buscarRespostasAnteriores(
+            @PathVariable Long empresaId,
+            @RequestParam String prompt
+    ) {
+
+        return ResponseEntity.ok(
+                service.buscarRespostasAnteriores(
+                        empresaId,
+                        prompt
+                )
         );
-
-        when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
-        when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
-        when(usuario.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getStatus()).thenReturn(StatusFerramentaIA.BLOQUEADA);
-
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> service.criar(dtoPadrao())
-        );
-
-        verifyNoInteractions(registroRepository);
     }
 
-    private RegistroUsoIACriacaoDTO dtoPadrao() {
-        return new RegistroUsoIACriacaoDTO(
-                1L, 2L, "modelo-x", null, FinalidadeUso.PESQUISA,
-                10, 20, null, StatusExecucao.SUCESSO, null
+    @PatchMapping("/{id}/reutilizar")
+    public ResponseEntity<RespostaReutilizavel>
+    registrarReutilizacao(
+            @PathVariable Long id
+    ) {
+
+        return ResponseEntity.ok(
+                service.registrarReutilizacao(id)
+        );
+    }
+
+    @GetMapping("/empresa/{empresaId}/economia")
+    public ResponseEntity<EconomiaReutilizacaoDTO>
+    consultarEconomia(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.consultarEconomia(empresaId)
+        );
+    }
+
+    @GetMapping("/empresa/{empresaId}/qualidade")
+    public ResponseEntity<IndicadoresQualidadeDTO> consultarQualidade(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.consultarQualidade(empresaId)
+        );
+    }
+
+    @GetMapping("/empresa/{empresaId}/sustentabilidade")
+    public ResponseEntity<SustentabilidadeDTO>
+    consultarSustentabilidade(
+            @PathVariable Long empresaId
+    ) {
+
+        return ResponseEntity.ok(
+                service.consultarSustentabilidade(
+                        empresaId
+                )
         );
     }
 }
