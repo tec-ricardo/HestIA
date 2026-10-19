@@ -87,6 +87,7 @@ class RegistroUsoIAServiceTest {
     void deveImpedirRegistroForaDaEmpresaAutenticada() {
         Empresa empresa = new Empresa(20L, "Outra", "98765432000199", null, null);
         when(empresaAtual.obterId()).thenReturn(10L);
+        doCallRealMethod().when(empresaAtual).validar(anyLong());
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
         when(usuario.getEmpresa()).thenReturn(empresa);
