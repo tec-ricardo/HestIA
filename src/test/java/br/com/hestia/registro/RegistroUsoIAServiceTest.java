@@ -51,7 +51,6 @@ class RegistroUsoIAServiceTest {
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(usuario));
         when(ferramentaRepository.findById(2L)).thenReturn(Optional.of(ferramenta));
         when(usuario.getEmpresa()).thenReturn(empresa);
-        when(ferramenta.getEmpresa()).thenReturn(empresa);
         when(ferramenta.getStatus()).thenReturn(StatusFerramentaIA.APROVADA);
         when(usuario.getNome()).thenReturn("Ricardo");
         when(ferramenta.getNome()).thenReturn("Assistente");
