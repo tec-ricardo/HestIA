@@ -5,7 +5,7 @@ import org.flywaydb.core.api.migration.Context;
 
 import java.sql.Statement;
 
-public class V12__criar_staging_base_sintetica
+public class V13__criar_staging_base_sintetica
         extends BaseJavaMigration {
 
     @Override
