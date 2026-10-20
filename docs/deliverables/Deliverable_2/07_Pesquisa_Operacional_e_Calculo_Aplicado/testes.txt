@@ -1,0 +1,13 @@
+test_budget_alone (test_constraints.ConstraintsTest.test_budget_alone) ... ok
+test_policy_alone (test_constraints.ConstraintsTest.test_policy_alone) ... ok
+test_quantity_alone (test_constraints.ConstraintsTest.test_quantity_alone) ... ok
+test_risk_alone (test_constraints.ConstraintsTest.test_risk_alone) ... ok
+test_tie_chooses_lower_cost (test_constraints.ConstraintsTest.test_tie_chooses_lower_cost) ... ok
+test_zero_budget_selects_nothing (test_constraints.ConstraintsTest.test_zero_budget_selects_nothing) ... ok
+test_finds_expected_optimum (test_solver.OptimizationModelTest.test_finds_expected_optimum) ... ok
+test_rejects_policy_and_budget_violations (test_solver.OptimizationModelTest.test_rejects_policy_and_budget_violations) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.003s
+
+OK

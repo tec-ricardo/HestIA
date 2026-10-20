@@ -37,6 +37,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <hestia.build.directory>target</hestia.build.directory>
     </properties>
 
     <dependencies>
@@ -123,6 +124,7 @@
     </dependencies>
 
     <build>
+        <directory>${hestia.build.directory}</directory>
         <plugins>
 
             <plugin>

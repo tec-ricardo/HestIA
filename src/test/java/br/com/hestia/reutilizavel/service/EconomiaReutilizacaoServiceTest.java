@@ -32,7 +32,8 @@ class EconomiaReutilizacaoServiceTest {
                 new RespostaReutilizavelService(
                         repository,
                         gamificacaoService,
-                        registroUsoIARepository
+                        registroUsoIARepository,
+                        new AcessoRespostaService(repository)
                 );
 
         RespostaReutilizavel resposta1 =
@@ -119,7 +120,8 @@ class EconomiaReutilizacaoServiceTest {
                 new RespostaReutilizavelService(
                         repository,
                         gamificacaoService,
-                        registroUsoIARepository
+                        registroUsoIARepository,
+                        new AcessoRespostaService(repository)
                 );
 
         when(repository.findByEmpresaId(1L))

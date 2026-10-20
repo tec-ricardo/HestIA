@@ -1,0 +1,20 @@
+{
+  "selected": [
+    "Marketing::ChatGPT",
+    "TI::Copilot"
+  ],
+  "cost": 1100,
+  "benefit": 18,
+  "scenario": "risco_restritivo",
+  "budget": 1400,
+  "remaining": 300,
+  "feasible": true,
+  "risk_limits": {
+    "Marketing": 2,
+    "TI": 2
+  },
+  "tool_limits": {
+    "Marketing": 2,
+    "TI": 2
+  }
+}

@@ -1,0 +1,28 @@
+flowchart TB
+    http["Interface / cliente HTTP"]
+    subgraph API_HestIA
+      controllers["Controllers e DTOs<br/>Entrada e validação"]
+      services["Services por domínio<br/>Regras e casos de uso"]
+      repos["Repositories JPA<br/>Persistência por domínio"]
+      auth["Autenticação / auditoria<br/>Interceptors e contexto"]
+      client["AlertServiceClient<br/>Integração REST"]
+      embedding["EmbeddingService<br/>Integração externa"]
+      vetor["BuscaVetorialService<br/>pgvector; autorização por empresa e perfil"]
+      dep["DepartamentoService"]
+      empresaRepo["EmpresaRepository"]
+    end
+    postgres[("PostgreSQL")]
+    node["Alert Service"]
+    provedor["Provedor de embeddings"]
+    http --> controllers
+    auth --> controllers
+    controllers --> services
+    services --> repos
+    repos --> postgres
+    services --> client
+    client --> node
+    services --> embedding
+    embedding --> provedor
+    vetor --> embedding
+    vetor -->|"SQL vetorial; filtro de empresa"| postgres
+    dep -->|"Acoplamento existente entre módulos; dívida técnica"| empresaRepo
