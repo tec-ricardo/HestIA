@@ -98,7 +98,7 @@
 
                 <form
                     class="form-grid"
-                    onsubmit="return false;">
+                    id="formUtilizacao">
 
 
                     <label>
@@ -107,6 +107,7 @@
 
                         <input
                             type="text"
+                            id="usuarioUtilizacao"
                             value="<%= email %>"
                             required>
 
@@ -119,6 +120,7 @@
 
                         <input
                             type="text"
+                            id="modeloUtilizacao"
                             placeholder="Modelo ou ferramenta de IA"
                             required>
 
@@ -131,6 +133,7 @@
 
                         <input
                             type="date"
+                            id="dataUtilizacao"
                             required>
 
                     </label>
@@ -142,6 +145,7 @@
 
                         <input
                             type="text"
+                            id="consumoUtilizacao"
                             placeholder="Consumo">
 
                     </label>
@@ -153,6 +157,7 @@
 
                         <input
                             type="text"
+                            id="finalidadeUtilizacao"
                             placeholder="Finalidade da utilização"
                             required>
 
@@ -160,14 +165,26 @@
 
 
                     <button
-                        class="primary fake-save"
-                        type="button">
+                        class="primary"
+                        type="submit">
 
                         Registrar utilização
 
                     </button>
 
                 </form>
+
+                <!-- CONFIRMAÇÃO DO REGISTRO -->
+
+                <p
+                    id="mensagemUtilizacao"
+                    role="status"
+                    aria-live="polite"
+                    style="display: none; color: #15803d; margin-top: 15px;">
+
+                    Utilização registrada com sucesso!
+
+                </p>
 
             </section>
 
@@ -955,6 +972,96 @@
 
 
     <script src="/app.js"></script>
+
+    <!-- REGISTRO DE UTILIZAÇÕES - FRONT-END -->
+
+    <script>
+
+        const formUtilizacao = document.getElementById("formUtilizacao");
+
+        const historicoUtilizacoes = document.getElementById("historicoUtilizacoes");
+
+        const mensagemUtilizacao = document.getElementById("mensagemUtilizacao");
+
+
+        function adicionarUtilizacao(registro) {
+
+            const novaLinha = document.createElement("tr");
+
+            const valores = [
+                registro.usuario,
+                registro.modelo,
+                registro.data,
+                registro.consumo,
+                registro.finalidade,
+                "Aguardando avaliação"
+            ];
+
+            valores.forEach(function(valor) {
+
+                const coluna = document.createElement("td");
+
+                coluna.textContent = valor;
+
+                novaLinha.appendChild(coluna);
+
+            });
+
+            historicoUtilizacoes.prepend(novaLinha);
+
+        }
+
+
+        formUtilizacao.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const usuario = document.getElementById("usuarioUtilizacao").value;
+
+            const modelo = document.getElementById("modeloUtilizacao").value.trim();
+
+            const data = document.getElementById("dataUtilizacao").value;
+
+            const consumo = document.getElementById("consumoUtilizacao").value.trim();
+
+            const finalidade = document.getElementById("finalidadeUtilizacao").value.trim();
+
+
+            if (!modelo || !data || !finalidade) {
+
+                alert("Preencha todos os campos obrigatórios.");
+
+                return;
+
+            }
+
+
+            const registro = {
+
+                usuario: usuario,
+
+                modelo: modelo,
+
+                data: data.split("-").reverse().join("/"),
+
+                consumo: consumo || "Não informado",
+
+                finalidade: finalidade
+
+            };
+
+
+            adicionarUtilizacao(registro);
+
+
+            mensagemUtilizacao.style.display = "block";
+
+
+            formUtilizacao.reset();
+
+        });
+
+    </script>
 
 </body>
 
