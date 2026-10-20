@@ -4389,3 +4389,41 @@ th{
         margin-top: 6px;
     }
 }
+
+
+/* SCRUM-377 - FOCO E RESPONSIVIDADE DO LOGIN */
+
+.login-form input:focus-visible,
+.login-form button:focus-visible,
+.password-toggle:focus-visible {
+    outline: 3px solid #4677db;
+    outline-offset: 3px;
+}
+
+.login-form button:disabled {
+    opacity: 0.75;
+    cursor: wait;
+}
+
+@media (max-width: 480px) {
+    .login-body {
+        padding: 14px;
+    }
+
+    .login-shell {
+        width: 100%;
+    }
+
+    .login-card {
+        padding: 24px 18px;
+    }
+
+    .login-card h1 {
+        font-size: 1.65rem;
+    }
+
+    .login-form input {
+        min-width: 0;
+    }
+}
+
