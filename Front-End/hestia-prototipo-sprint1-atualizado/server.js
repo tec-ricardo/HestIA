@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const app = express();
+const session = require("express-session");
 
 const api = axios.create({
     baseURL: process.env.API_URL || "http://localhost:8080",
@@ -16,11 +17,44 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+/* SCRUM-376 - SESSAO INDIVIDUAL */
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || "hestia-prototipo-alterar-esta-chave",
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 60 * 1000
+    }
+}));
+
+/* PROTECAO DE ROTAS E EXPIRACAO */
+
+app.use(function(req, res, next) {
+
+    if (req.path == "/acesso") {
+        return next();
+    }
+
+    if (!req.session || !req.session.perfil) {
+        return res.redirect("/acesso?expirada=1");
+    }
+
+    next();
+
+});
+
+
 
 /* USUARIO */
 
 let email = "";
 let perfil = "";
+/* SCRUM-376: variaveis antigas preservadas; autenticacao agora usa req.session. */
 const empresaAtualId = Number(process.env.HESTIA_EMPRESA_ID || 1);
 
 
@@ -28,8 +62,18 @@ const empresaAtualId = Number(process.env.HESTIA_EMPRESA_ID || 1);
 
 app.get("/acesso", (req, res) => {
 
+    let erro = "";
+
+    if (req.query.expirada == "1") {
+        erro = "Sua sessão expirou. Entre novamente para continuar.";
+    }
+
+    if (req.query.saiu == "1") {
+        erro = "Você saiu da plataforma. Entre novamente quando quiser.";
+    }
+
     res.render("login", {
-        erro: ""
+        erro: erro
     });
 
 });
@@ -37,9 +81,11 @@ app.get("/acesso", (req, res) => {
 
 app.post("/acesso", (req, res) => {
 
-    email = req.body.email;
+    req.session.email = String(req.body.email || "").trim().toLowerCase();
 
-    const senha = req.body.senha;
+    const senha = String(req.body.senha || "");
+
+    req.session.perfil = "";
 
 
     if (senha == "") {
@@ -51,21 +97,21 @@ app.post("/acesso", (req, res) => {
     }
 
 
-    if (email.endsWith("@adm")) {
+    if (req.session.email.endsWith("@adm")) {
 
-        perfil = "administrador";
-
-    }
-
-    else if (email.endsWith("@gestor")) {
-
-        perfil = "gestor";
+        req.session.perfil = "administrador";
 
     }
 
-    else if (email.endsWith("@colaborador")) {
+    else if (req.session.email.endsWith("@gestor")) {
 
-        perfil = "colaborador";
+        req.session.perfil = "gestor";
+
+    }
+
+    else if (req.session.email.endsWith("@colaborador")) {
+
+        req.session.perfil = "colaborador";
 
     }
 
@@ -78,7 +124,17 @@ app.post("/acesso", (req, res) => {
     }
 
 
-    res.redirect("/");
+    req.session.save(function(erro) {
+
+        if (erro) {
+            return res.render("login", {
+                erro: "Não foi possível iniciar sua sessão. Tente novamente."
+            });
+        }
+
+        res.redirect("/");
+
+    });
 
 });
 
@@ -87,7 +143,7 @@ app.post("/acesso", (req, res) => {
 
 app.get("/", async (req, res) => {
 
-    if (perfil == "") {
+    if (req.session.perfil == "") {
 
         return res.redirect("/acesso");
 
@@ -277,7 +333,7 @@ app.get("/", async (req, res) => {
     */
 
     const detalhesResumoPessoal =
-        perfil == "colaborador"
+        req.session.perfil == "colaborador"
             ?
             await consultarObjetoComFallback(
                 "/resumo-pessoal",
@@ -289,9 +345,9 @@ app.get("/", async (req, res) => {
 
     res.render("index", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "dashboard",
 
@@ -497,7 +553,7 @@ function obterIndicadoresDepartamentais() {
 
 app.get("/maturidade", async (req, res) => {
 
-    if (perfil == "") {
+    if (req.session.perfil == "") {
 
         return res.redirect("/acesso");
 
@@ -706,9 +762,9 @@ app.get("/maturidade", async (req, res) => {
 
     res.render("maturidade", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "maturidade",
 
@@ -741,7 +797,7 @@ app.get("/maturidade", async (req, res) => {
 
 app.get("/creditos", (req, res) => {
 
-    if (perfil == "") {
+    if (req.session.perfil == "") {
 
         return res.redirect("/acesso");
 
@@ -750,9 +806,9 @@ app.get("/creditos", (req, res) => {
 
     res.render("creditos", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "creditos"
 
@@ -765,7 +821,7 @@ app.get("/creditos", (req, res) => {
 
 app.get("/utilizacoes", async (req, res) => {
 
-    if (perfil != "colaborador") {
+    if (req.session.perfil != "colaborador") {
 
         return res.redirect("/");
 
@@ -980,9 +1036,9 @@ app.get("/utilizacoes", async (req, res) => {
 
     res.render("utilizacoes", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "utilizacoes",
 
@@ -1034,8 +1090,8 @@ app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
 app.get("/competencias", (req, res) => {
 
     if (
-        perfil != "colaborador" &&
-        perfil != "administrador"
+        req.session.perfil != "colaborador" &&
+        req.session.perfil != "administrador"
     ) {
 
         return res.redirect("/");
@@ -1045,9 +1101,9 @@ app.get("/competencias", (req, res) => {
 
     res.render("competencias", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "competencias"
 
@@ -1060,7 +1116,7 @@ app.get("/competencias", (req, res) => {
 
 app.get("/governanca", async (req, res) => {
 
-    if (perfil == "") {
+    if (req.session.perfil == "") {
 
         return res.redirect("/acesso");
 
@@ -1079,9 +1135,9 @@ app.get("/governanca", async (req, res) => {
 
     res.render("governanca", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "governanca",
 
@@ -1104,7 +1160,7 @@ app.get("/governanca", async (req, res) => {
 
 app.get("/custos", async (req, res) => {
 
-    if (perfil != "gestor") {
+    if (req.session.perfil != "gestor") {
 
         return res.redirect("/");
 
@@ -1193,9 +1249,9 @@ app.get("/custos", async (req, res) => {
 
     res.render("custos", {
 
-        perfil: perfil,
+        perfil: req.session.perfil,
 
-        email: email,
+        email: req.session.email,
 
         active: "custos",
 
@@ -1213,7 +1269,7 @@ app.get(
     "/administracao",
     async (req, res) => {
 
-        if (perfil != "administrador") {
+        if (req.session.perfil != "administrador") {
 
             return res.redirect("/");
 
@@ -1241,9 +1297,9 @@ app.get(
 
         res.render("administracao", {
 
-            perfil: perfil,
+            perfil: req.session.perfil,
 
-            email: email,
+            email: req.session.email,
 
             active: "administracao",
 
@@ -1273,7 +1329,7 @@ app.get(
     "/configuracoes",
     async (req, res) => {
 
-        if (perfil != "administrador") {
+        if (req.session.perfil != "administrador") {
 
             return res.redirect("/");
 
@@ -1288,9 +1344,9 @@ app.get(
 
         res.render("configuracoes", {
 
-            perfil: perfil,
+            perfil: req.session.perfil,
 
-            email: email,
+            email: req.session.email,
 
             active: "configuracoes",
 
@@ -1451,8 +1507,8 @@ app.get(
     async (req, res) => {
 
         if (
-            perfil != "gestor" &&
-            perfil != "administrador"
+            req.session.perfil != "gestor" &&
+            req.session.perfil != "administrador"
         ) {
 
             return res.redirect("/");
@@ -1581,9 +1637,9 @@ app.get(
 
         res.render("mapa-risco", {
 
-            perfil: perfil,
+            perfil: req.session.perfil,
 
-            email: email,
+            email: req.session.email,
 
             active: "mapa-risco",
 
@@ -1605,7 +1661,7 @@ app.get(
     "/passe-hestia",
     async (req, res) => {
 
-        if (perfil != "colaborador") {
+        if (req.session.perfil != "colaborador") {
 
             return res.redirect("/");
 
@@ -1806,7 +1862,7 @@ app.get(
 
         const usuarios = await consultar("/usuarios");
         const usuarioAtual = usuarios.find(
-            usuario => String(usuario.email || "").toLowerCase() === String(email).toLowerCase()
+            usuario => String(usuario.email || "").toLowerCase() === String(req.session.email).toLowerCase()
         );
         const passeApi = usuarioAtual
             ? await consultarObjetoComFallback(
@@ -1821,9 +1877,9 @@ app.get(
 
         res.render("passe-hestia", {
 
-            perfil: perfil,
+            perfil: req.session.perfil,
 
-            email: email,
+            email: req.session.email,
 
             active: "passe-hestia",
 
@@ -1840,7 +1896,7 @@ app.get(
     "/ranking",
     async (req, res) => {
 
-        if (perfil != "colaborador") {
+        if (req.session.perfil != "colaborador") {
 
             return res.redirect("/");
 
@@ -1978,9 +2034,9 @@ app.get(
 
         res.render("ranking", {
 
-            perfil: perfil,
+            perfil: req.session.perfil,
 
-            email: email,
+            email: req.session.email,
 
             active: "ranking",
 
@@ -1996,11 +2052,16 @@ app.get(
 
 app.get("/sair", (req, res) => {
 
-    email = "";
+    req.session.destroy(function(erro) {
 
-    perfil = "";
+        if (erro) {
+            return res.redirect("/");
+        }
 
-    res.redirect("/acesso");
+        res.clearCookie("connect.sid");
+        res.redirect("/acesso?saiu=1");
+
+    });
 
 });
 
@@ -2217,7 +2278,7 @@ function exigirAdministrador(
 ) {
 
     if (
-        perfil !== "administrador"
+        req.session.perfil !== "administrador"
     ) {
 
         return res.redirect(
