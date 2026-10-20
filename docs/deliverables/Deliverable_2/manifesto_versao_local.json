@@ -1,0 +1,858 @@
+{
+  "base": "a07df833fc8b6ceef0c9c40dacf7407134a35c91",
+  "estado": "snapshot validado para publicacao na branch SCRUM-531; consulte o commit no GitHub",
+  "arquivos": [
+    {
+      "arquivo": "src/main/resources/application.properties",
+      "sha256": "954da15e78f8d531e43cd029371a7483c6e03986404f415446869d7f4cd7bd0b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/HestIaApplication.java",
+      "sha256": "e741bc3c0fab919ad73a3c47d7e65a78a11b220303e463df555c82cdf304e873"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/config/AuditoriaInterceptor.java",
+      "sha256": "17b6bd7fe49032d38ae65e8551f2c6b013106d6c9983e87066a25ae947cc6677"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/controller/AuditoriaController.java",
+      "sha256": "0fc715b1fc7d070a5ddb6b0470734babc6a7ee580e6d890b482bf477df08c51b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/dto/LogAuditoriaResponseDTO.java",
+      "sha256": "a02cbb83bcd5ebc0e30a3e6c5c888ff27a65d005efcc1d257c307b47f2e67df8"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/model/LogAuditoria.java",
+      "sha256": "50d936a6743fd5423e1b2bc2b1ddded7aac1c938e098dc0846a58abf54bcaa84"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/repository/LogAuditoriaRepository.java",
+      "sha256": "f0eb07bd018c8257ea98aa5f25d429b48f9da6cfe218e07503c5cfe3e4e4eced"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/auditoria/service/AuditoriaService.java",
+      "sha256": "ab3b3af71f4abefa340f2e7da311d7d421c9263f362bc76c671ee9f3897e9b7e"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/config/AutenticacaoWebConfig.java",
+      "sha256": "53b6d93f02afb448b8a34aeff42e557ee396638441d6368d1412daab01ef2528"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/config/ControleAcessoInterceptor.java",
+      "sha256": "44e91466e536ab80e90e9c4ea58925dc23bf52318509fe4d340011cf6a43c79b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/contexto/ContextoEmpresa.java",
+      "sha256": "efad0ab6ee5f632e44a85dde3982c915ad9c36e9bac0e89d01a76d92a7970a7c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/contexto/EmpresaAtual.java",
+      "sha256": "bb783a23c5cf6c5b6552497a981403b4c1182c2622698ef40faeeea1df8f9214"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/controller/AutenticacaoController.java",
+      "sha256": "a04b986fd25ddd4e28cc40aa5ba14762f84fec321aa0ddc1ba906657c27f8240"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/controller/RecuperacaoSenhaController.java",
+      "sha256": "6ce2884016c35a9903afe55a916c64592dae5c0e22f6ba9912fe9eb06f2ba27c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/dto/LoginDTO.java",
+      "sha256": "d93fc22362f58a4438e1ae6ec589a9e80a5c0f788204438e9a9bb385980d13e7"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/dto/RecuperacaoSenhaDTO.java",
+      "sha256": "ee251557df887ead47beb10bcf91ebb75a6ad037921bd28b1f1bf931616e74e7"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/dto/RecuperacaoSenhaResponseDTO.java",
+      "sha256": "43a9ea9b42e4f74e6ff96e84b7e121ddee5e5338f2791b6f904b9523443e14c5"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/dto/SessaoResponseDTO.java",
+      "sha256": "a5737b2afe8f9cd3cd3a566a1709a1ee75f34bf90c94b349324653a3c7ceb4b3"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/model/RecuperacaoSenha.java",
+      "sha256": "5bd8ffe66247109d4c7e57a7164dcb866e909ae8efd7c0a70d0ca2efbd7cd609"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/model/SessaoUsuario.java",
+      "sha256": "3b525611d9475a1db76e36dffc147d1aa49265ce81912d240a0aa6264c673e42"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/repository/RecuperacaoSenhaRepository.java",
+      "sha256": "7a7e80ad2759cc13201d1c8dedf5f7cba9da97fab62337180e3170547db1a311"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/repository/SessaoUsuarioRepository.java",
+      "sha256": "63f6f244d9fd7b6f80bcbe8c4fd589e5fca1cac9601bc75c9b4daf053f8b82fb"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/service/AutenticacaoService.java",
+      "sha256": "d5ff6e91c9c55ba64bd4a1a89e5a66c81602a11e68dfc5d83d5afec444ba5e93"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/service/CredenciaisInvalidasException.java",
+      "sha256": "9cbc3d84277decf9d55e25f0eeb487d9236794c1cd433d7940da52f29fb4a11a"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/service/RecuperacaoSenhaService.java",
+      "sha256": "6492e292b6ca04bfce6fb80e1e28601f4ea4530fe93e8866f273e7870c8af3c2"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/autenticacao/service/VinculoEmpresaInvalidoException.java",
+      "sha256": "6040168f2fff4866da764f01025fb677f5944e1462306b8c81e024dc535bed5f"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/controller/ConfiguracaoEmpresaController.java",
+      "sha256": "14a54be46b6c4400caea255cbaaf7c5580b11b527a4bbe4e81a23c22f7d4ea27"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/dto/ConfiguracaoEmpresaDTO.java",
+      "sha256": "ce9c7733f994abf5434080e54a15dd0ce1224a7d97efc7860f1f9582d5c1c755"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/dto/ConfiguracaoEmpresaResponseDTO.java",
+      "sha256": "18980284272f2b1f5a18e703aaf4e76468fdcd7ab25c9c299d4f7ecaf322dea6"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/model/ConfiguracaoEmpresa.java",
+      "sha256": "bdc660b8f3b3ead91b6ff0e4ed0e221eab9686c586ba134844c176fac5b8f640"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/repository/ConfiguracaoEmpresaRepository.java",
+      "sha256": "96f814cd20d150f269746a056ab7a399d9d0138b03595284be4818647fef3264"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/configuracao/service/ConfiguracaoEmpresaService.java",
+      "sha256": "b277fcd1212867927e5dbdac0320e5d6514d99560d9e4ce2ac293c7eb0312347"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/controller/AvaliacaoConformidadeController.java",
+      "sha256": "d4cb77c113f056e3dec586e0f1127b4736d52ce14051140dc41c1b110687fecc"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/dto/AvaliacaoConformidadeDTO.java",
+      "sha256": "5bbc6326e14c13c06f4b5f1f126d3ca39560778e6d927731de393da862cb3fdc"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/dto/AvaliacaoConformidadeResponseDTO.java",
+      "sha256": "e3e0e0e1928587fe6f8893dd3a231df1feedfefbc53393c13fabd4c5bff1af54"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/dto/FundamentosConformidade.java",
+      "sha256": "a56e85735b54cf87007c5f99959cc7c3f7df7c4a491e7ba129e7fbbbcd10f588"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/model/AvaliacaoConformidade.java",
+      "sha256": "2e7be585b4a0ee5affa72b33a0e3d9c12bb6c0a9e475bf7a551eb36ffab3899c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/model/CriterioConformidade.java",
+      "sha256": "62822834fca8af7c44d8f10bd97aff606bb5db715722a7a6f567b554284e0e7b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/model/StatusConformidade.java",
+      "sha256": "4a9ff9e7e6773e5f1d0773203509adcf64362fba4b29c2ed0a44bb05a7713235"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/repository/AvaliacaoConformidadeRepository.java",
+      "sha256": "14e99d9aa9a8a94feec5bd6fb1669bfddba170e4762aa37e6565a8a40961b761"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/conformidade/service/AvaliacaoConformidadeService.java",
+      "sha256": "c626350177aafe2c4ba7fd035f58df3c6ac153e2a696e5e7c0232d22ae6d4ad2"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/departamento/controller/DepartamentoController.java",
+      "sha256": "5fceab6b5d10e791db1d4267d97187c5b557ab332c50b423fd42bc2d72076ea1"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/departamento/dto/DepartamentoDTO.java",
+      "sha256": "a3203e911b8844ffe64ae3298c6d9bd0c8bc4c0387bbacf7c26e977946cbf870"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/departamento/model/Departamento.java",
+      "sha256": "13ce325b38a65254a656afb69e784a4d057c9763e9bb9feae920db2ea22ba877"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/departamento/repository/DepartamentoRepository.java",
+      "sha256": "da66f4165e315fd8c97fd77c3132dd27e4f590770b3c2927ef5e2ed0a0cef5e4"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/departamento/service/DepartamentoService.java",
+      "sha256": "0889f7955c1329802b6a02e95c42c07284fc2700ec61f7ef6e428aab91904bd0"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/controller/EmpresaController.java",
+      "sha256": "00fc31e637e3b68b7bf98efa749a98acee3554df3b783ce9f9b92225cffb3265"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/dto/EmpresaDTO.java",
+      "sha256": "5e6141259206b967b4c2a33bfbe8a1e4ec1cd2df98614364c0373f9cdad5cc8f"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/dto/EmpresaResponseDTO.java",
+      "sha256": "fdfb28e7cede574a5bfc240b094a4e28f6c99f3fe8acbeebd9e535c47e046e01"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/model/Empresa.java",
+      "sha256": "1f7c1ebc49ce9cfc9e3cfd4fbcf76b95b038296d99a1aea1aa12d4854e19ff9a"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/repository/EmpresaRepository.java",
+      "sha256": "d9fc21a086690f81aae27f7515a2c5ba68f0aa5c1de72de99ddfeb4adc7963c1"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/empresa/service/EmpresaService.java",
+      "sha256": "b602b444f0062d2029d88901183b1a9b0c2a8602f8a87f794d28c0f92b866d95"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/controller/FerramentaIAController.java",
+      "sha256": "9b6461970595aecef4ce7d0467c4ede37108c79e088d0a03e2ddc313fe33f6ed"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/dto/FerramentaIACriacaoDTO.java",
+      "sha256": "b88ab4572405b5e371285c9443a4a5d5e40235ded817de3b694b30fb5bcdc907"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/dto/FerramentaIAResponseDTO.java",
+      "sha256": "e5df39284ce18a7c751ebc6d46034e764bd38d01eedd8426785a7710a695bdf7"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/model/FerramentaIA.java",
+      "sha256": "49e6420878293d0a3dc517e9e59226d67bdebf396f61f2f8e321bee2b9d9c631"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/model/NivelRiscoIA.java",
+      "sha256": "0a3f71ba16ea1bc3dd7d65cba0f95ca409146b0e552703af3c1f70e230b3a41e"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/model/StatusFerramentaIA.java",
+      "sha256": "4528f5ed77c6f3da1dd1dfe0cb2a7bb100f79cf074a7572ab9f144d036de4c9b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/model/TipoFerramentaIA.java",
+      "sha256": "fdca72d5f49952213c01948d5eddd6a8b8f7bf471789da79997470aa11876c09"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/repository/FerramentaIARepository.java",
+      "sha256": "fe0524bbeb55dbb4f526ab3dcdec2923eada8c7661d3ee144a5e979ca82ca971"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/ferramenta/service/FerramentaIAService.java",
+      "sha256": "244654e213de7ac20c2c3e8b8f77800d70e30f6e39b6a9fc0262bf02e7e49878"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/controller/GamificacaoController.java",
+      "sha256": "2b3adf3858cfc1060c41bb03075110ae6e513b6518f99ae17b16fde02b4d7513"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/dto/PasseHestIAResponseDTO.java",
+      "sha256": "d77bf4a04766f072b23a17d186397eecaf7d8ed40f8f463d3e7e952c0a0755cb"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/dto/RegistroAcaoDTO.java",
+      "sha256": "5bb81a7f5faf06b897d6bfe5eba0a38689316b8a8c624fc2b632d8bfd0f57e31"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/AcaoExperiencia.java",
+      "sha256": "104b9fb449a7783a4e34a45cbe39bf55743563f7ab7ee13028bbb1d688f04204"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/Missao.java",
+      "sha256": "b50285a708d36fa14a1f41d1e26199299d3384faee2ed91ba79111522b25abdf"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/MovimentoExperiencia.java",
+      "sha256": "27022e5dc133468af0043d06496bb3772f372fc2747a834bffdf0701d6c64502"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/NivelExperiencia.java",
+      "sha256": "1731ee04ebecfdaad74f749450bc7999d27489cc6eb8969f69ce154c591247a1"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/ProgressoMissao.java",
+      "sha256": "373688843ceb741efcfa501fe9bcc09ae3c481956109a6e5c8931b5d019c5d20"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/model/ProgressoUsuario.java",
+      "sha256": "f8b2a5633bc6315f6fb1deb8276fc51f38bc64576927aeb7f460176d97057320"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/repository/MissaoRepository.java",
+      "sha256": "82ccff916b370007ac6d4899f0996be392176d6a5d74350956560bfff7840934"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/repository/MovimentoExperienciaRepository.java",
+      "sha256": "36617ec6e0089cc89b64145b72670661c4862432e3a44e0338d445d8cb588584"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/repository/ProgressoMissaoRepository.java",
+      "sha256": "d9ba2bd414488466f0e4023d22b1afeb49e2e4be92b44afcb2a70428c6570edb"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/repository/ProgressoUsuarioRepository.java",
+      "sha256": "84af0690667fb835b39c84d92af87d1bfb00467d160461e67125bf4447f2e7b2"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/gamificacao/service/GamificacaoService.java",
+      "sha256": "edbb246bca8408527c1b81e97d81f060b6f0708b42ff63dd075dd9ff656cabd4"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/integracao/synthetic/SyntheticBaseImportRunner.java",
+      "sha256": "dfbbe60980a80d06bf6d83ceb82d6f3d4432a9599b40e7cb2e3b7a864ef297b2"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/integracao/synthetic/SyntheticOperationalImportRunner.java",
+      "sha256": "7b3c38a896a452cbd9a085ed97564cab207399969610d0a95b703b29d7cc3faa"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/controller/ConclusaoMicrotreinamentoController.java",
+      "sha256": "2c475e441921cccb2c53989b5d3b66c8302b8459de7cfc94cb2a1694102cab90"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/controller/NecessidadeMicrotreinamentoController.java",
+      "sha256": "507df750fd672bc10f57f6c9be4b41feb5fc3df96b349c8e2ea651bffab4549b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/dto/ConclusaoMicrotreinamentoDTO.java",
+      "sha256": "252c4585ff8ed645bc59ef85361df533b93be9ee839fa197390fc2ecf2be3a2c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/dto/NecessidadeMicrotreinamentoDTO.java",
+      "sha256": "8fd95fbcd3b489381489896834ba2cb0c2c75f79c5eda4b7fb98c046575de3f7"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/ConclusaoMicrotreinamento.java",
+      "sha256": "83d0c6efc9acff32f9f4e6014229946bcac8cfc267fec4a072b19c591f7edeb6"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/CriterioErroRecorrente.java",
+      "sha256": "37e0f2f043fa39d8af8f95017c1d819e92201a553192086f5c537f25705d862d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/CriterioRecomendacaoMicrotreinamento.java",
+      "sha256": "05a70f0e58d7e7dda71e3de6e255ebf2309f5d0bd90e7eb5517aa4fa7a21050e"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/HistoricoMicrotreinamento.java",
+      "sha256": "ff0303b311792a8d47dea3c3e44026691ac5f18f67239ffeb52e4000561ac607"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/Microtreinamento.java",
+      "sha256": "cf7a16ebfcbecea109b42ec062ac169b7c3c8c52afa81e49adc8db38a4409bb0"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/NecessidadeMicrotreinamento.java",
+      "sha256": "f24ddadd06df2ebdf43e9795ab0e4b6c0f1a8606284de4b89843a7d98f618a5b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/TemaTreinamento.java",
+      "sha256": "87d59d69a840b124675413a7ab1b64ac3f4f52b5e394efd58a8f34a5bc98f0f0"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/model/TipoErro.java",
+      "sha256": "bd15b9ae0dab1c69d4fac8b31278b27d68debfc9584b2b4dbe6170e0aac7855c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/repository/ConclusaoMicrotreinamentoRepository.java",
+      "sha256": "d8aaf13ad384c5d20e73ae2415b26a128ceff9d1e8becba3129a0d78d6075aa9"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/repository/HistoricoMicrotreinamentoRepository.java",
+      "sha256": "f9eb5a561b691bfe0cbcfa72579538737aca99a6b2f1b7d6560504ec63760208"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/repository/NecessidadeMicrotreinamentoRepository.java",
+      "sha256": "00bc5eb9eba3b69ea979f8a76b7584e1cfbe6fb2a8b5da0a6a1fb0f265084ef0"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/service/ConclusaoMicrotreinamentoService.java",
+      "sha256": "5d388de8b2cc7638a6bcc6abf715c2c997f107b4bb26e727625330ca8a814866"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/service/HistoricoMicrotreinamentoService.java",
+      "sha256": "74d7cc0c267dd8af4ce2a8f138346cf760f6928fa1780b8a07c002700385935f"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/service/MicrotreinamentoFicticioService.java",
+      "sha256": "2c1cc812e5e99c60ea0aa10cf76d718d94c01c8e304f7546c9d4a835d35ab70f"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/service/NecessidadeMicrotreinamentoService.java",
+      "sha256": "d42a49421b5cfa8a9683e6ba324e244d99fc46ce69dd72e1de068f0d00e457a8"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/microtreinamento/service/RecomendacaoMicrotreinamentoService.java",
+      "sha256": "af5c787a17dbb2cd9b8a6c88af73557d1076af301b55d29bce2448880af770d6"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/client/AlertServiceClient.java",
+      "sha256": "e12f58ce605a75a2e423e2e264dab36220c97751d2be9a453dfec16777605129"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/config/AlertServiceConfiguration.java",
+      "sha256": "471b3c911c24d51632d6287e63c8b4a0a2396adbb2412faff1d39f566ceefa3e"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/config/AlertServiceProperties.java",
+      "sha256": "8ffb990cd125831f1c951d1bfd803b09c811afcb9ee9665c210a2166d230c45c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/dto/CriarNotificacaoRequest.java",
+      "sha256": "6a9887f22395ee6d8d5d2853f2b4b9fac4d69d1984db9c70e4975b42ee5a7300"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/dto/NotificacaoResponse.java",
+      "sha256": "92a264c6ce1febaa011aeb5eb3a2a96f2b90d0fbf790ee907fab28ca2db3aac9"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/notificacao/exception/AlertServiceException.java",
+      "sha256": "6ebe2183975664df79c0074c61c9a998f3a6abb3a55aaf5f0cd7525cc9b7abe4"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/politica/controller/PoliticaUsoController.java",
+      "sha256": "0547c49b5e384ebe2f8a259d263030d99e98e48e972ff5d7b97c360d92e2e7bb"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/politica/dto/PoliticaUsoDTO.java",
+      "sha256": "027a2d39e1bc78ccdc3c0a64c8cff4c2648e391db556b670911921a1cf3522e1"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/politica/model/PoliticaUso.java",
+      "sha256": "3606a40612a883e658a6ebe110cc8899389279528e04d1bca22aea4d0622ca9b"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/politica/repository/PoliticaUsoRepository.java",
+      "sha256": "6abbe05b9873de2b53a9ac75fb01fca4f88bae6d02161a31697defae931ec085"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/politica/service/PoliticaUsoService.java",
+      "sha256": "a8ddfc4211e31554cc8c00ea27195594a923773f68383a1eb66e720e14234f67"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/rag/service/BuscaVetorialService.java",
+      "sha256": "ed98dff7989f7ba07508035774a05382beae7ca6188559b199939159463879ad"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/rag/service/EmbeddingService.java",
+      "sha256": "bb8a9a6e04f912b9e5d92f5ba47a30ae20e3d2b6c676fcc17669fc92ca5b5b37"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/rag/service/SimilaridadeSemanticaService.java",
+      "sha256": "483e4f0aae6f230e489fd2fb5ab9158076a09b1661079abc25845097230d13c8"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/controller/RegistroUsoIAController.java",
+      "sha256": "7d9ec48bc95646021f12cd453ac37c91ea060985d57660b694bdb086bc2ee3fb"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/dto/EficienciaUsoDTO.java",
+      "sha256": "1d2aca6dee61a653ecdc1eb32675d50b2377910e96ec143cbed3997758556c06"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/dto/RegistroUsoIACriacaoDTO.java",
+      "sha256": "46ee5acbe2c612b5b2f65f0792981e3e6ee0117a09bebc7565423aa307a6ba30"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/dto/RegistroUsoIAResponseDTO.java",
+      "sha256": "11030cc0d873332ece55082335ba6c4208f5c32911248ef94ed008eee2de3bdc"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/model/FinalidadeUso.java",
+      "sha256": "b75bb126f29b06a9933ab365c41fb3b5b425bf86f0fd370c36bf2482adb649f2"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/model/RegistroUsoIA.java",
+      "sha256": "a4e18d1434f106d436cdc7ac53b9f2da16cddd37b9874852818eeb78f2d3e6d6"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/model/StatusExecucao.java",
+      "sha256": "c0cab4b51469d0037b2fea5942ce351375fb8efc25c5f7ac46ca7d52d3e48cff"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/repository/RegistroUsoIARepository.java",
+      "sha256": "969fc23e60a4024d5873cfac23fd98c9e412ed4d731444d1fe6fbf2214240292"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/registro/service/RegistroUsoIAService.java",
+      "sha256": "ff75ec65cea8c34fb0b3d3cfd0d9a002c617e0bbd85114413eec48824fab6a1d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/controller/RespostaReutilizavelController.java",
+      "sha256": "f75341265aff2db8d080589a8bc06ffd32400c49ca7007c2f1c518a223cdea39"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/dto/EconomiaReutilizacaoDTO.java",
+      "sha256": "c6a17b2d7ae7bbbe72415b9120ba9ec88cf0d84fbf38d7b9172db49174aa5dc4"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/dto/IndicadoresQualidadeDTO.java",
+      "sha256": "1ec66b262407b8d8e6aa4c3999cba601f88f4d35690639a5c3c09dab540d978f"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/dto/RespostaReutilizavelDTO.java",
+      "sha256": "cdaa325596bc4bb4c78b94059ffba6821725682af23d564dedfe2858826b124d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/dto/SustentabilidadeDTO.java",
+      "sha256": "4e762a8d5ceb2252a11e14e423ec973c6c434f1ec6ffab5f4040d58b44c5749d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/model/RespostaReutilizavel.java",
+      "sha256": "ea960e243206670cb5ba0d7814a72da50793174f7cb91b5aafa215d3bceedd9d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/repository/RespostaReutilizavelRepository.java",
+      "sha256": "ee73b1702c7207a29df2f58a47942939ce5f39cf420a67f2a1ffb8cce802cf70"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/service/AcessoRespostaService.java",
+      "sha256": "dfbdb4378f60b4871640bc5448a9588a5dc2a5a53326ad6811a98286381f3af7"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/reutilizavel/service/RespostaReutilizavelService.java",
+      "sha256": "75224e3c6ee534238fc557767376646fd6d07fa80abd169655fe4f513167b23d"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/shared/api/ApiError.java",
+      "sha256": "b802d4329185f38c7b1e4220c05d8014d0afe5b070f6d1c9f398b344e3992553"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/shared/api/ApiExceptionHandler.java",
+      "sha256": "62cbc747552eb52f3d75258d96c44984f102d3847bc09326f3f7c2ef42612bea"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/config/PasswordConfiguration.java",
+      "sha256": "6733e0a19f93421ffcc21acd7344bb25700bd5761ab9d3fb83a2285c107064f8"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/controller/UsuarioController.java",
+      "sha256": "b73062df4f2c7491560d0b5b58102ce475d650dd0e8dfa339acf628da157877c"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/dto/UsuarioDTO.java",
+      "sha256": "1ef5ab95e4868e8389f7d686e4e02898a0d5272db0f94c3dbf1608b4e22a3a7a"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/dto/UsuarioResponseDTO.java",
+      "sha256": "465eb1c8be4a9f3b46f5dfc99d35fb04a8582882159a7e88a921a461f6a1b300"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/model/PerfilUsuario.java",
+      "sha256": "5e7c09c0732c84eb12c6dce8887eb1c937290f05d96fb5a60a09e1e6a02531b3"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/model/Usuario.java",
+      "sha256": "2e406a2a4795daca9b580a2f7c6e65d04fa4d18a4e0b93a87974caa7743ba902"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/repository/UsuarioRepository.java",
+      "sha256": "415ffe5b1bc78c47f6ce17068ef18f3abe523430d60566d3ec3893caa87cc765"
+    },
+    {
+      "arquivo": "src/main/java/br/com/hestia/usuario/service/UsuarioService.java",
+      "sha256": "18f65560d54e757d28ada8f4bb01bd152392faa41e06464d24099d746f31e20c"
+    },
+    {
+      "arquivo": "src/main/java/db/migration/V11__adicionar_pgvector_respostas.java",
+      "sha256": "c112417147140817e1bcc702d3e59a0247f8e481c04f875cfa9907d711cee618"
+    },
+    {
+      "arquivo": "src/main/java/db/migration/V13__criar_staging_base_sintetica.java",
+      "sha256": "5d7b812633b767eccbbf1cc2a97c73cfac8c1988c134a4dcfef87aba8cece43b"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V10__custo_estimado_reutilizacao.sql",
+      "sha256": "3c5686227f2ec61afbe296ee779b545a979aa5fc7270596579e4a780a47b1740"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V12__recuperacao_senha.sql",
+      "sha256": "a7833489a8b940aaf21b021c6f09863981bba59d6249267804b79363a43de742"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V14__perfis_recuperacao_respostas.sql",
+      "sha256": "4dc8a34a0bef2ee1ab9550e1f0e51f4415ea6c79a03563539c64f1d6ccc4b70d"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V1__baseline_hestia.sql",
+      "sha256": "63196a467170183076e973db722464315b476209b81e6e9946872732b440c271"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V2__registro_uso_ia.sql",
+      "sha256": "52169d557bba63e4c09031464815ea331ffbb317d390f716432fdac18168403f"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V3__avaliacao_conformidade.sql",
+      "sha256": "9b8b9c0348c8896cc0bfc14e2444c284e5c8c8a4d64f9fb1b0c38e3a1d08913f"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V4__sessoes_usuario.sql",
+      "sha256": "04c7ec4f0cce1e553b6cbd896d2baad37c249f2ed4236485cda42ba139ba7096"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V5__auditoria.sql",
+      "sha256": "5d5d61c3c1fc9830e459cf87ed3226118c135fb9c425caf9a7382c03f57ddc90"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V6__configuracoes_empresa.sql",
+      "sha256": "afdc2e72246cc5b951202d8d3e23d1c08f07d58273d00e8a6ed99d8ede7c05ed"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V7__gamificacao.sql",
+      "sha256": "2630e342ca036e24b991fdd9042cb669b0ba15eaa13a40d9287d10db0588c4be"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V8__economia_reutilizacao.sql",
+      "sha256": "1739b59049f6feb6790cfcedd1087b301214599c1573d06507e79734c6270fc9"
+    },
+    {
+      "arquivo": "src/main/resources/db/migration/V9__microtreinamentos.sql",
+      "sha256": "e8714ca60784e26b85a7f172f4a7ada0bcfaba041380d3502f1f07445e951b4e"
+    },
+    {
+      "arquivo": "src/test/resources/application.properties",
+      "sha256": "2bda6dd7341d8e457ab7c97476e9e58b924de94759b6456b701e8d220f78c7ff"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/HestIaApplicationTests.java",
+      "sha256": "3b1cd4af2c5b30703f9ecb89b1f08493fa0042bc2942e1589fe8489dc246f833"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/auditoria/AuditoriaInterceptorTest.java",
+      "sha256": "bbe9ee1c5da11c23af2cbb3b9d1dfa3628265f03bce8059b0814453bf09f7585"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/autenticacao/AutenticacaoServiceTest.java",
+      "sha256": "1bd43bc20c48859d43fa4df749af8e1a9ecc4680afed9a7209cea1eaf0456ad0"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/autenticacao/ControleAcessoInterceptorTest.java",
+      "sha256": "ac2618e3e4b984e31b6940cec41a154474b947fb4122bff93ac1e3da9b1f544a"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/autenticacao/RecuperacaoSenhaServiceTest.java",
+      "sha256": "138d1c03cc0a382108f44b8b5949de5515b66d230c9c52d7308936e77bb927cc"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/configuracao/ConfiguracaoEmpresaServiceTest.java",
+      "sha256": "14a5a8cfc72be3e706c842bfc520456d3ee3a3f74eaade54902cb418ba397895"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/conformidade/AvaliacaoConformidadeServiceTest.java",
+      "sha256": "b1e3ed1b872ffdb5ea54fbbb5d57752d596bd4dd1ad8ea4dab6ff8af3d722f17"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/gamificacao/ProgressaoExperienciaTest.java",
+      "sha256": "6aeea93873a914616cfe709cd5aa242100971a9d78433e9beb7d2fa0a0fe664d"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/migration/FlywayMigrationTest.java",
+      "sha256": "4ce78a084318047cecea77360ed4709b1450865013851e0fca455fca361f56be"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/notificacao/AlertServiceEndToEndTest.java",
+      "sha256": "8641e9c3611afbc62868b6340a49e74974bde05996c184df06c60d5d66c698f4"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/registro/RegistroUsoIAServiceTest.java",
+      "sha256": "f519a7cae4e7e59d027a835e59e6f88ae270022874b634d6485aacf551a7e3a4"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/reutilizavel/EconomiaReutilizacaoTest.java",
+      "sha256": "08c2902581d1bbc948213e53090db69d1cea8dd8c7793098d64c3ce580b71c58"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/departamento/controller/DepartamentoControllerTest.java",
+      "sha256": "15f79d5b6c754158612052e1d6196395bbd07649338b2690609fc544e45f81f3"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/departamento/service/DepartamentoServiceTest.java",
+      "sha256": "0c6a86b50bf3414fff6ee51d0d51040effffd236b1e1dd5995bdbdddaab6efec"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/empresa/service/EmpresaServiceTest.java",
+      "sha256": "105cb7f187ccbe2d2d5b39ad4d2e967b3ba95b1d15d27debfd1497d46f3e8a28"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/ferramenta/dto/FerramentaIACriacaoDTOTest.java",
+      "sha256": "9d1bd6f21b4b505ea7bd9916ea34ed74bd219dcaa7a32f6b0c012fe3cd833969"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/ferramenta/model/FerramentaIARepositoryTest.java",
+      "sha256": "fc79a57815c86e58aae7e19bdd5c14f752ebd161c548ab0fb49ac141e4ab8de0"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/ferramenta/service/FerramentaIAServiceTest.java",
+      "sha256": "752b30917813d66b1f1904f4bbc7220a779ec7ddaba45d233452ad8b28362d27"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/microtreinamento/service/MicrotreinamentoPersistenciaTest.java",
+      "sha256": "2a3489924538bcaef3e191575a1b4f77b7dd67805c097883c34bc4011cedf88c"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/microtreinamento/service/NecessidadeMicrotreinamentoServiceTest.java",
+      "sha256": "dd5b743dd3e482f3bc1536c4ebf933cd8c0a59062c272f8045c5353ba344dcad"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/microtreinamento/service/RecomendacaoMicrotreinamentoServiceTest.java",
+      "sha256": "7376b7027648c4c4ec70f503dbb35fe42308fa80389734d4940f061fd83af79b"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/notificacao/client/AlertServiceClientTest.java",
+      "sha256": "927da9e665e9858a487b2bc8e645eff6ddf48b23079fe9ba6961fb2edeeeb81a"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/politica/service/PoliticaUsoServiceTest.java",
+      "sha256": "e80b6a843d07482dd15867a8bd6b6cb74282ab0e37b59031d23c9adfc35a93c8"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/rag/service/BuscaVetorialPostgresTest.java",
+      "sha256": "095383f127d13101886f34a680e0ad9d199f1af875fc7800df22fd119aeec305"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/rag/service/EmbeddingServiceTest.java",
+      "sha256": "a8437209ed532b8cd1b0e12468f6b07f99fbbc96b1828bedfe8655008f9bbf4a"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/rag/service/SimilaridadeSemanticaServiceTest.java",
+      "sha256": "30eeab2427a1d0630305a0d672a306eabc5cb83a5ec6cab23a8fcd1d738f686a"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/reutilizavel/service/EconomiaReutilizacaoServiceTest.java",
+      "sha256": "6fa1034c8e6700e94d6efbaa06e58ef91dc758ef86584318db6715c6889a9396"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/reutilizavel/service/RecuperacaoPerguntasSemelhantesTest.java",
+      "sha256": "4b59e99acb7e875b1b1efcf68a8288c79f40e651009c4bf3623ac8efcdde2a5c"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/usuario/dto/UsuarioResponseDTOTest.java",
+      "sha256": "e9bb444550ea164ba91af568c451b8f5462e42059f3fd9a319527a6d53f01c60"
+    },
+    {
+      "arquivo": "src/test/java/br/com/hestia/usuario/service/UsuarioServiceTest.java",
+      "sha256": "23e1a5c6aa3bcffc7cfd310d7b26fb02eeaa9802243eec6a2c3b53e2a40eadda"
+    },
+    {
+      "arquivo": "model/optimization/.gitignore",
+      "sha256": "01d8d0360f02a0c00e236a4eb2a1d8bdf83377acf442eaafad7a136bf14d6bb0"
+    },
+    {
+      "arquivo": "model/optimization/limits.csv",
+      "sha256": "e9ed9b19e5fe2a0f79ee1a58184d20ad7d52d373f70c3423206f24acef8d64a1"
+    },
+    {
+      "arquivo": "model/optimization/run_scenarios.py",
+      "sha256": "1b0ec4c7af6a7b97b7997f03f365341fa639ef9559be069f36055127b6549d3c"
+    },
+    {
+      "arquivo": "model/optimization/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": "model/optimization/solver.py",
+      "sha256": "6ad3fcfab17f2cda4537c6e82d578b956ed1f275178e16d76ce195ea74cbe861"
+    },
+    {
+      "arquivo": "model/optimization/test_constraints.py",
+      "sha256": "022478b04e617f35d767675b0546a1d5681ccdda50a1be4505ff76ba5220c060"
+    },
+    {
+      "arquivo": "model/optimization/test_solver.py",
+      "sha256": "3c0bf12aafc8498831351fc53677c2da2dc68182b7ef821850288794bb45d5de"
+    },
+    {
+      "arquivo": "model/optimization/results/comparison.csv",
+      "sha256": "7b3025dfd7eeb5d0f7d4a537853e55051fb1d4e79a21b0526e28898e9e79faa5"
+    },
+    {
+      "arquivo": "model/optimization/results/results.json",
+      "sha256": "e4c74982443b7e242ce11f37f17d0208bdca3c105806bb19a15ad5171707e7c1"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/base/limits.csv",
+      "sha256": "e9ed9b19e5fe2a0f79ee1a58184d20ad7d52d373f70c3423206f24acef8d64a1"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/base/result.json",
+      "sha256": "ea411ac4af4301788304880a766c28ec628e19420be45d0493568cdf83c2b5c1"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/base/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/bloqueio_copilot/limits.csv",
+      "sha256": "e9ed9b19e5fe2a0f79ee1a58184d20ad7d52d373f70c3423206f24acef8d64a1"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/bloqueio_copilot/result.json",
+      "sha256": "8cf63c0ee41f5d64ddea16460fab56962a03a00112e8d33076e416e9151d157c"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/bloqueio_copilot/scenario.csv",
+      "sha256": "ec50ef09684ba98c6b9c1a5579984cbc1cff7b000f4402c93c2edc23b10bf1a7"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/limite_uma_ferramenta/limits.csv",
+      "sha256": "ef556504ec3490d42fb4a2ff7cca6fb37f860acde116e37a7f0e475936b0b398"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/limite_uma_ferramenta/result.json",
+      "sha256": "398d683493f5f72b531f35f11aff36245f624c60eec6e8578d829fe52f1531ad"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/limite_uma_ferramenta/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_ampliado/limits.csv",
+      "sha256": "cc4e2a0570122ce4f88a52b19daaeb8b4a45ab88b417efd04c00d8aa083a3cd6"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_ampliado/result.json",
+      "sha256": "8d01b8614abd4f9b0fdcbb1edc9fe29bb50f843e823bba087663a613430b483e"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_ampliado/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_reduzido/limits.csv",
+      "sha256": "077de961c636177e74da122fa67ffd0dfd8c62ecb450af58efbacc18d7d3f527"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_reduzido/result.json",
+      "sha256": "9db4901b10252c73dd6338fc33b983011ea73fe4ed055b8dfa81dea5988215e5"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/orcamento_reduzido/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/risco_restritivo/limits.csv",
+      "sha256": "bb8575aeb198212a9cc823e398bd64a163908715f7b76c4af84fd6f08ff18199"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/risco_restritivo/result.json",
+      "sha256": "ab471a86539fb677bd3c5d1bf547c0d2c3359541911e3eea499e62eb6e3b8fb7"
+    },
+    {
+      "arquivo": "model/optimization/scenarios/risco_restritivo/scenario.csv",
+      "sha256": "9570fe407a6e1964fcac790e885f4a88712e1f1fb2476b0cd4b8fc7eaa6cc680"
+    },
+    {
+      "arquivo": ".github/workflows/ci.yml",
+      "sha256": "f366b11380491a29a54ce3383c7f85ac3a1c4da830001dc2f9140e311591dfce"
+    },
+    {
+      "arquivo": "pom.xml",
+      "sha256": "aae251b21172063ae8725c32c33a65f87ab23592c4aed94c2739229e64b98541"
+    }
+  ]
+}

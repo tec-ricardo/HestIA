@@ -1,0 +1,7 @@
+department,tool,cost,benefit,risk,allowed
+Marketing,ChatGPT,400,8,2,1
+Marketing,Copilot,500,4,2,0
+Marketing,Midjourney,600,9,3,1
+TI,ChatGPT,400,6,2,1
+TI,Copilot,700,10,2,1
+TI,Midjourney,600,3,3,0

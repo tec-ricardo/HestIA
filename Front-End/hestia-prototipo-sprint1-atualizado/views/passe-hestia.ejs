@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>HestIA Pass</title>
+
+    <link
+        rel="stylesheet"
+        href="/styles.css"
+    >
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <%- include("menu", {
+        active: active,
+        perfil: perfil
+    }) %>
+
+
+    <main class="main-content pass-page">
+
+
+        <!-- CABECALHO -->
+
+        <header class="page-header pass-page-header">
+
+            <div>
+
+                <h1>
+                    HestIA Pass
+                </h1>
+
+                <p>
+                    Acompanhe sua evolução no uso responsável de Inteligência Artificial.
+                </p>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- NIVEL ATUAL -->
+
+        <section class="pass-hero pass-hero-compact">
+
+            <div class="pass-hero-main">
+
+                <div class="pass-level-badge pass-level-badge-compact">
+
+                    <span>
+                        Nível
+                    </span>
+
+                    <strong>
+                        <%= passe.nivelAtual %>
+                    </strong>
+
+                </div>
+
+
+                <div class="pass-hero-content">
+
+                    <span class="pass-label">
+                        Nível atual
+                    </span>
+
+                    <h2>
+                        <%= passe.nomeNivel %>
+                    </h2>
+
+                    <div class="pass-xp-row">
+
+                        <strong>
+                            <%= passe.xpAtual %> XP
+                        </strong>
+
+                        <span>
+                            <%= passe.xpProximoNivel %> XP para o próximo nível
+                        </span>
+
+                    </div>
+
+
+                    <div class="pass-progress">
+
+                        <div
+                            class="pass-progress-fill"
+                            style="width: <%= Math.min((passe.xpAtual / passe.xpProximoNivel) * 100, 100) %>%;">
+                        </div>
+
+                    </div>
+
+
+                    <small class="pass-xp-remaining">
+
+                        Faltam
+
+                        <strong>
+                            <%= Math.max(passe.xpProximoNivel - passe.xpAtual, 0) %> XP
+                        </strong>
+
+                        para alcançar
+                        <%= passe.proximoNivel.nome %>.
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- INDICADORES -->
+
+        <section class="pass-stats pass-stats-compact">
+
+            <article class="pass-stat-card">
+
+                <span>
+                    Conformidade
+                </span>
+
+                <strong>
+                    <%= passe.taxaConformidade %>%
+                </strong>
+
+                <small>
+                    das utilizações avaliadas
+                </small>
+
+            </article>
+
+
+            <article class="pass-stat-card">
+
+                <span>
+                    Utilizações avaliadas
+                </span>
+
+                <strong>
+                    <%= passe.totalUtilizacoesAvaliadas %>
+                </strong>
+
+                <small>
+                    experiências analisadas
+                </small>
+
+            </article>
+
+
+            <article class="pass-stat-card">
+
+                <span>
+                    Utilizações conformes
+                </span>
+
+                <strong>
+                    <%= passe.totalUtilizacoesConformes %>
+                </strong>
+
+                <small>
+                    práticas responsáveis
+                </small>
+
+            </article>
+
+
+            <article class="pass-stat-card">
+
+                <span>
+                    Sequência atual
+                </span>
+
+                <strong>
+                    <%= passe.sequenciaConforme %>
+                </strong>
+
+                <small>
+                    utilizações conformes
+                </small>
+
+            </article>
+
+        </section>
+
+
+
+        <!-- REGRAS DE XP -->
+
+        <section class="pass-section pass-xp-rules-section">
+
+            <div class="pass-section-header">
+
+                <div>
+
+                    <h2>
+                        Como funciona o XP
+                    </h2>
+
+                    <p>
+                        Seu XP é atualizado automaticamente após a avaliação
+                        de conformidade das suas utilizações.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="pass-xp-rules">
+
+                <% passe.regrasXp.forEach(function(regra) { %>
+
+                    <article class="pass-xp-rule pass-xp-rule-<%= regra.tipo %>">
+
+                        <div>
+
+                            <strong>
+                                <%= regra.titulo %>
+                            </strong>
+
+                            <span>
+                                <%= regra.descricao %>
+                            </span>
+
+                        </div>
+
+                        <b>
+                            <%= regra.xp %>
+                        </b>
+
+                    </article>
+
+                <% }); %>
+
+            </div>
+
+
+            <div class="pass-xp-note">
+
+                O colaborador não adiciona XP manualmente.
+                A avaliação é registrada na Governança e o HestIA
+                aplica a regra de progressão automaticamente.
+
+            </div>
+
+        </section>
+
+
+
+        <!-- JORNADA -->
+
+        <section class="pass-section">
+
+            <div class="pass-section-header">
+
+                <div>
+
+                    <h2>
+                        Sua jornada
+                    </h2>
+
+                    <p>
+                        Evolua através dos níveis conforme sua experiência
+                        e uso responsável de IA.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="pass-levels pass-levels-compact">
+
+                <% passe.niveis.forEach(function(nivel) { %>
+
+                    <article
+                        class="pass-level pass-level-<%= nivel.status %>"
+                    >
+
+                        <div class="pass-level-number">
+
+                            <% if (nivel.status == "concluido") { %>
+
+                                ✓
+
+                            <% } else { %>
+
+                                <%= nivel.nivel %>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <div class="pass-level-info">
+
+                            <span>
+                                Nível <%= nivel.nivel %>
+                            </span>
+
+                            <strong>
+                                <%= nivel.nome %>
+                            </strong>
+
+                            <small>
+                                <%= nivel.xpNecessario %> XP
+                            </small>
+
+                        </div>
+
+
+                        <div class="pass-level-status">
+
+                            <% if (nivel.status == "concluido") { %>
+
+                                Concluído
+
+                            <% } else if (nivel.status == "atual") { %>
+
+                                Nível atual
+
+                            <% } else { %>
+
+                                Bloqueado
+
+                            <% } %>
+
+                        </div>
+
+                    </article>
+
+                <% }); %>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- PROXIMO NIVEL -->
+
+        <section class="pass-next-level pass-next-level-compact">
+
+            <div>
+
+                <span class="pass-small-label">
+                    Próximo objetivo
+                </span>
+
+                <h2>
+                    Nível <%= passe.proximoNivel.nivel %>
+                    —
+                    <%= passe.proximoNivel.nome %>
+                </h2>
+
+                <p>
+                    <%= passe.proximoNivel.descricao %>
+                </p>
+
+            </div>
+
+
+            <div class="pass-next-xp">
+
+                <span>
+                    Requisito de XP
+                </span>
+
+                <strong>
+                    <%= passe.proximoNivel.xpNecessario %> XP
+                </strong>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- DESAFIOS -->
+
+        <section class="pass-section">
+
+            <div class="pass-section-header">
+
+                <div>
+
+                    <h2>
+                        Desafios de Progressão
+                    </h2>
+
+                    <p>
+                        Complete desafios permanentes para ganhar XP adicional.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="pass-challenges pass-challenges-compact">
+
+                <% passe.desafios.forEach(function(desafio) { %>
+
+                    <article
+                        class="pass-challenge-card <%= desafio.concluido ? 'pass-challenge-complete' : '' %>"
+                    >
+
+                        <div class="pass-challenge-top">
+
+                            <div>
+
+                                <span class="pass-challenge-label">
+
+                                    <%= desafio.concluido
+                                        ? "Desafio concluído"
+                                        : "Em andamento"
+                                    %>
+
+                                </span>
+
+                                <h3>
+                                    <%= desafio.titulo %>
+                                </h3>
+
+                            </div>
+
+
+                            <div class="pass-xp-reward">
+
+                                +<%= desafio.recompensaXp %> XP
+
+                            </div>
+
+                        </div>
+
+
+                        <p>
+                            <%= desafio.descricao %>
+                        </p>
+
+
+                        <div class="pass-challenge-progress-info">
+
+                            <span>
+                                Progresso
+                            </span>
+
+                            <strong>
+                                <%= desafio.progressoAtual %>
+                                /
+                                <%= desafio.meta %>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="pass-progress">
+
+                            <div
+                                class="pass-progress-fill"
+                                style="width: <%= Math.min((desafio.progressoAtual / desafio.meta) * 100, 100) %>%;">
+                            </div>
+
+                        </div>
+
+
+                        <% if (desafio.concluido) { %>
+
+                            <div class="pass-complete-message">
+                                ✓ Objetivo alcançado
+                            </div>
+
+                        <% } %>
+
+                    </article>
+
+                <% }); %>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- RECONHECIMENTO MAXIMO -->
+
+        <section class="pass-recognition pass-recognition-compact">
+
+            <div class="pass-recognition-icon">
+                ★
+            </div>
+
+
+            <div class="pass-recognition-content">
+
+                <span class="pass-small-label">
+                    Reconhecimento máximo
+                </span>
+
+                <h2>
+                    <%= passe.reconhecimentoMaximo.titulo %>
+                </h2>
+
+                <p>
+                    <%= passe.reconhecimentoMaximo.descricao %>
+                </p>
+
+
+                <div class="pass-requirements">
+
+                    <strong>
+                        Requisitos
+                    </strong>
+
+                    <ul>
+
+                        <% passe.reconhecimentoMaximo.requisitos.forEach(function(requisito) { %>
+
+                            <li>
+                                <%= requisito %>
+                            </li>
+
+                        <% }); %>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="pass-benefit">
+
+                    <span>
+                        Reconhecimento
+                    </span>
+
+                    <strong>
+                        <%= passe.reconhecimentoMaximo.reconhecimento %>
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

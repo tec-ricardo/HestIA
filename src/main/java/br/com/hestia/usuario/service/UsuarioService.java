@@ -1,5 +1,6 @@
 package br.com.hestia.usuario.service;
 
+import br.com.hestia.auditoria.service.AuditoriaService;
 import br.com.hestia.departamento.model.Departamento;
 import br.com.hestia.departamento.repository.DepartamentoRepository;
 import br.com.hestia.empresa.model.Empresa;
@@ -9,6 +10,7 @@ import br.com.hestia.usuario.model.Usuario;
 import br.com.hestia.usuario.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -19,6 +21,22 @@ public class UsuarioService {
     private final EmpresaRepository empresaRepository;
     private final DepartamentoRepository departamentoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditoriaService auditoriaService;
+
+    @Autowired
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            EmpresaRepository empresaRepository,
+            DepartamentoRepository departamentoRepository,
+            PasswordEncoder passwordEncoder,
+            AuditoriaService auditoriaService
+    ) {
+        this.usuarioRepository = usuarioRepository;
+        this.empresaRepository = empresaRepository;
+        this.departamentoRepository = departamentoRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.auditoriaService = auditoriaService;
+    }
 
     public UsuarioService(
             UsuarioRepository usuarioRepository,
@@ -26,10 +44,7 @@ public class UsuarioService {
             DepartamentoRepository departamentoRepository,
             PasswordEncoder passwordEncoder
     ) {
-        this.usuarioRepository = usuarioRepository;
-        this.empresaRepository = empresaRepository;
-        this.departamentoRepository = departamentoRepository;
-        this.passwordEncoder = passwordEncoder;
+        this(usuarioRepository, empresaRepository, departamentoRepository, passwordEncoder, null);
     }
 
     public Usuario criar(UsuarioDTO dto) {
@@ -71,7 +86,9 @@ public class UsuarioService {
             usuario.setAtivo(dto.getAtivo());
         }
 
-        return usuarioRepository.save(usuario);
+        Usuario salvo = usuarioRepository.save(usuario);
+        registrar("POST", salvo.getId());
+        return salvo;
     }
 
     public List<Usuario> listarTodos() {
@@ -116,7 +133,9 @@ public class UsuarioService {
             usuario.setAtivo(dto.getAtivo());
         }
 
-        return usuarioRepository.save(usuario);
+        Usuario salvo = usuarioRepository.save(usuario);
+        registrar("PUT", salvo.getId());
+        return salvo;
     }
 
     public void excluir(Long id) {
@@ -124,5 +143,12 @@ public class UsuarioService {
         Usuario usuario = buscarPorId(id);
 
         usuarioRepository.delete(usuario);
+        registrar("DELETE", id);
+    }
+
+    private void registrar(String metodo, Long id) {
+        if (auditoriaService != null) {
+            auditoriaService.registrarOperacao(metodo, "/usuarios/" + id, 200);
+        }
     }
 }

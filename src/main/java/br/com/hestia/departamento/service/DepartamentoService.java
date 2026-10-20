@@ -1,11 +1,13 @@
 package br.com.hestia.departamento.service;
 
+import br.com.hestia.auditoria.service.AuditoriaService;
 import br.com.hestia.departamento.dto.DepartamentoDTO;
 import br.com.hestia.departamento.model.Departamento;
 import br.com.hestia.departamento.repository.DepartamentoRepository;
 import br.com.hestia.empresa.model.Empresa;
 import br.com.hestia.empresa.repository.EmpresaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -21,13 +23,23 @@ public class DepartamentoService {
 
     private final DepartamentoRepository departamentoRepository;
     private final EmpresaRepository empresaRepository;
+    private final AuditoriaService auditoriaService;
+
+    @Autowired
+    public DepartamentoService(
+            DepartamentoRepository departamentoRepository,
+            EmpresaRepository empresaRepository,
+            AuditoriaService auditoriaService) {
+
+        this.departamentoRepository = departamentoRepository;
+        this.empresaRepository = empresaRepository;
+        this.auditoriaService = auditoriaService;
+    }
 
     public DepartamentoService(
             DepartamentoRepository departamentoRepository,
             EmpresaRepository empresaRepository) {
-
-        this.departamentoRepository = departamentoRepository;
-        this.empresaRepository = empresaRepository;
+        this(departamentoRepository, empresaRepository, null);
     }
 
     public Departamento cadastrar(DepartamentoDTO dto) {
@@ -37,7 +49,9 @@ public class DepartamentoService {
         validarDuplicidade(empresa.getId(), nome);
 
         Departamento departamento = criarDepartamento(dto, nome, empresa);
-        return departamentoRepository.save(departamento);
+        Departamento salvo = departamentoRepository.save(departamento);
+        registrar("POST", salvo.getId());
+        return salvo;
     }
 
     private String validarENormalizarNome(DepartamentoDTO dto) {
@@ -96,7 +110,9 @@ public class DepartamentoService {
         departamento.setEstruturaHierarquica(dto.getEstruturaHierarquica());
         departamento.setEmpresa(empresa);
 
-        return departamentoRepository.save(departamento);
+        Departamento salvo = departamentoRepository.save(departamento);
+        registrar("PUT", salvo.getId());
+        return salvo;
     }
 
     public void excluir(Long id) {
@@ -104,5 +120,12 @@ public class DepartamentoService {
         Departamento departamento = buscarPorId(id);
 
         departamentoRepository.delete(departamento);
+        registrar("DELETE", id);
+    }
+
+    private void registrar(String metodo, Long id) {
+        if (auditoriaService != null) {
+            auditoriaService.registrarOperacao(metodo, "/departamentos/" + id, 200);
+        }
     }
 }

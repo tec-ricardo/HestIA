@@ -23,6 +23,11 @@ public class AuditoriaService {
         repository.save(new LogAuditoria(usuario, metodo, recurso, acao(metodo), status, ip));
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void registrarOperacao(String metodo, String recurso, int status) {
+        registrar(null, metodo, recurso, status, null);
+    }
+
     @Transactional(readOnly = true)
     public List<LogAuditoriaResponseDTO> listar(Long empresaId, Long usuarioId, String acao,
                                                 LocalDateTime inicio, LocalDateTime fim) {

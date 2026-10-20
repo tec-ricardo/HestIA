@@ -1,3 +1,4 @@
+
 const sidebar = document.getElementById("sidebar");
 
 const menuButton = document.getElementById("menuButton");
@@ -99,3 +100,49 @@ botoes.forEach(function(botao) {
 
 });
 
+
+/* SCRUM-377 - ACESSIBILIDADE DO LOGIN */
+
+if (senha && toggleSenha) {
+
+    toggleSenha.setAttribute("aria-label", "Mostrar senha");
+
+    toggleSenha.setAttribute("aria-pressed", "false");
+
+    toggleSenha.addEventListener("click", function() {
+
+        const visivel = senha.type == "text";
+
+        toggleSenha.setAttribute("aria-pressed", String(visivel));
+
+        toggleSenha.setAttribute(
+            "aria-label",
+            visivel ? "Ocultar senha" : "Mostrar senha"
+        );
+
+    });
+
+}
+
+
+/* VALIDACAO DO LOGIN */
+
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+
+    loginForm.addEventListener("submit", function() {
+
+        const botaoEntrar = loginForm.querySelector('button[type="submit"]');
+
+        if (botaoEntrar && loginForm.checkValidity()) {
+
+            botaoEntrar.disabled = true;
+
+            botaoEntrar.textContent = "Entrando...";
+
+        }
+
+    });
+
+}

@@ -1,0 +1,511 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< br.com.hestia:hestia >------------------------
+[INFO] Building HestIA 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- jacoco:0.8.13:prepare-agent (prepare-agent) @ hestia ---
+[INFO] argLine set to -javaagent:C:\\Users\\ricardo.davila\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.13\\org.jacoco.agent-0.8.13-runtime.jar=destfile=C:\\Users\\ricardo.davila\\Documents\\Codex\\2026-10-20\\deliverable-2-organiza-o-das-entregas-2\\work\\build-pg\\jacoco.exec
+[INFO]
+[INFO] --- resources:3.5.0:resources (default-resources) @ hestia ---
+[INFO] Copying 1 resource from src\main\resources to ..\..\..\..\Documents\Codex\2026-10-20\deliverable-2-organiza-o-das-entregas-2\work\build-pg\classes
+[INFO] Copying 12 resources from src\main\resources to ..\..\..\..\Documents\Codex\2026-10-20\deliverable-2-organiza-o-das-entregas-2\work\build-pg\classes
+[INFO]
+[INFO] --- compiler:3.15.0:compile (default-compile) @ hestia ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ hestia ---
+[INFO] Copying 1 resource from src\test\resources to ..\..\..\..\Documents\Codex\2026-10-20\deliverable-2-organiza-o-das-entregas-2\work\build-pg\test-classes
+[INFO]
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ hestia ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 30 source files with javac [debug parameters release 21] to ..\..\..\..\Documents\Codex\2026-10-20\deliverable-2-organiza-o-das-entregas-2\work\build-pg\test-classes
+[INFO] /C:/Users/ricardo.davila/OneDrive - ESPM/QUARTO SEMESTRE/PROJETO INTEGRADO/HestIA/src/test/java/br/com/hestia/rag/service/BuscaVetorialPostgresTest.java: C:\Users\ricardo.davila\OneDrive - ESPM\QUARTO SEMESTRE\PROJETO INTEGRADO\HestIA\src\test\java\br\com\hestia\rag\service\BuscaVetorialPostgresTest.java uses unchecked or unsafe operations.
+[INFO] /C:/Users/ricardo.davila/OneDrive - ESPM/QUARTO SEMESTRE/PROJETO INTEGRADO/HestIA/src/test/java/br/com/hestia/rag/service/BuscaVetorialPostgresTest.java: Recompile with -Xlint:unchecked for details.
+[INFO]
+[INFO] --- surefire:3.5.6:test (default-test) @ hestia ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running br.com.hestia.auditoria.AuditoriaInterceptorTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\ricardo.davila\.m2\repository\net\bytebuddy\byte-buddy-agent\1.18.11\byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.238 s -- in br.com.hestia.auditoria.AuditoriaInterceptorTest
+[INFO] Running br.com.hestia.autenticacao.AutenticacaoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.592 s -- in br.com.hestia.autenticacao.AutenticacaoServiceTest
+[INFO] Running br.com.hestia.autenticacao.ControleAcessoInterceptorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.322 s -- in br.com.hestia.autenticacao.ControleAcessoInterceptorTest
+[INFO] Running br.com.hestia.autenticacao.RecuperacaoSenhaServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.244 s -- in br.com.hestia.autenticacao.RecuperacaoSenhaServiceTest
+[INFO] Running br.com.hestia.configuracao.ConfiguracaoEmpresaServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.375 s -- in br.com.hestia.configuracao.ConfiguracaoEmpresaServiceTest
+[INFO] Running br.com.hestia.conformidade.AvaliacaoConformidadeServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.852 s -- in br.com.hestia.conformidade.AvaliacaoConformidadeServiceTest
+[INFO] Running br.com.hestia.departamento.controller.DepartamentoControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.178 s -- in br.com.hestia.departamento.controller.DepartamentoControllerTest
+[INFO] Running br.com.hestia.departamento.service.DepartamentoServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.169 s -- in br.com.hestia.departamento.service.DepartamentoServiceTest
+[INFO] Running br.com.hestia.empresa.service.EmpresaServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.305 s -- in br.com.hestia.empresa.service.EmpresaServiceTest
+[INFO] Running br.com.hestia.ferramenta.dto.FerramentaIACriacaoDTOTest
+12:39:06.164 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 9.1.3.Final
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.263 s -- in br.com.hestia.ferramenta.dto.FerramentaIACriacaoDTOTest
+[INFO] Running br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+12:39:07.614 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [br.com.hestia.ferramenta.model.FerramentaIARepositoryTest]: FerramentaIARepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+12:39:08.272 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+12:39:08.281 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [br.com.hestia.ferramenta.model.FerramentaIARepositoryTest]: FerramentaIARepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+12:39:08.403 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-20T12:39:10.682-03:00  INFO 1564 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : Starting FerramentaIARepositoryTest using Java 21 with PID 1564 (started by ricardo.davila in C:\Users\ricardo.davila\OneDrive - ESPM\QUARTO SEMESTRE\PROJETO INTEGRADO\HestIA)
+2026-10-20T12:39:10.686-03:00  INFO 1564 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-20T12:39:14.181-03:00  INFO 1564 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-20T12:39:14.835-03:00  INFO 1564 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 573 ms. Found 19 JPA repository interfaces.
+2026-10-20T12:39:15.264-03:00  INFO 1564 --- [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-10-20T12:39:15.666-03:00  INFO 1564 --- [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:823c284e-b865-4cba-a7de-dce8a5c3debf;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-10-20T12:39:17.310-03:00  INFO 1564 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-20T12:39:17.600-03:00  INFO 1564 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-20T12:39:18.688-03:00  INFO 1564 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-20T12:39:19.152-03:00  INFO 1564 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:823c284e-b865-4cba-a7de-dce8a5c3debf]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 823C284E-B865-4CBA-A7DE-DCE8A5C3DEBF/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-20T12:39:23.701-03:00  INFO 1564 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists avaliacao_criterios_atendidos cascade
+Hibernate: drop table if exists avaliacoes_conformidade cascade
+Hibernate: drop table if exists conclusoes_microtreinamento cascade
+Hibernate: drop table if exists configuracoes_empresa cascade
+Hibernate: drop table if exists departamentos cascade
+Hibernate: drop table if exists empresas cascade
+Hibernate: drop table if exists ferramentas_ia cascade
+Hibernate: drop table if exists historicos_microtreinamento cascade
+Hibernate: drop table if exists logs_auditoria cascade
+Hibernate: drop table if exists missoes cascade
+Hibernate: drop table if exists movimentos_experiencia cascade
+Hibernate: drop table if exists necessidades_microtreinamento cascade
+Hibernate: drop table if exists politicas_uso cascade
+Hibernate: drop table if exists progressos_missao cascade
+Hibernate: drop table if exists progressos_usuario cascade
+Hibernate: drop table if exists recuperacoes_senha cascade
+Hibernate: drop table if exists registros_uso_ia cascade
+Hibernate: drop table if exists resposta_perfis cascade
+Hibernate: drop table if exists respostas_reutilizaveis cascade
+Hibernate: drop table if exists sessoes_usuario cascade
+Hibernate: drop table if exists usuarios cascade
+Hibernate: create table avaliacao_criterios_atendidos (avaliacao_id bigint not null, criterio enum ('DADOS_SENSIVEIS','FINALIDADE_ADEQUADA','IA_AUTORIZADA','LGPD','POLITICA_INTERNA','REGISTRO_DE_USO','VALIDACAO_HUMANA') not null, primary key (avaliacao_id, criterio))
+Hibernate: create table avaliacoes_conformidade (data_avaliacao timestamp(6) not null, id bigint generated by default as identity, politica_uso_id bigint not null, registro_uso_id bigint not null unique, justificativa varchar(1000), status enum ('CONFORME','NAO_CONFORME','REQUER_REVISAO') not null, primary key (id))
+Hibernate: create table conclusoes_microtreinamento (concluido boolean not null, data_conclusao timestamp(6), historico_id bigint, id bigint generated by default as identity, microtreinamento_id bigint, usuario_id bigint, primary key (id))
+Hibernate: create table configuracoes_empresa (bloquear_ferramentas_nao_aprovadas boolean not null, dias_retencao_auditoria integer not null, limite_custo_mensal numeric(15,2), registrar_usos_automaticamente boolean not null, atualizada_em timestamp(6) not null, empresa_id bigint not null unique, id bigint generated by default as identity, primary key (id))
+Hibernate: create table departamentos (empresa_id bigint not null, id bigint generated by default as identity, estrutura_hierarquica varchar(255), nome varchar(255) not null, responsavel varchar(255), primary key (id))
+Hibernate: create table empresas (orcamento float(53), id bigint generated by default as identity, cnpj varchar(14) not null unique, nome varchar(150) not null, configuracoes_gerais varchar(255), primary key (id))
+Hibernate: create table ferramentas_ia (trata_dados_pessoais boolean not null, data_atualizacao timestamp(6) not null, data_cadastro timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, fornecedor varchar(120) not null, nome varchar(120) not null, descricao varchar(500), finalidade_uso varchar(500) not null, url_acesso varchar(2048), nivel_risco enum ('ALTO','BAIXO','CRITICO','MEDIO','NAO_AVALIADO') not null, status enum ('APROVADA','BLOQUEADA','DESCONTINUADA','EM_ANALISE','RESTRITA') not null, tipo enum ('ANALISE_DADOS','ASSISTENTE_CODIGO','AUTOMACAO','CHATBOT','GERACAO_AUDIO','GERACAO_IMAGEM','GERACAO_TEXTO','GERACAO_VIDEO','OUTROS','TRADUCAO') not null, primary key (id), constraint uk_ferramenta_empresa_nome_fornecedor unique (empresa_id, nome, fornecedor))
+Hibernate: create table historicos_microtreinamento (id bigint generated by default as identity, usuario_id bigint, primary key (id))
+Hibernate: create table logs_auditoria (status_http integer not null, data_hora timestamp(6) not null, empresa_id bigint, id bigint generated by default as identity, usuario_id bigint, metodo varchar(20) not null, acao varchar(40) not null, endereco_ip varchar(64), recurso varchar(500) not null, primary key (id))
+Hibernate: create table missoes (ativa boolean not null, meta_quantidade integer not null, recompensa_xp integer not null, id bigint generated by default as identity, codigo varchar(80) not null unique, titulo varchar(150) not null, descricao varchar(500) not null, acao_alvo enum ('MICRO_TREINAMENTO','MISSAO_CONCLUIDA','REGISTRO_USO','REUTILIZACAO_RESPOSTA','USO_CONFORME') not null, primary key (id))
+Hibernate: create table movimentos_experiencia (pontos integer not null, data_hora timestamp(6) not null, id bigint generated by default as identity, usuario_id bigint not null, referencia varchar(150) not null, acao enum ('MICRO_TREINAMENTO','MISSAO_CONCLUIDA','REGISTRO_USO','REUTILIZACAO_RESPOSTA','USO_CONFORME') not null, primary key (id), constraint uk_movimento_referencia unique (usuario_id, referencia))
+Hibernate: create table necessidades_microtreinamento (necessario boolean not null, data_identificacao timestamp(6), id bigint generated by default as identity, usuario_id bigint, tema_treinamento enum ('BOAS_PRATICAS_DE_USO','LGPD','POLITICAS_INTERNAS','PROTECAO_DE_DADOS','REGISTRO_E_AUDITORIA','USO_DE_FERRAMENTAS_AUTORIZADAS','VALIDACAO_HUMANA'), tipo_erro enum ('AUSENCIA_VALIDACAO_HUMANA','DADOS_SENSIVEIS','FERRAMENTA_NAO_AUTORIZADA','FINALIDADE_INADEQUADA','USO_NAO_REGISTRADO','VIOLACAO_LGPD','VIOLACAO_POLITICA_INTERNA'), primary key (id))
+Hibernate: create table politicas_uso (ativa boolean not null, data_atualizacao timestamp(6) not null, data_criacao timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, versao varchar(20) not null, titulo varchar(150) not null, descricao varchar(500) not null, conteudo TEXT not null, primary key (id))
+Hibernate: create table progressos_missao (progresso integer not null, recompensa_concedida boolean not null, concluida_em timestamp(6), id bigint generated by default as identity, missao_id bigint not null, usuario_id bigint not null, primary key (id), constraint uk_progresso_missao unique (usuario_id, missao_id))
+Hibernate: create table progressos_usuario (xp_total integer not null, atualizado_em timestamp(6) not null, id bigint generated by default as identity, usuario_id bigint not null unique, nivel enum ('APRENDIZ','CONSCIENTE','EMBAIXADOR','GUARDIAO') not null, primary key (id))
+Hibernate: create table recuperacoes_senha (criada_em timestamp(6) not null, expira_em timestamp(6) not null, id bigint generated by default as identity, usuario_id bigint not null, utilizada_em timestamp(6), token_hash varchar(64) not null unique, primary key (id))
+Hibernate: create table registros_uso_ia (custo_estimado numeric(15,6), tokens_entrada integer not null, tokens_saida integer not null, tokens_total integer not null, data_hora timestamp(6) not null, ferramenta_id bigint not null, id bigint generated by default as identity, tempo_resposta_ms bigint, usuario_id bigint not null, modelo_ia varchar(100) not null, finalidade enum ('ANALISE_DADOS','AUTOMACAO','GERACAO_CODIGO','GERACAO_CONTEUDO','OUTROS','PESQUISA','RESUMO','SUPORTE_DECISAO') not null, status_execucao enum ('ERRO','INTERROMPIDA','SUCESSO') not null, primary key (id))
+Hibernate: create table resposta_perfis (resposta_id bigint not null, perfil enum ('ADMIN','FUNCIONARIO','GESTOR') not null, primary key (resposta_id, perfil))
+Hibernate: create table respostas_reutilizaveis (custo_estimado numeric(15,6), possui_dados_sensiveis boolean not null, quantidade_reutilizacoes integer not null, reutilizavel boolean not null, tokens_entrada integer, tokens_saida integer, data_criacao timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, tokens_economizados bigint not null, usuario_id bigint, categoria varchar(255), embedding TEXT, modelo_ia varchar(255), prompt_original TEXT not null, resposta_gerada TEXT not null, primary key (id))
+Hibernate: create table sessoes_usuario (criada_em timestamp(6) not null, expira_em timestamp(6) not null, id bigint generated by default as identity, revogada_em timestamp(6), usuario_id bigint not null, token_hash varchar(64) not null unique, primary key (id))
+Hibernate: create table usuarios (ativo boolean not null, data_cadastro timestamp(6) not null, departamento_id bigint not null, empresa_id bigint not null, id bigint generated by default as identity, cargo varchar(100) not null, nome varchar(100) not null, email varchar(150) not null unique, senha varchar(255) not null, perfil enum ('ADMIN','FUNCIONARIO','GESTOR') not null, primary key (id))
+Hibernate: create index idx_ferramenta_empresa on ferramentas_ia (empresa_id)
+Hibernate: create index idx_ferramenta_status on ferramentas_ia (status)
+Hibernate: create index idx_auditoria_empresa_data on logs_auditoria (empresa_id, data_hora)
+Hibernate: create index idx_auditoria_usuario on logs_auditoria (usuario_id)
+Hibernate: create index idx_registro_uso_usuario on registros_uso_ia (usuario_id)
+Hibernate: create index idx_registro_uso_ferramenta on registros_uso_ia (ferramenta_id)
+Hibernate: create index idx_registro_uso_data_hora on registros_uso_ia (data_hora)
+Hibernate: alter table if exists avaliacao_criterios_atendidos add constraint FKibjy4bcilwtqg5c77jdfef4tr foreign key (avaliacao_id) references avaliacoes_conformidade
+Hibernate: alter table if exists avaliacoes_conformidade add constraint FKyvvwqjml5fx1tgr7swboemgv foreign key (politica_uso_id) references politicas_uso
+Hibernate: alter table if exists avaliacoes_conformidade add constraint FK1oh5ddka9mx7mgtr98d7a5oqi foreign key (registro_uso_id) references registros_uso_ia
+Hibernate: alter table if exists conclusoes_microtreinamento add constraint FKnonry89qb1jlgd1mme99gmxq5 foreign key (historico_id) references historicos_microtreinamento
+Hibernate: alter table if exists configuracoes_empresa add constraint FK3vybt0lwkgeo12veuukhwbq99 foreign key (empresa_id) references empresas
+Hibernate: alter table if exists departamentos add constraint FK6btn4jnukl63uatv2cthktmhq foreign key (empresa_id) references empresas
+Hibernate: alter table if exists ferramentas_ia add constraint FKfc9iiljqr73ntrion8b3ru70y foreign key (empresa_id) references empresas
+Hibernate: alter table if exists logs_auditoria add constraint FKmnxfrd3p5llf0k2d104l39xmb foreign key (empresa_id) references empresas
+Hibernate: alter table if exists logs_auditoria add constraint FK9hlugdhnm6y2ejewa5vb3yhpd foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists movimentos_experiencia add constraint FKim5tewi0snm5gk1m4r0xaxbri foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists politicas_uso add constraint FK1gj5xei13fki2xuovipm36700 foreign key (empresa_id) references empresas
+Hibernate: alter table if exists progressos_missao add constraint FKqhhsm19p39oabhp1qvgp8524y foreign key (missao_id) references missoes
+Hibernate: alter table if exists progressos_missao add constraint FK6ifhn7s1ajhvjsued5gouban6 foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists progressos_usuario add constraint FK4e16j5qj1617b7jgr84sq97qm foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists recuperacoes_senha add constraint FKosewe3sv1lp6mrd2sunq2hpka foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists registros_uso_ia add constraint FKj6gpj8tryjf5kt3ahu94ixuy5 foreign key (ferramenta_id) references ferramentas_ia
+Hibernate: alter table if exists registros_uso_ia add constraint FKirhf9jygv3khfqmsc5etpnskc foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists resposta_perfis add constraint FKogk2a6rjlmdo7tm1ouuruffte foreign key (resposta_id) references respostas_reutilizaveis
+Hibernate: alter table if exists sessoes_usuario add constraint FKjf6vfwav1t250gb14wkqt6ga2 foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists usuarios add constraint FKlayeuvn3gr7ql1o7532lxpfak foreign key (departamento_id) references departamentos
+Hibernate: alter table if exists usuarios add constraint FK9v93lqnass5yqhhsyprr9fdv2 foreign key (empresa_id) references empresas
+2026-10-20T12:39:24.003-03:00  INFO 1564 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-20T12:39:24.304-03:00  INFO 1564 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-20T12:39:28.592-03:00  INFO 1564 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : Started FerramentaIARepositoryTest in 19.828 seconds (process running for 41.227)
+Hibernate: insert into empresas (cnpj,configuracoes_gerais,nome,orcamento,id) values (?,?,?,?,default)
+Hibernate: insert into ferramentas_ia (data_atualizacao,data_cadastro,descricao,empresa_id,finalidade_uso,fornecedor,nivel_risco,nome,status,tipo,trata_dados_pessoais,url_acesso,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select fi1_0.id,fi1_0.data_atualizacao,fi1_0.data_cadastro,fi1_0.descricao,fi1_0.empresa_id,fi1_0.finalidade_uso,fi1_0.fornecedor,fi1_0.nivel_risco,fi1_0.nome,fi1_0.status,fi1_0.tipo,fi1_0.trata_dados_pessoais,fi1_0.url_acesso from ferramentas_ia fi1_0 where fi1_0.empresa_id=?
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 22.01 s -- in br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+[INFO] Running br.com.hestia.ferramenta.service.FerramentaIAServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.186 s -- in br.com.hestia.ferramenta.service.FerramentaIAServiceTest
+[INFO] Running br.com.hestia.gamificacao.ProgressaoExperienciaTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.069 s -- in br.com.hestia.gamificacao.ProgressaoExperienciaTest
+[INFO] Running br.com.hestia.HestIaApplicationTests
+2026-10-20T12:39:29.566-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.HestIaApplicationTests]: HestIaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:39:29.633-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.HestIaApplicationTests
+2026-10-20T12:39:29.641-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.HestIaApplicationTests]: HestIaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:39:29.642-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.HestIaApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-20T12:39:29.727-03:00  INFO 1564 --- [           main] br.com.hestia.HestIaApplicationTests     : Starting HestIaApplicationTests using Java 21 with PID 1564 (started by ricardo.davila in C:\Users\ricardo.davila\OneDrive - ESPM\QUARTO SEMESTRE\PROJETO INTEGRADO\HestIA)
+2026-10-20T12:39:29.728-03:00  INFO 1564 --- [           main] br.com.hestia.HestIaApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-10-20T12:39:31.667-03:00  INFO 1564 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-20T12:39:31.986-03:00  INFO 1564 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 305 ms. Found 19 JPA repository interfaces.
+2026-10-20T12:39:33.235-03:00  INFO 1564 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-20T12:39:33.322-03:00  INFO 1564 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-20T12:39:33.326-03:00  INFO 1564 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-20T12:39:33.387-03:00  INFO 1564 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn5: url=jdbc:h2:mem:hestia user=SA
+2026-10-20T12:39:33.393-03:00  INFO 1564 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-20T12:39:33.421-03:00  INFO 1564 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:hestia]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HESTIA/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-20T12:39:34.099-03:00  INFO 1564 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-20T12:39:34.330-03:00  INFO 1564 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-20T12:39:38.685-03:00  INFO 1564 --- [           main] br.com.hestia.HestIaApplicationTests     : Started HestIaApplicationTests in 9.028 seconds (process running for 51.32)
+2026-10-20T12:39:38.688-03:00  WARN 1564 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-10-20T12:39:38.688-03:00  WARN 1564 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.144 s -- in br.com.hestia.HestIaApplicationTests
+[INFO] Running br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+2026-10-20T12:39:38.715-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest]: MicrotreinamentoPersistenciaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:39:38.802-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+2026-10-20T12:39:38.804-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest]: MicrotreinamentoPersistenciaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:39:38.829-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+Hibernate: insert into necessidades_microtreinamento (data_identificacao,necessario,tema_treinamento,tipo_erro,usuario_id,id) values (?,?,?,?,?,default)
+Hibernate: insert into historicos_microtreinamento (usuario_id,id) values (?,default)
+Hibernate: insert into conclusoes_microtreinamento (concluido,data_conclusao,microtreinamento_id,usuario_id,id) values (?,?,?,?,default)
+Hibernate: update conclusoes_microtreinamento set historico_id=? where id=?
+Hibernate: select cm1_0.id,cm1_0.concluido,cm1_0.data_conclusao,cm1_0.microtreinamento_id,cm1_0.usuario_id from conclusoes_microtreinamento cm1_0 where cm1_0.usuario_id=? and cm1_0.microtreinamento_id=?
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.382 s -- in br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+[INFO] Running br.com.hestia.microtreinamento.service.NecessidadeMicrotreinamentoServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s -- in br.com.hestia.microtreinamento.service.NecessidadeMicrotreinamentoServiceTest
+[INFO] Running br.com.hestia.microtreinamento.service.RecomendacaoMicrotreinamentoServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in br.com.hestia.microtreinamento.service.RecomendacaoMicrotreinamentoServiceTest
+[INFO] Running br.com.hestia.migration.FlywayMigrationTest
+2026-10-20T12:39:40.478-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:flyway (H2 2.4)
+2026-10-20T12:39:40.683-03:00  WARN 1564 --- [           main] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026-10-20T12:39:41.003-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:41.011-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.178s)
+2026-10-20T12:39:41.033-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-20T12:39:41.166-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-20T12:39:41.209-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "1 - baseline hestia"
+2026-10-20T12:39:41.354-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "2 - registro uso ia"
+2026-10-20T12:39:41.427-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:41.462-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "4 - sessoes usuario"
+2026-10-20T12:39:41.493-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "5 - auditoria"
+2026-10-20T12:39:41.511-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "6 - configuracoes empresa"
+2026-10-20T12:39:41.544-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "7 - gamificacao"
+2026-10-20T12:39:41.589-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "8 - economia reutilizacao"
+2026-10-20T12:39:41.627-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "9 - microtreinamentos"
+2026-10-20T12:39:41.650-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:41.688-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:41.709-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "12 - recuperacao senha"
+2026-10-20T12:39:41.722-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:41.738-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:41.810-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "PUBLIC", now at version v14 (execution time 00:00.220s)
+2026-10-20T12:39:41.851-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:flyway (H2 2.4)
+2026-10-20T12:39:41.880-03:00  WARN 1564 --- [           main] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.760 s -- in br.com.hestia.migration.FlywayMigrationTest
+[INFO] Running br.com.hestia.notificacao.AlertServiceEndToEndTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.003 s -- in br.com.hestia.notificacao.AlertServiceEndToEndTest
+[INFO] Running br.com.hestia.notificacao.client.AlertServiceClientTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.560 s -- in br.com.hestia.notificacao.client.AlertServiceClientTest
+[INFO] Running br.com.hestia.politica.service.PoliticaUsoServiceTest
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.136 s -- in br.com.hestia.politica.service.PoliticaUsoServiceTest
+[INFO] Running br.com.hestia.rag.service.BuscaVetorialPostgresTest
+2026-10-20T12:39:44.779-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_8bc9f726ae824600a6983e3849775b2d,public (PostgreSQL 17.11)
+2026-10-20T12:39:44.896-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "d2_8bc9f726ae824600a6983e3849775b2d"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:44.900-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.035s)
+2026-10-20T12:39:44.976-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "d2_8bc9f726ae824600a6983e3849775b2d"."flyway_schema_history" ...
+2026-10-20T12:39:45.185-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_8bc9f726ae824600a6983e3849775b2d": << Empty Schema >>
+2026-10-20T12:39:45.196-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "1 - baseline hestia"
+2026-10-20T12:39:45.336-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "2 - registro uso ia"
+2026-10-20T12:39:45.412-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:45.470-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "4 - sessoes usuario"
+2026-10-20T12:39:45.522-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "5 - auditoria"
+2026-10-20T12:39:45.572-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "6 - configuracoes empresa"
+2026-10-20T12:39:45.615-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "7 - gamificacao"
+2026-10-20T12:39:45.676-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "8 - economia reutilizacao"
+2026-10-20T12:39:45.713-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "9 - microtreinamentos"
+2026-10-20T12:39:45.762-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:45.792-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:45.951-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "12 - recuperacao senha"
+2026-10-20T12:39:45.986-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:46.030-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_8bc9f726ae824600a6983e3849775b2d" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:46.063-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "d2_8bc9f726ae824600a6983e3849775b2d", now at version v14 (execution time 00:00.434s)
+2026-10-20T12:39:46.790-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_770acef0ede04889bf5a9adccb07f77d,public (PostgreSQL 17.11)
+2026-10-20T12:39:46.837-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "d2_770acef0ede04889bf5a9adccb07f77d"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:46.839-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.021s)
+2026-10-20T12:39:46.862-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "d2_770acef0ede04889bf5a9adccb07f77d"."flyway_schema_history" ...
+2026-10-20T12:39:46.928-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_770acef0ede04889bf5a9adccb07f77d": << Empty Schema >>
+2026-10-20T12:39:46.934-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "1 - baseline hestia"
+2026-10-20T12:39:47.013-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "2 - registro uso ia"
+2026-10-20T12:39:47.059-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:47.105-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "4 - sessoes usuario"
+2026-10-20T12:39:47.148-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "5 - auditoria"
+2026-10-20T12:39:47.196-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "6 - configuracoes empresa"
+2026-10-20T12:39:47.246-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "7 - gamificacao"
+2026-10-20T12:39:47.329-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "8 - economia reutilizacao"
+2026-10-20T12:39:47.400-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "9 - microtreinamentos"
+2026-10-20T12:39:47.498-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:47.555-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:47.716-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "12 - recuperacao senha"
+2026-10-20T12:39:47.773-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:47.830-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_770acef0ede04889bf5a9adccb07f77d" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:47.886-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "d2_770acef0ede04889bf5a9adccb07f77d", now at version v14 (execution time 00:00.407s)
+2026-10-20T12:39:48.003-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_770acef0ede04889bf5a9adccb07f77d,public (PostgreSQL 17.11)
+2026-10-20T12:39:48.252-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_770acef0ede04889bf5a9adccb07f77d,public (PostgreSQL 17.11)
+2026-10-20T12:39:48.316-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.032s)
+2026-10-20T12:39:48.408-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_770acef0ede04889bf5a9adccb07f77d,public (PostgreSQL 17.11)
+2026-10-20T12:39:48.475-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.035s)
+2026-10-20T12:39:48.535-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_770acef0ede04889bf5a9adccb07f77d": 14
+2026-10-20T12:39:48.537-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Schema "d2_770acef0ede04889bf5a9adccb07f77d" is up to date. No migration necessary.
+2026-10-20T12:39:49.104-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_93c8547567f74831b4cfc3c2fda6a27f,public (PostgreSQL 17.11)
+2026-10-20T12:39:49.188-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "d2_93c8547567f74831b4cfc3c2fda6a27f"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:49.192-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.042s)
+2026-10-20T12:39:49.223-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "d2_93c8547567f74831b4cfc3c2fda6a27f"."flyway_schema_history" ...
+2026-10-20T12:39:49.337-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_93c8547567f74831b4cfc3c2fda6a27f": << Empty Schema >>
+2026-10-20T12:39:49.351-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "1 - baseline hestia"
+2026-10-20T12:39:49.525-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "2 - registro uso ia"
+2026-10-20T12:39:51.192-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:51.457-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "4 - sessoes usuario"
+2026-10-20T12:39:51.508-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "5 - auditoria"
+2026-10-20T12:39:51.564-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "6 - configuracoes empresa"
+2026-10-20T12:39:51.653-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "7 - gamificacao"
+2026-10-20T12:39:51.750-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "8 - economia reutilizacao"
+2026-10-20T12:39:51.847-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "9 - microtreinamentos"
+2026-10-20T12:39:52.041-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:52.084-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:52.406-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "12 - recuperacao senha"
+2026-10-20T12:39:52.460-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:52.512-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_93c8547567f74831b4cfc3c2fda6a27f" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:52.593-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "d2_93c8547567f74831b4cfc3c2fda6a27f", now at version v14 (execution time 00:00.655s)
+2026-10-20T12:39:54.090-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_c7ea5c3ebb9e4c37a155e64916cd8cc2,public (PostgreSQL 17.11)
+2026-10-20T12:39:54.145-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:54.147-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.022s)
+2026-10-20T12:39:54.171-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2"."flyway_schema_history" ...
+2026-10-20T12:39:54.275-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2": << Empty Schema >>
+2026-10-20T12:39:54.283-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "1 - baseline hestia"
+2026-10-20T12:39:54.458-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "2 - registro uso ia"
+2026-10-20T12:39:54.518-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:54.605-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "4 - sessoes usuario"
+2026-10-20T12:39:54.732-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "5 - auditoria"
+2026-10-20T12:39:54.870-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "6 - configuracoes empresa"
+2026-10-20T12:39:54.976-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "7 - gamificacao"
+2026-10-20T12:39:55.137-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "8 - economia reutilizacao"
+2026-10-20T12:39:55.243-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "9 - microtreinamentos"
+2026-10-20T12:39:55.376-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:55.440-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:55.732-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "12 - recuperacao senha"
+2026-10-20T12:39:55.799-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:55.861-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:55.920-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "d2_c7ea5c3ebb9e4c37a155e64916cd8cc2", now at version v14 (execution time 00:00.858s)
+2026-10-20T12:39:57.353-03:00  INFO 1564 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://127.0.0.1:55439/hestia_d2_test?currentSchema=d2_48f979451ffe48c1b77791d96facade4,public (PostgreSQL 17.11)
+2026-10-20T12:39:57.402-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "d2_48f979451ffe48c1b77791d96facade4"."flyway_schema_history" does not exist yet
+2026-10-20T12:39:57.404-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 14 migrations (execution time 00:00.020s)
+2026-10-20T12:39:57.448-03:00  INFO 1564 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "d2_48f979451ffe48c1b77791d96facade4"."flyway_schema_history" ...
+2026-10-20T12:39:57.535-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "d2_48f979451ffe48c1b77791d96facade4": << Empty Schema >>
+2026-10-20T12:39:57.542-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "1 - baseline hestia"
+2026-10-20T12:39:57.732-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "2 - registro uso ia"
+2026-10-20T12:39:57.795-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "3 - avaliacao conformidade"
+2026-10-20T12:39:57.874-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "4 - sessoes usuario"
+2026-10-20T12:39:57.940-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "5 - auditoria"
+2026-10-20T12:39:57.996-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "6 - configuracoes empresa"
+2026-10-20T12:39:58.056-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "7 - gamificacao"
+2026-10-20T12:39:58.136-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "8 - economia reutilizacao"
+2026-10-20T12:39:58.255-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "9 - microtreinamentos"
+2026-10-20T12:39:58.339-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "10 - custo estimado reutilizacao"
+2026-10-20T12:39:58.371-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "11 - adicionar pgvector respostas"
+2026-10-20T12:39:58.936-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "12 - recuperacao senha"
+2026-10-20T12:39:59.089-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "13 - criar staging base sintetica"
+2026-10-20T12:39:59.124-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "d2_48f979451ffe48c1b77791d96facade4" to version "14 - perfis recuperacao respostas"
+2026-10-20T12:39:59.218-03:00  INFO 1564 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 14 migrations to schema "d2_48f979451ffe48c1b77791d96facade4", now at version v14 (execution time 00:00.434s)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.05 s -- in br.com.hestia.rag.service.BuscaVetorialPostgresTest
+[INFO] Running br.com.hestia.rag.service.EmbeddingServiceTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.471 s -- in br.com.hestia.rag.service.EmbeddingServiceTest
+[INFO] Running br.com.hestia.rag.service.SimilaridadeSemanticaServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in br.com.hestia.rag.service.SimilaridadeSemanticaServiceTest
+[INFO] Running br.com.hestia.registro.RegistroUsoIAServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.223 s -- in br.com.hestia.registro.RegistroUsoIAServiceTest
+[INFO] Running br.com.hestia.reutilizavel.EconomiaReutilizacaoTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in br.com.hestia.reutilizavel.EconomiaReutilizacaoTest
+[INFO] Running br.com.hestia.reutilizavel.service.EconomiaReutilizacaoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.137 s -- in br.com.hestia.reutilizavel.service.EconomiaReutilizacaoServiceTest
+[INFO] Running br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+2026-10-20T12:40:00.759-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest]: RecuperacaoPerguntasSemelhantesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:40:00.919-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+2026-10-20T12:40:00.920-03:00  INFO 1564 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest]: RecuperacaoPerguntasSemelhantesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T12:40:00.957-03:00  INFO 1564 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+2026-10-20T12:40:01.637-03:00  INFO 1564 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-10-20T12:40:01.638-03:00  INFO 1564 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-20T12:40:01.639-03:00  INFO 1564 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: delete from resposta_perfis where resposta_id=?
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+[INFO] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.410 s -- in br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+[INFO] Running br.com.hestia.usuario.dto.UsuarioResponseDTOTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 s -- in br.com.hestia.usuario.dto.UsuarioResponseDTOTest
+[INFO] Running br.com.hestia.usuario.service.UsuarioServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in br.com.hestia.usuario.service.UsuarioServiceTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 78, Failures: 0, Errors: 0, Skipped: 2
+[INFO]
+[INFO]
+[INFO] --- jacoco:0.8.13:report (jacoco-report) @ hestia ---
+[INFO] Loading execution data file C:\Users\ricardo.davila\Documents\Codex\2026-10-20\deliverable-2-organiza-o-das-entregas-2\work\build-pg\jacoco.exec
+[INFO] Analyzed bundle 'HestIA' with 122 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:36 min
+[INFO] Finished at: 2026-10-20T12:40:09-03:00
+[INFO] ------------------------------------------------------------------------
