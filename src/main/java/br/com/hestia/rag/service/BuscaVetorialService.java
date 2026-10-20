@@ -1,18 +1,20 @@
-
 package br.com.hestia.rag.service;
 
 import br.com.hestia.autenticacao.contexto.EmpresaAtual;
-import br.com.hestia.usuario.model.Usuario;
-import br.com.hestia.usuario.repository.UsuarioRepository;
-import br.com.hestia.reutilizavel.service.AcessoRespostaService;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
+import br.com.hestia.reutilizavel.service.AcessoRespostaService;
+import br.com.hestia.usuario.model.Usuario;
+import br.com.hestia.usuario.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,6 @@ public class BuscaVetorialService {
 
     @Transactional
     public void indexarResposta(Long empresaId, Long respostaId) {
-
         Usuario usuario = usuarioAutorizado(empresaId);
 
         RespostaReutilizavel resposta = repository.findById(respostaId)
@@ -61,7 +62,9 @@ public class BuscaVetorialService {
         }
 
         if (!resposta.getPerfisPermitidos().contains(usuario.getPerfil())) {
-            throw new IllegalArgumentException("Perfil não autorizado para indexação.");
+            throw new IllegalArgumentException(
+                    "Perfil não autorizado para indexação."
+            );
         }
 
         if (!Boolean.TRUE.equals(resposta.getReutilizavel())
@@ -71,26 +74,46 @@ public class BuscaVetorialService {
             );
         }
 
-        String vetor = gerarVetor(resposta.getPromptOriginal());
+        String promptIndexado = resposta.getPromptOriginal();
+        String respostaIndexada = resposta.getRespostaGerada();
+        String perfilAutorizado = usuario.getPerfil().name();
 
-        jdbcTemplate.update(
+        String vetor = gerarVetor(promptIndexado);
+
+        int atualizadas = jdbcTemplate.update(
                 """
                 UPDATE respostas_reutilizaveis
                 SET embedding = ?,
                     embedding_vector = CAST(? AS vector)
                 WHERE id = ?
                   AND empresa_id = ?
+                  AND prompt_original = ?
+                  AND resposta_gerada = ?
                   AND reutilizavel = true
                   AND possui_dados_sensiveis = false
-                  AND EXISTS (SELECT 1 FROM resposta_perfis p
-                              WHERE p.resposta_id = respostas_reutilizaveis.id AND p.perfil = ?)
+                  AND EXISTS (
+                      SELECT 1
+                      FROM resposta_perfis p
+                      WHERE p.resposta_id = respostas_reutilizaveis.id
+                        AND p.perfil = ?
+                  )
                 """,
                 vetor,
                 vetor,
                 respostaId,
                 empresaId,
-                usuario.getPerfil().name()
+                promptIndexado,
+                respostaIndexada,
+                perfilAutorizado
         );
+
+        if (atualizadas != 1) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "O conteúdo ou suas permissões mudaram durante a indexação. "
+                            + "Execute a indexação novamente."
+            );
+        }
     }
 
     @Transactional(readOnly = true)
@@ -99,7 +122,6 @@ public class BuscaVetorialService {
             String pergunta,
             int limite
     ) {
-
         Usuario usuario = usuarioAutorizado(empresaId);
 
         if (pergunta == null || pergunta.isBlank()) {
@@ -124,8 +146,12 @@ public class BuscaVetorialService {
                   AND reutilizavel = true
                   AND possui_dados_sensiveis = false
                   AND embedding_vector IS NOT NULL
-                  AND EXISTS (SELECT 1 FROM resposta_perfis p
-                              WHERE p.resposta_id = respostas_reutilizaveis.id AND p.perfil = ?)
+                  AND EXISTS (
+                      SELECT 1
+                      FROM resposta_perfis p
+                      WHERE p.resposta_id = respostas_reutilizaveis.id
+                        AND p.perfil = ?
+                  )
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
@@ -144,7 +170,8 @@ public class BuscaVetorialService {
                 repository.findAllById(ids)
                         .stream()
                         .filter(r -> empresaId.equals(r.getEmpresaId()))
-                        .filter(r -> r.getPerfisPermitidos().contains(usuario.getPerfil()))
+                        .filter(r -> r.getPerfisPermitidos()
+                                .contains(usuario.getPerfil()))
                         .filter(r -> Boolean.TRUE.equals(r.getReutilizavel()))
                         .filter(r -> Boolean.FALSE.equals(
                                 r.getPossuiDadosSensiveis()
@@ -156,28 +183,31 @@ public class BuscaVetorialService {
 
         return ids.stream()
                 .map(respostas::get)
-                .filter(r -> r != null)
+                .filter(Objects::nonNull)
                 .toList();
     }
 
     private Usuario usuarioAutorizado(Long empresaId) {
         empresaAtual.validar(empresaId);
-        Usuario usuario = usuarios.findById(empresaAtual.obterContexto().usuarioId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário autenticado inexistente."));
+
+        Usuario usuario = usuarios
+                .findById(empresaAtual.obterContexto().usuarioId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Usuário autenticado inexistente."
+                ));
+
         acesso.validarEmpresa(usuario, empresaId);
         return usuario;
     }
 
     private String gerarVetor(String texto) {
-
         if (texto == null || texto.isBlank()) {
             throw new IllegalArgumentException(
                     "O texto não pode estar vazio."
             );
         }
 
-        List<Float> embedding =
-                embeddingService.gerarEmbedding(texto);
+        List<Float> embedding = embeddingService.gerarEmbedding(texto);
 
         if (embedding == null || embedding.size() != DIMENSAO) {
             throw new IllegalStateException(
@@ -188,7 +218,6 @@ public class BuscaVetorialService {
         StringBuilder vetor = new StringBuilder("[");
 
         for (int i = 0; i < embedding.size(); i++) {
-
             Float valor = embedding.get(i);
 
             if (valor == null || !Float.isFinite(valor)) {

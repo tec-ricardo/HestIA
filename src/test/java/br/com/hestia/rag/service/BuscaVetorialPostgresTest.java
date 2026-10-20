@@ -14,6 +14,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -81,9 +83,10 @@ class BuscaVetorialPostgresTest {
         );
 
         when(repository.findAllById(any())).thenAnswer(i -> {
+            Iterable<Long> ids = i.getArgument(0);
             List<RespostaReutilizavel> found = new ArrayList<>();
 
-            for (Long id : (Iterable<Long>) i.getArgument(0)) {
+            for (Long id : ids) {
                 if (entities.containsKey(id)) {
                     found.add(entities.get(id));
                 }
@@ -94,10 +97,8 @@ class BuscaVetorialPostgresTest {
 
         embeddings = mock(EmbeddingService.class);
 
-        var vector = new ArrayList<>(Collections.nCopies(1536, 0f));
-        vector.set(0, 1f);
-
-        when(embeddings.gerarEmbedding(anyString())).thenReturn(vector);
+        when(embeddings.gerarEmbedding(anyString()))
+                .thenReturn(vetorDeTeste());
 
         service = new BuscaVetorialService(
                 jdbc,
@@ -114,6 +115,12 @@ class BuscaVetorialPostgresTest {
         if (jdbc != null && schema != null) {
             jdbc.execute("DROP SCHEMA " + schema + " CASCADE");
         }
+    }
+
+    private List<Float> vetorDeTeste() {
+        var vector = new ArrayList<>(Collections.nCopies(1536, 0f));
+        vector.set(0, 1f);
+        return vector;
     }
 
     private long row(
@@ -153,13 +160,10 @@ class BuscaVetorialPostgresTest {
         }
 
         var entity = new RespostaReutilizavel();
-
-        org.springframework.test.util.ReflectionTestUtils.setField(
-                entity, "id", id
-        );
-
+        ReflectionTestUtils.setField(entity, "id", id);
         entity.setEmpresaId(company);
         entity.setPromptOriginal("Pergunta de teste");
+        entity.setRespostaGerada("Conteúdo de teste");
         entity.setReutilizavel(reusable);
         entity.setPossuiDadosSensiveis(sensitive);
         entity.setPerfisPermitidos(
@@ -233,9 +237,7 @@ class BuscaVetorialPostgresTest {
 
         assertThatThrownBy(
                 () -> service.buscarSemelhantes(1L, "pergunta", 1)
-        ).isInstanceOf(
-                org.springframework.web.server.ResponseStatusException.class
-        );
+        ).isInstanceOf(ResponseStatusException.class);
 
         verifyNoInteractions(embeddings);
     }
@@ -268,8 +270,53 @@ class BuscaVetorialPostgresTest {
                 allowed
         )).isEqualTo(1536);
 
+        assertThat(jdbc.queryForObject(
+                "SELECT embedding FROM respostas_reutilizaveis WHERE id=?",
+                String.class,
+                allowed
+        )).isNotBlank();
+
         assertThat(service.buscarSemelhantes(1L, "pergunta", 1))
                 .extracting(RespostaReutilizavel::getId)
                 .containsExactly(allowed);
+    }
+
+    @Test
+    void rejectsEmbeddingWhenContentChangesDuringGeneration() {
+        long id = row(
+                1, PerfilUsuario.FUNCIONARIO, false, true, 0, 1
+        );
+
+        String vetorAnterior = jdbc.queryForObject(
+                "SELECT embedding_vector::text FROM respostas_reutilizaveis WHERE id=?",
+                String.class,
+                id
+        );
+
+        when(embeddings.gerarEmbedding("Pergunta de teste"))
+                .thenAnswer(invocation -> {
+                    jdbc.update(
+                            """
+                            UPDATE respostas_reutilizaveis
+                            SET prompt_original = 'Pergunta alterada'
+                            WHERE id = ?
+                            """,
+                            id
+                    );
+                    return vetorDeTeste();
+                });
+
+        assertThatThrownBy(() -> service.indexarResposta(1L, id))
+                .isInstanceOfSatisfying(
+                        ResponseStatusException.class,
+                        erro -> assertThat(erro.getStatusCode().value())
+                                .isEqualTo(409)
+                );
+
+        assertThat(jdbc.queryForObject(
+                "SELECT embedding_vector::text FROM respostas_reutilizaveis WHERE id=?",
+                String.class,
+                id
+        )).isEqualTo(vetorAnterior);
     }
 }
