@@ -1,0 +1,376 @@
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ------------------------< br.com.hestia:hestia >------------------------
+[INFO] Building HestIA 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- resources:3.5.0:resources (default-resources) @ hestia ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 11 resources from src\main\resources to target\classes
+[INFO]
+[INFO] --- compiler:3.15.0:compile (default-compile) @ hestia ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO]
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ hestia ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO]
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ hestia ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 27 source files with javac [debug parameters release 21] to target\test-classes
+[INFO]
+[INFO] --- surefire:3.5.6:test (default-test) @ hestia ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO]
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running br.com.hestia.auditoria.AuditoriaInterceptorTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\ricardo.davila\.m2\repository\net\bytebuddy\byte-buddy-agent\1.18.11\byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.866 s -- in br.com.hestia.auditoria.AuditoriaInterceptorTest
+[INFO] Running br.com.hestia.autenticacao.AutenticacaoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.755 s -- in br.com.hestia.autenticacao.AutenticacaoServiceTest
+[INFO] Running br.com.hestia.autenticacao.ControleAcessoInterceptorTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.157 s -- in br.com.hestia.autenticacao.ControleAcessoInterceptorTest
+[INFO] Running br.com.hestia.configuracao.ConfiguracaoEmpresaServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.223 s -- in br.com.hestia.configuracao.ConfiguracaoEmpresaServiceTest
+[INFO] Running br.com.hestia.conformidade.AvaliacaoConformidadeServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.509 s -- in br.com.hestia.conformidade.AvaliacaoConformidadeServiceTest
+[INFO] Running br.com.hestia.departamento.controller.DepartamentoControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.138 s -- in br.com.hestia.departamento.controller.DepartamentoControllerTest
+[INFO] Running br.com.hestia.departamento.service.DepartamentoServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.110 s -- in br.com.hestia.departamento.service.DepartamentoServiceTest
+[INFO] Running br.com.hestia.empresa.service.EmpresaServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s -- in br.com.hestia.empresa.service.EmpresaServiceTest
+[INFO] Running br.com.hestia.ferramenta.dto.FerramentaIACriacaoDTOTest
+11:57:32.402 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 9.1.3.Final
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.749 s -- in br.com.hestia.ferramenta.dto.FerramentaIACriacaoDTOTest
+[INFO] Running br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+11:57:33.276 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [br.com.hestia.ferramenta.model.FerramentaIARepositoryTest]: FerramentaIARepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:57:33.698 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+11:57:33.698 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [br.com.hestia.ferramenta.model.FerramentaIARepositoryTest]: FerramentaIARepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+11:57:33.745 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-20T11:57:34.505-03:00  INFO 54384 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : Starting FerramentaIARepositoryTest using Java 21 with PID 54384 (started by ricardo.davila in C:\Users\ricardo.davila\OneDrive - ESPM\QUARTO SEMESTRE\PROJETO INTEGRADO\HestIA)
+2026-10-20T11:57:34.505-03:00  INFO 54384 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : No active profile set, falling back to 1 default profile: "default"
+2026-10-20T11:57:35.472-03:00  INFO 54384 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-20T11:57:35.801-03:00  INFO 54384 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 321 ms. Found 18 JPA repository interfaces.
+2026-10-20T11:57:35.980-03:00  INFO 54384 --- [           main] beddedDataSourceBeanFactoryPostProcessor : Replacing 'dataSource' DataSource bean with embedded version
+2026-10-20T11:57:36.215-03:00  INFO 54384 --- [           main] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:h2:mem:17eb8821-8dbc-4f4b-9328-0fed1f07b43c;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=false', username='sa'
+2026-10-20T11:57:36.922-03:00  INFO 54384 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-20T11:57:37.058-03:00  INFO 54384 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-20T11:57:37.808-03:00  INFO 54384 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-20T11:57:38.010-03:00  INFO 54384 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:17eb8821-8dbc-4f4b-9328-0fed1f07b43c]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 17EB8821-8DBC-4F4B-9328-0FED1F07B43C/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-20T11:57:40.199-03:00  INFO 54384 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists avaliacao_criterios_atendidos cascade
+Hibernate: drop table if exists avaliacoes_conformidade cascade
+Hibernate: drop table if exists conclusoes_microtreinamento cascade
+Hibernate: drop table if exists configuracoes_empresa cascade
+Hibernate: drop table if exists departamentos cascade
+Hibernate: drop table if exists empresas cascade
+Hibernate: drop table if exists ferramentas_ia cascade
+Hibernate: drop table if exists historicos_microtreinamento cascade
+Hibernate: drop table if exists logs_auditoria cascade
+Hibernate: drop table if exists missoes cascade
+Hibernate: drop table if exists movimentos_experiencia cascade
+Hibernate: drop table if exists necessidades_microtreinamento cascade
+Hibernate: drop table if exists politicas_uso cascade
+Hibernate: drop table if exists progressos_missao cascade
+Hibernate: drop table if exists progressos_usuario cascade
+Hibernate: drop table if exists registros_uso_ia cascade
+Hibernate: drop table if exists resposta_perfis cascade
+Hibernate: drop table if exists respostas_reutilizaveis cascade
+Hibernate: drop table if exists sessoes_usuario cascade
+Hibernate: drop table if exists usuarios cascade
+Hibernate: create table avaliacao_criterios_atendidos (avaliacao_id bigint not null, criterio enum ('DADOS_SENSIVEIS','FINALIDADE_ADEQUADA','IA_AUTORIZADA','LGPD','POLITICA_INTERNA','REGISTRO_DE_USO','VALIDACAO_HUMANA') not null, primary key (avaliacao_id, criterio))
+Hibernate: create table avaliacoes_conformidade (data_avaliacao timestamp(6) not null, id bigint generated by default as identity, politica_uso_id bigint not null, registro_uso_id bigint not null unique, justificativa varchar(1000), status enum ('CONFORME','NAO_CONFORME','REQUER_REVISAO') not null, primary key (id))
+Hibernate: create table conclusoes_microtreinamento (concluido boolean not null, data_conclusao timestamp(6), historico_id bigint, id bigint generated by default as identity, microtreinamento_id bigint, usuario_id bigint, primary key (id))
+Hibernate: create table configuracoes_empresa (bloquear_ferramentas_nao_aprovadas boolean not null, dias_retencao_auditoria integer not null, limite_custo_mensal numeric(15,2), registrar_usos_automaticamente boolean not null, atualizada_em timestamp(6) not null, empresa_id bigint not null unique, id bigint generated by default as identity, primary key (id))
+Hibernate: create table departamentos (empresa_id bigint not null, id bigint generated by default as identity, estrutura_hierarquica varchar(255), nome varchar(255) not null, responsavel varchar(255), primary key (id))
+Hibernate: create table empresas (orcamento float(53), id bigint generated by default as identity, cnpj varchar(14) not null unique, nome varchar(150) not null, configuracoes_gerais varchar(255), primary key (id))
+Hibernate: create table ferramentas_ia (trata_dados_pessoais boolean not null, data_atualizacao timestamp(6) not null, data_cadastro timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, fornecedor varchar(120) not null, nome varchar(120) not null, descricao varchar(500), finalidade_uso varchar(500) not null, url_acesso varchar(2048), nivel_risco enum ('ALTO','BAIXO','CRITICO','MEDIO','NAO_AVALIADO') not null, status enum ('APROVADA','BLOQUEADA','DESCONTINUADA','EM_ANALISE','RESTRITA') not null, tipo enum ('ANALISE_DADOS','ASSISTENTE_CODIGO','AUTOMACAO','CHATBOT','GERACAO_AUDIO','GERACAO_IMAGEM','GERACAO_TEXTO','GERACAO_VIDEO','OUTROS','TRADUCAO') not null, primary key (id), constraint uk_ferramenta_empresa_nome_fornecedor unique (empresa_id, nome, fornecedor))
+Hibernate: create table historicos_microtreinamento (id bigint generated by default as identity, usuario_id bigint, primary key (id))
+Hibernate: create table logs_auditoria (status_http integer not null, data_hora timestamp(6) not null, empresa_id bigint, id bigint generated by default as identity, usuario_id bigint, metodo varchar(20) not null, acao varchar(40) not null, endereco_ip varchar(64), recurso varchar(500) not null, primary key (id))
+Hibernate: create table missoes (ativa boolean not null, meta_quantidade integer not null, recompensa_xp integer not null, id bigint generated by default as identity, codigo varchar(80) not null unique, titulo varchar(150) not null, descricao varchar(500) not null, acao_alvo enum ('MICRO_TREINAMENTO','MISSAO_CONCLUIDA','REGISTRO_USO','REUTILIZACAO_RESPOSTA','USO_CONFORME') not null, primary key (id))
+Hibernate: create table movimentos_experiencia (pontos integer not null, data_hora timestamp(6) not null, id bigint generated by default as identity, usuario_id bigint not null, referencia varchar(150) not null, acao enum ('MICRO_TREINAMENTO','MISSAO_CONCLUIDA','REGISTRO_USO','REUTILIZACAO_RESPOSTA','USO_CONFORME') not null, primary key (id), constraint uk_movimento_referencia unique (usuario_id, referencia))
+Hibernate: create table necessidades_microtreinamento (necessario boolean not null, data_identificacao timestamp(6), id bigint generated by default as identity, usuario_id bigint, tema_treinamento enum ('BOAS_PRATICAS_DE_USO','LGPD','POLITICAS_INTERNAS','PROTECAO_DE_DADOS','REGISTRO_E_AUDITORIA','USO_DE_FERRAMENTAS_AUTORIZADAS','VALIDACAO_HUMANA'), tipo_erro enum ('AUSENCIA_VALIDACAO_HUMANA','DADOS_SENSIVEIS','FERRAMENTA_NAO_AUTORIZADA','FINALIDADE_INADEQUADA','USO_NAO_REGISTRADO','VIOLACAO_LGPD','VIOLACAO_POLITICA_INTERNA'), primary key (id))
+Hibernate: create table politicas_uso (ativa boolean not null, data_atualizacao timestamp(6) not null, data_criacao timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, versao varchar(20) not null, titulo varchar(150) not null, descricao varchar(500) not null, conteudo TEXT not null, primary key (id))
+Hibernate: create table progressos_missao (progresso integer not null, recompensa_concedida boolean not null, concluida_em timestamp(6), id bigint generated by default as identity, missao_id bigint not null, usuario_id bigint not null, primary key (id), constraint uk_progresso_missao unique (usuario_id, missao_id))
+Hibernate: create table progressos_usuario (xp_total integer not null, atualizado_em timestamp(6) not null, id bigint generated by default as identity, usuario_id bigint not null unique, nivel enum ('APRENDIZ','CONSCIENTE','EMBAIXADOR','GUARDIAO') not null, primary key (id))
+Hibernate: create table registros_uso_ia (custo_estimado numeric(15,6), tokens_entrada integer not null, tokens_saida integer not null, tokens_total integer not null, data_hora timestamp(6) not null, ferramenta_id bigint not null, id bigint generated by default as identity, tempo_resposta_ms bigint, usuario_id bigint not null, modelo_ia varchar(100) not null, finalidade enum ('ANALISE_DADOS','AUTOMACAO','GERACAO_CODIGO','GERACAO_CONTEUDO','OUTROS','PESQUISA','RESUMO','SUPORTE_DECISAO') not null, status_execucao enum ('ERRO','INTERROMPIDA','SUCESSO') not null, primary key (id))
+Hibernate: create table resposta_perfis (resposta_id bigint not null, perfil enum ('ADMIN','FUNCIONARIO','GESTOR') not null, primary key (resposta_id, perfil))
+Hibernate: create table respostas_reutilizaveis (custo_estimado numeric(15,6), possui_dados_sensiveis boolean not null, quantidade_reutilizacoes integer not null, reutilizavel boolean not null, tokens_entrada integer, tokens_saida integer, data_criacao timestamp(6) not null, empresa_id bigint not null, id bigint generated by default as identity, tokens_economizados bigint not null, usuario_id bigint, categoria varchar(255), embedding TEXT, modelo_ia varchar(255), prompt_original TEXT not null, resposta_gerada TEXT not null, primary key (id))
+Hibernate: create table sessoes_usuario (criada_em timestamp(6) not null, expira_em timestamp(6) not null, id bigint generated by default as identity, revogada_em timestamp(6), usuario_id bigint not null, token_hash varchar(64) not null unique, primary key (id))
+Hibernate: create table usuarios (ativo boolean not null, data_cadastro timestamp(6) not null, departamento_id bigint not null, empresa_id bigint not null, id bigint generated by default as identity, cargo varchar(100) not null, nome varchar(100) not null, email varchar(150) not null unique, senha varchar(255) not null, perfil enum ('ADMIN','FUNCIONARIO','GESTOR') not null, primary key (id))
+Hibernate: create index idx_ferramenta_empresa on ferramentas_ia (empresa_id)
+Hibernate: create index idx_ferramenta_status on ferramentas_ia (status)
+Hibernate: create index idx_auditoria_empresa_data on logs_auditoria (empresa_id, data_hora)
+Hibernate: create index idx_auditoria_usuario on logs_auditoria (usuario_id)
+Hibernate: create index idx_registro_uso_usuario on registros_uso_ia (usuario_id)
+Hibernate: create index idx_registro_uso_ferramenta on registros_uso_ia (ferramenta_id)
+Hibernate: create index idx_registro_uso_data_hora on registros_uso_ia (data_hora)
+Hibernate: alter table if exists avaliacao_criterios_atendidos add constraint FKibjy4bcilwtqg5c77jdfef4tr foreign key (avaliacao_id) references avaliacoes_conformidade
+Hibernate: alter table if exists avaliacoes_conformidade add constraint FKyvvwqjml5fx1tgr7swboemgv foreign key (politica_uso_id) references politicas_uso
+Hibernate: alter table if exists avaliacoes_conformidade add constraint FK1oh5ddka9mx7mgtr98d7a5oqi foreign key (registro_uso_id) references registros_uso_ia
+Hibernate: alter table if exists conclusoes_microtreinamento add constraint FKnonry89qb1jlgd1mme99gmxq5 foreign key (historico_id) references historicos_microtreinamento
+Hibernate: alter table if exists configuracoes_empresa add constraint FK3vybt0lwkgeo12veuukhwbq99 foreign key (empresa_id) references empresas
+Hibernate: alter table if exists departamentos add constraint FK6btn4jnukl63uatv2cthktmhq foreign key (empresa_id) references empresas
+Hibernate: alter table if exists ferramentas_ia add constraint FKfc9iiljqr73ntrion8b3ru70y foreign key (empresa_id) references empresas
+Hibernate: alter table if exists logs_auditoria add constraint FKmnxfrd3p5llf0k2d104l39xmb foreign key (empresa_id) references empresas
+Hibernate: alter table if exists logs_auditoria add constraint FK9hlugdhnm6y2ejewa5vb3yhpd foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists movimentos_experiencia add constraint FKim5tewi0snm5gk1m4r0xaxbri foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists politicas_uso add constraint FK1gj5xei13fki2xuovipm36700 foreign key (empresa_id) references empresas
+Hibernate: alter table if exists progressos_missao add constraint FKqhhsm19p39oabhp1qvgp8524y foreign key (missao_id) references missoes
+Hibernate: alter table if exists progressos_missao add constraint FK6ifhn7s1ajhvjsued5gouban6 foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists progressos_usuario add constraint FK4e16j5qj1617b7jgr84sq97qm foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists registros_uso_ia add constraint FKj6gpj8tryjf5kt3ahu94ixuy5 foreign key (ferramenta_id) references ferramentas_ia
+Hibernate: alter table if exists registros_uso_ia add constraint FKirhf9jygv3khfqmsc5etpnskc foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists resposta_perfis add constraint FKogk2a6rjlmdo7tm1ouuruffte foreign key (resposta_id) references respostas_reutilizaveis
+Hibernate: alter table if exists sessoes_usuario add constraint FKjf6vfwav1t250gb14wkqt6ga2 foreign key (usuario_id) references usuarios
+Hibernate: alter table if exists usuarios add constraint FKlayeuvn3gr7ql1o7532lxpfak foreign key (departamento_id) references departamentos
+Hibernate: alter table if exists usuarios add constraint FK9v93lqnass5yqhhsyprr9fdv2 foreign key (empresa_id) references empresas
+2026-10-20T11:57:40.386-03:00  INFO 54384 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-20T11:57:40.593-03:00  INFO 54384 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-20T11:57:44.511-03:00  INFO 54384 --- [           main] b.c.h.f.m.FerramentaIARepositoryTest     : Started FerramentaIARepositoryTest in 10.641 seconds (process running for 19.58)
+Hibernate: insert into empresas (cnpj,configuracoes_gerais,nome,orcamento,id) values (?,?,?,?,default)
+Hibernate: insert into ferramentas_ia (data_atualizacao,data_cadastro,descricao,empresa_id,finalidade_uso,fornecedor,nivel_risco,nome,status,tipo,trata_dados_pessoais,url_acesso,id) values (?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: select fi1_0.id,fi1_0.data_atualizacao,fi1_0.data_cadastro,fi1_0.descricao,fi1_0.empresa_id,fi1_0.finalidade_uso,fi1_0.fornecedor,fi1_0.nivel_risco,fi1_0.nome,fi1_0.status,fi1_0.tipo,fi1_0.trata_dados_pessoais,fi1_0.url_acesso from ferramentas_ia fi1_0 where fi1_0.empresa_id=?
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.36 s -- in br.com.hestia.ferramenta.model.FerramentaIARepositoryTest
+[INFO] Running br.com.hestia.ferramenta.service.FerramentaIAServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.151 s -- in br.com.hestia.ferramenta.service.FerramentaIAServiceTest
+[INFO] Running br.com.hestia.gamificacao.ProgressaoExperienciaTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.113 s -- in br.com.hestia.gamificacao.ProgressaoExperienciaTest
+[INFO] Running br.com.hestia.HestIaApplicationTests
+2026-10-20T11:57:45.764-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.HestIaApplicationTests]: HestIaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:45.940-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.HestIaApplicationTests
+2026-10-20T11:57:45.956-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.HestIaApplicationTests]: HestIaApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:45.956-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.HestIaApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-20T11:57:46.183-03:00  INFO 54384 --- [           main] br.com.hestia.HestIaApplicationTests     : Starting HestIaApplicationTests using Java 21 with PID 54384 (started by ricardo.davila in C:\Users\ricardo.davila\OneDrive - ESPM\QUARTO SEMESTRE\PROJETO INTEGRADO\HestIA)
+2026-10-20T11:57:46.183-03:00  INFO 54384 --- [           main] br.com.hestia.HestIaApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-10-20T11:57:49.568-03:00  INFO 54384 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-20T11:57:49.839-03:00  INFO 54384 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 252 ms. Found 18 JPA repository interfaces.
+2026-10-20T11:57:50.464-03:00  INFO 54384 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-20T11:57:50.543-03:00  INFO 54384 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-20T11:57:50.543-03:00  INFO 54384 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-20T11:57:50.590-03:00  INFO 54384 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn5: url=jdbc:h2:mem:hestia user=SA
+2026-10-20T11:57:50.590-03:00  INFO 54384 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-20T11:57:50.605-03:00  INFO 54384 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:hestia]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: HESTIA/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-20T11:57:51.280-03:00  INFO 54384 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-20T11:57:51.387-03:00  INFO 54384 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-20T11:57:54.251-03:00  INFO 54384 --- [           main] br.com.hestia.HestIaApplicationTests     : Started HestIaApplicationTests in 8.239 seconds (process running for 29.315)
+2026-10-20T11:57:54.253-03:00  WARN 54384 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-10-20T11:57:54.254-03:00  WARN 54384 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.563 s -- in br.com.hestia.HestIaApplicationTests
+[INFO] Running br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+2026-10-20T11:57:54.286-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest]: MicrotreinamentoPersistenciaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:54.415-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+2026-10-20T11:57:54.417-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest]: MicrotreinamentoPersistenciaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:54.449-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+Hibernate: insert into necessidades_microtreinamento (data_identificacao,necessario,tema_treinamento,tipo_erro,usuario_id,id) values (?,?,?,?,?,default)
+Hibernate: insert into historicos_microtreinamento (usuario_id,id) values (?,default)
+Hibernate: insert into conclusoes_microtreinamento (concluido,data_conclusao,microtreinamento_id,usuario_id,id) values (?,?,?,?,default)
+Hibernate: update conclusoes_microtreinamento set historico_id=? where id=?
+Hibernate: select cm1_0.id,cm1_0.concluido,cm1_0.data_conclusao,cm1_0.microtreinamento_id,cm1_0.usuario_id from conclusoes_microtreinamento cm1_0 where cm1_0.usuario_id=? and cm1_0.microtreinamento_id=?
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.340 s -- in br.com.hestia.microtreinamento.MicrotreinamentoPersistenciaTest
+[INFO] Running br.com.hestia.microtreinamento.service.NecessidadeMicrotreinamentoServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.139 s -- in br.com.hestia.microtreinamento.service.NecessidadeMicrotreinamentoServiceTest
+[INFO] Running br.com.hestia.microtreinamento.service.RecomendacaoMicrotreinamentoServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in br.com.hestia.microtreinamento.service.RecomendacaoMicrotreinamentoServiceTest
+[INFO] Running br.com.hestia.migration.FlywayMigrationTest
+2026-10-20T11:57:55.120-03:00  INFO 54384 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:flyway (H2 2.4)
+2026-10-20T11:57:55.192-03:00  WARN 54384 --- [           main] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026-10-20T11:57:55.282-03:00  INFO 54384 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-10-20T11:57:55.289-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbValidate     : Successfully validated 11 migrations (execution time 00:00.058s)
+2026-10-20T11:57:55.306-03:00  INFO 54384 --- [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-10-20T11:57:55.354-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "PUBLIC": << Empty Schema >>
+2026-10-20T11:57:55.369-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "1 - baseline hestia"
+2026-10-20T11:57:55.416-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "2 - registro uso ia"
+2026-10-20T11:57:55.448-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "3 - avaliacao conformidade"
+2026-10-20T11:57:55.479-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "4 - sessoes usuario"
+2026-10-20T11:57:55.497-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "5 - auditoria"
+2026-10-20T11:57:55.514-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "6 - configuracoes empresa"
+2026-10-20T11:57:55.527-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "7 - gamificacao"
+2026-10-20T11:57:55.542-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "8 - economia reutilizacao"
+2026-10-20T11:57:55.574-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "9 - microtreinamentos"
+2026-10-20T11:57:55.605-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "10 - custo estimado reutilizacao"
+2026-10-20T11:57:55.636-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "11 - perfis recuperacao respostas"
+2026-10-20T11:57:55.667-03:00  INFO 54384 --- [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 11 migrations to schema "PUBLIC", now at version v11 (execution time 00:00.121s)
+2026-10-20T11:57:55.683-03:00  INFO 54384 --- [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:flyway (H2 2.4)
+2026-10-20T11:57:55.699-03:00  WARN 54384 --- [           main] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.953 s -- in br.com.hestia.migration.FlywayMigrationTest
+[INFO] Running br.com.hestia.notificacao.AlertServiceEndToEndTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 s -- in br.com.hestia.notificacao.AlertServiceEndToEndTest
+[INFO] Running br.com.hestia.notificacao.client.AlertServiceClientTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.376 s -- in br.com.hestia.notificacao.client.AlertServiceClientTest
+[INFO] Running br.com.hestia.rag.service.EmbeddingServiceTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.016 s -- in br.com.hestia.rag.service.EmbeddingServiceTest
+[INFO] Running br.com.hestia.rag.service.SimilaridadeSemanticaServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.084 s -- in br.com.hestia.rag.service.SimilaridadeSemanticaServiceTest
+[INFO] Running br.com.hestia.registro.RegistroUsoIAServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in br.com.hestia.registro.RegistroUsoIAServiceTest
+[INFO] Running br.com.hestia.reutilizavel.EconomiaReutilizacaoTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in br.com.hestia.reutilizavel.EconomiaReutilizacaoTest
+[INFO] Running br.com.hestia.reutilizavel.service.EconomiaReutilizacaoServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 s -- in br.com.hestia.reutilizavel.service.EconomiaReutilizacaoServiceTest
+[INFO] Running br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+2026-10-20T11:57:56.533-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest]: RecuperacaoPerguntasSemelhantesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:56.674-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+2026-10-20T11:57:56.690-03:00  INFO 54384 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest]: RecuperacaoPerguntasSemelhantesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-20T11:57:56.705-03:00  INFO 54384 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration br.com.hestia.HestIaApplication for test class br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+2026-10-20T11:57:56.948-03:00  INFO 54384 --- [           main] o.s.mock.web.MockServletContext          : Initializing Spring TestDispatcherServlet ''
+2026-10-20T11:57:56.948-03:00  INFO 54384 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-20T11:57:56.949-03:00  INFO 54384 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: update respostas_reutilizaveis set categoria=?,custo_estimado=?,data_criacao=?,embedding=?,empresa_id=?,modelo_ia=?,possui_dados_sensiveis=?,prompt_original=?,quantidade_reutilizacoes=?,resposta_gerada=?,reutilizavel=?,tokens_economizados=?,tokens_entrada=?,tokens_saida=?,usuario_id=? where id=?
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: delete from resposta_perfis where resposta_id=?
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: insert into respostas_reutilizaveis (categoria,custo_estimado,data_criacao,embedding,empresa_id,modelo_ia,possui_dados_sensiveis,prompt_original,quantidade_reutilizacoes,resposta_gerada,reutilizavel,tokens_economizados,tokens_entrada,tokens_saida,usuario_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,default)
+Hibernate: insert into resposta_perfis (resposta_id,perfil) values (?,?)
+Hibernate: select rr1_0.id,rr1_0.categoria,rr1_0.custo_estimado,rr1_0.data_criacao,rr1_0.embedding,rr1_0.empresa_id,rr1_0.modelo_ia,rr1_0.possui_dados_sensiveis,rr1_0.prompt_original,rr1_0.quantidade_reutilizacoes,rr1_0.resposta_gerada,rr1_0.reutilizavel,rr1_0.tokens_economizados,rr1_0.tokens_entrada,rr1_0.tokens_saida,rr1_0.usuario_id from respostas_reutilizaveis rr1_0 where rr1_0.empresa_id=? and exists(select 1 from resposta_perfis pp1_0 where rr1_0.id=pp1_0.resposta_id and pp1_0.perfil=?) and rr1_0.reutilizavel=true and rr1_0.possui_dados_sensiveis=false and (? is null or rr1_0.id=?) and (? is null or lower(rr1_0.prompt_original) like lower(('%'||?||'%')) escape '!') and (?=false or (rr1_0.embedding is not null and trim(BOTH from rr1_0.embedding)<>'')) order by rr1_0.data_criacao desc,rr1_0.id desc fetch first ? rows only
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.962 s -- in br.com.hestia.reutilizavel.service.RecuperacaoPerguntasSemelhantesTest
+[INFO] Running br.com.hestia.usuario.dto.UsuarioResponseDTOTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in br.com.hestia.usuario.dto.UsuarioResponseDTOTest
+[INFO] Running br.com.hestia.usuario.service.UsuarioServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in br.com.hestia.usuario.service.UsuarioServiceTest
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 59, Failures: 0, Errors: 0, Skipped: 2
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  48.963 s
+[INFO] Finished at: 2026-10-20T11:57:58-03:00
+[INFO] ------------------------------------------------------------------------

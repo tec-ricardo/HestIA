@@ -1,0 +1,12 @@
+✔ health check (111.3328ms)
+✔ creates, classifies and reads a notification (383.7567ms)
+✔ is idempotent (18.473ms)
+✔ rejects invalid input and missing resource (7.8257ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5784.7417

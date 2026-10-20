@@ -1,0 +1,21 @@
+{
+  "selected": [
+    "Marketing::Midjourney",
+    "TI::ChatGPT",
+    "TI::Copilot"
+  ],
+  "cost": 1700,
+  "benefit": 25,
+  "scenario": "orcamento_ampliado",
+  "budget": 2000,
+  "remaining": 300,
+  "feasible": true,
+  "risk_limits": {
+    "Marketing": 4,
+    "TI": 4
+  },
+  "tool_limits": {
+    "Marketing": 2,
+    "TI": 2
+  }
+}

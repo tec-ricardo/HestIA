@@ -1,0 +1,20 @@
+{
+  "selected": [
+    "Marketing::ChatGPT",
+    "TI::ChatGPT"
+  ],
+  "cost": 800,
+  "benefit": 14,
+  "scenario": "orcamento_reduzido",
+  "budget": 800,
+  "remaining": 0,
+  "feasible": true,
+  "risk_limits": {
+    "Marketing": 4,
+    "TI": 4
+  },
+  "tool_limits": {
+    "Marketing": 2,
+    "TI": 2
+  }
+}

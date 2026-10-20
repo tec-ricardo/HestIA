@@ -2,6 +2,9 @@
 package br.com.hestia.rag.service;
 
 import br.com.hestia.autenticacao.contexto.EmpresaAtual;
+import br.com.hestia.usuario.model.Usuario;
+import br.com.hestia.usuario.repository.UsuarioRepository;
+import br.com.hestia.reutilizavel.service.AcessoRespostaService;
 import br.com.hestia.reutilizavel.model.RespostaReutilizavel;
 import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,23 +25,29 @@ public class BuscaVetorialService {
     private final EmbeddingService embeddingService;
     private final RespostaReutilizavelRepository repository;
     private final EmpresaAtual empresaAtual;
+    private final UsuarioRepository usuarios;
+    private final AcessoRespostaService acesso;
 
     public BuscaVetorialService(
             JdbcTemplate jdbcTemplate,
             EmbeddingService embeddingService,
             RespostaReutilizavelRepository repository,
-            EmpresaAtual empresaAtual
+            EmpresaAtual empresaAtual,
+            UsuarioRepository usuarios,
+            AcessoRespostaService acesso
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.embeddingService = embeddingService;
         this.repository = repository;
         this.empresaAtual = empresaAtual;
+        this.usuarios = usuarios;
+        this.acesso = acesso;
     }
 
     @Transactional
     public void indexarResposta(Long empresaId, Long respostaId) {
 
-        empresaAtual.validar(empresaId);
+        Usuario usuario = usuarioAutorizado(empresaId);
 
         RespostaReutilizavel resposta = repository.findById(respostaId)
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -49,6 +58,10 @@ public class BuscaVetorialService {
             throw new IllegalArgumentException(
                     "Resposta pertence a outra empresa."
             );
+        }
+
+        if (!resposta.getPerfisPermitidos().contains(usuario.getPerfil())) {
+            throw new IllegalArgumentException("Perfil não autorizado para indexação.");
         }
 
         if (!Boolean.TRUE.equals(resposta.getReutilizavel())
@@ -69,11 +82,14 @@ public class BuscaVetorialService {
                   AND empresa_id = ?
                   AND reutilizavel = true
                   AND possui_dados_sensiveis = false
+                  AND EXISTS (SELECT 1 FROM resposta_perfis p
+                              WHERE p.resposta_id = respostas_reutilizaveis.id AND p.perfil = ?)
                 """,
                 vetor,
                 vetor,
                 respostaId,
-                empresaId
+                empresaId,
+                usuario.getPerfil().name()
         );
     }
 
@@ -84,7 +100,7 @@ public class BuscaVetorialService {
             int limite
     ) {
 
-        empresaAtual.validar(empresaId);
+        Usuario usuario = usuarioAutorizado(empresaId);
 
         if (pergunta == null || pergunta.isBlank()) {
             throw new IllegalArgumentException(
@@ -108,11 +124,14 @@ public class BuscaVetorialService {
                   AND reutilizavel = true
                   AND possui_dados_sensiveis = false
                   AND embedding_vector IS NOT NULL
+                  AND EXISTS (SELECT 1 FROM resposta_perfis p
+                              WHERE p.resposta_id = respostas_reutilizaveis.id AND p.perfil = ?)
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
                 Long.class,
                 empresaId,
+                usuario.getPerfil().name(),
                 vetor,
                 limite
         );
@@ -125,6 +144,7 @@ public class BuscaVetorialService {
                 repository.findAllById(ids)
                         .stream()
                         .filter(r -> empresaId.equals(r.getEmpresaId()))
+                        .filter(r -> r.getPerfisPermitidos().contains(usuario.getPerfil()))
                         .filter(r -> Boolean.TRUE.equals(r.getReutilizavel()))
                         .filter(r -> Boolean.FALSE.equals(
                                 r.getPossuiDadosSensiveis()
@@ -138,6 +158,14 @@ public class BuscaVetorialService {
                 .map(respostas::get)
                 .filter(r -> r != null)
                 .toList();
+    }
+
+    private Usuario usuarioAutorizado(Long empresaId) {
+        empresaAtual.validar(empresaId);
+        Usuario usuario = usuarios.findById(empresaAtual.obterContexto().usuarioId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuário autenticado inexistente."));
+        acesso.validarEmpresa(usuario, empresaId);
+        return usuario;
     }
 
     private String gerarVetor(String texto) {

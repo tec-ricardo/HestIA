@@ -1,5 +1,11 @@
 # SCRUM-105 — Documentação C4 do HestIA
 
+> Registro histórico da Sprint 1. A revisão para o Deliverable 2 está em
+> `../deliverables/Deliverable_2/03_Modelagem_e_Construcao_de_Software/Relatorio_Modelagem_D2.md`
+> e nos diagramas `c4-contexto-d2.mmd`, `c4-conteineres-d2.mmd` e
+> `c4-componentes-d2.mmd`. As indicações de componentes planejados abaixo
+> descrevem a situação original, não a versão atual.
+
 ## 1. Objetivo e convenções
 
 Esta documentação representa a arquitetura-alvo do MVP definida na SCRUM-106
