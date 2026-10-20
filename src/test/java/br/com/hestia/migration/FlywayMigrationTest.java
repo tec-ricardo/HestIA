@@ -29,26 +29,19 @@ class FlywayMigrationTest {
 
         var aplicadas = flyway.info().applied();
 
-        assertEquals(14, aplicadas.length);
+        assertEquals(15, aplicadas.length);
         assertEquals(
-                "14",
+                "15",
                 aplicadas[aplicadas.length - 1]
                         .getVersion()
                         .getVersion()
         );
 
-        try (var conexao = flyway
-                .getConfiguration()
-                .getDataSource()
-                .getConnection();
-             var tabelas = conexao
-                     .getMetaData()
-                     .getTables(
-                             null,
-                             null,
-                             "%",
-                             new String[]{"TABLE"}
-                     )) {
+        try (var conexao = flyway.getConfiguration()
+                .getDataSource().getConnection();
+             var tabelas = conexao.getMetaData().getTables(
+                     null, null, "%", new String[]{"TABLE"}
+             )) {
 
             var encontradas = new HashSet<String>();
 
@@ -58,17 +51,14 @@ class FlywayMigrationTest {
                 );
             }
 
-            assertTrue(
-                    encontradas.containsAll(
-                            Set.of(
-                                    "conclusoes_microtreinamento",
-                                    "historicos_microtreinamento",
-                                    "necessidades_microtreinamento",
-                                    "recuperacoes_senha",
-                                    "resposta_perfis"
-                            )
-                    )
-            );
+            assertTrue(encontradas.containsAll(Set.of(
+                    "conclusoes_microtreinamento",
+                    "historicos_microtreinamento",
+                    "necessidades_microtreinamento",
+                    "recuperacoes_senha",
+                    "resposta_perfis",
+                    "resposta_versoes"
+            )));
         }
     }
 }
