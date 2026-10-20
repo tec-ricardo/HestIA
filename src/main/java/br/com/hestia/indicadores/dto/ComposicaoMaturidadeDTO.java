@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record ComposicaoMaturidadeDTO(
+        String versaoRegra,
+        PeriodoReferenciaDTO periodoReferencia,
         int notaMinima,
         int notaMaxima,
         String formula,
