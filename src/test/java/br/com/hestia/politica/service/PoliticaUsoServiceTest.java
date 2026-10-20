@@ -159,6 +159,10 @@ class PoliticaUsoServiceTest {
 
         assertThat(resultado.getEmpresa())
                 .isEqualTo(empresa);
+        assertThat(resultado.getDescricao()).isEqualTo("Política para uso de IA");
+        assertThat(resultado.getConteudo()).isEqualTo("Conteúdo da política");
+        assertThat(resultado.getVersao()).isEqualTo("1.0");
+        assertThat(resultado.getAtiva()).isTrue();
 
         verify(auditoriaService)
                 .registrarOperacao("PUT", "/politicas-uso/10", 200);

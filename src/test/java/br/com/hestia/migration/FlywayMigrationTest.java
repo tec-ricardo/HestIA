@@ -28,9 +28,9 @@ class FlywayMigrationTest {
 
         var aplicadas = flyway.info().applied();
 
-        assertEquals(12, aplicadas.length);
+        assertEquals(14, aplicadas.length);
         assertEquals(
-                "13",
+                "14",
                 aplicadas[aplicadas.length - 1]
                         .getVersion()
                         .getVersion()
@@ -64,7 +64,9 @@ class FlywayMigrationTest {
                             Set.of(
                                     "conclusoes_microtreinamento",
                                     "historicos_microtreinamento",
-                                    "necessidades_microtreinamento"
+                                    "necessidades_microtreinamento",
+                                    "recuperacoes_senha",
+                                    "resposta_perfis"
                             )
                     )
             );

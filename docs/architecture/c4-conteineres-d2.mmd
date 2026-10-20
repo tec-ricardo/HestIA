@@ -1,0 +1,19 @@
+flowchart TB
+    usuario["Usuário corporativo"]
+    subgraph HestIA
+      web["Interface / mediação HTTP<br/>Node + Express + EJS"]
+      api["API HestIA<br/>Java 21 + Spring Boot"]
+      db[("Banco transacional<br/>PostgreSQL")]
+      alert["Alert Service<br/>Node + Express"]
+      solver["Otimizador independente<br/>Python / enumeração binária"]
+      csv["Entradas e resultados<br/>CSV / JSON"]
+    end
+    externo["Provedor de embeddings<br/>API externa"]
+    usuario --> web
+    web -->|"HTTP / Axios"| api
+    api -->|"JPA / Flyway"| db
+    api -->|"REST /api/v1/notifications"| alert
+    api -->|"SDK - condicionado à chave"| externo
+    solver <-->|"Leitura / gravação"| csv
+    nota["pgvector integrado ao código.<br/>SQL validado em PostgreSQL 17.11."]
+    nota -.-> db

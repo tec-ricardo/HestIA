@@ -1,0 +1,6 @@
+flowchart LR
+    pessoa["Colaborador / gestor / executivo / administrador<br/>Pessoa"]
+    hestia["HestIA<br/>Sistema de governança de IA"]
+    ia["Provedor de embeddings<br/>Sistema externo"]
+    pessoa -->|"Governar e consultar uso de IA"| hestia
+    hestia -->|"Solicitar embedding - integração externa condicional"| ia

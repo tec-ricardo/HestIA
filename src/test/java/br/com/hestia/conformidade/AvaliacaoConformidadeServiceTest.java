@@ -56,6 +56,9 @@ class AvaliacaoConformidadeServiceTest {
 
         assertEquals(StatusConformidade.CONFORME, resposta.status());
         assertEquals(7, resposta.criteriosAtendidos().size());
+        assertEquals("Todos os critérios de conformidade foram atendidos.", resposta.motivo());
+        assertTrue(resposta.regraAplicada().contains("CONFORME"));
+        assertTrue(resposta.limitacoes().contains("não substitui a revisão humana"));
     }
 
     @Test
