@@ -14,13 +14,20 @@ public record AvaliacaoConformidadeResponseDTO(
         StatusConformidade status,
         Set<CriterioConformidade> criteriosAtendidos,
         String justificativa,
+        String motivo,
+        String regraAplicada,
+        String limitacoes,
         LocalDateTime dataAvaliacao
 ) {
     public static AvaliacaoConformidadeResponseDTO from(AvaliacaoConformidade avaliacao) {
+        FundamentosConformidade fundamentos = FundamentosConformidade.from(
+                avaliacao.getStatus(), avaliacao.getCriteriosAtendidos());
+
         return new AvaliacaoConformidadeResponseDTO(
                 avaliacao.getId(), avaliacao.getRegistroUso().getId(),
                 avaliacao.getPoliticaUso().getId(), avaliacao.getStatus(),
                 avaliacao.getCriteriosAtendidos(), avaliacao.getJustificativa(),
-                avaliacao.getDataAvaliacao());
+                fundamentos.motivo(), fundamentos.regraAplicada(),
+                fundamentos.limitacoes(), avaliacao.getDataAvaliacao());
     }
 }
