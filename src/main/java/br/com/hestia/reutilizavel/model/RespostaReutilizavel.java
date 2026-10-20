@@ -1,6 +1,9 @@
 package br.com.hestia.reutilizavel.model;
 
 import jakarta.persistence.*;
+import br.com.hestia.usuario.model.PerfilUsuario;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -57,6 +60,18 @@ public class RespostaReutilizavel {
 
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "resposta_perfis", joinColumns = @JoinColumn(name = "resposta_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "perfil", nullable = false)
+    private Set<PerfilUsuario> perfisPermitidos = new HashSet<>();
+
+    public Set<PerfilUsuario> getPerfisPermitidos() { return Set.copyOf(perfisPermitidos); }
+
+    public void setPerfisPermitidos(Set<PerfilUsuario> perfis) {
+        this.perfisPermitidos = new HashSet<>(perfis);
+    }
 
     public RespostaReutilizavel() {
     }

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import br.com.hestia.usuario.model.Usuario;
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -26,6 +28,7 @@ public class RespostaReutilizavelService {
     static final int LIMITE_RECOMPENSAS_REUTILIZACAO = 10;
 
     private final RespostaReutilizavelRepository repository;
+    private final AcessoRespostaService acesso;
     private final GamificacaoService gamificacaoService;
     private final RegistroUsoIARepository registroUsoIARepository;
     private final EmpresaAtual empresaAtual;
@@ -35,25 +38,28 @@ public class RespostaReutilizavelService {
             RespostaReutilizavelRepository repository,
             GamificacaoService gamificacaoService,
             RegistroUsoIARepository registroUsoIARepository,
-            EmpresaAtual empresaAtual
+            EmpresaAtual empresaAtual,
+            AcessoRespostaService acesso
     ) {
         this.repository = repository;
         this.gamificacaoService = gamificacaoService;
         this.registroUsoIARepository = registroUsoIARepository;
         this.empresaAtual = empresaAtual;
+        this.acesso = acesso;
     }
 
     public RespostaReutilizavelService(
             RespostaReutilizavelRepository repository,
             GamificacaoService gamificacaoService,
-            RegistroUsoIARepository registroUsoIARepository
+            RegistroUsoIARepository registroUsoIARepository,
+            AcessoRespostaService acesso
     ) {
-        this(repository, gamificacaoService, registroUsoIARepository, null);
+        this(repository, gamificacaoService, registroUsoIARepository, null, acesso);
     }
 
 
     public RespostaReutilizavel cadastrar(
-            RespostaReutilizavelDTO dto
+            RespostaReutilizavelDTO dto, Usuario usuario
     ) {
 
         if (empresaAtual != null) {
@@ -63,8 +69,10 @@ public class RespostaReutilizavelService {
         RespostaReutilizavel resposta =
                 new RespostaReutilizavel();
 
-        resposta.setUsuarioId(dto.getUsuarioId());
-        resposta.setEmpresaId(dto.getEmpresaId());
+        Long empresaId = acesso.validarEmpresa(usuario, dto.getEmpresaId());
+        resposta.setPerfisPermitidos(java.util.Set.of(usuario.getPerfil()));
+        resposta.setUsuarioId(usuario.getId());
+        resposta.setEmpresaId(empresaId);
         resposta.setPromptOriginal(dto.getPromptOriginal());
         resposta.setRespostaGerada(dto.getRespostaGerada());
         resposta.setEmbedding(dto.getEmbedding());
@@ -115,42 +123,20 @@ public class RespostaReutilizavelService {
 
     @Transactional(readOnly = true)
     public List<RespostaReutilizavel> buscarRespostasAnteriores(
-            Long empresaId,
-            String prompt
-    ) {
-
+            Usuario usuario, Long empresaId, String prompt) {
         validarEmpresa(empresaId);
-        if (empresaId == null || empresaId <= 0
-                || prompt == null || prompt.isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Informe uma empresa válida e o prompt para recuperar respostas anteriores."
-            );
+        if (prompt == null || prompt.isBlank()) {
+            throw new IllegalArgumentException("Informe o prompt para recuperar respostas anteriores.");
         }
-
-        return repository
-                .findTop10ByEmpresaIdAndReutilizavelTrueAndPromptOriginalContainingIgnoreCaseOrderByDataCriacaoDesc(
-                        empresaId,
-                        prompt.trim()
-                );
+        return acesso.recuperar(usuario, empresaId, null,
+                prompt.trim(), false, PageRequest.of(0, 10));
     }
 
     @Transactional(readOnly = true)
-    public List<RespostaReutilizavel> recuperarPerguntasSemelhantes(
-            Long empresaId
-    ) {
-
+    public List<RespostaReutilizavel> recuperarPerguntasSemelhantes(Usuario usuario, Long empresaId) {
         validarEmpresa(empresaId);
-        if (empresaId == null || empresaId <= 0) {
-            throw new IllegalArgumentException(
-                    "Informe uma empresa válida para recuperar perguntas semelhantes."
-            );
-        }
-
-        return repository
-                .findByEmpresaIdAndReutilizavelTrueAndPossuiDadosSensiveisFalseAndEmbeddingIsNotNull(
-                        empresaId
-                );
+        return acesso.recuperar(usuario, empresaId, null,
+                null, true, org.springframework.data.domain.Pageable.unpaged());
     }
 
     public RespostaReutilizavel buscarPorId(Long id) {

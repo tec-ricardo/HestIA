@@ -20,8 +20,8 @@ class FlywayMigrationTest {
         flyway.migrate();
 
         var aplicadas = flyway.info().applied();
-        assertEquals(12, aplicadas.length);
-        assertEquals("12", aplicadas[aplicadas.length - 1].getVersion().getVersion());
+        assertEquals(14, aplicadas.length);
+        assertEquals("14", aplicadas[aplicadas.length - 1].getVersion().getVersion());
 
         try (var conexao = flyway.getConfiguration().getDataSource().getConnection();
              var tabelas = conexao.getMetaData().getTables(null, null, "%", new String[]{"TABLE"})) {
@@ -32,7 +32,7 @@ class FlywayMigrationTest {
             assertTrue(encontradas.containsAll(Set.of(
                     "conclusoes_microtreinamento",
                     "historicos_microtreinamento",
-                    "necessidades_microtreinamento")));
+                    "necessidades_microtreinamento", "recuperacoes_senha", "resposta_perfis")));
         }
     }
 }

@@ -1,0 +1,7 @@
+﻿cenario,orcamento,custo,beneficio,saldo,selecao,viavel
+base,1400,1300,19,100,Marketing::Midjourney; TI::Copilot,True
+orcamento_reduzido,800,800,14,0,Marketing::ChatGPT; TI::ChatGPT,True
+orcamento_ampliado,2000,1700,25,300,Marketing::Midjourney; TI::ChatGPT; TI::Copilot,True
+risco_restritivo,1400,1100,18,300,Marketing::ChatGPT; TI::Copilot,True
+bloqueio_copilot,1400,1000,15,400,Marketing::Midjourney; TI::ChatGPT,True
+limite_uma_ferramenta,2000,1300,19,700,Marketing::Midjourney; TI::Copilot,True
