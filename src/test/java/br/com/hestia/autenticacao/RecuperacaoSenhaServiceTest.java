@@ -55,6 +55,36 @@ class RecuperacaoSenhaServiceTest {
         verify(encoder).encode("novaSenha123");
     }
 
+    @Test
+    void deveRejeitarTokenInvalidoSemAlterarSenha() {
+        RecuperacaoSenhaRepository recuperacoes = mock(RecuperacaoSenhaRepository.class);
+        when(recuperacoes.findByTokenHash(anyString())).thenReturn(Optional.empty());
+        RecuperacaoSenhaService service = new RecuperacaoSenhaService(
+                mock(UsuarioRepository.class), recuperacoes, mock(PasswordEncoder.class));
+
+        assertThrows(IllegalArgumentException.class, () -> service.redefinir("token-invalido", "novaSenha123"));
+    }
+
+    @Test
+    void deveInvalidarTokenDepoisDoPrimeiroUso() {
+        UsuarioRepository usuarios = mock(UsuarioRepository.class);
+        RecuperacaoSenhaRepository recuperacoes = mock(RecuperacaoSenhaRepository.class);
+        PasswordEncoder encoder = mock(PasswordEncoder.class);
+        Usuario usuario = new Usuario();
+        usuario.setAtivo(true);
+        when(usuarios.findByEmailIgnoreCase("user@hestia.com")).thenReturn(Optional.of(usuario));
+        when(encoder.encode(anyString())).thenReturn("hash-nova-senha");
+
+        RecuperacaoSenhaService service = new RecuperacaoSenhaService(usuarios, recuperacoes, encoder);
+        String token = service.solicitar("user@hestia.com");
+        RecuperacaoSenha recuperacao = capturar(recuperacoes);
+        when(recuperacoes.findByTokenHash(recuperacao.getTokenHash())).thenReturn(Optional.of(recuperacao));
+
+        service.redefinir(token, "novaSenha123");
+        assertThrows(IllegalArgumentException.class, () -> service.redefinir(token, "outraSenha123"));
+        verify(encoder, times(1)).encode("novaSenha123");
+    }
+
     @SuppressWarnings("unchecked")
     private RecuperacaoSenha capturar(RecuperacaoSenhaRepository repository) {
         var captor = org.mockito.ArgumentCaptor.forClass(RecuperacaoSenha.class);

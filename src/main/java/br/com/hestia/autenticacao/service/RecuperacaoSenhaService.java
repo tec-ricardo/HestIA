@@ -38,6 +38,8 @@ public class RecuperacaoSenhaService {
 
         String token = UUID.randomUUID() + "." + UUID.randomUUID();
         LocalDateTime agora = LocalDateTime.now();
+        // Um novo pedido invalida tokens anteriores para impedir reutilização concorrente.
+        recuperacaoRepository.invalidarTokensAtivos(usuario.getId(), agora);
         recuperacaoRepository.save(new RecuperacaoSenha(usuario, hash(token), agora, agora.plus(DURACAO_TOKEN)));
         return token;
     }
