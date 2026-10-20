@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class BuscaVetorialService {
 
     private static final int DIMENSAO = 1536;
+    private static final double SIMILARIDADE_PADRAO = 0.70;
 
     private final JdbcTemplate jdbcTemplate;
     private final EmbeddingService embeddingService;
@@ -77,7 +78,6 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-
         String vetor = gerarVetor(promptIndexado);
 
         int atualizadas = jdbcTemplate.update(
@@ -122,17 +122,40 @@ public class BuscaVetorialService {
             String pergunta,
             int limite
     ) {
+        return buscarSemelhantes(
+                empresaId, pergunta, limite, SIMILARIDADE_PADRAO
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<RespostaReutilizavel> buscarSemelhantes(
+            Long empresaId,
+            String pergunta,
+            int limite,
+            double similaridadeMinima
+    ) {
         Usuario usuario = usuarioAutorizado(empresaId);
 
         if (pergunta == null || pergunta.isBlank()) {
-            throw new IllegalArgumentException(
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "Informe uma pergunta válida."
             );
         }
 
         if (limite < 1 || limite > 20) {
-            throw new IllegalArgumentException(
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
                     "O limite deve estar entre 1 e 20."
+            );
+        }
+
+        if (!Double.isFinite(similaridadeMinima)
+                || similaridadeMinima < 0
+                || similaridadeMinima > 1) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A similaridade mínima deve estar entre zero e um."
             );
         }
 
@@ -152,12 +175,15 @@ public class BuscaVetorialService {
                       WHERE p.resposta_id = respostas_reutilizaveis.id
                         AND p.perfil = ?
                   )
+                  AND (embedding_vector <=> CAST(? AS vector)) <= ?
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
                 Long.class,
                 empresaId,
                 usuario.getPerfil().name(),
+                vetor,
+                1.0 - similaridadeMinima,
                 vetor,
                 limite
         );
