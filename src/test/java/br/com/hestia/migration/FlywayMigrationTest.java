@@ -4,6 +4,7 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,13 +50,11 @@ class FlywayMigrationTest {
                              new String[]{"TABLE"}
                      )) {
 
-            var encontradas = new java.util.HashSet<String>();
+            var encontradas = new HashSet<String>();
 
             while (tabelas.next()) {
                 encontradas.add(
-                        tabelas
-                                .getString("TABLE_NAME")
-                                .toLowerCase()
+                        tabelas.getString("TABLE_NAME").toLowerCase()
                 );
             }
 
