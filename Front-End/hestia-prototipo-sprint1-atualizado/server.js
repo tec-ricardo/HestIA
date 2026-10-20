@@ -251,6 +251,65 @@ app.get("/utilizacoes", (req, res) => {
 });
 
 
+/* SCRUM-378 / SCRUM-379 - REGISTRO DE UTILIZACOES */
+
+app.post("/utilizacoes/registrar", async (req, res) => {
+
+    if (perfil != "colaborador") {
+        return res.redirect("/");
+    }
+
+    const usuarioId = Number(req.body.usuarioId);
+    const ferramentaId = Number(req.body.ferramentaId);
+    const tokensEntrada = Number(req.body.tokensEntrada);
+    const tokensSaida = Number(req.body.tokensSaida);
+    const modeloIa = String(req.body.modeloIa || "").trim();
+    const finalidade = String(req.body.finalidade || "").trim();
+    const statusExecucao = String(req.body.statusExecucao || "").trim();
+    const dataHora = String(req.body.dataHora || "").trim();
+
+    const finalidadesPermitidas = [
+        "GERACAO_CODIGO", "GERACAO_CONTEUDO", "PESQUISA", "ANALISE_DADOS",
+        "RESUMO", "AUTOMACAO", "SUPORTE_DECISAO", "OUTROS"
+    ];
+
+    const statusPermitidos = ["SUCESSO", "ERRO", "INTERROMPIDA"];
+
+    if (
+        !Number.isInteger(usuarioId) || usuarioId <= 0 ||
+        !Number.isInteger(ferramentaId) || ferramentaId <= 0 ||
+        req.body.tokensEntrada === undefined ||
+        req.body.tokensSaida === undefined ||
+        !Number.isInteger(tokensEntrada) || tokensEntrada < 0 ||
+        !Number.isInteger(tokensSaida) || tokensSaida < 0 ||
+        !modeloIa || !finalidadesPermitidas.includes(finalidade) ||
+        !statusPermitidos.includes(statusExecucao) ||
+        !dataHora || Number.isNaN(Date.parse(dataHora))
+    ) {
+        return res.redirect("/utilizacoes?registro=erro");
+    }
+
+    try {
+        await api.post("/utilizacoes", {
+            usuarioId: usuarioId,
+            ferramentaId: ferramentaId,
+            tokensEntrada: tokensEntrada,
+            tokensSaida: tokensSaida,
+            modeloIa: modeloIa,
+            finalidade: finalidade,
+            statusExecucao: statusExecucao,
+            dataHora: dataHora
+        });
+
+        return res.redirect("/utilizacoes?registro=ok");
+    } catch (error) {
+        console.error("Falha ao registrar utilizacao:", mensagemDaApi(error));
+        return res.redirect("/utilizacoes?registro=erro");
+    }
+
+});
+
+
 /* COMPETENCIAS */
 
 app.get("/competencias", (req, res) => {

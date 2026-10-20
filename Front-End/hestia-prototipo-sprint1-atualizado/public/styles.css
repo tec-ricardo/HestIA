@@ -1358,3 +1358,60 @@ th{
     }
 
 }
+
+/* SCRUM-378 e SCRUM-379 - UTILIZACOES DE IA */
+
+#formUtilizacao {
+    margin-top: 16px;
+}
+
+#formUtilizacao input {
+    width: 100%;
+    min-width: 0;
+}
+
+#formUtilizacao input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(49, 87, 213, 0.12);
+}
+
+#formUtilizacao input[readonly] {
+    background: #f1f5f9;
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
+#formUtilizacao .primary {
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+#formUtilizacao .primary:hover {
+    background: #2447bd;
+    transform: translateY(-1px);
+}
+
+#mensagemUtilizacao {
+    padding: 12px 16px;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#historicoUtilizacoes tr:hover {
+    background: #f8fafc;
+}
+
+@media (max-width: 760px) {
+    #formUtilizacao {
+        grid-template-columns: 1fr;
+    }
+
+    #formUtilizacao .primary {
+        width: 100%;
+    }
+}

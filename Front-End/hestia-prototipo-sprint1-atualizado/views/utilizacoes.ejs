@@ -98,7 +98,7 @@
 
                 <form
                     class="form-grid"
-                    onsubmit="return false;">
+                    id="formUtilizacao">
 
 
                     <label>
@@ -107,6 +107,7 @@
 
                         <input
                             type="text"
+                            id="usuarioUtilizacao"
                             value="<%= email %>"
                             readonly>
 
@@ -119,6 +120,7 @@
 
                         <input
                             type="text"
+                            id="modeloUtilizacao"
                             placeholder="Modelo ou ferramenta de IA"
                             required>
 
@@ -131,6 +133,7 @@
 
                         <input
                             type="date"
+                            id="dataUtilizacao"
                             required>
 
                     </label>
@@ -142,6 +145,7 @@
 
                         <input
                             type="text"
+                            id="consumoUtilizacao"
                             placeholder="Consumo">
 
                     </label>
@@ -153,6 +157,7 @@
 
                         <input
                             type="text"
+                            id="finalidadeUtilizacao"
                             placeholder="Finalidade da utilização"
                             required>
 
@@ -160,14 +165,26 @@
 
 
                     <button
-                        class="primary fake-save"
-                        type="button">
+                        class="primary"
+                        type="submit">
 
                         Registrar utilização
 
                     </button>
 
                 </form>
+
+                <!-- CONFIRMAÇÃO DO REGISTRO -->
+
+                <p
+                    id="mensagemUtilizacao"
+                    role="status"
+                    aria-live="polite"
+                    style="display: none; color: #15803d; margin-top: 15px;">
+
+                    Utilização registrada com sucesso!
+
+                </p>
 
             </section>
 
@@ -230,124 +247,125 @@
                         </thead>
 
 
-                        <tbody>
+                        <tbody id="historicoUtilizacoes">
 
-    <tr>
+                            <tr>
 
-        <td>
-            w@colaborador
-        </td>
+                                <td>
+                                    w@colaborador
+                                </td>
 
-        <td>
-            ChatGPT
-        </td>
+                                <td>
+                                    ChatGPT
+                                </td>
 
-        <td>
-            22/09/2026
-        </td>
+                                <td>
+                                    22/09/2026
+                                </td>
 
-        <td>
-            1.250 tokens
-        </td>
+                                <td>
+                                    1.250 tokens
+                                </td>
 
-        <td>
-            Resumo de documento
-        </td>
+                                <td>
+                                    Resumo de documento
+                                </td>
 
-        <td>
-            Conforme
-        </td>
+                                <td>
+                                    Conforme
+                                </td>
 
-    </tr>
-
-
-    <tr>
-
-        <td>
-            w@colaborador
-        </td>
-
-        <td>
-            Copilot
-        </td>
-
-        <td>
-            21/09/2026
-        </td>
-
-        <td>
-            980 tokens
-        </td>
-
-        <td>
-            Apoio na elaboração de relatório
-        </td>
-
-        <td>
-            Conforme
-        </td>
-
-    </tr>
+                            </tr>
 
 
-    <tr>
+                            <tr>
 
-        <td>
-            w@colaborador
-        </td>
+                                <td>
+                                    w@colaborador
+                                </td>
 
-        <td>
-            ChatGPT
-        </td>
+                                <td>
+                                    Copilot
+                                </td>
 
-        <td>
-            20/09/2026
-        </td>
+                                <td>
+                                    21/09/2026
+                                </td>
 
-        <td>
-            1.540 tokens
-        </td>
+                                <td>
+                                    980 tokens
+                                </td>
 
-        <td>
-            Análise de dados
-        </td>
+                                <td>
+                                    Apoio na elaboração de relatório
+                                </td>
 
-        <td>
-            Não conforme
-        </td>
+                                <td>
+                                    Conforme
+                                </td>
 
-    </tr>
+                            </tr>
 
 
-    <tr>
+                            <tr>
 
-        <td>
-            w@colaborador
-        </td>
+                                <td>
+                                    w@colaborador
+                                </td>
 
-        <td>
-            Copilot
-        </td>
+                                <td>
+                                    ChatGPT
+                                </td>
 
-        <td>
-            23/09/2026
-        </td>
+                                <td>
+                                    20/09/2026
+                                </td>
 
-        <td>
-            760 tokens
-        </td>
+                                <td>
+                                    1.540 tokens
+                                </td>
 
-        <td>
-            Geração de apresentação
-        </td>
+                                <td>
+                                    Análise de dados
+                                </td>
 
-        <td>
-            Aguardando avaliação
-        </td>
+                                <td>
+                                    Não conforme
+                                </td>
 
-    </tr>
+                            </tr>
 
-</tbody>
+
+                            <tr>
+
+                                <td>
+                                    w@colaborador
+                                </td>
+
+                                <td>
+                                    Copilot
+                                </td>
+
+                                <td>
+                                    23/09/2026
+                                </td>
+
+                                <td>
+                                    760 tokens
+                                </td>
+
+                                <td>
+                                    Geração de apresentação
+                                </td>
+
+                                <td>
+                                    Aguardando avaliação
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
                     </table>
 
                 </div>
@@ -374,6 +392,96 @@
 
 
     <script src="/app.js"></script>
+
+    <!-- REGISTRO DE UTILIZAÇÕES - FRONT-END -->
+
+    <script>
+
+        const formUtilizacao = document.getElementById("formUtilizacao");
+
+        const historicoUtilizacoes = document.getElementById("historicoUtilizacoes");
+
+        const mensagemUtilizacao = document.getElementById("mensagemUtilizacao");
+
+
+        function adicionarUtilizacao(registro) {
+
+            const novaLinha = document.createElement("tr");
+
+            const valores = [
+                registro.usuario,
+                registro.modelo,
+                registro.data,
+                registro.consumo,
+                registro.finalidade,
+                "Aguardando avaliação"
+            ];
+
+            valores.forEach(function(valor) {
+
+                const coluna = document.createElement("td");
+
+                coluna.textContent = valor;
+
+                novaLinha.appendChild(coluna);
+
+            });
+
+            historicoUtilizacoes.prepend(novaLinha);
+
+        }
+
+
+        formUtilizacao.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const usuario = document.getElementById("usuarioUtilizacao").value;
+
+            const modelo = document.getElementById("modeloUtilizacao").value.trim();
+
+            const data = document.getElementById("dataUtilizacao").value;
+
+            const consumo = document.getElementById("consumoUtilizacao").value.trim();
+
+            const finalidade = document.getElementById("finalidadeUtilizacao").value.trim();
+
+
+            if (!modelo || !data || !finalidade) {
+
+                alert("Preencha todos os campos obrigatórios.");
+
+                return;
+
+            }
+
+
+            const registro = {
+
+                usuario: usuario,
+
+                modelo: modelo,
+
+                data: data.split("-").reverse().join("/"),
+
+                consumo: consumo || "Não informado",
+
+                finalidade: finalidade
+
+            };
+
+
+            adicionarUtilizacao(registro);
+
+
+            mensagemUtilizacao.style.display = "block";
+
+
+            formUtilizacao.reset();
+
+        });
+
+    </script>
 
 </body>
 
