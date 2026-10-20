@@ -4,6 +4,7 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,12 +28,10 @@ class FlywayMigrationTest {
         flyway.migrate();
 
         var aplicadas = flyway.info().applied();
-        assertEquals(14, aplicadas.length);
-        assertEquals("14", aplicadas[aplicadas.length - 1].getVersion().getVersion());
 
-        assertEquals(13, aplicadas.length);
+        assertEquals(14, aplicadas.length);
         assertEquals(
-                "13",
+                "14",
                 aplicadas[aplicadas.length - 1]
                         .getVersion()
                         .getVersion()
@@ -51,19 +50,25 @@ class FlywayMigrationTest {
                              new String[]{"TABLE"}
                      )) {
 
-            var encontradas = new java.util.HashSet<String>();
+            var encontradas = new HashSet<String>();
 
             while (tabelas.next()) {
                 encontradas.add(
-                        tabelas
-                                .getString("TABLE_NAME")
-                                .toLowerCase()
+                        tabelas.getString("TABLE_NAME").toLowerCase()
                 );
             }
-            assertTrue(encontradas.containsAll(Set.of(
-                    "conclusoes_microtreinamento",
-                    "historicos_microtreinamento",
-                    "necessidades_microtreinamento", "recuperacoes_senha", "resposta_perfis")));
+
+            assertTrue(
+                    encontradas.containsAll(
+                            Set.of(
+                                    "conclusoes_microtreinamento",
+                                    "historicos_microtreinamento",
+                                    "necessidades_microtreinamento",
+                                    "recuperacoes_senha",
+                                    "resposta_perfis"
+                            )
+                    )
+            );
         }
     }
 }
