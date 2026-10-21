@@ -716,6 +716,106 @@
 
         <% } %>
 
+
+        <!-- SCRUM-446 a 448: mock local na view; sem BFF, JSON ou API -->
+        <% const baseNarrativa = {
+          demonstrativo: true,
+          inicio: '2026-01', fim: '2026-06',
+          totalUtilizacoes: 11150, treinamentos: 94, eventosSeguranca: 7,
+          evolucao: [
+            { mes: '2026-01', registros: 1200 },
+            { mes: '2026-02', registros: 1450 },
+            { mes: '2026-03', registros: 1680 },
+            { mes: '2026-04', registros: 1920 },
+            { mes: '2026-05', registros: 2150 },
+            { mes: '2026-06', registros: 2750 }
+          ]
+        }; %>
+        <style>
+          .hist-wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:16px}
+          .hist-box{border:1px solid #e2e8f0;border-radius:12px;padding:16px;background:#fff;min-width:0}
+          .hist-box h4{margin:0 0 10px;font-size:15px}
+          .hist-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+          .hist-kpi{background:#f5f7fb;border-radius:10px;padding:12px}
+          .hist-kpi strong{display:block;font-size:20px;color:#152c50}
+          .hist-kpi span,.hist-muted{font-size:12px;color:#64748b}
+          .hist-chart{width:100%;height:180px;display:block}
+          .hist-chart .hist-hit{cursor:crosshair;outline:none}
+          .hist-chart .hist-hit:focus-visible{stroke:#152c50;stroke-width:2}
+          .hist-tooltip{position:absolute;pointer-events:none;z-index:5;background:#152c50;color:white;padding:8px 11px;border-radius:8px;font-size:12px;box-shadow:0 4px 12px #0002;white-space:nowrap;transform:translate(-50%,-110%)}
+          .hist-chart-holder{position:relative}
+          .hist-legend{font-size:12px;color:#64748b;margin:8px 0 0}
+          .hist-items{margin:0;padding-left:18px;line-height:1.8;font-size:13px}
+          @media(max-width:850px){.hist-wrap{grid-template-columns:1fr}.hist-kpis{grid-template-columns:1fr}}
+        </style>
+        <section class="panel" aria-label="Evolução demonstrativa de utilização da IA">
+          <div class="panel-head"><h3>Utilização de IA ao longo do tempo </h3></div>
+          <% if (baseNarrativa && Array.isArray(baseNarrativa.evolucao) && baseNarrativa.evolucao.length) { %>
+            
+            <div class="hist-kpis">
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.totalUtilizacoes).toLocaleString('pt-BR') %></strong><span>Registros de utilização</span></div>
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.treinamentos).toLocaleString('pt-BR') %></strong><span>Registros de treinamento</span></div>
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.eventosSeguranca).toLocaleString('pt-BR') %></strong><span>Eventos de segurança</span></div>
+            </div>
+            <div class="hist-wrap">
+              <div class="hist-box">
+                <h4>Registros de utilização por mês</h4>
+                <div class="hist-chart-holder"><svg id="histGrafico" class="hist-chart" viewBox="0 0 640 180" role="img" aria-label="Gráfico mensal interativo de registros de utilização de IA"></svg><div id="histTooltip" class="hist-tooltip" role="status" hidden></div></div>
+                <p class="hist-legend">Período: <%= baseNarrativa.inicio %> a <%= baseNarrativa.fim %> · <%= baseNarrativa.evolucao.length %> meses com registros</p>
+              </div>
+              <div class="hist-box">
+                <h4>Pontos de atenção e próximos passos</h4>
+                <ul class="hist-items">
+                  <li>Acompanhar a variação mensal de utilização.</li>
+                  <li>Avaliar eventos de segurança por gravidade e contexto quando houver dados reais.</li>
+                  <li>Relacionar os treinamentos à adoção antes de avaliar maturidade.</li>
+                </ul>
+                
+            </div>
+            <script>
+              (() => {
+                const dados = <%- JSON.stringify(baseNarrativa.evolucao) %>;
+                const svg = document.getElementById('histGrafico');
+                if (!svg || !dados.length) return;
+                const NS = 'http://www.w3.org/2000/svg';
+                const add = (tag, attrs, txt) => { const el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(txt!==undefined)el.textContent=txt;svg.appendChild(el);return el; };
+                const max = Math.max(...dados.map(x=>x.registros),1), left=35,right=620,top=12,bottom=148;
+                [0,.5,1].forEach(t=>{const y=bottom-(bottom-top)*t;add('line',{x1:left,y1:y,x2:right,y2:y,stroke:'#e2e8f0'});add('text',{x:29,y:y+4,'text-anchor':'end','font-size':10,fill:'#64748b'},Math.round(max*t).toLocaleString('pt-BR'));});
+                const coords=dados.map((d,i)=>[left+(right-left)*(dados.length===1?.5:i/(dados.length-1)),bottom-(d.registros/max)*(bottom-top)]);
+                add('polyline',{points:coords.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#3564d8','stroke-width':3,'stroke-linejoin':'round'});
+                const tooltip = document.getElementById('histTooltip');
+                const holder = svg.parentElement;
+                const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+                const esconder = () => { tooltip.hidden = true; };
+                coords.forEach((p,i)=>{
+                  const d=dados[i];
+                  const ponto=add('circle',{cx:p[0],cy:p[1],r:5,fill:'#3564d8',stroke:'#fff','stroke-width':2});
+                  const hit=add('circle',{cx:p[0],cy:p[1],r:14,fill:'transparent',class:'hist-hit',tabindex:0,'aria-label':`${d.mes}: ${d.registros.toLocaleString('pt-BR')} registros`});
+                  const mostrar=()=>{
+                    const [ano,mes]=d.mes.split('-');
+                    tooltip.textContent=`${meses[Number(mes)-1]} de ${ano}: ${d.registros.toLocaleString('pt-BR')} registros`;
+                    tooltip.hidden=false;
+                    const box=holder.getBoundingClientRect();
+                    const pos=svg.createSVGPoint();pos.x=p[0];pos.y=p[1];
+                    const screen=pos.matrixTransform(svg.getScreenCTM());
+                    const x=Math.max(85,Math.min(box.width-85,screen.x-box.left));
+                    tooltip.style.left=x+'px';tooltip.style.top=Math.max(34,screen.y-box.top-7)+'px';
+                    ponto.setAttribute('r',7);
+                  };
+                  const sair=()=>{esconder();ponto.setAttribute('r',5);};
+                  hit.addEventListener('mouseenter',mostrar);
+                  hit.addEventListener('mouseleave',sair);
+                  hit.addEventListener('focus',mostrar);
+                  hit.addEventListener('blur',sair);
+                  if(i===0||i===dados.length-1||i%3===0)add('text',{x:p[0],y:169,'text-anchor':'middle','font-size':10,fill:'#64748b'},d.mes.slice(2));
+                });
+              })();
+            </script>
+          <% } else { %>
+            <p>Dados demonstrativos indisponíveis.</p>
+          <% } %>
+        </section>
+
         <section class="panel maturidade-composicao" aria-label="Como é calculado o AI Maturity Score?">
             <details class="maturidade-detalhes">
                 <summary>Como é calculado o AI Maturity Score?</summary>
