@@ -2107,6 +2107,23 @@ app.get(
 );
 
 
+/* ASSISTENTE RAG - SCRUM-457 / 458 / 459 / 460 / 461 / 464 */
+
+app.get("/assistente-rag", (req, res) => {
+
+    if (req.session.perfil != "colaborador") {
+        return res.redirect("/");
+    }
+
+    res.render("assistente-rag", {
+        perfil: req.session.perfil,
+        email: req.session.email,
+        active: "assistente-rag"
+    });
+
+});
+
+
 /* SAIR */
 
 app.get("/sair", (req, res) => {
