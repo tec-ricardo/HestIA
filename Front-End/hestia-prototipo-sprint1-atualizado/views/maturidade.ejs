@@ -17,6 +17,21 @@
             rel="stylesheet"
             href="/styles.css">
 
+
+<style>
+    /* SCRUM-382 a 385: informações complementares, sem alterar o layout existente */
+    .maturidade-composicao { margin: 18px 0; }
+    .maturidade-composicao table { width: 100%; border-collapse: collapse; }
+    .maturidade-composicao th, .maturidade-composicao td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    .maturidade-aviso { margin: 14px 0; padding: 12px; border-radius: 8px; background: #edf3ff; color: #27466e; }
+    .maturidade-ajuda { font-size: 13px; color: #64748b; }
+    .maturidade-detalhes summary { cursor: pointer; font-weight: 700; padding: 4px 0; }
+    .maturidade-detalhes summary:hover { color: #3159d8; }
+    .maturidade-detalhes .maturidade-subtitulo { font-size: 20px; font-weight: 700; line-height: 1.35; margin: 24px 0 12px; }
+    .maturidade-detalhes[open] summary { margin-bottom: 14px; }
+
+</style>
+
 </head>
 
 <body>
@@ -97,6 +112,7 @@
             </a>
 
         </header>
+
 
 
         <!-- COLABORADOR -->
@@ -700,6 +716,88 @@
 
         <% } %>
 
+        <section class="panel maturidade-composicao" aria-label="Como é calculado o AI Maturity Score?">
+            <details class="maturidade-detalhes">
+                <summary>Como é calculado o AI Maturity Score?</summary>
+            <p>O índice completo é uma média ponderada das notas dos oito indicadores, com os pesos abaixo.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Indicador</th><th>Peso</th></tr></thead>
+                    <tbody>
+                        <tr><td>AI Literacy</td><td>15%</td></tr>
+                        <tr><td>Governança</td><td>15%</td></tr>
+                        <tr><td>Uso Responsável</td><td>15%</td></tr>
+                        <tr><td>Produtividade</td><td>10%</td></tr>
+                        <tr><td>FinOps</td><td>10%</td></tr>
+                        <tr><td>Segurança</td><td>20%</td></tr>
+                        <tr><td>Colaboração</td><td>5%</td></tr>
+                        <tr><td>Desenvolvimento de Competências</td><td>10%</td></tr>
+                    </tbody>
+                    <tfoot><tr><th>Total</th><th>100%</th></tr></tfoot>
+                </table>
+            </div>
+
+            <!-- SCRUM-384: metadados opcionais da API; nenhum valor é inventado. -->
+            <%
+                // A rota /maturidade pode enviar "maturidadeMeta" quando o backend for integrado.
+                // Formato: { periodoInicio, periodoFim, coberturaPeso, coberturaIndicadores,
+                //            versaoRegra, versaoCalculo, dataApuracao, status, indicadores: [...] }
+                const meta384 = typeof maturidadeMeta !== "undefined" && maturidadeMeta &&
+                    typeof maturidadeMeta === "object" ? maturidadeMeta : {};
+                const indicadores384 = Array.isArray(meta384.indicadores) ? meta384.indicadores : [];
+                const formatarData384 = function(valor) {
+                    if (!valor) return "Aguardando dados da API";
+                    const texto = String(valor);
+                    const iso = texto.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+                    return iso ? iso[3] + "/" + iso[2] + "/" + iso[1] : texto;
+                };
+                const formatarCobertura384 = function(valor) {
+                    if (typeof valor !== "number" || !Number.isFinite(valor) || valor < 0 || valor > 1) {
+                        return "Aguardando cálculo da API";
+                    }
+                    return (valor * 100).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "%";
+                };
+                const nomes384 = [
+                    ["aiLiteracy", "AI Literacy"],
+                    ["governanca", "Governança"],
+                    ["usoResponsavel", "Uso Responsável"],
+                    ["produtividade", "Produtividade"],
+                    ["finOps", "FinOps"],
+                    ["seguranca", "Segurança"],
+                    ["colaboracao", "Colaboração"],
+                    ["desenvolvimentoCompetencias", "Desenvolvimento de Competências"]
+                ];
+            %>
+            <h4 class="maturidade-subtitulo">Período, cobertura e rastreabilidade</h4>
+            <p>Início do período analisado: <%= formatarData384(meta384.periodoInicio) %></p>
+            <p>Fim do período analisado: <%= formatarData384(meta384.periodoFim) %></p>
+            <p>Indicadores elegíveis:
+                <%= Number.isInteger(meta384.coberturaIndicadores) && meta384.coberturaIndicadores >= 0 && meta384.coberturaIndicadores <= 8
+                    ? meta384.coberturaIndicadores + " de 8" : "Aguardando cálculo da API" %>
+            </p>
+            <p>Versão do cálculo executado: <%= meta384.versaoCalculo || "Não informada pela API" %></p>
+            <p>Situação dos dados: <%= meta384.status || "Aguardando validação da API" %></p>
+            <h4 class="maturidade-subtitulo">Cobertura por indicador</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Indicador</th><th>Elegibilidade</th><th>Cobertura técnica</th><th>Amostra</th></tr></thead>
+                    <tbody>
+                    <% nomes384.forEach(function(item) {
+                        const dado = indicadores384.find(function(i) { return i && i.codigo === item[0]; }) || {};
+                    %>
+                        <tr>
+                            <td><%= item[1] %></td>
+                            <td><%= dado.elegivel === true ? "Elegível" : dado.elegivel === false ? "Dados insuficientes" : "Não avaliado" %></td>
+                            <td><%= formatarCobertura384(dado.coberturaTecnica) %></td>
+                            <td><%= Number.isInteger(dado.amostra) && dado.amostra >= 0 ? dado.amostra : "Não informada" %></td>
+                        </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            </details>
+        </section>
+
     </main>
 
 </div>
@@ -731,7 +829,7 @@
         ];
 
 
-        if (valoresMaturidade.length > 0) {
+        if (valoresMaturidade.some(valor => typeof valor === "number" && Number.isFinite(valor))) {
 
             document
                 .getElementById("semMaturidade")
@@ -752,7 +850,7 @@
                         "FinOps",
                         "Segurança",
                         "Colaboração",
-                        "Competências"
+                        "Desenvolvimento de Competências"
                     ],
 
                     datasets: [{
@@ -902,7 +1000,7 @@
                     "FinOps",
                     "Segurança",
                     "Colaboração",
-                    "Competências"
+                    "Desenvolvimento de Competências"
                 ],
 
                 datasets: [
