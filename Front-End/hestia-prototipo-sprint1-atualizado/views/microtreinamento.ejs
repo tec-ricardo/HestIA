@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Microtreinamentos | HestIA</title><link rel="stylesheet" href="/styles.css"></head><body><div class="app-shell"><%- include("menu", {active: active, perfil: perfil}) %><main class="main-content"><section class="mt-page"><div class="mt-heading"><div><span class="mt-kicker">HestIA Academy</span><h1>Microtreinamentos</h1><p>Aprenda, evolua e desbloqueie novas trilhas.</p></div></div><div id="mt-dashboard"><div class="mt-stats"><div class="mt-stat"><span>Cursos disponíveis</span><strong id="mt-total">—</strong></div><div class="mt-stat"><span>Concluídos</span><strong id="mt-done">—</strong></div><div class="mt-stat"><span>Em andamento</span><strong id="mt-running">—</strong></div></div><div class="mt-toolbar"><h2>Seus treinamentos</h2><div class="mt-filters"><button class="mt-filter active" data-filter="todos">Todos</button><button class="mt-filter" data-filter="recomendados">Recomendados</button><button class="mt-filter" data-filter="andamento">Em andamento</button><button class="mt-filter" data-filter="concluidos">Concluídos</button></div></div><div id="mt-list" class="mt-grid" aria-live="polite"><div class="mt-empty">Carregando cursos...</div></div></div></section></main></div><script>
+// Microtreinamentos HestIA
+// Funcoes simples com fetch, if, for e getElementById
+
+let cursos = [];
+let cursoAtual = null;
+let filtroAtual = "todos";
+
+function buscarDados(url, metodo, dados) {
+    let opcoes = {
+        method: metodo,
+        headers: { "Content-Type": "application/json" }
+    };
+
+    if (dados != null) {
+        opcoes.body = JSON.stringify(dados);
+    }
+
+    return fetch(url, opcoes).then(function(resposta) {
+        return resposta.json().then(function(resultado) {
+            if (!resposta.ok) {
+                throw new Error(resultado.erro || "Erro na requisicao.");
+            }
+            return resultado;
+        });
+    });
+}
+
+function limparTexto(texto) {
+    let elemento = document.createElement("div");
+    elemento.textContent = texto;
+    return elemento.innerHTML;
+}
+
+function porcentagem(curso) {
+    if (curso.concluido) {
+        return 100;
+    }
+    return Math.round(curso.etapa * 100 / curso.totalEtapas);
+}
+
+function carregarCursos() {
+    let lista = document.getElementById("mt-list");
+    lista.innerHTML = "Carregando cursos...";
+
+    buscarDados("/api/microtreinamentos", "GET", null).then(function(resultado) {
+        cursos = resultado.treinamentos;
+        mostrarCursos();
+    }).catch(function(erro) {
+        lista.textContent = erro.message;
+    });
+}
+
+function mostrarCursos() {
+    let lista = document.getElementById("mt-list");
+    let concluidos = 0;
+    let andamento = 0;
+    let disponiveis = 0;
+    let html = "";
+
+    for (let i = 0; i < cursos.length; i++) {
+        let curso = cursos[i];
+
+        if (curso.concluido) concluidos++;
+        if (curso.etapa > 0 && !curso.concluido) andamento++;
+        if (!curso.bloqueado) disponiveis++;
+
+        let mostrar = true;
+        if (filtroAtual == "recomendados" && !curso.recomendado) mostrar = false;
+        if (filtroAtual == "andamento" && (curso.etapa == 0 || curso.concluido)) mostrar = false;
+        if (filtroAtual == "concluidos" && !curso.concluido) mostrar = false;
+        if (!mostrar) continue;
+
+        let estado = "Disponivel";
+        if (curso.bloqueado) estado = "Bloqueado";
+        else if (curso.concluido) estado = "Concluido";
+        else if (curso.etapa > 0) estado = "Em andamento";
+
+        html += '<div class="mt-card">';
+        html += '<div class="mt-card-top"><span class="mt-tag">🏅 ' + limparTexto(curso.nivel) + '</span>';
+        html += '<span class="mt-tag">' + estado + '</span></div>';
+        html += '<h3>' + limparTexto(curso.titulo) + '</h3>';
+        html += '<p>' + limparTexto(curso.descricao) + '</p>';
+        html += '<div class="mt-meta">' + curso.duracao + ' minutos | ' + curso.totalEtapas + ' aulas</div>';
+        html += '<div class="mt-progress"><span style="width:' + porcentagem(curso) + '%"></span></div>';
+        html += '<div class="mt-card-footer"><small>' + porcentagem(curso) + '% concluido</small>';
+
+        if (curso.bloqueado) {
+            html += '<small>' + limparTexto(curso.motivo) + '</small>';
+        } else {
+            html += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + encodeURIComponent(curso.id) + '">Abrir curso</a>';
+        }
+        html += '</div></div>';
+    }
+
+    document.getElementById("mt-total").textContent = disponiveis;
+    document.getElementById("mt-done").textContent = concluidos;
+    document.getElementById("mt-running").textContent = andamento;
+    lista.innerHTML = html || '<div class="mt-empty">Nenhum curso encontrado.</div>';
+}
+
+function carregarCurso() {
+    let tela = document.getElementById("mt-course");
+    let id = tela.getAttribute("data-course");
+
+    buscarDados("/api/microtreinamentos/" + id, "GET", null).then(function(resultado) {
+        cursoAtual = resultado.treinamento;
+        mostrarAula(cursoAtual.etapa);
+    }).catch(function(erro) {
+        tela.textContent = erro.message;
+    });
+}
+
+function mostrarAula(numero) {
+    let tela = document.getElementById("mt-course");
+    let curso = cursoAtual;
+
+    if (numero >= curso.licoes.length) {
+        tela.innerHTML = '<h2>Conteudo concluido!</h2><p>Voce ja pode fazer a avaliacao.</p>' +
+            '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + curso.id + '/avaliacao">Fazer avaliacao</a>';
+        return;
+    }
+
+    let aula = curso.licoes[numero];
+    let html = '<p class="mt-step">Aula ' + (numero + 1) + ' de ' + curso.licoes.length + '</p>';
+    html += '<h2 class="mt-lesson-title">' + limparTexto(aula.titulo) + '</h2>';
+    html += '<div class="mt-lesson-text" style="white-space:pre-line;line-height:1.85">' + limparTexto(aula.texto) + '</div>';
+    html += '<div class="mt-actions">';
+    if (numero > 0) html += '<button class="mt-btn" id="voltarAula">Anterior</button>';
+    html += '<button class="mt-btn mt-btn-primary" id="proximaAula">Concluir aula</button></div>';
+    tela.innerHTML = html;
+
+    if (numero > 0) {
+        document.getElementById("voltarAula").addEventListener("click", function() {
+            mostrarAula(numero - 1);
+        });
+    }
+
+    document.getElementById("proximaAula").addEventListener("click", function() {
+        let botao = document.getElementById("proximaAula");
+        botao.disabled = true;
+
+        if (numero < curso.etapa) {
+            mostrarAula(numero + 1);
+            return;
+        }
+
+        buscarDados("/api/microtreinamentos/" + curso.id + "/progresso", "POST", { etapa: numero + 1 })
+            .then(function() {
+                curso.etapa = numero + 1;
+                mostrarAula(numero + 1);
+            }).catch(function(erro) {
+                alert(erro.message);
+                botao.disabled = false;
+            });
+    });
+}
+
+function carregarAvaliacao() {
+    let tela = document.getElementById("mt-exam");
+    let id = tela.getAttribute("data-course");
+
+    buscarDados("/api/microtreinamentos/" + id, "GET", null).then(function(resultado) {
+        cursoAtual = resultado.treinamento;
+        if (cursoAtual.etapa < cursoAtual.totalEtapas) {
+            window.location.href = "/microtreinamentos/" + id;
+            return;
+        }
+        mostrarAvaliacao();
+    }).catch(function(erro) {
+        tela.textContent = erro.message;
+    });
+}
+
+function mostrarAvaliacao() {
+    let tela = document.getElementById("mt-exam");
+    let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
+    html += '<p>Responda todas as perguntas. Nota minima: 70%.</p>';
+    html += '<form id="formAvaliacao">';
+
+    for (let i = 0; i < cursoAtual.questoes.length; i++) {
+        let questao = cursoAtual.questoes[i];
+        html += '<div class="mt-question"><strong>' + (i + 1) + '. ' + limparTexto(questao.pergunta) + '</strong>';
+        for (let j = 0; j < questao.opcoes.length; j++) {
+            html += '<label class="mt-choice"><input type="radio" name="questao' + i + '" value="' + j + '"> ' + limparTexto(questao.opcoes[j]) + '</label>';
+        }
+        html += '</div>';
+    }
+
+    html += '<div id="resultadoAvaliacao"></div><button class="mt-btn mt-btn-primary" type="submit">Enviar prova</button></form>';
+    tela.innerHTML = html;
+    document.getElementById("formAvaliacao").addEventListener("submit", enviarAvaliacao);
+}
+
+function enviarAvaliacao(evento) {
+    evento.preventDefault();
+    let respostas = [];
+    let formulario = document.getElementById("formAvaliacao");
+    let resultado = document.getElementById("resultadoAvaliacao");
+
+    for (let i = 0; i < cursoAtual.questoes.length; i++) {
+        let selecionada = formulario.querySelector('input[name="questao' + i + '"]:checked');
+        if (selecionada == null) {
+            resultado.textContent = "Responda todas as perguntas.";
+            return;
+        }
+        respostas.push(parseInt(selecionada.value));
+    }
+
+    buscarDados("/api/microtreinamentos/" + cursoAtual.id + "/avaliacao", "POST", { respostas: respostas })
+        .then(function(dados) {
+            resultado.innerHTML = '<div class="mt-alert">Nota: ' + dados.nota + '%. ' + limparTexto(dados.mensagem) + '</div>';
+            if (dados.aprovado) {
+                resultado.innerHTML += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos">Voltar aos cursos</a>';
+            }
+        }).catch(function(erro) {
+            resultado.textContent = erro.message;
+        });
+}
+
+if (document.getElementById("mt-list") != null) {
+    let filtros = document.querySelectorAll("[data-filter]");
+    for (let i = 0; i < filtros.length; i++) {
+        filtros[i].addEventListener("click", function() {
+            filtroAtual = filtros[i].getAttribute("data-filter");
+            for (let j = 0; j < filtros.length; j++) filtros[j].classList.remove("active");
+            filtros[i].classList.add("active");
+            mostrarCursos();
+        });
+    }
+    carregarCursos();
+}
+if (document.getElementById("mt-course") != null) carregarCurso();
+if (document.getElementById("mt-exam") != null) carregarAvaliacao();
+
+</script></body></html>
