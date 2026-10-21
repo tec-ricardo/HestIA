@@ -1,5 +1,6 @@
 package br.com.hestia.politica.controller;
 
+import br.com.hestia.politica.dto.PoliticaUsoVersaoDTO;
 import br.com.hestia.politica.dto.PoliticaUsoDTO;
 import br.com.hestia.politica.model.PoliticaUso;
 import br.com.hestia.politica.service.PoliticaUsoService;
@@ -69,6 +70,18 @@ public class PoliticaUsoController {
         return ResponseEntity.ok(
                 politicaUsoService.atualizar(id, dto)
         );
+    }
+
+
+    @GetMapping("/{id}/versoes")
+    public List<PoliticaUsoVersaoDTO> listarVersoes(@PathVariable Long id) {
+        return politicaUsoService.listarVersoes(id);
+    }
+
+    @GetMapping("/{id}/versoes/{revisao}")
+    public PoliticaUsoVersaoDTO buscarVersao(
+            @PathVariable Long id, @PathVariable int revisao) {
+        return politicaUsoService.buscarVersao(id, revisao);
     }
 
     @DeleteMapping("/{id}")
