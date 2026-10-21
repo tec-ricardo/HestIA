@@ -29,9 +29,9 @@ class FlywayMigrationTest {
 
         var aplicadas = flyway.info().applied();
 
-        assertEquals(15, aplicadas.length);
+        assertEquals(16, aplicadas.length);
         assertEquals(
-                "15",
+                "16",
                 aplicadas[aplicadas.length - 1]
                         .getVersion()
                         .getVersion()

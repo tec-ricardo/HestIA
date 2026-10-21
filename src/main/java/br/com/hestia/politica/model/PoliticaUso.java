@@ -38,6 +38,21 @@ public class PoliticaUso {
     @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
+
+    @Column(nullable = false)
+    private int revisao = 1;
+
+    @Column(nullable = false)
+    private boolean excluida;
+
+    @Version
+    private long versaoRegistro;
+
+    public int getRevisao() { return revisao; }
+    public boolean isExcluida() { return excluida; }
+    public void avancarRevisao() { revisao++; }
+    public void excluirLogicamente() { excluida = true; ativa = false; }
+
     public PoliticaUso() {
     }
 
