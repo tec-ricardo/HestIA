@@ -1,5 +1,7 @@
 package br.com.hestia.conformidade.model;
 
+import br.com.hestia.politica.model.PoliticaUsoVersao;
+import br.com.hestia.conformidade.dto.FundamentosConformidade;
 import br.com.hestia.politica.model.PoliticaUso;
 import br.com.hestia.registro.model.RegistroUsoIA;
 import jakarta.persistence.*;
@@ -40,6 +42,41 @@ public class AvaliacaoConformidade {
 
     @Column(name = "data_avaliacao", nullable = false)
     private LocalDateTime dataAvaliacao;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "politica_versao_id", updatable = false)
+    private PoliticaUsoVersao politicaVersao;
+
+    @Column(length = 60, updatable = false)
+    private String regraCodigo;
+    @Column(length = 20, updatable = false)
+    private String regraVersao;
+    @Column(columnDefinition = "TEXT", updatable = false)
+    private String motivoPreservado;
+    @Column(columnDefinition = "TEXT", updatable = false)
+    private String regraPreservada;
+    @Column(columnDefinition = "TEXT", updatable = false)
+    private String limitacoesPreservadas;
+
+    public void preservarFundamentos(PoliticaUsoVersao versao,
+            String codigo, String versaoRegra, FundamentosConformidade fundamentos) {
+        if (politicaVersao != null) throw new IllegalStateException("Fundamentos já preservados.");
+        if (!politicaUso.getId().equals(versao.getPoliticaUsoId()))
+            throw new IllegalArgumentException("Revisão não pertence à política da avaliação.");
+        politicaVersao = versao;
+        regraCodigo = codigo;
+        regraVersao = versaoRegra;
+        motivoPreservado = fundamentos.motivo();
+        regraPreservada = fundamentos.regraAplicada();
+        limitacoesPreservadas = fundamentos.limitacoes();
+    }
+    public PoliticaUsoVersao getPoliticaVersao() { return politicaVersao; }
+    public String getRegraCodigo() { return regraCodigo; }
+    public String getRegraVersao() { return regraVersao; }
+    public String getMotivoPreservado() { return motivoPreservado; }
+    public String getRegraPreservada() { return regraPreservada; }
+    public String getLimitacoesPreservadas() { return limitacoesPreservadas; }
 
     protected AvaliacaoConformidade() {
     }

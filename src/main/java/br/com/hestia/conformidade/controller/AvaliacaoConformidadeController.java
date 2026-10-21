@@ -1,5 +1,6 @@
 package br.com.hestia.conformidade.controller;
 
+import br.com.hestia.politica.dto.PoliticaUsoVersaoDTO;
 import br.com.hestia.conformidade.dto.AvaliacaoConformidadeDTO;
 import br.com.hestia.conformidade.dto.AvaliacaoConformidadeResponseDTO;
 import br.com.hestia.conformidade.service.AvaliacaoConformidadeService;
@@ -20,6 +21,12 @@ public class AvaliacaoConformidadeController {
     @ResponseStatus(HttpStatus.CREATED)
     public AvaliacaoConformidadeResponseDTO avaliar(@Valid @RequestBody AvaliacaoConformidadeDTO dto) {
         return service.avaliar(dto);
+    }
+
+
+    @GetMapping("/{id}/politica")
+    public PoliticaUsoVersaoDTO politicaHistorica(@PathVariable Long id) {
+        return service.buscarPoliticaHistorica(id);
     }
 
     @GetMapping("/{id}")
