@@ -128,7 +128,9 @@
  
         <!-- GESTOR --> 
  
-        <% if (perfil == "gestor") { %> 
+        <% if (perfil == "gestor") { %>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+ 
  
             <a 
                 class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" 
@@ -152,12 +154,6 @@
  
                 Governança 
  
-            </a>
-
-            <a
-                class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>"
-                href="/ocorrencias">
-                Ocorrências
             </a> 
  
             <a 
@@ -181,7 +177,9 @@
  
         <!-- ADMINISTRADOR --> 
  
-        <% if (perfil == "administrador") { %> 
+        <% if (perfil == "administrador") { %>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+ 
  
             <a 
                 class="nav-link <%= active == 'creditos' ? 'active' : '' %>" 
@@ -205,12 +203,6 @@
  
                 Governança 
  
-            </a>
-
-            <a
-                class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>"
-                href="/ocorrencias">
-                Ocorrências
             </a> 
  
             <a 

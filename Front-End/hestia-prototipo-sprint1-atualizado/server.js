@@ -2154,6 +2154,19 @@ app.get(
 );
 
 
+/* SCRUM-514 / 515 / 516 / 517 - CURADORIA (FRONTEND) */
+app.get("/curadoria", (req, res) => {
+    if (!["administrador", "gestor"].includes(req.session.perfil)) {
+        return res.redirect("/");
+    }
+
+    res.render("curadoria", {
+        perfil: req.session.perfil,
+        email: req.session.email,
+        active: "curadoria"
+    });
+});
+
 /* ASSISTENTE RAG - SCRUM-457 / 458 / 459 / 460 / 461 / 464 */
 
 app.get("/assistente-rag", (req, res) => {
