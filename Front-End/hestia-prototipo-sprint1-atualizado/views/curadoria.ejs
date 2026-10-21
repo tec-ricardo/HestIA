@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curadoria de Respostas | HestIA</title><link rel="stylesheet" href="/styles.css">
+<style>
+.cr-page{max-width:1200px;margin:0 auto;padding:28px}.cr-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.cr-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:22px 0}.cr-card,.cr-panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px}.cr-card strong{display:block;font-size:28px;margin-top:8px}.cr-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.cr-toolbar input,.cr-toolbar select{border:1px solid #cbd5e1;border-radius:8px;padding:11px;font:inherit;min-width:190px}.cr-toolbar input{flex:1}.cr-table{width:100%;border-collapse:collapse}.cr-table th,.cr-table td{padding:13px;text-align:left;border-bottom:1px solid #e2e8f0;vertical-align:top}.cr-table th{font-size:13px;color:#64748b}.cr-btn{border:1px solid #cbd5e1;background:white;padding:9px 12px;border-radius:8px;cursor:pointer;font:inherit}.cr-btn:hover{background:#f1f5f9}.cr-primary{background:#3555d8;color:#fff;border-color:#3555d8}.cr-primary:hover{background:#2845b9}.cr-danger{color:#a11b2a}.cr-actions{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.cr-muted{color:#64748b;font-size:13px}.cr-status{font-weight:700;font-size:12px}.cr-detail{margin-top:18px}.cr-history{padding-left:20px}.cr-history li{margin:8px 0}.cr-empty{padding:22px;color:#64748b}.cr-note{font-size:12px;color:#64748b}.cr-wrap{overflow-x:auto}.cr-badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;background:#f1f5f9;color:#334155}.cr-badge.aprovada{background:#dcfce7;color:#166534}.cr-badge.pendente{background:#fef3c7;color:#92400e}.cr-badge.bloqueada{background:#fee2e2;color:#991b1b}.cr-badge.retirada{background:#e2e8f0;color:#475569}.cr-demo{margin:10px 0;color:#64748b;font-size:12px}@media(max-width:780px){.cr-grid{grid-template-columns:repeat(2,1fr)}.cr-page{padding:15px}}
+</style>
+</head>
+<body><div class="app-shell"><%- include('menu', {active:'curadoria', perfil:perfil}) %>
+<main class="main-content"><section class="cr-page">
+<div class="cr-header"><div><h1>Curadoria de Respostas</h1><p class="cr-muted">Revisão e gestão de respostas reutilizáveis do Assistente RAG</p></div><span class="cr-note">Gestor e Administrador</span></div>
+<p class="cr-demo">Demonstração de frontend: as decisões são salvas somente neste navegador e não afetam o Assistente RAG do colaborador.</p>
+<div class="cr-grid"><div class="cr-card">Total<strong id="cr-total">0</strong></div><div class="cr-card">Pendentes<strong id="cr-pendente">0</strong></div><div class="cr-card">Aprovadas<strong id="cr-aprovada">0</strong></div><div class="cr-card">Bloqueadas/retiradas<strong id="cr-inativas">0</strong></div></div>
+<div class="cr-panel"><div class="cr-toolbar"><input id="cr-busca" placeholder="Pesquisar pergunta ou resposta" aria-label="Pesquisar respostas"><select id="cr-filtro" aria-label="Filtrar status"><option value="">Todos os estados</option><option value="pendente">Pendente</option><option value="aprovada">Aprovada</option><option value="bloqueada">Bloqueada</option><option value="retirada">Retirada</option></select><button class="cr-btn" id="cr-atualizar" type="button">Atualizar</button></div>
+<div class="cr-wrap"><table class="cr-table"><thead><tr><th>Pergunta</th><th>Política</th><th>Estado</th><th>Versão</th><th>Ações</th></tr></thead><tbody id="cr-linhas"><tr><td colspan="5">Carregando...</td></tr></tbody></table></div><p class="cr-note">Dados demonstrativos salvos localmente. Clique em Atualizar para reler os dados deste navegador.</p></div>
+<div class="cr-panel cr-detail" id="cr-detalhes" hidden><h2>Detalhes da resposta</h2><h3 id="cr-pergunta"></h3><p id="cr-resposta"></p><p class="cr-muted" id="cr-politica"></p><p class="cr-muted" id="cr-qualidade"></p>
+<div style="margin:14px 0;padding:14px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc">
+<label for="cr-nota"><strong>Avaliar qualidade da resposta (0 a 100)</strong></label>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+<input id="cr-nota" type="number" min="0" max="100" step="1" placeholder="Ex.: 85" style="padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:125px" aria-describedby="cr-ajuda-nota">
+<button id="cr-salvar-nota" type="button" class="cr-btn cr-primary">Salvar avaliação</button>
+</div>
+<p id="cr-ajuda-nota" class="cr-note">Avalie precisão, clareza, relevância e conformidade. A nota e sua revisão ficam salvas neste navegador.</p>
+</div>
+<p class="cr-muted" id="cr-versao"></p><label for="cr-motivo">Motivo da decisão</label><input id="cr-motivo" style="display:block;width:100%;max-width:540px;padding:10px;margin:8px 0 16px;border:1px solid #cbd5e1;border-radius:8px" placeholder="Informe o motivo da alteração"><div class="cr-actions"><button type="button" class="cr-btn cr-primary" data-acao="aprovada">Aprovar</button><button type="button" class="cr-btn" data-acao="bloqueada">Bloquear</button><button type="button" class="cr-btn cr-danger" data-acao="retirada">Retirar</button></div><h3>Histórico de revisões</h3><ol class="cr-history" id="cr-historico"></ol><p id="cr-mensagem" role="status"></p></div>
+</section></main></div>
+<script>
+(function(){
+'use strict';
+const CHAVE='hestia_curadoria_demo_v1';
+const exemplos=[
+{id:1,pergunta:'Posso usar ChatGPT no trabalho?',resposta:'O uso de ferramentas de IA deve seguir as políticas internas e não incluir dados confidenciais sem autorização.',politica:'Uso Responsável de IA',qualidade:null,status:'pendente',versao:1,historico:[]},
+{id:2,pergunta:'Posso inserir dados pessoais de clientes em ferramentas de IA?',resposta:'Não insira dados pessoais de clientes em ferramentas não autorizadas. Consulte a política de proteção de dados.',politica:'Proteção de Dados e LGPD',qualidade:null,status:'pendente',versao:1,historico:[]},
+{id:3,pergunta:'Como verificar uma resposta gerada por IA?',resposta:'Confira a resposta em fontes confiáveis e valide informações críticas antes de utilizá-las.',politica:'Verificação de Respostas',qualidade:null,status:'aprovada',versao:1,historico:[]},
+{id:4,pergunta:'Posso compartilhar documentos internos com uma IA pública?',resposta:'Documentos internos não devem ser compartilhados com serviços públicos sem autorização expressa.',politica:'Segurança da Informação',qualidade:null,status:'bloqueada',versao:1,historico:[]},
+{id:5,pergunta:'Quem deve comunicar um incidente envolvendo IA?',resposta:'Comunique o incidente ao responsável interno por segurança e governança, conforme o procedimento da organização.',politica:'Governança de IA',qualidade:null,status:'pendente',versao:1,historico:[]}
+];
+const $=id=>document.getElementById(id);
+const texto=(tag,valor)=>{const el=document.createElement(tag);el.textContent=valor==null?'—':String(valor);return el;};
+function ler(){try{const raw=localStorage.getItem(CHAVE);if(raw!==null){const dados=JSON.parse(raw);if(Array.isArray(dados))return dados;}}catch(e){console.warn('Dados locais inválidos:',e);}return exemplos.map(x=>({...x,historico:[...x.historico]}));}
+let itens=ler(),selecionado=null;
+function salvar(){try{localStorage.setItem(CHAVE,JSON.stringify(itens));return true;}catch(e){$('cr-mensagem').textContent='Não foi possível salvar no navegador: '+e.message;return false;}}
+if(localStorage.getItem(CHAVE)===null)salvar();
+function renderizar(){
+const busca=$('cr-busca').value.trim().toLowerCase(),filtro=$('cr-filtro').value,corpo=$('cr-linhas');corpo.replaceChildren();
+const lista=itens.filter(x=>(!filtro||x.status===filtro)&&((x.pergunta||'')+' '+(x.resposta||'')+' '+(x.politica||'')).toLowerCase().includes(busca));
+for(const x of lista){const tr=document.createElement('tr');tr.appendChild(texto('td',x.pergunta));tr.appendChild(texto('td',x.politica));const statusTd=document.createElement('td'),badge=texto('span',x.status);badge.className='cr-badge '+x.status;statusTd.appendChild(badge);tr.appendChild(statusTd);tr.appendChild(texto('td',x.versao));const td=document.createElement('td'),btn=texto('button','Ver detalhes');btn.type='button';btn.className='cr-btn';btn.addEventListener('click',()=>abrir(x.id));td.appendChild(btn);tr.appendChild(td);corpo.appendChild(tr);}
+if(!lista.length){const tr=document.createElement('tr'),td=texto('td','Nenhuma resposta encontrada.');td.colSpan=5;tr.appendChild(td);corpo.appendChild(tr);}
+$('cr-total').textContent=itens.length;$('cr-pendente').textContent=itens.filter(x=>x.status==='pendente').length;$('cr-aprovada').textContent=itens.filter(x=>x.status==='aprovada').length;$('cr-inativas').textContent=itens.filter(x=>['bloqueada','retirada'].includes(x.status)).length;
+if(selecionado!==null){const item=itens.find(x=>String(x.id)===String(selecionado));if(item)preencher(item);else{$('cr-detalhes').hidden=true;selecionado=null;}}
+}
+function preencher(x){$('cr-detalhes').hidden=false;$('cr-pergunta').textContent=x.pergunta||'—';$('cr-resposta').textContent=x.resposta||'—';$('cr-politica').textContent='Política: '+(x.politica||'Não informada');$('cr-qualidade').textContent='Qualidade: '+(x.qualidade==null?'Não avaliada':x.qualidade+' / 100');$('cr-nota').value=x.qualidade==null?'':String(x.qualidade);$('cr-versao').textContent='Estado: '+x.status+' | Versão: '+x.versao;const hist=$('cr-historico');hist.replaceChildren();const registros=Array.isArray(x.historico)?x.historico:[];if(!registros.length)hist.appendChild(texto('li','Nenhuma revisão registrada.'));for(const h of registros.slice().reverse())hist.appendChild(texto('li',(h.data||'')+' — '+(h.ator||'Usuário')+': '+(h.acao||'alteração')+(h.motivo?' ('+h.motivo+')':'')));}
+function abrir(id){selecionado=id;$('cr-motivo').value='';$('cr-mensagem').textContent='';const item=itens.find(x=>String(x.id)===String(id));if(item)preencher(item);}
+function carregar(){itens=ler();renderizar();}
+for(const b of document.querySelectorAll('[data-acao]'))b.addEventListener('click',()=>{
+if(selecionado===null)return;const status=b.dataset.acao,motivo=$('cr-motivo').value.trim();if(!motivo){$('cr-mensagem').textContent='Informe o motivo da decisão.';return;}
+const item=itens.find(x=>String(x.id)===String(selecionado));if(!item)return;if(item.status===status){$('cr-mensagem').textContent='A resposta já está neste estado.';return;}
+if(!confirm('Confirmar alteração para '+status+'?'))return;
+const estadoAnterior=item.status;item.status=status;item.versao=Number(item.versao||1)+1;if(!Array.isArray(item.historico))item.historico=[];
+item.historico.push({data:new Date().toLocaleString('pt-BR'),ator:'Gestor/Administrador (demonstração)',acao:'Alterou de '+estadoAnterior+' para '+status,motivo});
+if(salvar()){$('cr-motivo').value='';$('cr-mensagem').textContent='Estado atualizado neste navegador (demonstração).';renderizar();}
+});
+$('cr-salvar-nota').addEventListener('click',()=>{
+ if(selecionado===null){$('cr-mensagem').textContent='Selecione uma resposta antes de avaliar.';return;}
+ const campo=$('cr-nota'),entrada=campo.value.trim(),nota=Number(entrada);
+ if(entrada===''||!Number.isInteger(nota)||nota<0||nota>100){$('cr-mensagem').textContent='Informe uma nota inteira de 0 a 100.';campo.focus();return;}
+ const item=itens.find(x=>String(x.id)===String(selecionado));if(!item)return;
+ if(item.qualidade===nota){$('cr-mensagem').textContent='Esta nota já está salva.';return;}
+ const anterior=item.qualidade;item.qualidade=nota;item.versao=Number(item.versao||1)+1;
+ if(!Array.isArray(item.historico))item.historico=[];
+ item.historico.push({data:new Date().toLocaleString('pt-BR'),ator:'Gestor/Administrador (demonstração)',acao:'Qualidade: '+(anterior==null?'não avaliada':anterior+'/100')+' → '+nota+'/100',motivo:'Avaliação manual de qualidade'});
+ if(salvar()){$('cr-mensagem').textContent='Nota de qualidade salva neste navegador.';renderizar();}
+});
+$('cr-busca').addEventListener('input',renderizar);$('cr-filtro').addEventListener('change',renderizar);$('cr-atualizar').addEventListener('click',carregar);window.addEventListener('storage',e=>{if(e.key===CHAVE)carregar();});renderizar();
+})();
+</script></body></html>
