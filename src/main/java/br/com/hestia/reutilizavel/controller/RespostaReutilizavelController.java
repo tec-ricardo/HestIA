@@ -69,12 +69,20 @@ public class RespostaReutilizavelController {
         );
     }
 
+    @GetMapping("/{id}/revisao")
+    public ResponseEntity<br.com.hestia.reutilizavel.dto.RevisaoRespostaDTO> consultarRevisao(
+            @RequestAttribute("usuarioAutenticado") Usuario usuario, @PathVariable Long id) {
+        return ResponseEntity.ok().cacheControl(org.springframework.http.CacheControl.noStore())
+                .body(manutencao.consultarRevisao(id, usuario));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> retirar(
             @RequestAttribute("usuarioAutenticado") Usuario usuario,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @Valid @RequestBody br.com.hestia.reutilizavel.dto.RetiradaRespostaDTO dto
     ) {
-        manutencao.retirar(id, usuario);
+        manutencao.retirar(id, usuario, dto.justificativa());
         return ResponseEntity.noContent().build();
     }
 
@@ -145,7 +153,7 @@ public class RespostaReutilizavelController {
     ) {
         return ResponseEntity.ok(
                 service.registrarReutilizacao(
-                        acesso.buscarPorId(usuario, id).getId()
+                        id, usuario
                 )
         );
     }

@@ -25,13 +25,15 @@ public class TratamentoNaoConformidadeService {
     private final AvaliacaoConformidadeRepository avaliacoes;
     private final UsuarioRepository usuarios;
     private final EmpresaAtual empresaAtual;
+    private final EventoTratamentoRepository eventos;
 
     public TratamentoNaoConformidadeService(TratamentoNaoConformidadeRepository tratamentos,
-            AvaliacaoConformidadeRepository avaliacoes, UsuarioRepository usuarios, EmpresaAtual empresaAtual) {
+            AvaliacaoConformidadeRepository avaliacoes, UsuarioRepository usuarios, EmpresaAtual empresaAtual, EventoTratamentoRepository eventos) {
         this.tratamentos = tratamentos;
         this.avaliacoes = avaliacoes;
         this.usuarios = usuarios;
         this.empresaAtual = empresaAtual;
+        this.eventos = eventos;
     }
 
     public TratamentoDetalheDTO abrir(AberturaTratamentoDTO dto) {
@@ -45,7 +47,9 @@ public class TratamentoNaoConformidadeService {
             throw new IllegalArgumentException("Somente avaliações NAO_CONFORME podem originar tratamento.");
         if (tratamentos.existsByAvaliacao_Id(avaliacao.getId()))
             throw new IllegalArgumentException("Já existe tratamento para esta avaliação.");
-        return detalhar(tratamentos.save(new TratamentoNaoConformidade(avaliacao, autor)));
+        var t = tratamentos.save(new TratamentoNaoConformidade(avaliacao, autor));
+        eventos.save(new EventoTratamento(t, autor, TipoEventoTratamento.ABERTURA, avaliacao.getStatus(), null));
+        return detalhar(t);
     }
 
     public TratamentoDetalheDTO atualizar(Long id, AtualizacaoTratamentoDTO dto) {
@@ -62,9 +66,40 @@ public class TratamentoNaoConformidadeService {
             if (!Boolean.TRUE.equals(responsavel.getAtivo()))
                 throw new IllegalArgumentException("Responsável deve estar ativo.");
         }
+        long versaoAnterior = t.getVersaoRegistro();
         t.atualizar(responsavel, dto.acaoCorretiva(), dto.status());
         tratamentos.flush();
+        if (t.getVersaoRegistro() != versaoAnterior)
+            eventos.save(new EventoTratamento(t, autor, TipoEventoTratamento.ATUALIZACAO,
+                    t.getResultadoVigente(), null));
         return detalhar(t);
+    }
+
+    public TratamentoDetalheDTO revisar(Long id, RevisaoTratamentoDTO dto) {
+        var autor = autorizar();
+        var t = tratamentos.buscarBloqueado(id).orElseThrow(this::ausente);
+        validarEscopo(autor, t.getEmpresa().getId(), t.getDepartamento().getId());
+        if (!Objects.equals(dto.versaoRegistro(), t.getVersaoRegistro()))
+            throw new IllegalArgumentException("Tratamento alterado por outra pessoa. Recarregue antes de revisar.");
+        var anterior = t.getResultadoVigente();
+        t.revisar(dto.decisao(), dto.resultado(), dto.justificativa());
+        tratamentos.flush();
+        eventos.save(new EventoTratamento(t, autor,
+                dto.decisao() == DecisaoRevisao.CONFIRMAR ? TipoEventoTratamento.CONFIRMACAO : TipoEventoTratamento.REVISAO,
+                anterior, dto.justificativa().strip()));
+        return detalhar(t);
+    }
+
+    @Transactional(readOnly = true)
+    public PaginaHistoricoTratamentoDTO historico(Long id, int pagina, int tamanho) {
+        var autor = autorizar();
+        var t = tratamentos.findById(id).orElseThrow(this::ausente);
+        validarEscopo(autor, t.getEmpresa().getId(), t.getDepartamento().getId());
+        if (pagina < 0 || tamanho < 1 || tamanho > 100)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Página ou tamanho inválidos.");
+        return PaginaHistoricoTratamentoDTO.from(eventos.findByTratamento_Id(id,
+                PageRequest.of(pagina, tamanho, Sort.by(Sort.Direction.DESC, "sequencia")))
+                .map(EventoTratamentoDTO::from));
     }
 
     @Transactional(readOnly = true)

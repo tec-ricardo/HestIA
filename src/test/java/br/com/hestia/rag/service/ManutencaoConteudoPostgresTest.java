@@ -190,8 +190,8 @@ class ManutencaoConteudoPostgresTest {
                 )
         );
 
-        service.retirar(id, usuario);
-        service.retirar(id, usuario);
+        service.retirar(id, usuario, "Conteúdo desatualizado");
+        service.retirar(id, usuario, "Conteúdo desatualizado");
 
         assertEquals(
                 Boolean.FALSE,

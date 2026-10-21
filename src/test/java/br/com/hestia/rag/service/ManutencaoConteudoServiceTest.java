@@ -171,7 +171,7 @@ class ManutencaoConteudoServiceTest {
 
     @Test
     void retiradaDevePreservarTextoEHistorico() {
-        service.retirar(20L, usuario);
+        service.retirar(20L, usuario, "Conteúdo desatualizado");
 
         assertFalse(resposta.getReutilizavel());
         assertEquals("Resposta inicial", resposta.getRespostaGerada());
@@ -182,7 +182,7 @@ class ManutencaoConteudoServiceTest {
 
         clearInvocations(versoes, jdbc);
 
-        service.retirar(20L, usuario);
+        service.retirar(20L, usuario, "Conteúdo desatualizado");
 
         verifyNoInteractions(versoes, jdbc);
     }
@@ -211,7 +211,7 @@ class ManutencaoConteudoServiceTest {
 
         var retirada = assertThrows(
                 ResponseStatusException.class,
-                () -> service.retirar(20L, usuario)
+                () -> service.retirar(20L, usuario, "Conteúdo desatualizado")
         );
 
         assertEquals(404, atualizacao.getStatusCode().value());
@@ -233,7 +233,7 @@ class ManutencaoConteudoServiceTest {
 
         assertThrows(
                 ResponseStatusException.class,
-                () -> service.retirar(20L, usuario)
+                () -> service.retirar(20L, usuario, "Conteúdo desatualizado")
         );
 
         verifyNoInteractions(versoes, jdbc);
@@ -245,7 +245,7 @@ class ManutencaoConteudoServiceTest {
         resposta.setUsuarioId(99L);
         resposta.setPerfisPermitidos(Set.of());
 
-        service.retirar(20L, usuario);
+        service.retirar(20L, usuario, "Conteúdo desatualizado");
 
         assertFalse(resposta.getReutilizavel());
         verificarInvalidacao();

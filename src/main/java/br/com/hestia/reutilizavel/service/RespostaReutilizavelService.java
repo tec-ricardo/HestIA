@@ -153,11 +153,11 @@ public class RespostaReutilizavelService {
 
     @Transactional
     public RespostaReutilizavel registrarReutilizacao(
-            Long id
+            Long id, Usuario usuario
     ) {
-
-        RespostaReutilizavel resposta =
-                buscarPorId(id);
+        Long empresaId = acesso.validarEmpresa(usuario, null);
+        validarEmpresa(empresaId);
+        RespostaReutilizavel resposta = acesso.buscarBloqueadaParaReutilizar(usuario, id);
 
         if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
 

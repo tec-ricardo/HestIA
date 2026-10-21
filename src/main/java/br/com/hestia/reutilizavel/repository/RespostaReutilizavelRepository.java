@@ -21,7 +21,7 @@ public interface RespostaReutilizavelRepository
               and r.reutilizavel = true and r.possuiDadosSensiveis = false
               and (:id is null or r.id = :id)
               and (:prompt is null or lower(r.promptOriginal) like
-                   lower(concat('%', :prompt, '%')) escape '!')
+                   lower(concat('%', cast(:prompt as string), '%')) escape '!')
               and (:exigirEmbedding = false or (r.embedding is not null and trim(r.embedding) <> ''))
             order by r.dataCriacao desc, r.id desc
             """)
@@ -29,6 +29,10 @@ public interface RespostaReutilizavelRepository
             @Param("empresaId") Long empresaId, @Param("perfil") PerfilUsuario perfil,
             @Param("id") Long id, @Param("prompt") String prompt,
             @Param("exigirEmbedding") boolean exigirEmbedding, Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select r from RespostaReutilizavel r where r.id = :id")
+    java.util.Optional<RespostaReutilizavel> buscarBloqueada(@Param("id") Long id);
 
     List<RespostaReutilizavel> findByEmpresaId(Long empresaId);
 

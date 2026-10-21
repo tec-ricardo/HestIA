@@ -28,11 +28,23 @@ public class AcessoRespostaService {
         if (perfis == null || perfis.stream().anyMatch(java.util.Objects::isNull)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Perfis inválidos");
         }
-        RespostaReutilizavel resposta = repository.findById(id)
+        RespostaReutilizavel resposta = repository.buscarBloqueada(id)
                 .filter(r -> empresaId.equals(r.getEmpresaId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         resposta.setPerfisPermitidos(perfis);
         repository.save(resposta);
+    }
+
+    @Transactional
+    public RespostaReutilizavel buscarBloqueadaParaReutilizar(Usuario usuario, Long id) {
+        Long empresaId = validarEmpresa(usuario, null);
+        return repository.buscarBloqueada(id)
+                .filter(r -> empresaId.equals(r.getEmpresaId()))
+                .filter(r -> r.getPerfisPermitidos().contains(usuario.getPerfil()))
+                .filter(r -> Boolean.TRUE.equals(r.getReutilizavel()))
+                .filter(r -> Boolean.FALSE.equals(r.getPossuiDadosSensiveis()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Resposta não encontrada ou indisponível para seu acesso"));
     }
 
     public Long validarEmpresa(Usuario usuario, Long empresaId) {

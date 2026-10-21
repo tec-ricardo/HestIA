@@ -29,6 +29,17 @@ public class TratamentoNaoConformidadeController {
         return service.atualizar(id, dto);
     }
 
+    @PostMapping("/{id}/revisoes")
+    public TratamentoDetalheDTO revisar(@PathVariable Long id, @Valid @RequestBody RevisaoTratamentoDTO dto) {
+        return service.revisar(id, dto);
+    }
+
+    @GetMapping("/{id}/historico")
+    public PaginaHistoricoTratamentoDTO historico(@PathVariable Long id,
+            @RequestParam(defaultValue = "0") int pagina, @RequestParam(defaultValue = "20") int tamanho) {
+        return service.historico(id, pagina, tamanho);
+    }
+
     @GetMapping("/{id}")
     public TratamentoDetalheDTO buscar(@PathVariable Long id) {
         return service.buscar(id);

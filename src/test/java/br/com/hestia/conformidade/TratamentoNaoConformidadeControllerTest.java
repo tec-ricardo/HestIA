@@ -54,7 +54,7 @@ class TratamentoNaoConformidadeControllerTest {
     void deveRetornarLocalizacaoDoTratamentoAberto() throws Exception {
         var service = mock(TratamentoNaoConformidadeService.class);
         var resumo = new TratamentoResumoDTO(5L, 10L, 1L, 2L, StatusTratamento.ABERTA,
-                StatusConformidade.NAO_CONFORME, 7L, LocalDateTime.of(2026, 1, 1, 12, 0), null, null, 0L);
+                StatusConformidade.NAO_CONFORME, 7L, LocalDateTime.of(2026, 1, 1, 12, 0), null, null, 0L, StatusConformidade.NAO_CONFORME, 0L);
         when(service.abrir(new AberturaTratamentoDTO(10L)))
                 .thenReturn(new TratamentoDetalheDTO(resumo, null, null, null));
         var mvc = MockMvcBuilders.standaloneSetup(new TratamentoNaoConformidadeController(service)).build();

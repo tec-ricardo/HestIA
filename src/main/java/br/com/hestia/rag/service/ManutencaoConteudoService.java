@@ -117,12 +117,11 @@ public class ManutencaoConteudoService {
     }
 
     @Transactional
-    public void retirar(Long id, Usuario usuario) {
+    public void retirar(Long id, Usuario usuario, String justificativa) {
         RespostaReutilizavel resposta = bloquearParaManutencao(id, usuario);
-
-        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
-            return;
-        }
+        if (justificativa == null || justificativa.isBlank() || justificativa.length() > 1000)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Justificativa de até 1000 caracteres obrigatória.");
+        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) return;
 
         boolean possuiHistorico = versoes
                 .findTopByRespostaIdAndRespostaEmpresaIdOrderByNumeroVersaoDesc(
@@ -136,13 +135,24 @@ public class ManutencaoConteudoService {
             ));
         }
 
-        resposta.setReutilizavel(false);
+        resposta.retirar(usuario.getId(), justificativa);
         invalidarEmbedding(resposta);
     }
 
-    private RespostaReutilizavel bloquearParaManutencao(
+    @Transactional(readOnly = true)
+    public br.com.hestia.reutilizavel.dto.RevisaoRespostaDTO consultarRevisao(Long id, Usuario usuario) {
+        var resposta = consultarParaManutencao(id, usuario, LockModeType.NONE);
+        return br.com.hestia.reutilizavel.dto.RevisaoRespostaDTO.from(resposta,
+                versoes.findByRespostaIdAndRespostaEmpresaIdOrderByNumeroVersaoDesc(id, resposta.getEmpresaId()));
+    }
+
+    private RespostaReutilizavel bloquearParaManutencao(Long id, Usuario usuario) {
+        return consultarParaManutencao(id, usuario, LockModeType.PESSIMISTIC_WRITE);
+    }
+
+    private RespostaReutilizavel consultarParaManutencao(
             Long id,
-            Usuario usuario
+            Usuario usuario, LockModeType bloqueio
     ) {
         Long empresaId = acesso.validarEmpresa(usuario, null);
 
@@ -156,7 +166,7 @@ public class ManutencaoConteudoService {
         RespostaReutilizavel resposta = entityManager.find(
                 RespostaReutilizavel.class,
                 id,
-                LockModeType.PESSIMISTIC_WRITE
+                bloqueio
         );
 
         if (resposta == null

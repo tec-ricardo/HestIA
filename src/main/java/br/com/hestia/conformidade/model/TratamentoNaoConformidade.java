@@ -42,6 +42,13 @@ public class TratamentoNaoConformidade {
     @Column(length = 1000)
     private String acaoCorretiva;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private StatusConformidade resultadoVigente;
+
+    @Column(nullable = false)
+    private long revisoesAvaliacao;
+
     @Version
     private long versaoRegistro;
 
@@ -57,6 +64,7 @@ public class TratamentoNaoConformidade {
                 || !origem.getEmpresa().getId().equals(origem.getDepartamento().getEmpresa().getId()))
             throw new IllegalArgumentException("Vínculos da ocorrência incompatíveis com a empresa.");
         this.avaliacao = avaliacao;
+        this.resultadoVigente = avaliacao.getStatus();
         this.empresa = origem.getEmpresa();
         this.departamento = origem.getDepartamento();
         this.criadoPor = autor;
@@ -78,6 +86,21 @@ public class TratamentoNaoConformidade {
         this.acaoCorretiva = acao;
         this.status = status;
     }
+
+    public void revisar(DecisaoRevisao decisao, StatusConformidade resultado, String justificativa) {
+        if (decisao == null || justificativa == null || justificativa.isBlank() || justificativa.length() > 1000)
+            throw new IllegalArgumentException("Informe decisão e justificativa de até 1000 caracteres.");
+        if (decisao == DecisaoRevisao.CONFIRMAR && resultado != null)
+            throw new IllegalArgumentException("Confirmação mantém a decisão vigente; não envie outro resultado.");
+        if (decisao == DecisaoRevisao.REVISAR && (resultado == null || resultado == resultadoVigente))
+            throw new IllegalArgumentException("Uma revisão exige resultado diferente da decisão vigente.");
+        if (decisao == DecisaoRevisao.REVISAR) resultadoVigente = resultado;
+        // Mesmo uma confirmação tem autoria e deve avançar a versão para impedir decisões concorrentes.
+        revisoesAvaliacao++;
+    }
+
+    public StatusConformidade getResultadoVigente() { return resultadoVigente; }
+    public long getRevisoesAvaliacao() { return revisoesAvaliacao; }
 
     public long getVersaoRegistro() { return versaoRegistro; }
 

@@ -70,7 +70,7 @@ public class ConsultaConfiancaIndicadoresService {
                        COALESCE(SUM(CASE WHEN valida = 1 AND status = 'CONFORME'
                                          THEN 1 ELSE 0 END), 0) AS conformes
                 FROM (
-                    SELECT a.status,
+                    SELECT COALESCE(t.resultado_vigente, a.status) AS status,
                            CASE WHEN v.empresa_id = u.empresa_id
                                  AND p.empresa_id = u.empresa_id
                                  AND f.empresa_id = u.empresa_id
@@ -86,6 +86,7 @@ public class ConsultaConfiancaIndicadoresService {
                     JOIN usuarios u ON u.id = r.usuario_id
                     JOIN ferramentas_ia f ON f.id = r.ferramenta_id
                     LEFT JOIN avaliacoes_conformidade a ON a.registro_uso_id = r.id
+                    LEFT JOIN tratamentos_nao_conformidade t ON t.avaliacao_id = a.id AND t.empresa_id = u.empresa_id
                     LEFT JOIN politicas_uso p ON p.id = a.politica_uso_id
                     LEFT JOIN politica_uso_versoes v ON v.id = a.politica_versao_id
                     WHERE u.empresa_id = ? AND r.data_hora >= ? AND r.data_hora < ?
@@ -102,8 +103,8 @@ public class ConsultaConfiancaIndicadoresService {
             boolean disponivel = "usoResponsavel".equals(fator.codigo());
             fatores.add(new IndicadoresConfiancaDTO.Indicador(fator.codigo(), fator.nome(), fator.peso(),
                     disponivel ? nota : null, "PONTOS_0_100",
-                    disponivel ? "REGISTROS_E_AVALIACOES_OPERACIONAIS" : "CALCULADORA_PENDENTE",
-                    disponivel ? "100 * conformes_com_fundamentos / conclusivos_com_fundamentos" : null,
+                    disponivel ? "REGISTROS_AVALIACOES_E_REVISOES_OPERACIONAIS" : "CALCULADORA_PENDENTE",
+                    disponivel ? "100 * conformes_vigentes_com_fundamentos / conclusivos_vigentes_com_fundamentos" : null,
                     disponivel ? conformes : null, disponivel ? completos : null,
                     disponivel ? regra.avaliar(nota, universo, cobertos, completos, completos, false)
                             : regra.indisponivel("Calculadora e fonte validada desta dimensão ainda não disponíveis.")));

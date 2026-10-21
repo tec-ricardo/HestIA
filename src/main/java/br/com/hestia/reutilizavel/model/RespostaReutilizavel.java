@@ -73,6 +73,26 @@ public class RespostaReutilizavel {
         this.perfisPermitidos = new HashSet<>(perfis);
     }
 
+    @Column(name = "retirada_por_id")
+    private Long retiradaPorId;
+    @Column(name = "retirada_em")
+    private LocalDateTime retiradaEm;
+    @Column(name = "justificativa_retirada", length = 1000)
+    private String justificativaRetirada;
+
+    public void retirar(Long autorId, String justificativa) {
+        if (autorId == null || justificativa == null || justificativa.isBlank() || justificativa.length() > 1000)
+            throw new IllegalArgumentException("Autor e justificativa de até 1000 caracteres são obrigatórios.");
+        if (!Boolean.TRUE.equals(reutilizavel)) return;
+        retiradaPorId = autorId;
+        retiradaEm = LocalDateTime.now();
+        justificativaRetirada = justificativa.strip();
+        reutilizavel = false;
+    }
+    public Long getRetiradaPorId() { return retiradaPorId; }
+    public LocalDateTime getRetiradaEm() { return retiradaEm; }
+    public String getJustificativaRetirada() { return justificativaRetirada; }
+
     public RespostaReutilizavel() {
     }
 
