@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HestIA - Ocorrências</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .oc-page{padding:8px 0 35px}.oc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0}.oc-stat{padding:20px;background:white;border:1px solid #dce3ee;border-radius:12px}.oc-stat span{display:block;color:#64748b}.oc-stat strong{display:block;font-size:28px;margin-top:8px}.oc-panel{background:white;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin:18px 0}.oc-row{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.oc-field{flex:1;min-width:170px}.oc-field label{display:block;font-weight:600;font-size:13px;margin-bottom:7px}.oc-field input,.oc-field select,.oc-field textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:11px;background:white;color:#18263d;font:inherit;box-sizing:border-box}.oc-field textarea{resize:vertical}.oc-table{overflow:auto;margin-top:15px}.oc-table table{width:100%;border-collapse:collapse}.oc-table th,.oc-table td{padding:13px 10px;text-align:left;border-bottom:1px solid #e5eaf2}.oc-table th{font-size:12px;color:#64748b}.oc-btn{border:0;border-radius:8px;background:#3459d1;color:white;padding:10px 15px;cursor:pointer;font:inherit;font-weight:600}.oc-btn.secondary{background:#eaf0ff;color:#2545a5}.oc-btn:disabled{opacity:.5;cursor:not-allowed}.oc-pill{display:inline-block;border-radius:99px;background:#f1f5f9;padding:5px 10px;font-size:12px}.oc-pill.open{background:#fff1dc;color:#875300}.oc-pill.review{background:#e8efff;color:#284db1}.oc-pill.done{background:#e3f7ec;color:#216b44}.oc-muted{color:#64748b}.oc-hidden{display:none!important}.oc-details{display:grid;grid-template-columns:1fr 1fr;gap:14px}.oc-details p{margin:5px 0 12px}.oc-event{border-left:3px solid #4569d6;padding:10px 14px;margin:12px 0;background:#f8faff;border-radius:4px}.oc-event time{display:block;color:#64748b;font-size:12px;margin-bottom:5px}.oc-alert{padding:12px 15px;border-radius:8px;background:#eef3ff;color:#2545a5;margin:12px 0}.oc-alert.error{background:#fff0f0;color:#a32a2a}.oc-section-title{margin:0 0 16px}.oc-actions{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}@media(max-width:760px){.oc-grid,.oc-details{grid-template-columns:1fr}.oc-panel{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <%- include("menu", {perfil: perfil, email: email, active: active}) %>
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+      <div><p class="eyebrow">Governança</p><h1>Gestão de ocorrências</h1></div>
+      <div class="profile-switch"><span><%= email %></span></div>
+      <a class="topbar-logout" href="/sair">Sair</a>
+    </header>
+    <div class="oc-page">
+      <p class="oc-muted">Registe, acompanhe e reveja ocorrências de conformidade no uso de IA.</p>
+      <section class="oc-grid" aria-label="Indicadores">
+        <div class="oc-stat"><span>Abertas</span><strong id="totalAbertas">0</strong></div>
+        <div class="oc-stat"><span>Em análise</span><strong id="totalAnalise">0</strong></div>
+        <div class="oc-stat"><span>Resolvidas</span><strong id="totalResolvidas">0</strong></div>
+      </section>
+      <section class="oc-panel">
+        <h2 class="oc-section-title">Ocorrências registadas</h2>
+        <div class="oc-row">
+          <div class="oc-field"><label for="busca">Pesquisar por título ou ID</label><input id="busca" placeholder="Pesquisar ocorrências"></div>
+          <div class="oc-field"><label for="filtro">Status</label><select id="filtro"><option value="">Todos</option><option>Aberta</option><option>Em análise</option><option>Resolvida</option></select></div>
+        </div>
+        <div class="oc-table"><table><thead><tr><th>ID</th><th>Ocorrência</th><th>Categoria</th><th>Responsável</th><th>Status</th><th>Ação</th></tr></thead><tbody id="linhas"></tbody></table></div>
+        <p id="semResultados" class="oc-muted oc-hidden">Nenhuma ocorrência encontrada.</p>
+      </section>
+      <section class="oc-panel oc-hidden" id="detalhes">
+        <h2 class="oc-section-title">Detalhes da ocorrência</h2>
+        <div class="oc-details">
+          <div><p><strong>ID:</strong> <span id="dId"></span></p><p><strong>Título:</strong> <span id="dTitulo"></span></p><p><strong>Categoria:</strong> <span id="dCategoria"></span></p></div>
+          <div><p><strong>Data:</strong> <span id="dData"></span></p><p><strong>Descrição:</strong> <span id="dDescricao"></span></p><p><strong>Status:</strong> <span id="dStatus"></span></p></div>
+        </div>
+        <hr>
+        <h3>Responsável e ação corretiva</h3>
+        <form id="formTratamento">
+          <div class="oc-row">
+            <div class="oc-field"><label for="responsavel">Responsável</label><input id="responsavel" maxlength="100" required></div>
+            <div class="oc-field"><label for="status">Status</label><select id="status" required><option>Aberta</option><option>Em análise</option><option>Resolvida</option></select></div>
+          </div>
+          <div class="oc-field" style="margin-top:12px"><label for="acao">Ação corretiva</label><textarea id="acao" rows="3" maxlength="2000" required></textarea></div>
+          <div class="oc-actions"><button class="oc-btn" type="submit">Salvar tratamento</button><span class="oc-muted" id="retornoTratamento" role="status"></span></div>
+        </form>
+      </section>
+      <section class="oc-panel oc-hidden" id="revisaoPainel">
+        <h2 class="oc-section-title">Revisão e histórico</h2>
+        <form id="formRevisao">
+          <div class="oc-field"><label for="revisor">Nome do revisor</label><input id="revisor" maxlength="100" required></div>
+          <div class="oc-field" style="margin-top:12px"><label for="observacao">Observação da revisão</label><textarea id="observacao" rows="3" maxlength="2000" required></textarea></div>
+          <div class="oc-actions"><button class="oc-btn secondary" type="submit">Registrar revisão</button><span id="retornoRevisao" class="oc-muted" role="status"></span></div>
+        </form>
+        <h3 style="margin-top:24px">Histórico de alterações</h3>
+        <div id="historico"></div>
+      </section>
+    </div>
+  </main>
+</div>
+<script src="/app.js"></script>
+<script>
+(function () {
+  'use strict';
+  // Dados apenas para demonstração: NÃO são partilhados entre utilizadores ou empresas.
+  const STORAGE = 'hestia_ocorrencias_demo_scrum386_388_v1';
+  const exemplos = [
+    {id:1,titulo:'Uso de ferramenta de IA não autorizada',categoria:'Ferramentas',descricao:'Foi identificada a utilização de uma ferramenta não aprovada pela política interna.',data:'21/10/2026',status:'Aberta',responsavel:'',acao:'',historico:[]},
+    {id:2,titulo:'Compartilhamento indevido de dados',categoria:'Privacidade',descricao:'Possível envio de informações corporativas para uma ferramenta de IA.',data:'20/10/2026',status:'Em análise',responsavel:'',acao:'',historico:[]},
+    {id:3,titulo:'Resposta de IA sem validação',categoria:'Qualidade',descricao:'Conteúdo gerado por IA foi publicado sem revisão.',data:'19/10/2026',status:'Resolvida',responsavel:'Equipe de qualidade',acao:'Revisar o conteúdo antes da publicação.',historico:[]}
+  ];
+  const $ = id => document.getElementById(id);
+  let ocorrencias;
+  try {
+    const salvas = JSON.parse(localStorage.getItem(STORAGE));
+    ocorrencias = Array.isArray(salvas) ? salvas : exemplos;
+  } catch (_) { ocorrencias = exemplos; }
+  let selecionada = null;
+  function guardar() {
+    try {localStorage.setItem(STORAGE,JSON.stringify(ocorrencias));return true;}
+    catch (_) {alert('Não foi possível guardar os dados no navegador.');return false;}
+  }
+  function elemento(tag,valor) {const el=document.createElement(tag);el.textContent=String(valor??'');return el;}
+  function historico() {
+    const area=$('historico');area.replaceChildren();
+    if (!selecionada) return;
+    if (!selecionada.historico.length) {area.append(elemento('p','Nenhuma revisão ou alteração registada.'));return;}
+    [...selecionada.historico].reverse().forEach(item=>{
+      const div=document.createElement('div');div.className='oc-event';
+      div.append(elemento('time',item.data),elemento('strong',item.tipo),elemento('p',item.descricao));area.append(div);
+    });
+  }
+  function abrir(id) {
+    selecionada=ocorrencias.find(o=>o.id===id);
+    if (!selecionada) return;
+    $('detalhes').classList.remove('oc-hidden');$('revisaoPainel').classList.remove('oc-hidden');
+    $('dId').textContent=selecionada.id;$('dTitulo').textContent=selecionada.titulo;
+    $('dCategoria').textContent=selecionada.categoria;$('dData').textContent=selecionada.data;
+    $('dDescricao').textContent=selecionada.descricao;$('dStatus').textContent=selecionada.status;
+    $('responsavel').value=selecionada.responsavel;$('status').value=selecionada.status;
+    $('acao').value=selecionada.acao;$('retornoTratamento').textContent='';$('retornoRevisao').textContent='';
+    historico();$('detalhes').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function listar() {
+    const termo=$('busca').value.trim().toLocaleLowerCase('pt-BR'), filtro=$('filtro').value;
+    $('totalAbertas').textContent=ocorrencias.filter(o=>o.status==='Aberta').length;
+    $('totalAnalise').textContent=ocorrencias.filter(o=>o.status==='Em análise').length;
+    $('totalResolvidas').textContent=ocorrencias.filter(o=>o.status==='Resolvida').length;
+    const filtradas=ocorrencias.filter(o=>(String(o.id).includes(termo)||o.titulo.toLocaleLowerCase('pt-BR').includes(termo))&&(!filtro||o.status===filtro));
+    const corpo=$('linhas');corpo.replaceChildren();$('semResultados').classList.toggle('oc-hidden',filtradas.length!==0);
+    filtradas.forEach(o=>{
+      const tr=document.createElement('tr');
+      [o.id,o.titulo,o.categoria,o.responsavel||'Não definido'].forEach(v=>tr.append(elemento('td',v)));
+      const tdStatus=document.createElement('td'),pill=elemento('span',o.status);
+      pill.className='oc-pill '+(o.status==='Aberta'?'open':o.status==='Resolvida'?'done':'review');tdStatus.append(pill);tr.append(tdStatus);
+      const td=document.createElement('td'),btn=elemento('button','Ver detalhes');btn.type='button';btn.className='oc-btn secondary';btn.addEventListener('click',()=>abrir(o.id));td.append(btn);tr.append(td);corpo.append(tr);
+    });
+  }
+  function evento(tipo,descricao) {selecionada.historico.push({data:new Date().toLocaleString('pt-BR'),tipo,descricao});}
+  $('formTratamento').addEventListener('submit',e=>{
+    e.preventDefault();if(!selecionada)return;
+    const responsavel=$('responsavel').value.trim(),acao=$('acao').value.trim(),status=$('status').value;
+    if(!responsavel||!acao)return;
+    if(responsavel===selecionada.responsavel&&acao===selecionada.acao&&status===selecionada.status){$('retornoTratamento').textContent='Nenhuma alteração realizada.';return;}
+    const anterior={responsavel:selecionada.responsavel,acao:selecionada.acao,status:selecionada.status};
+    selecionada.responsavel=responsavel;selecionada.acao=acao;selecionada.status=status;
+    evento('Tratamento','Responsável: '+responsavel+' | Status: '+anterior.status+' → '+status+' | Ação corretiva: '+acao);
+    if(!guardar()){selecionada.responsavel=anterior.responsavel;selecionada.acao=anterior.acao;selecionada.status=anterior.status;selecionada.historico.pop();return;}
+    $('dStatus').textContent=status;$('retornoTratamento').textContent='Tratamento salvo!';listar();historico();
+  });
+  $('formRevisao').addEventListener('submit',e=>{
+    e.preventDefault();if(!selecionada)return;
+    const revisor=$('revisor').value.trim(),observacao=$('observacao').value.trim();if(!revisor||!observacao)return;
+    evento('Revisão','Revisor: '+revisor+' | Observação: '+observacao);
+    if(!guardar()){selecionada.historico.pop();return;}
+    $('formRevisao').reset();$('retornoRevisao').textContent='Revisão registada!';historico();
+  });
+  $('busca').addEventListener('input',listar);$('filtro').addEventListener('change',listar);
+  listar();
+})();
+</script>
+</body>
+</html>

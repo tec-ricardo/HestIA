@@ -1171,6 +1171,21 @@ app.get("/competencias", (req, res) => {
 });
 
 
+
+
+/* SCRUM-386, 387, 388: frontend demonstrativo de ocorrências.
+   SCRUM-389 (integração com API) será implementada depois. */
+app.get("/ocorrencias", (req, res) => {
+    if (!["administrador", "gestor"].includes(req.session.perfil)) {
+        return res.redirect("/");
+    }
+    res.render("ocorrencias", {
+        perfil: req.session.perfil,
+        email: req.session.email,
+        active: "ocorrencias"
+    });
+});
+
 /* GOVERNANCA */
 
 app.get("/governanca", async (req, res) => {
