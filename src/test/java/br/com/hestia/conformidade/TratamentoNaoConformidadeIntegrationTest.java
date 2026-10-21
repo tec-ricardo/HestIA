@@ -230,6 +230,83 @@ class TratamentoNaoConformidadeIntegrationTest {
                 () -> tratamentos.abrir(new AberturaTratamentoDTO(Long.MAX_VALUE)));
     }
 
+    @Test
+    void deveAtualizarPersistirResolverEReabrirSemReescreverOrigem() {
+        var a = avaliarCom(novoRegistro(), politicas.criar(dto("Original", true)).getId(), Set.of());
+        var aberto = tratamentos.abrir(new AberturaTratamentoDTO(a.id()));
+        em.flush(); em.clear();
+        var inicial = tratamentos.buscar(aberto.tratamento().id());
+        var id = inicial.tratamento().id();
+        var atualizado = tratamentos.atualizar(id, new AtualizacaoTratamentoDTO(usuario.getId(),
+                "  Orientar uso da ferramenta  ", StatusTratamento.EM_TRATAMENTO, inicial.tratamento().versaoRegistro()));
+        assertEquals("Orientar uso da ferramenta", atualizado.tratamento().acaoCorretiva());
+        assertTrue(atualizado.tratamento().versaoRegistro() > inicial.tratamento().versaoRegistro());
+        assertThrows(IllegalArgumentException.class, () -> tratamentos.atualizar(id,
+                new AtualizacaoTratamentoDTO(null, null, StatusTratamento.ABERTA, inicial.tratamento().versaoRegistro())));
+        var resolvido = tratamentos.atualizar(id, new AtualizacaoTratamentoDTO(usuario.getId(),
+                "Orientação concluída", StatusTratamento.RESOLVIDA, atualizado.tratamento().versaoRegistro()));
+        em.clear();
+        var leitura = tratamentos.buscar(id);
+        assertEquals(StatusTratamento.RESOLVIDA, leitura.tratamento().status());
+        assertEquals(inicial.tratamento().criadoEm(), leitura.tratamento().criadoEm());
+        assertEquals(inicial.tratamento().criadoPorId(), leitura.tratamento().criadoPorId());
+        assertEquals(inicial.ocorrencia(), leitura.ocorrencia());
+        assertEquals(inicial.avaliacao(), leitura.avaliacao());
+        assertEquals(inicial.politicaAplicada(), leitura.politicaAplicada());
+        assertEquals(1, tratamentos.listar(StatusTratamento.RESOLVIDA, 0, 20).totalItens());
+        var reaberto = tratamentos.atualizar(id, new AtualizacaoTratamentoDTO(null, "  ",
+                StatusTratamento.ABERTA, resolvido.tratamento().versaoRegistro()));
+        assertNull(reaberto.tratamento().acaoCorretiva());
+        assertNull(reaberto.tratamento().responsavelId());
+    }
+
+    @Test
+    void deveExigirPlanoEValidarResponsavelEEscopoNaEdicao() {
+        var a = avaliarCom(novoRegistro(), politicas.criar(dto("Original", true)).getId(), Set.of());
+        var t = tratamentos.abrir(new AberturaTratamentoDTO(a.id())).tratamento();
+        for (var status : List.of(StatusTratamento.EM_TRATAMENTO, StatusTratamento.RESOLVIDA)) {
+            assertThrows(IllegalArgumentException.class, () -> tratamentos.atualizar(t.id(),
+                    new AtualizacaoTratamentoDTO(null, "Ação", status, t.versaoRegistro())));
+            assertThrows(IllegalArgumentException.class, () -> tratamentos.atualizar(t.id(),
+                    new AtualizacaoTratamentoDTO(usuario.getId(), " ", status, t.versaoRegistro())));
+        }
+        var d = new Departamento(null, "Outro", null, null, empresa); em.persist(d);
+        var outro = novoUsuario(empresa, d, "responsavel@example.test");
+        outro.setAtivo(false);
+        assertThrows(IllegalArgumentException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(outro.getId(), "Ação", StatusTratamento.ABERTA, t.versaoRegistro())));
+        outro.setAtivo(true);
+        usuario.setPerfil(PerfilUsuario.GESTOR);
+        assertThrows(NoSuchElementException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(outro.getId(), "Ação", StatusTratamento.ABERTA, t.versaoRegistro())));
+        contexto.definir(new ContextoEmpresa(outro.getId(), empresa.getId()));
+        outro.setPerfil(PerfilUsuario.GESTOR);
+        assertThrows(NoSuchElementException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(null, null, StatusTratamento.ABERTA, t.versaoRegistro())));
+        contexto.definir(new ContextoEmpresa(usuario.getId(), empresa.getId()));
+        usuario.setPerfil(PerfilUsuario.FUNCIONARIO);
+        assertEquals(403, assertThrows(ResponseStatusException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(null, null, StatusTratamento.ABERTA, t.versaoRegistro())))
+                .getStatusCode().value());
+        assertEquals(StatusTratamento.ABERTA, em.find(TratamentoNaoConformidade.class, t.id()).getStatus());
+    }
+
+    @Test
+    void deveBloquearEdicaoEAtribuicaoEntreEmpresas() {
+        var a = avaliarCom(novoRegistro(), politicas.criar(dto("Original", true)).getId(), Set.of());
+        var t = tratamentos.abrir(new AberturaTratamentoDTO(a.id())).tratamento();
+        var outraEmpresa = new Empresa(null, "Outra", "00000000000004", null, null);
+        em.persist(outraEmpresa);
+        var d = new Departamento(null, "Outro", null, null, outraEmpresa); em.persist(d);
+        var outro = novoUsuario(outraEmpresa, d, "externo@example.test");
+        assertThrows(NoSuchElementException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(outro.getId(), "Ação", StatusTratamento.ABERTA, t.versaoRegistro())));
+        contexto.definir(new ContextoEmpresa(outro.getId(), outraEmpresa.getId()));
+        assertThrows(NoSuchElementException.class, () -> tratamentos.atualizar(t.id(),
+                new AtualizacaoTratamentoDTO(outro.getId(), "Ação", StatusTratamento.ABERTA, t.versaoRegistro())));
+        assertEquals(StatusTratamento.ABERTA, em.find(TratamentoNaoConformidade.class, t.id()).getStatus());
+    }
+
     private Usuario novoUsuario(Empresa e, Departamento d, String email) {
         var u = new Usuario();
         u.setNome("Usuario de teste"); u.setEmail(email); u.setSenha("somente-teste");

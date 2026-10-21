@@ -48,6 +48,25 @@ public class TratamentoNaoConformidadeService {
         return detalhar(tratamentos.save(new TratamentoNaoConformidade(avaliacao, autor)));
     }
 
+    public TratamentoDetalheDTO atualizar(Long id, AtualizacaoTratamentoDTO dto) {
+        var autor = autorizar();
+        var t = tratamentos.buscarBloqueado(id).orElseThrow(this::ausente);
+        validarEscopo(autor, t.getEmpresa().getId(), t.getDepartamento().getId());
+        if (!Objects.equals(dto.versaoRegistro(), t.getVersaoRegistro()))
+            throw new IllegalArgumentException("Tratamento alterado por outra pessoa. Recarregue antes de salvar.");
+        Usuario responsavel = null;
+        if (dto.responsavelId() != null) {
+            responsavel = usuarios.findById(dto.responsavelId()).orElseThrow(this::ausente);
+            validarEscopo(autor, responsavel.getEmpresa().getId(),
+                    responsavel.getDepartamento() == null ? null : responsavel.getDepartamento().getId());
+            if (!Boolean.TRUE.equals(responsavel.getAtivo()))
+                throw new IllegalArgumentException("Responsável deve estar ativo.");
+        }
+        t.atualizar(responsavel, dto.acaoCorretiva(), dto.status());
+        tratamentos.flush();
+        return detalhar(t);
+    }
+
     @Transactional(readOnly = true)
     public TratamentoDetalheDTO buscar(Long id) {
         var autor = autorizar();

@@ -63,6 +63,24 @@ public class TratamentoNaoConformidade {
         this.criadoEm = LocalDateTime.now();
     }
 
+    public void atualizar(Usuario responsavel, String acaoCorretiva, StatusTratamento status) {
+        String acao = acaoCorretiva == null ? null : acaoCorretiva.strip();
+        if (acao != null && acao.isBlank()) acao = null;
+        if (status == null || (acao != null && acao.length() > 1000))
+            throw new IllegalArgumentException("Status obrigatório e ação limitada a 1000 caracteres.");
+        if (responsavel != null && (!Boolean.TRUE.equals(responsavel.getAtivo())
+                || responsavel.getEmpresa() == null
+                || !empresa.getId().equals(responsavel.getEmpresa().getId())))
+            throw new IllegalArgumentException("Responsável deve estar ativo na empresa do tratamento.");
+        if (status != StatusTratamento.ABERTA && (responsavel == null || acao == null))
+            throw new IllegalArgumentException("Para tratar ou resolver, informe responsável e ação corretiva.");
+        this.responsavel = responsavel;
+        this.acaoCorretiva = acao;
+        this.status = status;
+    }
+
+    public long getVersaoRegistro() { return versaoRegistro; }
+
     public Long getId() { return id; }
     public AvaliacaoConformidade getAvaliacao() { return avaliacao; }
     public Empresa getEmpresa() { return empresa; }

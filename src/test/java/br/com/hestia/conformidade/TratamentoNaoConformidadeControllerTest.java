@@ -33,10 +33,28 @@ class TratamentoNaoConformidadeControllerTest {
     }
 
     @Test
+    void deveValidarAtualizacaoAntesDeChamarServico() throws Exception {
+        var service = mock(TratamentoNaoConformidadeService.class);
+        var mvc = MockMvcBuilders.standaloneSetup(new TratamentoNaoConformidadeController(service))
+                .setControllerAdvice(new ApiExceptionHandler()).build();
+        for (String body : new String[]{"{}", "{\"status\":\"ABERTA\",\"versaoRegistro\":-1}",
+                "{\"status\":\"ABERTA\",\"versaoRegistro\":0,\"responsavelId\":-1}",
+                "{\"status\":\"INVALIDO\",\"versaoRegistro\":0}",
+                "{\"status\":\"ABERTA\",\"versaoRegistro\":0,\"acaoCorretiva\":\"" + "x".repeat(1001) + "\"}"}) {
+            mvc.perform(put("/tratamentos-nao-conformidade/5")
+                    .contentType(MediaType.APPLICATION_JSON).content(body)).andExpect(status().isBadRequest());
+        }
+        mvc.perform(put("/tratamentos-nao-conformidade/5").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"status\":\"ABERTA\",\"versaoRegistro\":0}")).andExpect(status().isOk());
+        verify(service).atualizar(5L, new AtualizacaoTratamentoDTO(null, null, StatusTratamento.ABERTA, 0L));
+        verifyNoMoreInteractions(service);
+    }
+
+    @Test
     void deveRetornarLocalizacaoDoTratamentoAberto() throws Exception {
         var service = mock(TratamentoNaoConformidadeService.class);
         var resumo = new TratamentoResumoDTO(5L, 10L, 1L, 2L, StatusTratamento.ABERTA,
-                StatusConformidade.NAO_CONFORME, 7L, LocalDateTime.of(2026, 1, 1, 12, 0), null, null);
+                StatusConformidade.NAO_CONFORME, 7L, LocalDateTime.of(2026, 1, 1, 12, 0), null, null, 0L);
         when(service.abrir(new AberturaTratamentoDTO(10L)))
                 .thenReturn(new TratamentoDetalheDTO(resumo, null, null, null));
         var mvc = MockMvcBuilders.standaloneSetup(new TratamentoNaoConformidadeController(service)).build();
