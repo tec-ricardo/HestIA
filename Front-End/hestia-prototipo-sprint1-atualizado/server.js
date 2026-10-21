@@ -786,7 +786,39 @@ app.get("/maturidade", async (req, res) => {
         maiorMaturidade,
 
         menorMaturidade:
-        menorMaturidade
+        menorMaturidade,
+
+        // SCRUM-449: contrato preparado; sem backend de apuração disponível.
+        // O template interpreta propriedades ausentes como "não apurado".
+        // SCRUM-447/448: dados inteiramente fictícios para demonstrar o layout.
+        // SCRUM-449: substituir por resposta do backend Java quando disponível.
+        narrativaBanco: {
+            origem: "Mock demonstrativo no BFF (não é dado do banco)",
+            demonstrativo: true,
+            inicio: "2026-01",
+            fim: "2026-06",
+            totalUtilizacoes: 11150,
+            treinamentos: 94,
+            eventosSeguranca: 7,
+            evolucao: [
+                { mes: "2026-01", registros: 1200 },
+                { mes: "2026-02", registros: 1450 },
+                { mes: "2026-03", registros: 1680 },
+                { mes: "2026-04", registros: 1920 },
+                { mes: "2026-05", registros: 2150 },
+                { mes: "2026-06", registros: 2750 }
+            ]
+        },
+
+        maturidadeMeta: {
+            periodoInicio: null,
+            periodoFim: null,
+            coberturaIndicadores: null,
+            versaoRegra: "1.0",
+            versaoCalculo: null,
+            status: "Aguardando apuração validada",
+            indicadores: []
+        }
 
     });
 
