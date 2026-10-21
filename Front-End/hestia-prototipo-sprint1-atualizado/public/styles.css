@@ -1842,7 +1842,7 @@ th{
 }
 
 /* =========================================================
-   HESTIA PASS
+   HESTIA PASS */
 
 .pass-hero {
     margin-top: 24px;
@@ -2421,7 +2421,7 @@ th{
 }
 
 /* =========================================================
-   HESTIA PASS - AJUSTES COMPACTOS
+   HESTIA PASS - AJUSTES COMPACTOS */
 
 .pass-page {
     padding-top: 22px;
@@ -2821,7 +2821,7 @@ th{
 }
 
 /* =========================================================
-   HESTIA PASS - AJUSTE VISUAL FINAL
+   HESTIA PASS - AJUSTE VISUAL FINAL */
 
 
 /* TITULO PRINCIPAL COM MAIS DESTAQUE */
@@ -3074,7 +3074,7 @@ th{
 
 /* =========================================================
    HESTIA PASS - REFINAMENTO VISUAL
-   Mais legibilidade + melhor organização
+   Mais legibilidade + melhor organização */
 
 
 /* CONTEUDO DA PAGINA */
@@ -3085,7 +3085,7 @@ th{
 
 
 /* =========================================================
-   CABECALHO
+   CABECALHO */
 
 .pass-page-header {
     margin-bottom: 22px;
@@ -3109,7 +3109,7 @@ th{
 
 
 /* =========================================================
-   HERO / NIVEL ATUAL
+   HERO / NIVEL ATUAL */
 
 .pass-hero-compact {
     width: calc(100% - 50px);
@@ -3179,7 +3179,7 @@ th{
 
 
 /* =========================================================
-   INDICADORES
+   INDICADORES */
 
 .pass-stats-compact {
     gap: 14px;
@@ -3211,7 +3211,7 @@ th{
 
 
 /* =========================================================
-   SECOES
+   SECOES */
 
 .pass-page .pass-section {
     margin-top: 30px;
@@ -3238,7 +3238,7 @@ th{
 
 
 /* =========================================================
-   COMO FUNCIONA O XP
+   COMO FUNCIONA O XP */
 
 .pass-xp-rules-section {
     margin-top: 0 !important;
@@ -3286,7 +3286,7 @@ th{
 
 
 /* =========================================================
-   JORNADA
+   JORNADA */
 
 .pass-levels-compact {
     display: grid;
@@ -3334,7 +3334,7 @@ th{
 
 
 /* =========================================================
-   PROXIMO NIVEL
+   PROXIMO NIVEL */
 
 .pass-next-level-compact {
     margin-top: 16px;
@@ -3370,7 +3370,7 @@ th{
 
 
 /* =========================================================
-   DESAFIOS
+   DESAFIOS */
 
 .pass-challenges-compact {
     display: grid;
@@ -3425,7 +3425,7 @@ th{
 
 
 /* =========================================================
-   RECONHECIMENTO MAXIMO
+   RECONHECIMENTO MAXIMO */
 
 .pass-recognition-compact {
     margin-top: 30px;
@@ -3490,7 +3490,7 @@ th{
 
 
 /* =========================================================
-   RESPONSIVIDADE
+   RESPONSIVIDADE */
 
 @media (max-width: 1100px) {
 
@@ -4469,3 +4469,35 @@ th{
     }
 }
 
+/* ASSISTENTE RAG - ACRESCENTAR SOMENTE AO FINAL DO styles.css */
+.rag-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(250px,1fr);gap:20px;margin-top:24px;align-items:start}
+.rag-panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px;min-width:0}
+.rag-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
+.rag-heading h2,.rag-panel h2{margin:0 0 8px}
+.rag-heading p,.rag-muted{color:#64748b;font-size:14px;margin:0}
+.rag-tag{font-size:12px;font-weight:600;background:#eff6ff;color:#1d4ed8;border-radius:30px;padding:8px 12px;white-space:nowrap}
+.rag-chat{height:420px;overflow:auto;display:flex;flex-direction:column;gap:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+.rag-message{max-width:90%;padding:14px 16px;border-radius:12px;overflow-wrap:anywhere}
+.rag-message p{margin:8px 0 0;line-height:1.5}
+.rag-assistant{align-self:flex-start;background:white;border:1px solid #e2e8f0}
+.rag-user{align-self:flex-end;background:#e0f2fe;border:1px solid #bae6fd}
+.rag-meta{color:#64748b;font-size:12px}
+.rag-message-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.rag-message-actions button{border:1px solid #cbd5e1;border-radius:7px;background:white;padding:8px 10px;cursor:pointer}
+.rag-form{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.rag-form label{font-weight:600}
+.rag-form textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;resize:vertical}
+.rag-buttons{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.rag-primary,.rag-secondary{padding:11px 16px;border-radius:8px;font-weight:600;cursor:pointer}
+.rag-primary{background:#2563eb;border:1px solid #2563eb;color:white}
+.rag-secondary{background:white;border:1px solid #cbd5e1;color:#334155}
+.rag-primary:disabled{opacity:.6;cursor:wait}
+.rag-history{display:flex;flex-direction:column;gap:10px;margin:20px 0}
+.rag-history-item{text-align:left;width:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;cursor:pointer;overflow-wrap:anywhere}
+.rag-history-item:hover,.rag-secondary:hover,.rag-message-actions button:hover{background:#eff6ff}
+.rag-wide{width:100%}
+.rag-notice{background:#eff6ff;color:#1e40af;padding:12px;border-radius:8px;margin-top:12px}
+.rag-error{background:#fef2f2;color:#991b1b}
+.rag-notice[hidden]{display:none}
+@media(max-width:900px){.rag-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.rag-panel{padding:14px}.rag-chat{height:360px}.rag-message{max-width:100%}.rag-buttons button{flex:1}}
