@@ -23,6 +23,12 @@ public class TratamentoNaoConformidadeController {
         return ResponseEntity.created(URI.create("/tratamentos-nao-conformidade/" + t.tratamento().id())).body(t);
     }
 
+    @PutMapping("/{id}")
+    public TratamentoDetalheDTO atualizar(@PathVariable Long id,
+            @Valid @RequestBody AtualizacaoTratamentoDTO dto) {
+        return service.atualizar(id, dto);
+    }
+
     @GetMapping("/{id}")
     public TratamentoDetalheDTO buscar(@PathVariable Long id) {
         return service.buscar(id);
