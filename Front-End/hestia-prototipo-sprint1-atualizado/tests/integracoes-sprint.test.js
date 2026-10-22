@@ -70,3 +70,75 @@ test('scripts das telas integradas são válidos e a prova informa a regra do se
   const prova = fs.readFileSync(path.join(__dirname, '../views/microtreinamento-avaliacao.ejs'), 'utf8');
   assert.ok(prova.includes('Nota minima: 80%')); assert.ok(prova.includes('?avaliacao=1'));
 });
+
+
+test('preserva a política recuperada no fluxo RAG entre interface e backend', async t => {
+  const politica = {
+    id: 77,
+    titulo: 'Política corporativa de proteção de dados no uso de IA',
+    trecho: 'Dados pessoais não podem ser enviados a ferramentas não aprovadas.',
+    versao: 1,
+    conteudoSha256: 'a'.repeat(64)
+  };
+  const api = {
+    async get(url) {
+      if (url === '/api/rag/historico') return { data: [] };
+      throw { response: { status: 404, data: { message: 'Não encontrado' } } };
+    },
+    async post(url, body) {
+      assert.equal(url, '/api/rag/perguntas');
+      assert.deepEqual(body, {
+        chave: 'validacao-465',
+        pergunta: 'Posso enviar dados pessoais para uma ferramenta de IA?',
+        modo: 'CONSULTAR',
+        respostaId: null
+      });
+      return {
+        data: {
+          id: 101,
+          estado: 'RECUPERADA',
+          resposta: politica.trecho,
+          fontes: [politica],
+          confianca: 'NAO_CLASSIFICADA',
+          natureza: 'PLATAFORMA'
+        }
+      };
+    }
+  };
+
+  const app = express();
+  app.use(express.json());
+  app.use((req, res, next) => {
+    req.session = {
+      usuarioId: 10,
+      perfil: 'colaborador',
+      email: 'funcionario@qsoft.test',
+      destroy: callback => callback()
+    };
+    next();
+  });
+  montar(app, api);
+
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise(resolve => server.once('listening', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+
+  const response = await fetch(
+    `http://127.0.0.1:${server.address().port}/api/rag/perguntas`,
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        chave: 'validacao-465',
+        pergunta: 'Posso enviar dados pessoais para uma ferramenta de IA?',
+        modo: 'CONSULTAR'
+      })
+    }
+  );
+
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.estado, 'RECUPERADA');
+  assert.equal(body.resposta, politica.trecho);
+  assert.deepEqual(body.fontes, [politica]);
+});
