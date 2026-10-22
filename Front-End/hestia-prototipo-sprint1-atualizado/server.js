@@ -1201,18 +1201,8 @@ app.get("/competencias", (req, res) => {
 
 
 
-/* SCRUM-386, 387, 388: frontend demonstrativo de ocorrências.
-   SCRUM-389 (integração com API) será implementada depois. */
-app.get("/ocorrencias", (req, res) => {
-    if (!["administrador", "gestor"].includes(req.session.perfil)) {
-        return res.redirect("/");
-    }
-    res.render("ocorrencias", {
-        perfil: req.session.perfil,
-        email: req.session.email,
-        active: "ocorrencias"
-    });
-});
+/* SCRUM-389: listagem e detalhe reais, isolados das rotas de maturidade. */
+require("./ocorrencias-api").registrarRotasOcorrencias(app, api);
 
 /* GOVERNANCA */
 
