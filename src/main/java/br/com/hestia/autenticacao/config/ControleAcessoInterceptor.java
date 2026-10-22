@@ -59,7 +59,7 @@ public class ControleAcessoInterceptor implements HandlerInterceptor {
                 || rota.startsWith("/auditoria")) {
             return perfil == PerfilUsuario.ADMIN;
         }
-        if (rota.startsWith("/avaliacoes-conformidade")) {
+        if (rota.startsWith("/avaliacoes-conformidade") || rota.startsWith("/tratamentos-nao-conformidade")) {
             return perfil == PerfilUsuario.ADMIN || perfil == PerfilUsuario.GESTOR;
         }
         return true;

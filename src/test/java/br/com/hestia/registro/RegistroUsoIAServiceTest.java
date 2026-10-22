@@ -43,6 +43,7 @@ class RegistroUsoIAServiceTest {
 
     @BeforeEach
     void setUp() {
+        lenient().when(usuario.getAtivo()).thenReturn(true);
         service = new RegistroUsoIAService(
                 registroRepository,
                 usuarioRepository,

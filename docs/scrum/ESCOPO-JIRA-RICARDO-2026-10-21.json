@@ -1,0 +1,1027 @@
+{
+  "verificadoEm": "2026-10-21",
+  "minhas": [
+    {
+      "key": "SCRUM-390",
+      "titulo": "Implementar identificação e persistência da origem",
+      "descricao": "Task da US83 — Identificar a origem dos registros e facilitar seu preenchimento. Referência de produto: PO-101.",
+      "pai": "SCRUM-356"
+    },
+    {
+      "key": "SCRUM-391",
+      "titulo": "Implementar preenchimento dos dados conhecidos",
+      "descricao": "Task da US83 — Identificar a origem dos registros e facilitar seu preenchimento. Referência de produto: PO-101.",
+      "pai": "SCRUM-356"
+    },
+    {
+      "key": "SCRUM-392",
+      "titulo": "Validar dados antes da persistência",
+      "descricao": "Task da US83 — Identificar a origem dos registros e facilitar seu preenchimento. Referência de produto: PO-101.",
+      "pai": "SCRUM-356"
+    },
+    {
+      "key": "SCRUM-393",
+      "titulo": "Exibir origem e testar registros manuais e automáticos",
+      "descricao": "Task da US83 — Identificar a origem dos registros e facilitar seu preenchimento. Referência de produto: PO-101.",
+      "pai": "SCRUM-356"
+    },
+    {
+      "key": "SCRUM-422",
+      "titulo": "Avaliar e registrar a decisão arquitetural do BFF",
+      "descricao": "Task da US96 — Consultar uma visão consolidada da maturidade. Referência de produto: PO-132.",
+      "pai": "SCRUM-363"
+    },
+    {
+      "key": "SCRUM-423",
+      "titulo": "Implementar contrato e agregação da maturidade",
+      "descricao": "Task da US96 — Consultar uma visão consolidada da maturidade. Referência de produto: PO-132.",
+      "pai": "SCRUM-363"
+    },
+    {
+      "key": "SCRUM-424",
+      "titulo": "Integrar evolução, cobertura e confiança",
+      "descricao": "Task da US96 — Consultar uma visão consolidada da maturidade. Referência de produto: PO-132.",
+      "pai": "SCRUM-363"
+    },
+    {
+      "key": "SCRUM-425",
+      "titulo": "Implementar autorização e indisponibilidade parcial",
+      "descricao": "Task da US96 — Consultar uma visão consolidada da maturidade. Referência de produto: PO-132.",
+      "pai": "SCRUM-363"
+    },
+    {
+      "key": "SCRUM-426",
+      "titulo": "Integrar o frontend ao BFF",
+      "descricao": "Task da US96 — Consultar uma visão consolidada da maturidade. Referência de produto: PO-132.",
+      "pai": "SCRUM-363"
+    },
+    {
+      "key": "SCRUM-431",
+      "titulo": "Mapear e documentar cálculos dos indicadores",
+      "descricao": "Task da US98 — Compreender como os indicadores são calculados. Referência de produto: PO-134.",
+      "pai": "SCRUM-365"
+    },
+    {
+      "key": "SCRUM-432",
+      "titulo": "Documentar fontes, requisitos e tipos de resultado",
+      "descricao": "Task da US98 — Compreender como os indicadores são calculados. Referência de produto: PO-134.",
+      "pai": "SCRUM-365"
+    },
+    {
+      "key": "SCRUM-433",
+      "titulo": "Implementar versionamento das regras",
+      "descricao": "Task da US98 — Compreender como os indicadores são calculados. Referência de produto: PO-134.",
+      "pai": "SCRUM-365"
+    },
+    {
+      "key": "SCRUM-434",
+      "titulo": "Disponibilizar metodologia na API e no frontend",
+      "descricao": "Task da US98 — Compreender como os indicadores são calculados. Referência de produto: PO-134.",
+      "pai": "SCRUM-365"
+    },
+    {
+      "key": "SCRUM-435",
+      "titulo": "Implementar fórmula e preparação dos dados de produtividade",
+      "descricao": "Task da US99 — Acompanhar a produtividade associada ao uso de IA. Referência de produto: PO-135.",
+      "pai": "SCRUM-366"
+    },
+    {
+      "key": "SCRUM-436",
+      "titulo": "Implementar cálculo por período",
+      "descricao": "Task da US99 — Acompanhar a produtividade associada ao uso de IA. Referência de produto: PO-135.",
+      "pai": "SCRUM-366"
+    },
+    {
+      "key": "SCRUM-437",
+      "titulo": "Integrar classificação de confiança",
+      "descricao": "Task da US99 — Acompanhar a produtividade associada ao uso de IA. Referência de produto: PO-135.",
+      "pai": "SCRUM-366"
+    },
+    {
+      "key": "SCRUM-438",
+      "titulo": "Disponibilizar composição na API e no frontend",
+      "descricao": "Task da US99 — Acompanhar a produtividade associada ao uso de IA. Referência de produto: PO-135.",
+      "pai": "SCRUM-366"
+    },
+    {
+      "key": "SCRUM-439",
+      "titulo": "Validar o cálculo com cenários conhecidos",
+      "descricao": "Task da US99 — Acompanhar a produtividade associada ao uso de IA. Referência de produto: PO-135.",
+      "pai": "SCRUM-366"
+    },
+    {
+      "key": "SCRUM-440",
+      "titulo": "Implementar validação dos registros elegíveis",
+      "descricao": "Task da US100 — Receber resultados de maturidade baseados em dados confiáveis. Referência de produto: PO-136.",
+      "pai": "SCRUM-367"
+    },
+    {
+      "key": "SCRUM-441",
+      "titulo": "Implementar detecção de inconsistências e duplicidades",
+      "descricao": "Task da US100 — Receber resultados de maturidade baseados em dados confiáveis. Referência de produto: PO-136.",
+      "pai": "SCRUM-367"
+    },
+    {
+      "key": "SCRUM-442",
+      "titulo": "Implementar cobertura e sinalização de problemas",
+      "descricao": "Task da US100 — Receber resultados de maturidade baseados em dados confiáveis. Referência de produto: PO-136.",
+      "pai": "SCRUM-367"
+    },
+    {
+      "key": "SCRUM-443",
+      "titulo": "Bloquear resultados sem dados mínimos",
+      "descricao": "Task da US100 — Receber resultados de maturidade baseados em dados confiáveis. Referência de produto: PO-136.",
+      "pai": "SCRUM-367"
+    },
+    {
+      "key": "SCRUM-444",
+      "titulo": "Testar diferentes condições de qualidade",
+      "descricao": "Task da US100 — Receber resultados de maturidade baseados em dados confiáveis. Referência de produto: PO-136.",
+      "pai": "SCRUM-367"
+    },
+    {
+      "key": "SCRUM-462",
+      "titulo": "Integrar frontend da inovação ao BFF",
+      "descricao": "Conectar o frontend do fluxo de inovação às rotas do BFF, garantindo envio de perguntas e recebimento estruturado de respostas, fontes e metadados necessários.",
+      "pai": "SCRUM-456"
+    },
+    {
+      "key": "SCRUM-463",
+      "titulo": "Integrar BFF ao fluxo RAG e PGVector",
+      "descricao": "Integrar o BFF ao fluxo de recuperação do RAG e à camada que consulta o PGVector, mantendo separação de responsabilidades e tratamento de erros.",
+      "pai": "SCRUM-456"
+    },
+    {
+      "key": "SCRUM-467",
+      "titulo": "Entrega 2 — Ricardo",
+      "descricao": "Realizar e organizar as atividades da Entrega 2 sob responsabilidade de Ricardo."
+    },
+    {
+      "key": "SCRUM-482",
+      "titulo": "US90 — Restringir a recuperação de respostas por autorização e elegibilidade",
+      "descricao": "Implementar regras de autorização e elegibilidade na recuperação de respostas, garantindo isolamento e uso seguro do RAG."
+    },
+    {
+      "key": "SCRUM-484",
+      "titulo": "Modelar certificação e histórico do usuário",
+      "descricao": "Modelar persistência da certificação, data de concessão, nível, critérios atendidos e histórico por usuário.",
+      "pai": "SCRUM-473"
+    },
+    {
+      "key": "SCRUM-485",
+      "titulo": "Implementar concessão automática de certificação",
+      "descricao": "Implementar a verificação dos critérios e a concessão automática da certificação quando os requisitos forem atingidos.",
+      "pai": "SCRUM-473"
+    },
+    {
+      "key": "SCRUM-489",
+      "titulo": "Modelar trilha adaptativa e progresso",
+      "descricao": "Modelar trilhas, etapas, recomendações, status e progresso do usuário.",
+      "pai": "SCRUM-474"
+    },
+    {
+      "key": "SCRUM-490",
+      "titulo": "Implementar motor de acionamento das trilhas",
+      "descricao": "Implementar regras que identifiquem a necessidade e acionem automaticamente a trilha adequada.",
+      "pai": "SCRUM-474"
+    },
+    {
+      "key": "SCRUM-491",
+      "titulo": "Integrar trilhas ao histórico de microtreinamentos",
+      "descricao": "Relacionar trilhas com microtreinamentos concluídos, avaliações e evolução do usuário.",
+      "pai": "SCRUM-474"
+    },
+    {
+      "key": "SCRUM-495",
+      "titulo": "Modelar resultado da avaliação de aprendizagem",
+      "descricao": "Modelar respostas, nota, tentativa, data e vínculo com usuário e microtreinamento.",
+      "pai": "SCRUM-475"
+    },
+    {
+      "key": "SCRUM-496",
+      "titulo": "Implementar registro e correção da avaliação",
+      "descricao": "Implementar envio das respostas, cálculo do resultado e persistência da avaliação.",
+      "pai": "SCRUM-475"
+    },
+    {
+      "key": "SCRUM-500",
+      "titulo": "Modelar revisão, status e versionamento das respostas",
+      "descricao": "Modelar persistência de revisão, justificativa, responsável, status e versões das respostas reutilizáveis.",
+      "pai": "SCRUM-476"
+    },
+    {
+      "key": "SCRUM-502",
+      "titulo": "Implementar API de administração das respostas reutilizáveis",
+      "descricao": "Disponibilizar consulta e ações administrativas de revisão, aprovação, bloqueio e retirada.",
+      "pai": "SCRUM-476"
+    },
+    {
+      "key": "SCRUM-518",
+      "titulo": "Integrar administração das respostas ao backend",
+      "descricao": "Conectar a interface administrativa às APIs de qualidade e versionamento.",
+      "pai": "SCRUM-479"
+    },
+    {
+      "key": "SCRUM-531",
+      "titulo": "Aplicar filtros de empresa e perfil na recuperação",
+      "descricao": "Garantir que a busca semântica recupere apenas conteúdos autorizados para o usuário e empresa.",
+      "pai": "SCRUM-482"
+    },
+    {
+      "key": "SCRUM-532",
+      "titulo": "Bloquear respostas inelegíveis ou retiradas",
+      "descricao": "Impedir recuperação e reutilização de respostas bloqueadas, expiradas, retiradas ou fora do escopo.",
+      "pai": "SCRUM-482"
+    },
+    {
+      "key": "SCRUM-533",
+      "titulo": "Registrar decisões de autorização e bloqueio",
+      "descricao": "Registrar eventos relevantes para auditoria e investigação de tentativas de acesso indevido.",
+      "pai": "SCRUM-482"
+    }
+  ],
+  "colegas": [
+    {
+      "key": "SCRUM-370",
+      "titulo": "Implementar dados e regras do tratamento",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-371",
+      "titulo": "Implementar alteração de responsável, ação e status",
+      "responsavel": "Luccas Toffano",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-372",
+      "titulo": "Implementar revisão, justificativa e histórico",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-373",
+      "titulo": "Validar permissões e isolamento",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-374",
+      "titulo": "Implementar tela e integração de login e logout",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-375",
+      "titulo": "Implementar navegação conforme o perfil",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-376",
+      "titulo": "Implementar tratamento de sessão expirada e recuperação",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-377",
+      "titulo": "Validar mensagens, teclado e responsividade",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-378",
+      "titulo": "Implementar formulário de registro com finalidade",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-379",
+      "titulo": "Integrar persistência e confirmação do registro",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-380",
+      "titulo": "Implementar histórico e detalhes de utilização",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-381",
+      "titulo": "Tratar carregamento, erros e ausência de dados",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-382",
+      "titulo": "Implementar estrutura e resumo pessoal",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-383",
+      "titulo": "Integrar indicadores de maturidade",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-384",
+      "titulo": "Exibir período, composição e cobertura",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-385",
+      "titulo": "Tratar dados insuficientes e validar permissões",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-386",
+      "titulo": "Implementar listagem e detalhes das ocorrências",
+      "responsavel": "kevin lee",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-387",
+      "titulo": "Implementar responsável, ação corretiva e status",
+      "responsavel": "kevin lee",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-388",
+      "titulo": "Implementar revisão e histórico das ocorrências",
+      "responsavel": "kevin lee",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-389",
+      "titulo": "Integrar APIs e tratar erros",
+      "responsavel": "kevin lee",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-394",
+      "titulo": "Implementar composição, fatores e pesos",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-395",
+      "titulo": "Implementar período e versão da regra",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-396",
+      "titulo": "Calcular e exibir cobertura dos dados",
+      "responsavel": "Knorre",
+      "status": "Pull Request/Code Review"
+    },
+    {
+      "key": "SCRUM-397",
+      "titulo": "Validar dados insuficientes e cenários conhecidos",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-398",
+      "titulo": "Implementar vínculo entre avaliação, regra e política",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-399",
+      "titulo": "Preservar e consultar versões históricas",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-400",
+      "titulo": "Exibir motivo, regra e limitações",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-401",
+      "titulo": "Testar alterações das políticas",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-402",
+      "titulo": "Implementar solicitação e token de recuperação",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-403",
+      "titulo": "Implementar redefinição e invalidação do token",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-404",
+      "titulo": "Implementar mensagens e registros de segurança",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-405",
+      "titulo": "Testar uso, expiração e tentativas inválidas",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-406",
+      "titulo": "Implementar identificação centralizada da empresa",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-407",
+      "titulo": "Aplicar isolamento em consultas e alterações",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-408",
+      "titulo": "Aplicar isolamento em analytics e exportações",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-409",
+      "titulo": "Aplicar isolamento na recuperação do RAG",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-410",
+      "titulo": "Testar acesso entre empresas, perfis e IDs alterados",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-411",
+      "titulo": "Preparar políticas e conteúdos da carga inicial",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-412",
+      "titulo": "Implementar limpeza e divisão dos textos",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-413",
+      "titulo": "Implementar metadados e controle de versões",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-414",
+      "titulo": "Implementar inclusão, atualização e retirada",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-415",
+      "titulo": "Validar a base com perguntas conhecidas",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-416",
+      "titulo": "Configurar PostgreSQL com pgvector",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-417",
+      "titulo": "Implementar estrutura de textos, metadados e embeddings",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-418",
+      "titulo": "Implementar geração e persistência dos embeddings",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-419",
+      "titulo": "Implementar busca por similaridade",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-420",
+      "titulo": "Implementar filtros de acesso e reindexação",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-421",
+      "titulo": "Testar recuperação, isolamento e desempenho",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-427",
+      "titulo": "Implementar critérios e classificação de confiança",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-428",
+      "titulo": "Disponibilizar confiança, cobertura e justificativa pela API",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-429",
+      "titulo": "Exibir avisos de confiança no frontend",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-430",
+      "titulo": "Testar dados completos, parciais e ausentes",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-445",
+      "titulo": "Planejar e estruturar o storytelling do frontend",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-446",
+      "titulo": "Implementar situação atual e composição",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-447",
+      "titulo": "Implementar evolução, causas e pontos de atenção",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-448",
+      "titulo": "Implementar próximos passos, cobertura e confiança",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-449",
+      "titulo": "Integrar a narrativa ao BFF",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-450",
+      "titulo": "Validar a compreensão com usuários",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-451",
+      "titulo": "Documentar o fluxo e a arquitetura do RAG",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-452",
+      "titulo": "Documentar embeddings, pgvector e recuperação",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-453",
+      "titulo": "Documentar permissões, atualização e reindexação",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-454",
+      "titulo": "Criar exemplo usando uma política da empresa",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-455",
+      "titulo": "Preparar material da apresentação",
+      "responsavel": "Knorre",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-456",
+      "titulo": "US103 — Utilizar a inovação RAG pela interface da HestIA",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-457",
+      "titulo": "Criar tela de interação com o RAG",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-458",
+      "titulo": "Exibir resposta e fonte ou política utilizada",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-459",
+      "titulo": "Implementar opção de reutilizar resposta ou gerar nova",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-460",
+      "titulo": "Exibir similaridade e confiança da recuperação",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-461",
+      "titulo": "Implementar estados de carregamento, erro e ausência de resultado",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-464",
+      "titulo": "Criar histórico básico das interações com o RAG",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-465",
+      "titulo": "Validar fluxo ponta a ponta da inovação com política da empresa",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-466",
+      "titulo": "Entrega 2 — Luccas Toffano",
+      "responsavel": "Luccas Toffano",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-468",
+      "titulo": "Entrega 2 — Gustavo Knorre",
+      "responsavel": "Knorre",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-469",
+      "titulo": "Entrega 2 — Kevin Lee",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-470",
+      "titulo": "Preparar mini apresentação da inovação com storytelling",
+      "responsavel": "Luccas Toffano",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-471",
+      "titulo": "Elaborar Business Model Canvas (BMC) da HestIA",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-472",
+      "titulo": "Corrigir Entrega 1",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-473",
+      "titulo": "US37 — Conceder certificações por evolução",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-474",
+      "titulo": "US38 — Acionar trilhas corretivas/adaptativas",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-475",
+      "titulo": "US55 — Verificar aprendizagem após microtreinamento",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-476",
+      "titulo": "US56 — Administrar a qualidade das respostas reutilizáveis",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-477",
+      "titulo": "US71 — Implementar frontend de microtreinamentos e avaliação de aprendizagem",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-478",
+      "titulo": "US72 — Implementar frontend de reutilização de respostas",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-479",
+      "titulo": "US73 — Implementar frontend de administração das respostas reutilizáveis",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-480",
+      "titulo": "US74 — Implementar frontend de gamificação e evolução",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-481",
+      "titulo": "US86 — Acompanhar recorrência de problemas após capacitação",
+      "responsavel": "Knorre",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-483",
+      "titulo": "Definir critérios para concessão de certificações",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-486",
+      "titulo": "Implementar visualização de certificações no frontend",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-487",
+      "titulo": "Validar cenários de concessão e não concessão",
+      "responsavel": "Luccas Toffano",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-488",
+      "titulo": "Definir gatilhos das trilhas corretivas e adaptativas",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-492",
+      "titulo": "Implementar visualização da trilha no frontend",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-493",
+      "titulo": "Validar acionamento e conclusão das trilhas",
+      "responsavel": "Luccas Toffano",
+      "status": "Em desenvolvimento"
+    },
+    {
+      "key": "SCRUM-494",
+      "titulo": "Definir critérios da avaliação pós-microtreinamento",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-497",
+      "titulo": "Analisar evolução após o microtreinamento",
+      "responsavel": "Knorre",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-498",
+      "titulo": "Validar aprovação, reprovação e nova tentativa",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-499",
+      "titulo": "Definir critérios e status de qualidade das respostas reutilizáveis",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-501",
+      "titulo": "Implementar indicadores de qualidade das respostas reutilizáveis",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-503",
+      "titulo": "Validar ciclo de revisão e retirada",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-504",
+      "titulo": "Implementar tela de microtreinamentos recomendados",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-505",
+      "titulo": "Implementar tela de conteúdo e progresso do microtreinamento",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-506",
+      "titulo": "Implementar interface da avaliação de aprendizagem",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-507",
+      "titulo": "Integrar frontend de microtreinamentos às APIs",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-508",
+      "titulo": "Tratar estados, erros e responsividade do fluxo de capacitação",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-509",
+      "titulo": "Exibir respostas semelhantes candidatas à reutilização",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-510",
+      "titulo": "Implementar comparação entre resposta existente e nova geração",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-511",
+      "titulo": "Exibir economia e recompensa geradas pela reutilização",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-512",
+      "titulo": "Implementar filtros e histórico da reutilização",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-513",
+      "titulo": "Validar experiência completa de reutilização no frontend",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-514",
+      "titulo": "Implementar listagem administrativa de respostas reutilizáveis",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-515",
+      "titulo": "Implementar detalhes e indicadores de qualidade da resposta",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-516",
+      "titulo": "Implementar ações de aprovar, bloquear e retirar resposta",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-517",
+      "titulo": "Implementar histórico de revisão e versionamento no frontend",
+      "responsavel": "kevin lee",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-519",
+      "titulo": "Implementar painel de XP e nível",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-520",
+      "titulo": "Implementar tela de missões de uso responsável",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-521",
+      "titulo": "Implementar interface do Passe HestIA",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-522",
+      "titulo": "Integrar frontend de gamificação às APIs",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-523",
+      "titulo": "Validar progressão e storytelling da gamificação",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-524",
+      "titulo": "Integrar certificações ao Passe HestIA",
+      "responsavel": "kevin lee",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-525",
+      "titulo": "Definir métricas de recorrência após capacitação",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-526",
+      "titulo": "Implementar cálculo de recorrência por usuário e tipo de erro",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-527",
+      "titulo": "Relacionar recorrência com microtreinamento e trilha realizada",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-528",
+      "titulo": "Disponibilizar indicador de efetividade da capacitação",
+      "responsavel": "Knorre",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-529",
+      "titulo": "Validar cálculo de recorrência com cenários conhecidos",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    },
+    {
+      "key": "SCRUM-530",
+      "titulo": "Definir regras de autorização e elegibilidade para reutilização",
+      "responsavel": "Luccas Toffano",
+      "status": "Pronto para a Entrega"
+    },
+    {
+      "key": "SCRUM-534",
+      "titulo": "Testar isolamento, autorização e manipulação de IDs",
+      "responsavel": "Luccas Toffano",
+      "status": "A fazer"
+    }
+  ],
+  "produto": [
+    {
+      "key": "PO-136",
+      "summary": "US100 — Receber resultados de maturidade baseados em dados confiáveis",
+      "description": "## História\n\nComo gestor autorizado, quero que a maturidade seja calculada somente com dados válidos e identificáveis, para tomar decisões com base em resultados consistentes.\n\n## Critérios de aceite\n\n* Verificar completude, consistência, duplicidade, origem, período e escopo dos registros.\n* Definir quais registros são elegíveis para cada dimensão da maturidade.\n* Rejeitar ou sinalizar registros inválidos sem apagar seu histórico.\n* Informar cobertura e problemas de qualidade encontrados no processamento.\n* Não publicar resultado como definitivo quando os critérios mínimos não forem atendidos.\n* Fornecer as evidências utilizadas na classificação de confiança da US97.\n\n## Relacionamentos\n\nSprint 3; histórias existentes de RAG, maturidade e indicadores."
+    },
+    {
+      "key": "PO-135",
+      "summary": "US99 — Acompanhar a produtividade associada ao uso de IA",
+      "description": "## História\n\nComo gestor autorizado, quero acompanhar a produtividade associada ao uso de IA, para avaliar ganhos reais sem confundir volume de utilização com resultado.\n\n## Critérios de aceite\n\n* Definir fórmula, período e fontes antes de disponibilizar o indicador.\n* Utilizar evidências disponíveis de tempo, entregas ou eficiência.\n* Não inferir produtividade apenas pela quantidade de usos de IA.\n* Exibir o nível de confiança quando houver poucos dados ou informações ausentes.\n* Permitir consultar composição e metodologia do resultado.\n* Validar o cálculo com cenários conhecidos e impedir resultados matematicamente inconsistentes.\n\n## Relacionamentos\n\nSprint 3; histórias existentes de RAG, maturidade e indicadores."
+    },
+    {
+      "key": "PO-134",
+      "summary": "US98 — Compreender como os indicadores são calculados",
+      "description": "## História\n\nComo usuário autorizado, quero consultar a metodologia de cada indicador, para compreender o significado, a origem e as limitações do resultado apresentado.\n\n## Critérios de aceite\n\n* Apresentar fórmula, fatores, pesos, unidade, período, fontes e versão da regra.\n* Informar dados mínimos e tratamento aplicado a informações ausentes ou inválidas.\n* Distinguir valores medidos, derivados e estimados.\n* Disponibilizar a metodologia junto ao indicador sem expor dados restritos.\n* Preservar a regra utilizada em resultados históricos.\n\n## Relacionamentos\n\nSprint 3; histórias existentes de RAG, maturidade e indicadores."
+    },
+    {
+      "key": "PO-133",
+      "summary": "US97 — Identificar a confiabilidade dos indicadores",
+      "description": "## História\n\nComo usuário autorizado, quero visualizar a confiabilidade de cada indicador, para interpretar com cautela resultados calculados com poucos dados ou informações ausentes.\n\n## Critérios de aceite\n\n* Definir critérios mensuráveis de cobertura, completude e quantidade mínima de registros.\n* Classificar cada resultado como confiável, parcial ou estimado conforme regras versionadas.\n* Exibir classificação, cobertura, período e motivo da fragilidade junto ao resultado.\n* Não apresentar ausência de dados como zero nem estimativa como medição definitiva.\n* Recalcular a classificação quando dados ou regras forem atualizados.\n* Disponibilizar a classificação nas visões pessoais e gerenciais.\n\n## Relacionamentos\n\nSprint 3; histórias existentes de RAG, maturidade e indicadores."
+    },
+    {
+      "key": "PO-132",
+      "summary": "US96 — Consultar uma visão consolidada da maturidade",
+      "description": "## História\n\nComo gestor autorizado, quero consultar a maturidade do meu escopo em uma visão consolidada, para compreender pontuações, confiabilidade, evolução e pontos de atenção.\n\n## Critérios de aceite\n\n* Apresentar pontuação geral, dimensões, período, evolução, cobertura e avisos em uma única visão.\n* Utilizar uma camada BFF quando a avaliação arquitetural demonstrar que ela simplifica a composição da interface.\n* Registrar a decisão arquitetural e o contrato utilizado pela interface.\n* Agregar dados reais dos módulos existentes, preservando a versão das regras de cálculo.\n* Aplicar autorização e isolamento por empresa e escopo.\n* Tratar indisponibilidade parcial sem apresentar informação incompleta como resultado definitivo.\n\n## Relacionamentos\n\nSprint 3; histórias existentes de RAG, maturidade e indicadores."
+    },
+    {
+      "key": "PO-101",
+      "summary": "US83 — Identificar a origem dos registros e facilitar seu preenchimento",
+      "description": "Como colaborador, quero que a origem dos registros seja identificada e os dados já conhecidos sejam preenchidos, para reduzir esforço e manter rastreabilidade.\n\n## Critérios de aceite\n\n* Distinguir registros manuais de eventos capturados pela plataforma.\n* Preencher apenas informações realmente disponíveis e autorizadas.\n* Validar os dados antes de persistir e disponibilizar a origem na consulta.\n* Não apresentar registros manuais como monitoramento completo do uso externo.\n\n## Relacionamentos\n\nUS06\n\nHistória própria da Sprint 3. Preservar o escopo original das US da Sprint 2 e aproveitar implementações existentes."
+    }
+  ]
+}

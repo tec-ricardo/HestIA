@@ -1,0 +1,541 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Microtreinamentos | HestIA</title><link rel="stylesheet" href="/styles.css"></head><body><div class="app-shell"><%- include("menu", {active: active, perfil: perfil}) %><main class="main-content"><section class="mt-page"><div class="mt-heading"><div><span class="mt-kicker">HestIA Academy</span><h1>Microtreinamentos</h1><p>Aprenda, evolua e desbloqueie novas trilhas.</p></div></div><div id="mt-dashboard"><div class="mt-stats"><div class="mt-stat"><span>Cursos disponíveis</span><strong id="mt-total">—</strong></div><div class="mt-stat"><span>Concluídos</span><strong id="mt-done">—</strong></div><div class="mt-stat"><span>Em andamento</span><strong id="mt-running">—</strong></div></div><div class="mt-toolbar"><h2>Seus treinamentos</h2><div class="mt-filters"><button class="mt-filter active" data-filter="todos">Todos</button><button class="mt-filter" data-filter="recomendados">Recomendados</button><button class="mt-filter" data-filter="andamento">Em andamento</button><button class="mt-filter" data-filter="concluidos">Concluídos</button></div></div><div id="mt-list" class="mt-grid" aria-live="polite"><div class="mt-empty">Carregando cursos...</div></div></div>
+<!-- SCRUM-486: certificações vinculadas aos cursos existentes -->
+<section id="mt-certificacoes" class="mt-cert-section" aria-labelledby="mt-cert-title">
+  <div class="mt-toolbar"><div><h2 id="mt-cert-title">Minhas certificações</h2>
+  <p>Certificações concedidas conforme os requisitos publicados pela empresa.</p></div></div>
+  <div class="mt-cert-grid" id="mt-cert-list" aria-live="polite">
+    <div class="mt-empty">Carregando certificações...</div>
+  </div>
+  <small class="mt-cert-note">A conclusão da leitura, por si só, não concede uma certificação.</small>
+</section>
+<style>
+.mt-cert-section{margin-top:28px}.mt-cert-section h2{margin:0 0 6px}.mt-cert-section p{margin:0 0 14px;color:#64748b}
+.mt-cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.mt-cert-card{background:#fff;border:1px solid #dbe3ef;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.mt-cert-card h3{font-size:16px;margin:0;color:#10233e}.mt-cert-card p{font-size:13px;margin:0;color:#64748b}
+.mt-cert-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.mt-cert-status{font-size:12px;font-weight:700;color:#3456cf}
+.mt-cert-card .mt-btn{align-self:flex-start}.mt-cert-note{display:block;margin-top:12px;color:#64748b}
+.mt-cert-card button:disabled{opacity:.55;cursor:not-allowed}
+</style>
+</section></main></div><script>
+
+// Microtreinamentos HestIA
+
+// Funcoes simples com fetch, if, for e getElementById
+
+
+
+let cursos = [];
+
+let cursoAtual = null;
+
+let filtroAtual = "todos";
+
+
+
+function buscarDados(url, metodo, dados) {
+
+    let opcoes = {
+
+        method: metodo,
+
+        headers: { "Content-Type": "application/json" }
+
+    };
+
+
+
+    if (dados != null) {
+
+        opcoes.body = JSON.stringify(dados);
+
+    }
+
+
+
+    return fetch(url, opcoes).then(function(resposta) {
+
+        return resposta.json().then(function(resultado) {
+
+            if (!resposta.ok) {
+
+                throw new Error(resultado.erro || "Erro na requisicao.");
+
+            }
+
+            return resultado;
+
+        });
+
+    });
+
+}
+
+
+
+function limparTexto(texto) {
+
+    let elemento = document.createElement("div");
+
+    elemento.textContent = texto;
+
+    return elemento.innerHTML;
+
+}
+
+
+
+function porcentagem(curso) {
+
+    if (curso.concluido) {
+
+        return 100;
+
+    }
+
+    return Math.round(curso.etapa * 100 / curso.totalEtapas);
+
+}
+
+
+
+function carregarCursos() {
+
+    let lista = document.getElementById("mt-list");
+
+    lista.innerHTML = "Carregando cursos...";
+
+
+
+    buscarDados("/api/microtreinamentos", "GET", null).then(function(resultado) {
+
+        cursos = resultado.treinamentos;
+
+        mostrarCursos();
+        mostrarCertificacoes();
+
+    }).catch(function(erro) {
+
+        lista.textContent = erro.message;
+        let certLista = document.getElementById("mt-cert-list");
+        if (certLista) certLista.textContent = "Não foi possível carregar as certificações.";
+
+    });
+
+}
+
+
+
+function mostrarCursos() {
+
+    let lista = document.getElementById("mt-list");
+
+    let concluidos = 0;
+
+    let andamento = 0;
+
+    let disponiveis = 0;
+
+    let html = "";
+
+
+
+    for (let i = 0; i < cursos.length; i++) {
+
+        let curso = cursos[i];
+
+
+
+        if (curso.concluido) concluidos++;
+
+        if (curso.etapa > 0 && !curso.concluido) andamento++;
+
+        if (!curso.bloqueado) disponiveis++;
+
+
+
+        let mostrar = true;
+
+        if (filtroAtual == "recomendados" && !curso.recomendado) mostrar = false;
+
+        if (filtroAtual == "andamento" && (curso.etapa == 0 || curso.concluido)) mostrar = false;
+
+        if (filtroAtual == "concluidos" && !curso.concluido) mostrar = false;
+
+        if (!mostrar) continue;
+
+
+
+        let estado = "Disponivel";
+
+        if (curso.bloqueado) estado = "Bloqueado";
+
+        else if (curso.concluido) estado = "Concluido";
+
+        else if (curso.etapa > 0) estado = "Em andamento";
+
+
+
+        html += '<div class="mt-card">';
+
+        html += '<div class="mt-card-top"><span class="mt-tag">🏅 ' + limparTexto(curso.nivel) + '</span>';
+
+        html += '<span class="mt-tag">' + estado + '</span></div>';
+
+        html += '<h3>' + limparTexto(curso.titulo) + '</h3>';
+
+        html += '<p>' + limparTexto(curso.descricao) + '</p>';
+
+        html += '<div class="mt-meta">' + curso.duracao + ' minutos | ' + curso.totalEtapas + ' aulas</div>';
+
+        html += '<div class="mt-progress"><span style="width:' + porcentagem(curso) + '%"></span></div>';
+
+        html += '<div class="mt-card-footer"><small>' + porcentagem(curso) + '% concluido</small>';
+
+
+
+        if (curso.bloqueado) {
+
+            html += '<small>' + limparTexto(curso.motivo) + '</small>';
+
+        } else {
+
+            html += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + encodeURIComponent(curso.id) + '">Abrir curso</a>';
+
+        }
+
+        html += '</div></div>';
+
+    }
+
+
+
+    document.getElementById("mt-total").textContent = disponiveis;
+
+    document.getElementById("mt-done").textContent = concluidos;
+
+    document.getElementById("mt-running").textContent = andamento;
+
+    lista.innerHTML = html || '<div class="mt-empty">Nenhum curso encontrado.</div>';
+
+}
+
+
+
+function carregarCurso() {
+
+    let tela = document.getElementById("mt-course");
+
+    let id = tela.getAttribute("data-course");
+
+
+
+    buscarDados("/api/microtreinamentos/" + id, "GET", null).then(function(resultado) {
+
+        cursoAtual = resultado.treinamento;
+
+        mostrarAula(cursoAtual.etapa);
+
+    }).catch(function(erro) {
+
+        tela.textContent = erro.message;
+
+    });
+
+}
+
+
+
+function mostrarAula(numero) {
+
+    let tela = document.getElementById("mt-course");
+
+    let curso = cursoAtual;
+
+
+
+    if (numero >= curso.licoes.length) {
+
+        tela.innerHTML = '<h2>Conteudo concluido!</h2><p>Voce ja pode fazer a avaliacao.</p>' +
+
+            '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + curso.id + '/avaliacao">Fazer avaliacao</a>';
+
+        return;
+
+    }
+
+
+
+    let aula = curso.licoes[numero];
+
+    let html = '<p class="mt-step">Aula ' + (numero + 1) + ' de ' + curso.licoes.length + '</p>';
+
+    html += '<h2 class="mt-lesson-title">' + limparTexto(aula.titulo) + '</h2>';
+
+    html += '<div class="mt-lesson-text" style="white-space:pre-line;line-height:1.85">' + limparTexto(aula.texto) + '</div>';
+
+    html += '<div class="mt-actions">';
+
+    if (numero > 0) html += '<button class="mt-btn" id="voltarAula">Anterior</button>';
+
+    html += '<button class="mt-btn mt-btn-primary" id="proximaAula">Concluir aula</button></div>';
+
+    tela.innerHTML = html;
+
+
+
+    if (numero > 0) {
+
+        document.getElementById("voltarAula").addEventListener("click", function() {
+
+            mostrarAula(numero - 1);
+
+        });
+
+    }
+
+
+
+    document.getElementById("proximaAula").addEventListener("click", function() {
+
+        let botao = document.getElementById("proximaAula");
+
+        botao.disabled = true;
+
+
+
+        if (numero < curso.etapa) {
+
+            mostrarAula(numero + 1);
+
+            return;
+
+        }
+
+
+
+        buscarDados("/api/microtreinamentos/" + curso.id + "/progresso", "POST", { etapa: numero + 1 })
+
+            .then(function() {
+
+                curso.etapa = numero + 1;
+
+                mostrarAula(numero + 1);
+
+            }).catch(function(erro) {
+
+                alert(erro.message);
+
+                botao.disabled = false;
+
+            });
+
+    });
+
+}
+
+
+
+function carregarAvaliacao() {
+
+    let tela = document.getElementById("mt-exam");
+
+    let id = tela.getAttribute("data-course");
+
+
+
+    buscarDados("/api/microtreinamentos/" + id + "?avaliacao=1", "GET", null).then(function(resultado) {
+
+        cursoAtual = resultado.treinamento;
+
+        if (cursoAtual.etapa < cursoAtual.totalEtapas) {
+
+            window.location.href = "/microtreinamentos/" + id;
+
+            return;
+
+        }
+
+        mostrarAvaliacao();
+
+    }).catch(function(erro) {
+
+        tela.textContent = erro.message;
+
+    });
+
+}
+
+
+
+function mostrarAvaliacao() {
+
+    let tela = document.getElementById("mt-exam");
+
+    let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
+    html += '<p>Responda todas as perguntas. Nota minima: 80%.</p>';
+    html += '<form id="formAvaliacao">';
+
+
+
+    for (let i = 0; i < cursoAtual.questoes.length; i++) {
+
+        let questao = cursoAtual.questoes[i];
+
+        html += '<div class="mt-question"><strong>' + (i + 1) + '. ' + limparTexto(questao.pergunta) + '</strong>';
+
+        for (let j = 0; j < questao.opcoes.length; j++) {
+
+            html += '<label class="mt-choice"><input type="radio" name="questao' + i + '" value="' + j + '"> ' + limparTexto(questao.opcoes[j]) + '</label>';
+
+        }
+
+        html += '</div>';
+
+    }
+
+
+
+    html += '<div id="resultadoAvaliacao"></div><button class="mt-btn mt-btn-primary" type="submit">Enviar prova</button></form>';
+
+    tela.innerHTML = html;
+
+    document.getElementById("formAvaliacao").addEventListener("submit", enviarAvaliacao);
+
+}
+
+
+
+function enviarAvaliacao(evento) {
+
+    evento.preventDefault();
+
+    let respostas = [];
+
+    let formulario = document.getElementById("formAvaliacao");
+
+    let resultado = document.getElementById("resultadoAvaliacao");
+
+
+
+    for (let i = 0; i < cursoAtual.questoes.length; i++) {
+
+        let selecionada = formulario.querySelector('input[name="questao' + i + '"]:checked');
+
+        if (selecionada == null) {
+
+            resultado.textContent = "Responda todas as perguntas.";
+
+            return;
+
+        }
+
+        respostas.push(parseInt(selecionada.value));
+
+    }
+
+
+
+    buscarDados("/api/microtreinamentos/" + cursoAtual.id + "/avaliacao", "POST", { respostas: respostas })
+
+        .then(function(dados) {
+
+            resultado.innerHTML = '<div class="mt-alert">Nota: ' + dados.nota + '%. ' + limparTexto(dados.mensagem) + '</div>';
+
+            if (dados.aprovado) {
+
+                resultado.innerHTML += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos">Voltar aos cursos</a>';
+
+            }
+
+        }).catch(function(erro) {
+
+            resultado.textContent = erro.message;
+
+        });
+
+}
+
+
+
+
+// SCRUM-486 integrada às concessões persistidas das SCRUM-484/485.
+async function mostrarCertificacoes() {
+    const lista = document.getElementById("mt-cert-list");
+    if (!lista) return;
+    try {
+        const resultado = await buscarDados("/api/certificacoes", "GET", null);
+        lista.replaceChildren();
+        if (resultado.certificacoes.length === 0) {
+            lista.textContent = "Nenhuma certificação concedida. Conclua os requisitos publicados pela empresa.";
+        }
+        for (const certificado of resultado.certificacoes) {
+            const card = document.createElement("article");
+            card.className = "mt-cert-card";
+            const titulo = document.createElement("h3");
+            titulo.textContent = certificado.nome;
+            const descricao = document.createElement("p");
+            descricao.textContent = certificado.nivel + " | Versão " + certificado.versao + " | Concedida em " + certificado.concedidaEm;
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "mt-btn mt-btn-primary";
+            botao.textContent = "Ver certificado";
+            botao.addEventListener("click", () => abrirCertificado(certificado));
+            card.append(titulo, descricao, botao);
+            lista.append(card);
+        }
+    } catch (erro) {
+        lista.textContent = erro.message;
+    }
+}
+function abrirCertificado(certificado) {
+    if (!certificado || !certificado.id) return;
+    let janela = window.open("", "_blank");
+    if (!janela) { alert("Permita pop-ups para visualizar o certificado."); return; }
+    janela.document.open();
+    janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Certificação HestIA</title>
+    <style>body{font-family:Arial,sans-serif;background:#f3f6fb;color:#14243e;padding:35px;text-align:center}
+    .folha{background:white;border:7px double #3154d9;padding:60px 25px;max-width:850px;margin:auto}
+    h1{color:#3154d9;font-size:42px}h2{font-size:28px}p{line-height:1.6}
+    button{background:#3154d9;color:white;border:0;border-radius:6px;padding:12px 22px;cursor:pointer;margin-top:25px}
+    @media print{body{background:white;padding:0}button{display:none}.folha{border-color:#3154d9}}</style></head><body>
+    <div class="folha"><h1>HestIA</h1><p>Certificação de aprendizagem</p>
+    <p>Certificação concedida:</p><h2 id="cert-nome"></h2><p id="cert-nivel"></p>
+    <p>Registro de concessão da plataforma conforme os requisitos publicados pela empresa.</p>
+    <button onclick="window.print()">Imprimir / Salvar como PDF</button></div></body></html>`);
+    janela.document.close();
+    janela.document.getElementById("cert-nome").textContent = certificado.nome;
+    janela.document.getElementById("cert-nivel").textContent = "Nível: " + certificado.nivel + " | Versão " + certificado.versao + " | Registro #" + certificado.id + " | " + certificado.concedidaEm;
+}
+
+if (document.getElementById("mt-list") != null) {
+
+    let filtros = document.querySelectorAll("[data-filter]");
+
+    for (let i = 0; i < filtros.length; i++) {
+
+        filtros[i].addEventListener("click", function() {
+
+            filtroAtual = filtros[i].getAttribute("data-filter");
+
+            for (let j = 0; j < filtros.length; j++) filtros[j].classList.remove("active");
+
+            filtros[i].classList.add("active");
+
+            mostrarCursos();
+
+        });
+
+    }
+
+    carregarCursos();
+
+}
+
+if (document.getElementById("mt-course") != null) carregarCurso();
+
+if (document.getElementById("mt-exam") != null) carregarAvaliacao();
+
+
+
+</script></body></html>

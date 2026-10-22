@@ -26,7 +26,7 @@ public record FundamentosConformidade(
 
         String motivo = switch (status) {
             case CONFORME -> "Todos os critérios de conformidade foram atendidos.";
-            case NAO_CONFORME -> "A avaliação possui critérios críticos não atendidos: "
+            case NAO_CONFORME -> "A avaliação possui falhas críticas. Critérios não atendidos: "
                     + criteriosFaltantes + ".";
             case REQUER_REVISAO -> "A avaliação não apresentou falha crítica, mas ainda possui critérios pendentes: "
                     + criteriosFaltantes + ".";
@@ -37,7 +37,8 @@ public record FundamentosConformidade(
                 + "Nos demais casos incompletos, o resultado é REQUER_REVISAO.";
 
         String limitacoes = "A avaliação é baseada nos dados registrados e na política selecionada. "
-                + "Ela não substitui a revisão humana nem valida informações externas ao HestIA."
+                + "Ela não substitui a revisão humana nem valida informações externas ao HestIA. "
+                + "A política é verificada quanto à vigência; seu texto não é interpretado automaticamente."
                 + (faltantes.isEmpty() ? "" : " Critérios pendentes: " + criteriosFaltantes + ".");
 
         return new FundamentosConformidade(motivo, regra, limitacoes);

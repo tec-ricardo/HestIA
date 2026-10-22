@@ -1,0 +1,52 @@
+<style>
+ .maturidade-filtros{display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:20px 0}
+ .maturidade-filtros label{display:grid;gap:6px}.maturidade-filtros input,.maturidade-filtros select{padding:10px;border:1px solid #cbd5e1;border-radius:8px}
+ .confianca-selo{display:inline-block;padding:5px 10px;border-radius:8px;background:#e2e8f0}
+ .confianca-selo[data-classe="CONFIAVEL"]{background:#dcfce7;color:#166534}
+ .confianca-selo[data-classe="PARCIAL"]{background:#fef3c7;color:#854d0e}
+ .maturidade-fonte{overflow-wrap:anywhere}.maturidade-fonte dl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.maturidade-fonte dd{margin:0}
+</style>
+<form class="maturidade-filtros" action="/maturidade" method="get">
+ <label>Início <input type="date" name="inicio" value="<%= inicio %>" required></label>
+ <label>Fim <input type="date" name="fim" value="<%= fim %>" required></label>
+ <label>Visão <select name="visao">
+  <option value="PESSOAL" <%= visao === 'PESSOAL' ? 'selected' : '' %>>Meus registros</option>
+  <% if(gerencial){ %><option value="GERENCIAL" <%= visao === 'GERENCIAL' ? 'selected' : '' %>>Meu escopo gerencial</option><% } %>
+ </select></label>
+ <button class="primary" type="submit">Consultar</button>
+</form>
+<% if(erro){ %>
+ <section class="panel" role="status"><h2>Sem resultados disponíveis</h2><p><%= erro %></p>
+ <p>A ausência de dados não representa nota zero.</p><a href="/acesso">Acessar conta</a></section>
+<% } %>
+<% if(dados){
+ const numero=v=>typeof v==='number' && Number.isFinite(v)?v.toLocaleString('pt-BR',{maximumFractionDigits:2}):'Não disponível';
+ const percentual=v=>typeof v==='number' && Number.isFinite(v)?numero(v*100)+'%':'Não disponível';
+ const rotulo=c=>({SEM_DADOS:'Sem dados',FONTE_PENDENTE:'Fonte pendente'}[c.situacao] || {CONFIAVEL:'Confiável',PARCIAL:'Parcial',ESTIMADO:'Estimado'}[c.classificacao] || 'Não classificado');
+%>
+ <p>Período: <%= dados.periodo.inicio %> a <%= dados.periodo.fim %> · <%= dados.visao==='PESSOAL'?'Meus registros':'Meu escopo gerencial' %></p>
+ <section class="grid two">
+  <article class="metric-card"><span>AI Maturity Score completo</span><strong><%= numero(dados.scoreGlobal) %></strong><p>Depende de todas as oito dimensões elegíveis.</p></article>
+  <article class="metric-card"><span>Índice parcial exploratório</span><strong><%= numero(dados.scoreParcial) %></strong><p>Cobertura dos pesos: <%= percentual(dados.coberturaPesos) %>. Não equivale ao índice completo.</p></article>
+ </section>
+ <section class="grid two">
+ <% for(const item of dados.indicadores){ const c=item.confianca; %>
+  <article class="panel maturidade-fonte">
+   <h3><%= item.nome %></h3><span class="confianca-selo" data-classe="<%= c.classificacao %>"><%= rotulo(c) %></span>
+   <h2><%= item.valor===null?'Não disponível':numero(item.valor)+' / 100' %></h2>
+   <dl><dt>Peso</dt><dd><%= percentual(item.peso) %></dd><dt>Cobertura</dt><dd><%= percentual(c.cobertura) %></dd>
+    <dt>Completude</dt><dd><%= percentual(c.completude) %></dd><dt>Amostra</dt><dd><%= numero(c.amostra) %></dd>
+    <dt>Universo observado</dt><dd><%= numero(c.universoObservado) %></dd></dl>
+   <ul><% for(const motivo of c.motivos){ %><li><%= motivo %></li><% } %></ul>
+   <details><summary>Fonte e critérios</summary><p>Fonte: <%= item.fonte %></p><p>Fórmula: <%= item.formula %></p>
+    <p>Regra: <%= c.versaoRegra %> · Amostra mínima: <%= numero(c.amostraMinima) %> · Cobertura mínima: <%= percentual(c.limiteCobertura) %></p></details>
+  </article>
+ <% } %>
+ </section>
+ <section class="panel"><h3>Contexto da apuração</h3><p>Dados operacionais cadastrados no HestIA. Apurado em: <%= dados.apuradoEm %>.</p>
+  <p>Composição: <%= dados.versaoComposicao %> · Confiança: <%= dados.versaoConfianca %></p>
+  <ul><% for(const limite of dados.limitacoes){ %><li><%= limite %></li><% } %></ul>
+ </section>
+<% } %>
+<details class="panel"><summary>Visualização demonstrativa</summary><p>Explore o layout e a narrativa com exemplos fictícios, sem representar resultados da empresa.</p>
+ <a href="/maturidade/demonstracao">Abrir demonstração identificada</a></details>

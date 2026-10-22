@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Assistente RAG - HestIA</title>
+
+  <link rel="stylesheet" href="/styles.css">
+
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <%- include("menu", { perfil: perfil, email: email, active: active }) %>
+
+    <main class="main">
+
+      <header class="topbar">
+
+        <button class="menu-button" id="menuButton" type="button">☰</button>
+
+        <div>
+
+          <p class="eyebrow"><%= perfil.charAt(0).toUpperCase() + perfil.slice(1) %></p>
+
+          <h1>Assistente RAG</h1>
+
+        </div>
+
+        <div class="profile-switch">
+
+          <span><%= email %></span>
+
+          <select disabled><option selected><%= perfil.charAt(0).toUpperCase() + perfil.slice(1) %></option></select>
+
+        </div>
+
+        <a class="topbar-logout" href="/sair">Sair</a>
+
+      </header>
+
+      <section class="rag-layout">
+
+        <div class="rag-panel">
+
+          <div class="rag-heading">
+
+            <div><h2>Assistente de Governança</h2><p>Consulta conteúdo autorizado da empresa e informa quando a fonte está indisponível.</p></div>
+
+            <span class="rag-tag">Demonstração</span>
+
+          </div>
+
+          <div class="rag-chat" id="ragChat" aria-live="polite"></div>
+
+          <p class="rag-notice" id="ragNotice" role="status" hidden></p>
+
+          <form id="ragForm" class="rag-form">
+
+            <label for="ragQuestion">Sua pergunta</label>
+
+            <textarea id="ragQuestion" rows="3" maxlength="1000" placeholder="Ex.: Posso inserir dados pessoais em uma IA?" required></textarea>
+
+            <div class="rag-buttons">
+
+              <button class="rag-secondary" type="button" id="ragNew">Nova conversa</button>
+
+              <button class="rag-primary" type="submit" id="ragSend">Enviar pergunta</button>
+
+            </div>
+
+          </form>
+
+          <!-- SCRUM-509: sugestões enquanto a pessoa digita -->
+
+          <div id="ragSuggestions" class="rag-suggestions" hidden>
+
+            <h3>Respostas semelhantes já salvas</h3>
+
+            <div id="ragSuggestionList"></div>
+
+          </div>
+
+        </div>
+
+        <aside class="rag-panel">
+
+          <h2>Histórico</h2>
+
+          <p class="rag-muted">Salvo somente neste navegador. Clique em uma pergunta para ver sua resposta.</p>
+
+          <label for="ragHistorySearch" class="rag-history-search-label">Pesquisar no histórico</label>
+
+          <input id="ragHistorySearch" class="rag-history-search" type="search" placeholder="Buscar pergunta anterior..." autocomplete="off">
+
+          <p id="ragHistoryCount" class="rag-muted" aria-live="polite"></p>
+
+          <div id="ragHistory" class="rag-history"></div>
+
+          <button type="button" id="ragClear" class="rag-secondary rag-wide">Apagar histórico</button>
+
+        </aside>
+
+      </section>
+
+      <section class="rag-panel rag-bank-panel" aria-labelledby="ragBankTitle">
+
+        <div class="rag-bank-header">
+
+          <div>
+
+            <h2 id="ragBankTitle">Banco de Respostas</h2>
+
+            <p class="rag-muted">Respostas escolhidas para reutilização, salvas somente neste navegador. Não são respostas validadas pela organização.</p>
+
+          </div>
+
+          <span id="ragBankCount" class="rag-tag">0 salvas</span>
+
+        </div>
+
+        <div class="rag-bank-scroll">
+
+          <table class="rag-bank-table">
+
+            <thead><tr><th>Pergunta</th><th>Resposta</th><th>Política utilizada</th><th>Ações</th></tr></thead>
+
+            <tbody id="ragBankBody"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <!-- SCRUM-511: resultados demonstrativos da reutilização -->
+
+      <section class="rag-panel rag-bank-panel" aria-labelledby="ragEconomiaTitulo">
+
+        <h2 id="ragEconomiaTitulo">Economia e recompensa por reutilização</h2>
+
+        <p class="rag-muted">Reutilizações confirmadas no servidor nesta sessão. Tempo e XP não são estimados nesta tela.</p>
+
+        <div class="rag-economia-cards">
+
+          <div class="rag-economia-card"><strong id="ragTotalReusos">0</strong><span>Respostas reutilizadas</span></div>
+
+          <div class="rag-economia-card"><strong id="ragTempoEconomizado">Não medido</strong><span>Tempo observado</span></div>
+
+          <div class="rag-economia-card"><strong id="ragXpEstimado">Consulte o Passe HestIA</strong><span>Recompensa registrada</span></div>
+
+        </div>
+
+        <p class="rag-muted" id="ragUltimaReutilizacao" aria-live="polite">Nenhuma reutilização registrada.</p>
+
+        <p class="rag-muted">Os efeitos reais de reutilização e as recompensas seguem os registros e regras do backend.</p>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <style>
+
+    .rag-history-search-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 7px; color: #25344d; }
+
+    .rag-history-search { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid #d3ddec; border-radius: 8px; font: inherit; background: #fff; color: #18253a; }
+
+    .rag-history-search:focus { outline: 2px solid #86b7fe; outline-offset: 1px; }
+
+    .rag-history-row { display: flex; align-items: stretch; gap: 6px; margin: 0 0 8px; }
+
+    .rag-history-row .rag-history-item { flex: 1; min-width: 0; margin: 0; text-align: left; overflow-wrap: anywhere; }
+
+    .rag-history-delete { flex: 0 0 35px; cursor: pointer; background: #fff; border: 1px solid #d3ddec; border-radius: 8px; color: #9b2931; font-size: 17px; }
+
+    .rag-history-delete:hover { background: #fff0f0; }
+
+    .rag-history-date { display: block; margin-top: 5px; font-size: 11px; font-weight: 400; color: #66758c; }
+
+    .rag-bank-panel { margin-top: 18px; }
+
+    .rag-bank-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+
+    .rag-bank-header h2 { margin: 0 0 5px; }
+
+    .rag-bank-scroll { width: 100%; overflow-x: auto; }
+
+    .rag-bank-table { width: 100%; border-collapse: collapse; min-width: 750px; table-layout: fixed; }
+
+    .rag-bank-table th, .rag-bank-table td { text-align: left; vertical-align: top; padding: 12px; border-bottom: 1px solid #e3e8f0; overflow-wrap: anywhere; }
+
+    .rag-bank-table th { font-size: 13px; color: #4b5871; }
+
+    .rag-bank-table td { font-size: 13px; line-height: 1.5; }
+
+    .rag-bank-table th:nth-child(1) { width: 23%; }
+
+    .rag-bank-table th:nth-child(2) { width: 37%; }
+
+    .rag-bank-table th:nth-child(3) { width: 23%; }
+
+    .rag-bank-table th:nth-child(4) { width: 17%; }
+
+    .rag-bank-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .rag-bank-actions button { cursor: pointer; padding: 7px 9px; border: 1px solid #d3ddec; background: #fff; border-radius: 7px; font-size: 12px; }
+
+    .rag-bank-actions button:hover { background: #edf4ff; }
+
+    .rag-bank-empty { text-align: center !important; color: #66758c; padding: 20px !important; }
+
+    .rag-message-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+    .rag-message-actions button { cursor: pointer; }
+
+    @media (max-width: 680px) { .rag-bank-header { flex-direction: column; } }
+
+
+
+    /* SCRUM-509: sugestões automáticas do Banco de Respostas */
+
+    .rag-suggestions { margin-top: 14px; border: 1px solid #d3ddec; border-radius: 9px; padding: 14px; background: #f8fbff; }
+
+    .rag-suggestions h3 { margin: 0 0 10px; font-size: 15px; }
+
+    .rag-suggestion-item { padding: 10px 0; border-top: 1px solid #e3e8f0; }
+
+    .rag-suggestion-item strong { display: block; margin-bottom: 5px; }
+
+    .rag-suggestion-item p { margin: 5px 0 9px; font-size: 13px; line-height: 1.5; }
+
+    .rag-suggestion-item button { padding: 7px 10px; background: #fff; border: 1px solid #b9cbe5; border-radius: 7px; cursor: pointer; }
+
+    .rag-economia-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 15px 0; }
+
+    .rag-economia-card { padding: 16px; background: #f7faff; border: 1px solid #d3ddec; border-radius: 10px; }
+
+    .rag-economia-card strong { display: block; font-size: 25px; color: #173b71; }
+
+    .rag-economia-card span { display: block; margin-top: 5px; font-size: 13px; color: #4b5871; }
+
+    @media (max-width: 680px) { .rag-economia-cards { grid-template-columns: 1fr; } }
+
+  </style>
+
+  <script src="/app.js"></script>
+
+  <script>
+
+    (() => {
+
+      'use strict';
+
+      const key = 'hestia-rag-sessao-' + <%- JSON.stringify(String(email || '')) %>;
+
+      const bankKey = 'hestia_rag_banco_respostas_v1';
+
+      // SCRUM-511: armazenamento local separado, sem alterar as respostas já salvas.
+
+      const reuseKey = 'hestia_rag_reutilizacoes_v1';
+
+      const minutosPorReuso = 5; // Exemplo, não é uma medição real.
+
+      const xpPorReuso = 10; // Exemplo, não é creditado no HestIA Pass.
+
+      let reutilizacoes = [];
+
+      try {
+
+        const dados = [];
+
+        if (Array.isArray(dados)) reutilizacoes = dados;
+
+      } catch (_) {}
+
+
+
+      function atualizarEconomia() {
+
+        const total = reutilizacoes.length;
+
+        document.getElementById('ragTotalReusos').textContent = total;
+
+        document.getElementById('ragTempoEconomizado').textContent = 'Não medido';
+
+        document.getElementById('ragXpEstimado').textContent = 'Consulte o Passe HestIA';
+
+        const ultima = reutilizacoes[reutilizacoes.length - 1];
+
+        document.getElementById('ragUltimaReutilizacao').textContent = ultima
+
+          ? 'Última reutilização: ' + ultima.pergunta + ' (' + new Date(ultima.data).toLocaleString('pt-BR') + ')'
+
+          : 'Nenhuma reutilização registrada.';
+
+      }
+
+
+
+      function registrarReutilizacao(item) {
+
+        reutilizacoes.push({ pergunta: item.question, data: new Date().toISOString() });
+
+        try {
+
+          void 0;
+
+          atualizarEconomia();
+
+          notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
+
+        } catch (_) {
+
+          reutilizacoes.pop();
+
+          notify('Resposta copiada, mas não foi possível registrar a reutilização.', true);
+
+        }
+
+      }
+
+
+
+      const bankBody = document.getElementById('ragBankBody');
+
+      const bankCount = document.getElementById('ragBankCount');
+
+      const chat = document.getElementById('ragChat');
+
+      const history = document.getElementById('ragHistory');
+
+      const historySearch = document.getElementById('ragHistorySearch');
+
+      const historyCount = document.getElementById('ragHistoryCount');
+
+      const form = document.getElementById('ragForm');
+
+      const question = document.getElementById('ragQuestion');
+
+      const send = document.getElementById('ragSend');
+
+      const notice = document.getElementById('ragNotice');
+
+      // Compatibilidade com respostas antigas já salvas no navegador.
+
+      function policyFor(item) {
+
+        if (item.policy) return { name: item.policy, id: item.policyId || '', section: item.section || '' };
+
+        return { name: 'Nenhuma fonte autorizada', id: '', section: '' };
+
+      }
+
+      const normalize = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      const element = (tag, text, className) => {
+
+        const el = document.createElement(tag);
+
+        if (text !== undefined) el.textContent = text;
+
+        if (className) el.className = className;
+
+        return el;
+
+      };
+
+      let conversations = [];
+
+      try {
+
+        const stored = [];
+
+        if (Array.isArray(stored)) conversations = stored.filter(c => c && Array.isArray(c.messages));
+
+      } catch (_) {}
+
+      let savedAnswers = [];
+
+      try {
+
+        const storedBank = [];
+
+        if (Array.isArray(storedBank)) savedAnswers = storedBank.filter(x => x && typeof x.question === 'string' && typeof x.text === 'string');
+
+      } catch (_) {}
+
+      let currentId = null;
+
+      let busy = false;
+
+      const notify = (text, error = false) => {
+
+        notice.hidden = false;
+
+        notice.textContent = text;
+
+        notice.className = error ? 'rag-notice rag-error' : 'rag-notice';
+
+      };
+
+      const persist = () => {
+
+        try { void 0; }
+
+        catch (_) { notify('Não foi possível salvar o histórico.', true); }
+
+      };
+
+      function persistBank() {
+
+        try { void 0; return true; }
+
+        catch (_) { notify('Não foi possível salvar o Banco de Respostas.', true); return false; }
+
+      }
+
+      function saveAnswer(message) {
+
+        if (!message.question || !message.text) return;
+
+        const exists = savedAnswers.some(x => x.question === message.question && x.text === message.text);
+
+        if (exists) { notify('Esta pergunta e resposta já estão no Banco de Respostas.'); return; }
+
+        savedAnswers.unshift({
+
+          id: String(Date.now()) + '-' + Math.random().toString(36).slice(2),
+
+          question: message.question,
+          respostaId: message.respostaId,
+
+          text: message.text,
+
+          source: message.source || '',
+
+          policy: policyFor(message).name,
+
+          policyId: policyFor(message).id,
+
+          section: policyFor(message).section,
+
+          similarity: message.similarity ?? null,
+
+          confidence: message.confidence ?? null,
+
+          savedAt: new Date().toISOString()
+
+        });
+
+        if (persistBank()) { renderBank(); mostrarSugestoes(); notify('Pergunta e resposta salvas no Banco de Respostas.'); }
+
+      }
+
+      function renderBank() {
+
+        bankBody.replaceChildren();
+
+        bankCount.textContent = savedAnswers.length + (savedAnswers.length === 1 ? ' salva' : ' salvas');
+
+        if (!savedAnswers.length) {
+
+          const row = element('tr'); const cell = element('td', 'Nenhuma resposta salva. Clique em “Reutilizar resposta” em uma resposta do chat.', 'rag-bank-empty');
+
+          cell.colSpan = 4; row.append(cell); bankBody.append(row); return;
+
+        }
+
+        savedAnswers.forEach(item => {
+
+          const row = element('tr');
+
+          row.append(element('td', item.question));
+
+          row.append(element('td', item.text));
+
+          const meta = element('td');
+
+          const policy = policyFor(item);
+
+          meta.append(element('strong', policy.name));
+
+          if (policy.id || policy.section) meta.append(element('div', [policy.id, policy.section].filter(Boolean).join(' · '), 'rag-meta'));
+
+          row.append(meta);
+
+          const actionCell = element('td'); const actions = element('div', undefined, 'rag-bank-actions');
+
+          const use = element('button', 'Usar resposta'); use.type = 'button';
+
+          use.addEventListener('click', async () => {
+
+            try {
+              if (!item.respostaId) throw Error('Fonte não identificada');
+              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
+              const dados = await resposta.json(); if (!resposta.ok || !dados.resposta) throw Error(dados.erro || 'Fonte indisponível');
+              await copyText(dados.resposta); registrarReutilizacao(item);
+            }
+
+            catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
+
+          });
+
+          const remove = element('button', 'Excluir'); remove.type = 'button';
+
+          remove.addEventListener('click', () => {
+
+            if (!confirm('Excluir esta resposta do Banco de Respostas?')) return;
+
+            savedAnswers = savedAnswers.filter(x => x.id !== item.id);
+
+            persistBank(); renderBank(); mostrarSugestoes(); notify('Resposta excluída do Banco de Respostas.');
+
+          });
+
+          actions.append(use, remove); actionCell.append(actions); row.append(actionCell); bankBody.append(row);
+
+        });
+
+      }
+
+      function currentConversation() { return conversations.find(c => c.id === currentId); }
+
+      function copyText(text) {
+
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+
+        const area = element('textarea');
+
+        area.value = text;
+
+        area.style.position = 'fixed'; area.style.opacity = '0';
+
+        document.body.append(area); area.select();
+
+        const ok = document.execCommand('copy'); area.remove();
+
+        return ok ? Promise.resolve() : Promise.reject(new Error('Cópia indisponível'));
+
+      }
+
+      function appendMessage(message) {
+
+        const box = element('div', undefined, 'rag-message ' + (message.role === 'user' ? 'rag-user' : 'rag-assistant'));
+
+        box.append(element('strong', message.role === 'user' ? 'Você' : 'Assistente HestIA'));
+
+        box.append(element('p', message.text || ''));
+
+        if (message.role === 'assistant' && message.question) {
+
+          const policy = policyFor(message);
+
+          box.append(element('p', 'Fonte utilizada: ' + policy.name, 'rag-meta'));
+
+          if (policy.id || policy.section) box.append(element('p', [policy.id, policy.section].filter(Boolean).join(' · '), 'rag-meta'));
+
+          const actions = element('div', undefined, 'rag-message-actions');
+
+          const copy = element('button', 'Reutilizar resposta', 'rag-secondary');
+
+          copy.type = 'button';
+
+          copy.disabled = !message.respostaId;
+          copy.addEventListener('click', async () => {
+            try {
+              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: message.question, modo: 'REUTILIZAR', respostaId: message.respostaId }) });
+              const dados = await resposta.json(); if (!resposta.ok) throw new Error(dados.erro || 'Resposta indisponível para reutilização.');
+              await copyText(dados.resposta); registrarReutilizacao(message); saveAnswer({ ...message, text: dados.resposta });
+            } catch (erro) { notify(erro.message, true); }
+          });
+
+          const retry = element('button', 'Gerar nova resposta', 'rag-secondary');
+
+          retry.type = 'button';
+
+          retry.addEventListener('click', () => {
+
+            if (busy) return;
+
+            question.value = message.question;
+            proximoModo = 'GERAR_NOVA';
+
+            mostrarSugestoes();
+
+          form.requestSubmit ? form.requestSubmit() : send.click();
+
+          });
+
+          actions.append(copy, retry); box.append(actions);
+
+        }
+
+        chat.append(box);
+
+        chat.scrollTop = chat.scrollHeight;
+
+      }
+
+      function renderChat() {
+
+        chat.replaceChildren();
+
+        const current = currentConversation();
+
+        if (!current || !current.messages.length) {
+
+          appendMessage({ role: 'assistant', text: 'Olá! Pergunte sobre boas práticas e governança de IA.' });
+
+        } else current.messages.forEach(appendMessage);
+
+      }
+
+      function formatHistoryDate(value) {
+
+        if (!value) return 'Data não registrada';
+
+        const date = new Date(value);
+
+        return Number.isNaN(date.getTime()) ? 'Data não registrada' : date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+      }
+
+      function renderHistory() {
+
+        history.replaceChildren();
+
+        const entries = [];
+
+        conversations.forEach(c => {
+
+          c.messages.forEach((m, index) => {
+
+            if (m.role === 'user') entries.push({ conversation: c, index, text: m.text || '', createdAt: m.createdAt || null });
+
+          });
+
+        });
+
+        const term = normalize(historySearch.value.trim());
+
+        const filtered = entries.filter(entry => normalize(entry.text).includes(term)).reverse();
+
+        historyCount.textContent = term ? filtered.length + ' de ' + entries.length + ' pergunta(s)' : entries.length + ' pergunta(s) registrada(s)';
+
+        if (!filtered.length) {
+
+          history.append(element('p', entries.length ? 'Nenhuma pergunta corresponde à busca.' : 'Nenhuma pergunta registrada.', 'rag-muted'));
+
+          return;
+
+        }
+
+        filtered.forEach(entry => {
+
+          const row = element('div', undefined, 'rag-history-row');
+
+          const button = element('button', undefined, 'rag-history-item');
+
+          button.type = 'button';
+
+          button.title = entry.text;
+
+          button.append(document.createTextNode(entry.text));
+
+          button.append(element('span', formatHistoryDate(entry.createdAt), 'rag-history-date'));
+
+          button.addEventListener('click', () => {
+
+            currentId = entry.conversation.id;
+
+            notice.hidden = true;
+
+            renderChat();
+
+            const messages = chat.querySelectorAll('.rag-message');
+
+            if (messages[entry.index]) messages[entry.index].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+          });
+
+          const remove = element('button', '×', 'rag-history-delete');
+
+          remove.type = 'button';
+
+          remove.title = 'Excluir esta pergunta e sua resposta';
+
+          remove.setAttribute('aria-label', 'Excluir pergunta: ' + entry.text);
+
+          remove.addEventListener('click', () => {
+
+            if (busy) return;
+
+            if (!confirm('Excluir esta pergunta e a resposta correspondente do histórico?')) return;
+
+            const c = conversations.find(item => item.id === entry.conversation.id);
+
+            if (!c) return;
+
+            // Exclui a pergunta e apenas a resposta associada, sem apagar outras interações.
+
+            const count = c.messages[entry.index + 1]?.role === 'assistant' ? 2 : 1;
+
+            c.messages.splice(entry.index, count);
+
+            if (!c.messages.length) {
+
+              conversations = conversations.filter(item => item.id !== c.id);
+
+              if (currentId === c.id) currentId = null;
+
+            } else {
+
+              const firstQuestion = c.messages.find(m => m.role === 'user');
+
+              if (firstQuestion) c.title = firstQuestion.text.slice(0, 60);
+
+            }
+
+            persist();
+
+            renderHistory();
+
+            renderChat();
+
+            notify('Interação excluída do histórico.');
+
+          });
+
+          row.append(button, remove);
+
+          history.append(row);
+
+        });
+
+      }
+
+
+
+      // SCRUM-509: encontra respostas parecidas no banco que já existe.
+
+      const suggestionBox = document.getElementById('ragSuggestions');
+
+      const suggestionList = document.getElementById('ragSuggestionList');
+
+
+
+      // SCRUM-509: aproxima termos equivalentes, sem exigir frase idêntica.
+      function palavrasImportantes(texto) {
+        const ignorar = ['como', 'qual', 'quais', 'para', 'com', 'uma', 'uns', 'umas', 'que', 'por', 'posso', 'pode', 'sobre', 'isso', 'esse', 'essa', 'meu', 'minha', 'dos', 'das', 'nos', 'nas', 'tem', 'ser', 'voce', 'estou', 'mais', 'entre', 'onde', 'quando', 'fazer', 'preciso', 'devo', 'quero', 'queria', 'gostaria', 'este', 'esta', 'sao', 'aos', 'eu', 'em', 'de', 'do', 'da', 'um', 'as', 'os'];
+        return normalize(texto).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/)
+          .filter(p => p.length > 1 && !ignorar.includes(p));
+      }
+
+      function conceito(palavra) {
+        const grupos = {
+          utilizacao: ['usar', 'uso', 'utilizar', 'utilizacao', 'utilizo', 'usando', 'utilizando', 'empregar'],
+          inteligencia: ['ia', 'inteligencia', 'artificial', 'chatgpt', 'chatbot'],
+          ferramenta: ['ferramenta', 'ferramentas', 'aplicativo', 'aplicativos', 'plataforma', 'plataformas'],
+          permissao: ['permitido', 'permitida', 'permitidas', 'autorizado', 'autorizada', 'autorizadas', 'aprovado', 'aprovada', 'liberado', 'liberada'],
+          dados: ['dado', 'dados', 'informacao', 'informacoes'],
+          privacidade: ['pessoal', 'pessoais', 'privado', 'privados', 'confidencial', 'confidenciais'],
+          compartilhar: ['compartilhar', 'inserir', 'colocar', 'enviar', 'fornecer'],
+          resposta: ['resposta', 'respostas', 'resultado', 'resultados'],
+          verificacao: ['verificar', 'validar', 'conferir', 'checar', 'revisar']
+        };
+        for (const nome in grupos) {
+          if (grupos[nome].includes(palavra)) return nome;
+        }
+        if (palavra.length > 5 && palavra.endsWith('oes')) return palavra.slice(0, -3);
+        if (palavra.length > 4 && palavra.endsWith('s')) return palavra.slice(0, -1);
+        return palavra;
+      }
+
+      function buscarSemelhantes(pergunta) {
+        const normalizada = normalize(pergunta).replace(/[^a-z0-9 ]/g, ' ').trim().replace(/\s+/g, ' ');
+        const termos = new Set(palavrasImportantes(pergunta).map(conceito));
+        if (!normalizada || !termos.size) return [];
+
+        return savedAnswers.map(resposta => {
+          const perguntaSalva = normalize(resposta.question).replace(/[^a-z0-9 ]/g, ' ').trim().replace(/\s+/g, ' ');
+          const palavras = new Set(palavrasImportantes(resposta.question).map(conceito));
+          const comuns = [...termos].filter(p => palavras.has(p));
+          const identica = perguntaSalva === normalizada;
+          const proporcao = comuns.length / Math.max(termos.size, palavras.size, 1);
+
+          // Aceita 2 conceitos em comum ou 1 conceito específico,
+          // desde que seja relevante para a pergunta digitada.
+          const genericos = ['inteligencia', 'utilizacao', 'resposta', 'ferramenta'];
+          const conceitoEspecifico = comuns.some(p => !genericos.includes(p) && p.length >= 4);
+          const sugestao = identica || comuns.length >= 2 || (conceitoEspecifico && proporcao >= 0.34);
+
+          return { resposta: resposta, pontuacao: identica ? 2 : proporcao, sugestao: sugestao };
+        }).filter(item => item.sugestao)
+          .sort((a, b) => b.pontuacao - a.pontuacao).slice(0, 3);
+      }
+
+      function mostrarSugestoes() {
+
+        suggestionList.replaceChildren();
+
+        const pergunta = question.value.trim();
+
+        if (pergunta.length < 5) { suggestionBox.hidden = true; return; }
+
+        const resultados = buscarSemelhantes(pergunta);
+
+        suggestionBox.hidden = resultados.length === 0;
+
+        resultados.forEach(item => {
+
+          const bloco = element('div', undefined, 'rag-suggestion-item');
+
+          bloco.append(element('strong', item.resposta.question));
+
+          bloco.append(element('p', item.resposta.text));
+
+          const botao = element('button', 'Usar esta resposta');
+
+          botao.type = 'button';
+
+          botao.addEventListener('click', async () => {
+
+            try {
+
+              await copyText(item.resposta.text);
+
+              registrarReutilizacao(item.resposta);
+
+            } catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
+
+          });
+
+          bloco.append(botao);
+
+          suggestionList.append(bloco);
+
+        });
+
+      }
+
+
+
+      question.addEventListener('input', mostrarSugestoes);
+
+
+
+      historySearch.addEventListener('input', renderHistory);
+
+      let proximoModo = 'CONSULTAR';
+      async function answerFor(input) {
+        const modo = proximoModo; proximoModo = 'CONSULTAR';
+        const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo }) });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
+        const fonte = dados.fontes && dados.fontes[0];
+        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+      }
+
+      form.addEventListener('submit', e => {
+
+        e.preventDefault();
+
+        if (busy) return;
+
+        const input = question.value.trim();
+
+        if (!input) return;
+
+        busy = true;
+
+        send.disabled = true;
+
+        send.textContent = 'Consultando...';
+
+        notice.hidden = true;
+
+        if (!currentConversation()) {
+
+          currentId = String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+
+          conversations.unshift({ id: currentId, title: input.slice(0, 60), messages: [] });
+
+        }
+
+        const current = currentConversation();
+
+        current.messages.push({ role: 'user', text: input, createdAt: new Date().toISOString() });
+
+        question.value = '';
+
+        persist();
+
+        renderChat();
+
+        renderHistory();
+
+        const loading = element('p', 'Consultando conteúdo autorizado...', 'rag-muted');
+
+        chat.append(loading);
+
+        chat.scrollTop = chat.scrollHeight;
+
+        setTimeout(async () => {
+
+          try {
+
+            const result = await answerFor(input);
+
+            current.messages.push(result);
+
+            persist();
+
+            renderChat();
+
+            renderHistory();
+
+            if (!result.source) notify('Nenhum resultado encontrado.');
+
+          } catch (erro) {
+
+            current.messages.push({ role: 'assistant', text: 'Não foi possível preparar a resposta. Tente novamente.', question: input });
+
+            persist();
+
+            renderChat();
+
+            renderHistory();
+
+            notify(erro.message || 'Erro ao consultar o serviço.', true);
+
+          } finally {
+
+            busy = false;
+
+            send.disabled = false;
+
+            send.textContent = 'Enviar pergunta';
+
+          }
+
+        }, 600);
+
+      });
+
+      document.getElementById('ragNew').addEventListener('click', () => {
+
+        if (busy) return;
+
+        currentId = null;
+
+        question.value = '';
+
+        mostrarSugestoes();
+
+        notice.hidden = true;
+
+        renderChat();
+
+      });
+
+      document.getElementById('ragClear').addEventListener('click', () => {
+
+        if (busy) return;
+
+        if (!confirm('Apagar todo o histórico deste navegador?')) return;
+
+        conversations = [];
+
+        currentId = null;
+
+        persist();
+
+        renderHistory();
+
+        renderChat();
+
+        notify('Histórico apagado.');
+
+      });
+
+      renderHistory();
+
+      renderChat();
+
+      renderBank();
+
+      atualizarEconomia();
+      fetch('/api/rag/historico').then(r => { if (!r.ok) throw Error('Histórico indisponível'); return r.json(); }).then(linhas => {
+        if (conversations.length) return;
+        conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
+          { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
+          { role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
+        ] }));
+        renderHistory();
+      }).catch(() => notify('Histórico do servidor indisponível.', true));
+
+    })();
+
+  </script>
+
+</body>
+
+</html>

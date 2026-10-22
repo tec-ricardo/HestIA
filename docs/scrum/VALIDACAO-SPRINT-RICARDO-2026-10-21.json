@@ -1,0 +1,31 @@
+{
+  "data": "2026-10-21",
+  "baseDevelop": "90c9529",
+  "java": {
+    "executados": 249,
+    "aprovados": 247,
+    "falhas": 0,
+    "erros": 0,
+    "ignorados": 2
+  },
+  "retesteAprendizagemContrato491": {
+    "executados": 11,
+    "aprovados": 11
+  },
+  "frontend": {
+    "aprovados": 6
+  },
+  "otimizacaoPython": {
+    "aprovados": 8
+  },
+  "migracoes": 23,
+  "smoke": {
+    "ApiDocs": 200,
+    "ContextoSemAutenticacao": 401,
+    "Rotas": 87
+  },
+  "intersecaoArquivosPR94": [],
+  "ambiente": "PostgreSQL17/pgvector descartavel, sem dados do projeto",
+  "provedorGeracaoRealTestado": false,
+  "publicacaoRemota": false
+}

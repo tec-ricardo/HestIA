@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BuscaVetorialService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private br.com.hestia.auditoria.service.DecisaoRecuperacaoService decisoes;
 
     private static final int DIMENSAO = 1536;
     private static final double SIMILARIDADE_PADRAO = 0.70;
@@ -68,7 +70,7 @@ public class BuscaVetorialService {
             );
         }
 
-        if (!Boolean.TRUE.equals(resposta.getReutilizavel())
+        if (!resposta.isElegivel() || !Boolean.TRUE.equals(resposta.getReutilizavel())
                 || !Boolean.FALSE.equals(resposta.getPossuiDadosSensiveis())) {
             throw new IllegalArgumentException(
                     "Resposta não autorizada para indexação."
@@ -90,6 +92,8 @@ public class BuscaVetorialService {
                   AND prompt_original = ?
                   AND resposta_gerada = ?
                   AND reutilizavel = true
+                  AND status_qualidade = 'APROVADA'
+                  AND (expira_em IS NULL OR expira_em > ?)
                   AND possui_dados_sensiveis = false
                   AND EXISTS (
                       SELECT 1
@@ -104,6 +108,7 @@ public class BuscaVetorialService {
                 empresaId,
                 promptIndexado,
                 respostaIndexada,
+                java.time.LocalDateTime.now(),
                 perfilAutorizado
         );
 
@@ -167,6 +172,8 @@ public class BuscaVetorialService {
                 FROM respostas_reutilizaveis
                 WHERE empresa_id = ?
                   AND reutilizavel = true
+                  AND status_qualidade = 'APROVADA'
+                  AND (expira_em IS NULL OR expira_em > ?)
                   AND possui_dados_sensiveis = false
                   AND embedding_vector IS NOT NULL
                   AND EXISTS (
@@ -181,6 +188,7 @@ public class BuscaVetorialService {
                 """,
                 Long.class,
                 empresaId,
+                java.time.LocalDateTime.now(),
                 usuario.getPerfil().name(),
                 vetor,
                 1.0 - similaridadeMinima,
@@ -189,6 +197,7 @@ public class BuscaVetorialService {
         );
 
         if (ids.isEmpty()) {
+            if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"SEM_CONTEUDO_AUTORIZADO");
             return List.of();
         }
 
@@ -199,6 +208,7 @@ public class BuscaVetorialService {
                         .filter(r -> r.getPerfisPermitidos()
                                 .contains(usuario.getPerfil()))
                         .filter(r -> Boolean.TRUE.equals(r.getReutilizavel()))
+                        .filter(RespostaReutilizavel::isElegivel)
                         .filter(r -> Boolean.FALSE.equals(
                                 r.getPossuiDadosSensiveis()
                         ))
@@ -207,6 +217,7 @@ public class BuscaVetorialService {
                                 Function.identity()
                         ));
 
+        if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"FILTROS_ANTES_DO_LIMITE");
         return ids.stream()
                 .map(respostas::get)
                 .filter(Objects::nonNull)

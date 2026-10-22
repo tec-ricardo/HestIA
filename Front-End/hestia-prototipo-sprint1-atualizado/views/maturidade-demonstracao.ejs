@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>
+        HestIA - AI Maturity Score
+    </title>
+
+    <link
+            rel="stylesheet"
+            href="/styles.css">
+
+
+<style>
+    /* SCRUM-382 a 385: informações complementares, sem alterar o layout existente */
+    .maturidade-composicao { margin: 18px 0; }
+    .maturidade-composicao table { width: 100%; border-collapse: collapse; }
+    .maturidade-composicao th, .maturidade-composicao td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    .maturidade-aviso { margin: 14px 0; padding: 12px; border-radius: 8px; background: #edf3ff; color: #27466e; }
+    .maturidade-ajuda { font-size: 13px; color: #64748b; }
+    .maturidade-detalhes summary { cursor: pointer; font-weight: 700; padding: 4px 0; }
+    .maturidade-detalhes summary:hover { color: #3159d8; }
+    .maturidade-detalhes .maturidade-subtitulo { font-size: 20px; font-weight: 700; line-height: 1.35; margin: 24px 0 12px; }
+    .maturidade-detalhes[open] summary { margin-bottom: 14px; }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <%- include("menu", {
+    perfil: perfil,
+    email: email,
+    active: active
+    }) %>
+
+
+    <main class="main">
+
+        <!-- TOPO -->
+
+        <header class="topbar">
+
+            <button
+                    class="menu-button"
+                    id="menuButton">
+
+                ☰
+
+            </button>
+
+
+            <div>
+
+                <p class="eyebrow">
+                    Maturidade
+                </p>
+
+                <h1>
+                    AI Maturity Score
+                </h1>
+
+            </div>
+
+
+            <div class="profile-switch">
+
+                    <span>
+                        <%= email %>
+                    </span>
+
+                <select disabled>
+
+                    <% if (perfil == "colaborador") { %>
+
+                        <option selected>
+                            Colaborador
+                        </option>
+
+                    <% } %>
+
+
+                    <% if (perfil == "gestor") { %>
+
+                        <option selected>
+                            Gestor
+                        </option>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <a
+                    class="topbar-logout"
+                    href="/sair">
+
+                Sair
+
+            </a>
+
+        </header>
+<section class="maturidade-aviso" role="status"><strong>Demonstração com dados fictícios.</strong> Estes valores não representam a empresa. <a href="/maturidade">Voltar aos indicadores reais</a></section>
+
+
+
+
+        <!-- COLABORADOR -->
+
+        <% if (perfil == "colaborador") { %>
+
+            <section class="grid two">
+
+                <article class="metric-card">
+
+                        <span>
+                            AI Maturity Score
+                        </span>
+
+                    <strong>
+                        <%= maturityScore %>
+                    </strong>
+
+                    <p>
+                        Pontuação geral de maturidade em IA.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <section class="grid four">
+
+                <article class="metric-card">
+
+                        <span>
+                            AI Literacy
+                        </span>
+
+                    <strong>
+                        <%= indicadores.aiLiteracy %>
+                    </strong>
+
+                    <p>
+                        Conhecimento e compreensão sobre o uso de Inteligência Artificial.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Governança
+                        </span>
+
+                    <strong>
+                        <%= indicadores.governanca %>
+                    </strong>
+
+                    <p>
+                        Aderência às políticas e diretrizes de uso de IA da organização.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Uso Responsável
+                        </span>
+
+                    <strong>
+                        <%= indicadores.usoResponsavel %>
+                    </strong>
+
+                    <p>
+                        Uso da IA de forma adequada, segura e em conformidade.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Produtividade
+                        </span>
+
+                    <strong>
+                        <%= indicadores.produtividade %>
+                    </strong>
+
+                    <p>
+                        Contribuição da IA para apoiar e otimizar as atividades realizadas.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            FinOps
+                        </span>
+
+                    <strong>
+                        <%= indicadores.finOps %>
+                    </strong>
+
+                    <p>
+                        Eficiência no consumo e nos custos relacionados ao uso de IA.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Segurança
+                        </span>
+
+                    <strong>
+                        <%= indicadores.seguranca %>
+                    </strong>
+
+                    <p>
+                        Cuidados com dados, privacidade e uso seguro das ferramentas de IA.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Colaboração
+                        </span>
+
+                    <strong>
+                        <%= indicadores.colaboracao %>
+                    </strong>
+
+                    <p>
+                        Uso e compartilhamento de conhecimentos sobre IA entre colaboradores.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                        <span>
+                            Desenvolvimento de Competências
+                        </span>
+
+                    <strong>
+                        <%= indicadores.desenvolvimentoCompetencias %>
+                    </strong>
+
+                    <p>
+                        Evolução das habilidades e conhecimentos relacionados à IA.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- GRAFICO COLABORADOR -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Indicadores de AI Maturity Score
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoMaturidade"></canvas>
+
+                    <div
+                            class="chart-empty"
+                            id="semMaturidade">
+
+                        Sem dados registrados para gerar o gráfico.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        <% } %>
+
+
+        <!-- GESTOR -->
+
+        <% if (perfil == "gestor") { %>
+
+            <!-- CARDS PRINCIPAIS -->
+
+            <section class="grid">
+
+                <article class="metric-card">
+
+                    <span>
+                        AI Maturity Score
+                    </span>
+
+                    <strong>
+                        Comparação
+                    </strong>
+
+                    <p>
+                        Comparação da maturidade entre departamentos
+                        ou grupos da organização.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- RESUMO ANALITICO -->
+
+            <section class="grid four">
+
+                <article class="metric-card">
+
+                    <span>
+                        Média organizacional
+                    </span>
+
+                    <strong>
+                        <%= mediaDepartamental %>
+                    </strong>
+
+                    <p>
+                        Média do AI Maturity Score dos departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Maior maturidade
+                    </span>
+
+                    <strong>
+                        <%= maiorMaturidade.nome %>
+                    </strong>
+
+                    <p>
+                        Score <%= maiorMaturidade.score.toFixed(2) %> — maior resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Menor maturidade
+                    </span>
+
+                    <strong>
+                        <%= menorMaturidade.nome %>
+                    </strong>
+
+                    <p>
+                        Score <%= menorMaturidade.score.toFixed(2) %> — menor resultado entre os departamentos analisados.
+                    </p>
+
+                </article>
+
+
+                <article class="metric-card">
+
+                    <span>
+                        Departamentos analisados
+                    </span>
+
+                    <strong>
+                        <%= departamentosMaturidade.length %>
+                    </strong>
+
+                    <p>
+                        Tecnologia, Marketing, Financeiro e RH.
+                    </p>
+
+                </article>
+
+            </section>
+
+
+            <!-- GRAFICO GERAL DOS DEPARTAMENTOS -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <h3>
+                        Comparação entre departamentos
+                    </h3>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoDepartamentos"></canvas>
+
+                    <div
+                            class="chart-empty"
+                            id="semDepartamentos">
+
+                        Nenhum departamento possui dados de maturidade
+                        para comparação.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TABELA COMPARATIVA -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Análise comparativa da maturidade
+                        </h3>
+
+                        <p>
+                            Comparação dos resultados de AI Maturity Score
+                            entre os departamentos da organização.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Departamento
+                            </th>
+
+                            <th>
+                                AI Maturity Score
+                            </th>
+
+                            <th>
+                                Comparação com a média
+                            </th>
+
+                            <th>
+                                Diferença
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <% departamentosMaturidade.forEach(function(departamento) { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= departamento.nome %>
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        <%= departamento.score.toFixed(2) %>
+                                    </strong>
+                                </td>
+
+                                <td>
+
+                                    <% if (departamento.score >= mediaDepartamental) { %>
+
+                                        Acima da média
+
+                                    <% } else { %>
+
+                                        Abaixo da média
+
+                                    <% } %>
+
+                                </td>
+
+                                <td>
+
+                                    <%= (departamento.score - mediaDepartamental).toFixed(2) %>
+                                    pontos
+
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Dados demonstrativos utilizados para representação do wireframe.
+                </p>
+
+            </section>
+
+
+            <!-- INDICADORES POR DEPARTAMENTO -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Indicadores de maturidade por departamento
+                        </h3>
+
+                        <p>
+                            Detalhamento dos indicadores para apoiar a comparação
+                            da maturidade entre as áreas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-chart maturidade-chart">
+
+                    <canvas id="graficoIndicadoresDepartamentos"></canvas>
+
+                </div>
+
+            </section>
+
+
+            <!-- DETALHAMENTO DOS INDICADORES -->
+
+            <section class="panel">
+
+                <div class="panel-head">
+
+                    <div>
+
+                        <h3>
+                            Detalhamento dos indicadores
+                        </h3>
+
+                        <p>
+                            Visão comparativa dos componentes de maturidade
+                            utilizados no cenário demonstrativo.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                Indicador
+                            </th>
+
+                            <th>
+                                Tecnologia
+                            </th>
+
+                            <th>
+                                Marketing
+                            </th>
+
+                            <th>
+                                Financeiro
+                            </th>
+
+                            <th>
+                                RH
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        <tr>
+                            <td>AI Literacy</td>
+                            <td><%= departamentosMaturidade[0].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.aiLiteracy %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.aiLiteracy %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Governança</td>
+                            <td><%= departamentosMaturidade[0].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.governanca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.governanca %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Uso Responsável</td>
+                            <td><%= departamentosMaturidade[0].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.usoResponsavel %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.usoResponsavel %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Produtividade</td>
+                            <td><%= departamentosMaturidade[0].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.produtividade %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.produtividade %></td>
+                        </tr>
+
+                        <tr>
+                            <td>FinOps</td>
+                            <td><%= departamentosMaturidade[0].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.finOps %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.finOps %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Segurança</td>
+                            <td><%= departamentosMaturidade[0].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.seguranca %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.seguranca %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Colaboração</td>
+                            <td><%= departamentosMaturidade[0].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.colaboracao %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.colaboracao %></td>
+                        </tr>
+
+                        <tr>
+                            <td>Desenvolvimento de Competências</td>
+                            <td><%= departamentosMaturidade[0].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[1].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[2].indicadores.desenvolvimentoCompetencias %></td>
+                            <td><%= departamentosMaturidade[3].indicadores.desenvolvimentoCompetencias %></td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p class="mock-note">
+                    Indicadores e valores demonstrativos utilizados para representação do MVP.
+                </p>
+
+            </section>
+
+        <% } %>
+
+
+        <!-- SCRUM-446 a 448: mock local na view; sem BFF, JSON ou API -->
+        <% const baseNarrativa = {
+          demonstrativo: true,
+          inicio: '2026-01', fim: '2026-06',
+          totalUtilizacoes: 11150, treinamentos: 94, eventosSeguranca: 7,
+          evolucao: [
+            { mes: '2026-01', registros: 1200 },
+            { mes: '2026-02', registros: 1450 },
+            { mes: '2026-03', registros: 1680 },
+            { mes: '2026-04', registros: 1920 },
+            { mes: '2026-05', registros: 2150 },
+            { mes: '2026-06', registros: 2750 }
+          ]
+        }; %>
+        <style>
+          .hist-wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,1fr);gap:16px}
+          .hist-box{border:1px solid #e2e8f0;border-radius:12px;padding:16px;background:#fff;min-width:0}
+          .hist-box h4{margin:0 0 10px;font-size:15px}
+          .hist-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+          .hist-kpi{background:#f5f7fb;border-radius:10px;padding:12px}
+          .hist-kpi strong{display:block;font-size:20px;color:#152c50}
+          .hist-kpi span,.hist-muted{font-size:12px;color:#64748b}
+          .hist-chart{width:100%;height:180px;display:block}
+          .hist-chart .hist-hit{cursor:crosshair;outline:none}
+          .hist-chart .hist-hit:focus-visible{stroke:#152c50;stroke-width:2}
+          .hist-tooltip{position:absolute;pointer-events:none;z-index:5;background:#152c50;color:white;padding:8px 11px;border-radius:8px;font-size:12px;box-shadow:0 4px 12px #0002;white-space:nowrap;transform:translate(-50%,-110%)}
+          .hist-chart-holder{position:relative}
+          .hist-legend{font-size:12px;color:#64748b;margin:8px 0 0}
+          .hist-items{margin:0;padding-left:18px;line-height:1.8;font-size:13px}
+          @media(max-width:850px){.hist-wrap{grid-template-columns:1fr}.hist-kpis{grid-template-columns:1fr}}
+        </style>
+        <section class="panel" aria-label="Evolução demonstrativa de utilização da IA">
+          <div class="panel-head"><h3>Utilização de IA ao longo do tempo </h3></div>
+          <% if (baseNarrativa && Array.isArray(baseNarrativa.evolucao) && baseNarrativa.evolucao.length) { %>
+
+            <div class="hist-kpis">
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.totalUtilizacoes).toLocaleString('pt-BR') %></strong><span>Registros de utilização</span></div>
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.treinamentos).toLocaleString('pt-BR') %></strong><span>Registros de treinamento</span></div>
+              <div class="hist-kpi"><strong><%= Number(baseNarrativa.eventosSeguranca).toLocaleString('pt-BR') %></strong><span>Eventos de segurança</span></div>
+            </div>
+            <div class="hist-wrap">
+              <div class="hist-box">
+                <h4>Registros de utilização por mês</h4>
+                <div class="hist-chart-holder"><svg id="histGrafico" class="hist-chart" viewBox="0 0 640 180" role="img" aria-label="Gráfico mensal interativo de registros de utilização de IA"></svg><div id="histTooltip" class="hist-tooltip" role="status" hidden></div></div>
+                <p class="hist-legend">Período: <%= baseNarrativa.inicio %> a <%= baseNarrativa.fim %> · <%= baseNarrativa.evolucao.length %> meses com registros</p>
+              </div>
+              <div class="hist-box">
+                <h4>Pontos de atenção e próximos passos</h4>
+                <ul class="hist-items">
+                  <li>Acompanhar a variação mensal de utilização.</li>
+                  <li>Avaliar eventos de segurança por gravidade e contexto quando houver dados reais.</li>
+                  <li>Relacionar os treinamentos à adoção antes de avaliar maturidade.</li>
+                </ul>
+
+            </div>
+            <script>
+              (() => {
+                const dados = <%- JSON.stringify(baseNarrativa.evolucao) %>;
+                const svg = document.getElementById('histGrafico');
+                if (!svg || !dados.length) return;
+                const NS = 'http://www.w3.org/2000/svg';
+                const add = (tag, attrs, txt) => { const el=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));if(txt!==undefined)el.textContent=txt;svg.appendChild(el);return el; };
+                const max = Math.max(...dados.map(x=>x.registros),1), left=35,right=620,top=12,bottom=148;
+                [0,.5,1].forEach(t=>{const y=bottom-(bottom-top)*t;add('line',{x1:left,y1:y,x2:right,y2:y,stroke:'#e2e8f0'});add('text',{x:29,y:y+4,'text-anchor':'end','font-size':10,fill:'#64748b'},Math.round(max*t).toLocaleString('pt-BR'));});
+                const coords=dados.map((d,i)=>[left+(right-left)*(dados.length===1?.5:i/(dados.length-1)),bottom-(d.registros/max)*(bottom-top)]);
+                add('polyline',{points:coords.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#3564d8','stroke-width':3,'stroke-linejoin':'round'});
+                const tooltip = document.getElementById('histTooltip');
+                const holder = svg.parentElement;
+                const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+                const esconder = () => { tooltip.hidden = true; };
+                coords.forEach((p,i)=>{
+                  const d=dados[i];
+                  const ponto=add('circle',{cx:p[0],cy:p[1],r:5,fill:'#3564d8',stroke:'#fff','stroke-width':2});
+                  const hit=add('circle',{cx:p[0],cy:p[1],r:14,fill:'transparent',class:'hist-hit',tabindex:0,'aria-label':`${d.mes}: ${d.registros.toLocaleString('pt-BR')} registros`});
+                  const mostrar=()=>{
+                    const [ano,mes]=d.mes.split('-');
+                    tooltip.textContent=`${meses[Number(mes)-1]} de ${ano}: ${d.registros.toLocaleString('pt-BR')} registros`;
+                    tooltip.hidden=false;
+                    const box=holder.getBoundingClientRect();
+                    const pos=svg.createSVGPoint();pos.x=p[0];pos.y=p[1];
+                    const screen=pos.matrixTransform(svg.getScreenCTM());
+                    const x=Math.max(85,Math.min(box.width-85,screen.x-box.left));
+                    tooltip.style.left=x+'px';tooltip.style.top=Math.max(34,screen.y-box.top-7)+'px';
+                    ponto.setAttribute('r',7);
+                  };
+                  const sair=()=>{esconder();ponto.setAttribute('r',5);};
+                  hit.addEventListener('mouseenter',mostrar);
+                  hit.addEventListener('mouseleave',sair);
+                  hit.addEventListener('focus',mostrar);
+                  hit.addEventListener('blur',sair);
+                  if(i===0||i===dados.length-1||i%3===0)add('text',{x:p[0],y:169,'text-anchor':'middle','font-size':10,fill:'#64748b'},d.mes.slice(2));
+                });
+              })();
+            </script>
+          <% } else { %>
+            <p>Dados demonstrativos indisponíveis.</p>
+          <% } %>
+        </section>
+
+        <section class="panel maturidade-composicao" aria-label="Como é calculado o AI Maturity Score?">
+            <details class="maturidade-detalhes">
+                <summary>Como é calculado o AI Maturity Score?</summary>
+            <p>O índice completo é uma média ponderada das notas dos oito indicadores, com os pesos abaixo.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Indicador</th><th>Peso</th></tr></thead>
+                    <tbody>
+                        <tr><td>AI Literacy</td><td>15%</td></tr>
+                        <tr><td>Governança</td><td>15%</td></tr>
+                        <tr><td>Uso Responsável</td><td>15%</td></tr>
+                        <tr><td>Produtividade</td><td>10%</td></tr>
+                        <tr><td>FinOps</td><td>10%</td></tr>
+                        <tr><td>Segurança</td><td>20%</td></tr>
+                        <tr><td>Colaboração</td><td>5%</td></tr>
+                        <tr><td>Desenvolvimento de Competências</td><td>10%</td></tr>
+                    </tbody>
+                    <tfoot><tr><th>Total</th><th>100%</th></tr></tfoot>
+                </table>
+            </div>
+
+            <!-- SCRUM-384: metadados opcionais da API; nenhum valor é inventado. -->
+            <%
+                // A rota /maturidade pode enviar "maturidadeMeta" quando o backend for integrado.
+                // Formato: { periodoInicio, periodoFim, coberturaPeso, coberturaIndicadores,
+                //            versaoRegra, versaoCalculo, dataApuracao, status, indicadores: [...] }
+                const meta384 = typeof maturidadeMeta !== "undefined" && maturidadeMeta &&
+                    typeof maturidadeMeta === "object" ? maturidadeMeta : {};
+                const indicadores384 = Array.isArray(meta384.indicadores) ? meta384.indicadores : [];
+                const formatarData384 = function(valor) {
+                    if (!valor) return "Aguardando dados da API";
+                    const texto = String(valor);
+                    const iso = texto.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+                    return iso ? iso[3] + "/" + iso[2] + "/" + iso[1] : texto;
+                };
+                const formatarCobertura384 = function(valor) {
+                    if (typeof valor !== "number" || !Number.isFinite(valor) || valor < 0 || valor > 1) {
+                        return "Aguardando cálculo da API";
+                    }
+                    return (valor * 100).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "%";
+                };
+                const nomes384 = [
+                    ["aiLiteracy", "AI Literacy"],
+                    ["governanca", "Governança"],
+                    ["usoResponsavel", "Uso Responsável"],
+                    ["produtividade", "Produtividade"],
+                    ["finOps", "FinOps"],
+                    ["seguranca", "Segurança"],
+                    ["colaboracao", "Colaboração"],
+                    ["desenvolvimentoCompetencias", "Desenvolvimento de Competências"]
+                ];
+            %>
+            <h4 class="maturidade-subtitulo">Período, cobertura e rastreabilidade</h4>
+            <p>Início do período analisado: <%= formatarData384(meta384.periodoInicio) %></p>
+            <p>Fim do período analisado: <%= formatarData384(meta384.periodoFim) %></p>
+            <p>Indicadores elegíveis:
+                <%= Number.isInteger(meta384.coberturaIndicadores) && meta384.coberturaIndicadores >= 0 && meta384.coberturaIndicadores <= 8
+                    ? meta384.coberturaIndicadores + " de 8" : "Aguardando cálculo da API" %>
+            </p>
+            <p>Versão do cálculo executado: <%= meta384.versaoCalculo || "Não informada pela API" %></p>
+            <p>Situação dos dados: <%= meta384.status || "Aguardando validação da API" %></p>
+            <h4 class="maturidade-subtitulo">Cobertura por indicador</h4>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Indicador</th><th>Elegibilidade</th><th>Cobertura técnica</th><th>Amostra</th></tr></thead>
+                    <tbody>
+                    <% nomes384.forEach(function(item) {
+                        const dado = indicadores384.find(function(i) { return i && i.codigo === item[0]; }) || {};
+                    %>
+                        <tr>
+                            <td><%= item[1] %></td>
+                            <td><%= dado.elegivel === true ? "Elegível" : dado.elegivel === false ? "Dados insuficientes" : "Não avaliado" %></td>
+                            <td><%= formatarCobertura384(dado.coberturaTecnica) %></td>
+                            <td><%= Number.isInteger(dado.amostra) && dado.amostra >= 0 ? dado.amostra : "Não informada" %></td>
+                        </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            </details>
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+
+    /* COLABORADOR */
+
+    const graficoMaturidade =
+        document.getElementById("graficoMaturidade");
+
+
+    if (graficoMaturidade) {
+
+        const valoresMaturidade = [
+            <%= indicadores.aiLiteracy %>,
+            <%= indicadores.governanca %>,
+            <%= indicadores.usoResponsavel %>,
+            <%= indicadores.produtividade %>,
+            <%= indicadores.finOps %>,
+            <%= indicadores.seguranca %>,
+            <%= indicadores.colaboracao %>,
+            <%= indicadores.desenvolvimentoCompetencias %>
+        ];
+
+
+        if (valoresMaturidade.some(valor => typeof valor === "number" && Number.isFinite(valor))) {
+
+            document
+                .getElementById("semMaturidade")
+                .style.display = "none";
+
+
+            new Chart(graficoMaturidade, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: [
+                        "AI Literacy",
+                        "Governança",
+                        "Uso Responsável",
+                        "Produtividade",
+                        "FinOps",
+                        "Segurança",
+                        "Colaboração",
+                        "Desenvolvimento de Competências"
+                    ],
+
+                    datasets: [{
+
+                        label: "AI Maturity Score",
+
+                        data: valoresMaturidade
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    }
+
+
+
+    /* GESTOR - COMPARACAO GERAL */
+
+    const graficoDepartamentos =
+        document.getElementById("graficoDepartamentos");
+
+
+    if (graficoDepartamentos) {
+
+        const departamentos = [
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            "<%= departamento.nome %>"
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
+        ];
+
+
+        const valoresDepartamentos = [
+
+            <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+            <%= departamento.score.toFixed(2) %>
+            <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+            <% }) %>
+
+        ];
+
+
+        if (departamentos.length > 0) {
+
+            document
+                .getElementById("semDepartamentos")
+                .style.display = "none";
+
+
+            new Chart(graficoDepartamentos, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: departamentos,
+
+                    datasets: [{
+
+                        label: "AI Maturity Score",
+
+                        data: valoresDepartamentos
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            max: 100
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    }
+
+
+
+    /* GESTOR - INDICADORES POR DEPARTAMENTO */
+
+    const graficoIndicadoresDepartamentos =
+        document.getElementById("graficoIndicadoresDepartamentos");
+
+
+    if (graficoIndicadoresDepartamentos) {
+
+        new Chart(graficoIndicadoresDepartamentos, {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "AI Literacy",
+                    "Governança",
+                    "Uso Responsável",
+                    "Produtividade",
+                    "FinOps",
+                    "Segurança",
+                    "Colaboração",
+                    "Desenvolvimento de Competências"
+                ],
+
+                datasets: [
+
+                    <% departamentosMaturidade.forEach(function(departamento, index) { %>
+
+                    {
+
+                        label:
+                            "<%= departamento.nome %>",
+
+                        data: [
+
+                            <%= departamento.indicadores.aiLiteracy %>,
+                            <%= departamento.indicadores.governanca %>,
+                            <%= departamento.indicadores.usoResponsavel %>,
+                            <%= departamento.indicadores.produtividade %>,
+                            <%= departamento.indicadores.finOps %>,
+                            <%= departamento.indicadores.seguranca %>,
+                            <%= departamento.indicadores.colaboracao %>,
+                            <%= departamento.indicadores.desenvolvimentoCompetencias %>
+
+                        ]
+
+                    }
+
+                    <%= index < departamentosMaturidade.length - 1 ? "," : "" %>
+
+                    <% }) %>
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                interaction: {
+
+                    mode: "index",
+
+                    intersect: false
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+</script>
+
+
+<script src="/app.js"></script>
+
+</body>
+
+</html>

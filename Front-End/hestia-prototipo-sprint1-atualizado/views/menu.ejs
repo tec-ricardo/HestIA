@@ -36,6 +36,8 @@
         </a> 
  
  
+        <a class="nav-link" href="/utilizacoes/registros">Registros e origem</a>
+
         <!-- COLABORADOR --> 
  
         <% if (perfil == "colaborador") { %> 
@@ -46,7 +48,17 @@
  
                 Utilizações de IA 
  
-            </a> 
+            </a>
+            
+            <!-- ASSISTENTE RAG -->
+
+            <a
+                class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>"
+                href="/assistente-rag">
+
+                Assistente RAG
+
+            </a>
  
  
             <!-- HESTIA PASS --> 
@@ -68,6 +80,16 @@
  
                 Ranking 
  
+            </a>
+
+            <!-- MICROTREINAMENTOS -->
+
+            <a
+                class="nav-link <%= active == 'microtreinamentos' ? 'active' : '' %>"
+                href="/microtreinamentos">
+
+                Microtreinamentos
+
             </a>
  
  
@@ -108,7 +130,9 @@
  
         <!-- GESTOR --> 
  
-        <% if (perfil == "gestor") { %> 
+        <% if (perfil == "gestor") { %>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+ 
  
             <a 
                 class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" 
@@ -155,7 +179,9 @@
  
         <!-- ADMINISTRADOR --> 
  
-        <% if (perfil == "administrador") { %> 
+        <% if (perfil == "administrador") { %>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+ 
  
             <a 
                 class="nav-link <%= active == 'creditos' ? 'active' : '' %>" 
@@ -197,6 +223,8 @@
  
             </a> 
  
+            <a class="nav-link" href="/administracao/respostas">Revisão de respostas</a>
+
             <a 
                 class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>" 
                 href="/configuracoes"> 
