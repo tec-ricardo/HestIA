@@ -77,19 +77,20 @@ test('certificação na tela depende de concessão, não da conclusão da leitur
     const contexto = vm.createContext({
         document: {
             getElementById: id => id === 'mt-cert-list' ? lista : null,
-            createElement: () => ({ append() {}, addEventListener() {} })
+            createElement: () => ({ children: [], append(...itens) { this.children.push(...itens); }, addEventListener() {} })
         },
         fetch: async url => {
             assert.equal(url, '/api/certificacoes');
-            return { ok: true, json: async () => ({ certificacoes: concessoes }) };
+            return { ok: true, json: async () => ({ certificacoes: concessoes, progresso: concessoes.length ? [] : [{ definicaoId: 8, nome: 'Fundamentos', nivel: 'Inicial', versao: 1, concedida: false, requisitosAtendidos: 2, totalRequisitos: 4, requisitosPendentes: 2 }] }) };
         }
     });
     for (const script of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)) {
         if (script[1].trim()) vm.runInContext(script[1], contexto);
     }
     await vm.runInContext('cursos = [{ id: 1, concluido: true }]; mostrarCertificacoes()', contexto);
-    assert.equal(lista.children.length, 0);
-    assert.match(lista.textContent, /Nenhuma certificação concedida/);
+    assert.equal(lista.children.length, 1);
+    assert.equal(lista.children[0].children[2].textContent, '2 de 4 requisitos atendidos');
+    assert.match(lista.children[0].children[3].textContent, /2 requisitos obrigatórios/);
     concessoes = [{ id: 5, nome: 'Fundamentos', nivel: 'Inicial', versao: 1, concedidaEm: '2026-10-22' }];
     await vm.runInContext('mostrarCertificacoes()', contexto);
     assert.equal(lista.children.length, 1);

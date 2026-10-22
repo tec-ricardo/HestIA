@@ -99,11 +99,16 @@ class AprendizagemSprintIntegrationTest {
     }
     @Test void certificacaoExigeConclusaoEAprovacaoEConcedeUmaUnicaVez(){
         long catalogo=publicar();certificados.publicar(admin,new CertificacaoService.Publicacao("DADOS","Proteção de dados","Inicial",1,List.of(catalogo)));
-        assertThat(certificados.verificar(aluno,aluno.getId()).getFirst().concedida()).isFalse();
+        var pendente=certificados.verificar(aluno,aluno.getId()).getFirst();
+        assertThat(pendente.concedida()).isFalse();assertThat(pendente.nivel()).isEqualTo("Inicial");
+        assertThat(pendente.requisitosAtendidos()).isZero();assertThat(pendente.totalRequisitos()).isEqualTo(1);
+        assertThat(pendente.avaliacoesPendentes()).containsExactly(catalogo);
         var t=abrir(catalogo);a.enviar(aluno,t.id(),envio(4));
         TestTransaction.flagForCommit();TestTransaction.end();
         assertThat(certificados.historico(aluno,aluno.getId())).hasSize(1);
-        certificados.verificar(aluno,aluno.getId());assertThat(certificados.historico(aluno,aluno.getId())).hasSize(1);
+        var concedida=certificados.verificar(aluno,aluno.getId()).getFirst();
+        assertThat(concedida.concedida()).isTrue();assertThat(concedida.requisitosAtendidos()).isEqualTo(1);
+        assertThat(concedida.avaliacoesPendentes()).isEmpty();assertThat(certificados.historico(aluno,aluno.getId())).hasSize(1);
     }
     @Test void reprovacaoAcionaUmCicloEAprendizagemConcluiSemApagarHistorico(){
         long catalogo=publicar();var t=abrir(catalogo);a.enviar(aluno,t.id(),envio(3));

@@ -20,6 +20,7 @@ test('adapta avaliações reais, mantém tentativa e não expõe gabarito', asyn
     },
     async post(url, body) {
       chamadas.push(['POST', url, body]);
+      if (url === '/certificacoes/usuarios/1/verificar') return { data: [{ definicaoId: 7, nome: 'Fundamentos', nivel: 'Inicial', codigo: 'FUND', versao: 1, concedida: true, requisitosAtendidos: 4, totalRequisitos: 4, avaliacoesPendentes: [] }] };
       if (url === '/aprendizagem/catalogo/11/tentativas') return { data: { id: 123, questoes } };
       if (url === '/aprendizagem/tentativas/123/respostas') return { data: { id: 123, nota: 80, status: 'APROVADA', acertos: 4, questoes } };
       if (url === '/registros-uso-ia') return { data: body };
@@ -44,7 +45,10 @@ test('adapta avaliações reais, mantém tentativa e não expõe gabarito', asyn
   const abertura = await request('/api/microtreinamentos/1?avaliacao=1');
   const certificacoes = await request('/api/certificacoes?usuarioId=999');
   assert.equal(certificacoes.status, 200);
-  assert.deepEqual(JSON.parse(certificacoes.text).certificacoes, [{ id: 9, nome: 'Fundamentos', nivel: 'Inicial', codigo: 'FUND', versao: 1, concedidaEm: '2026-10-22' }]);
+  assert.deepEqual(JSON.parse(certificacoes.text), {
+    certificacoes: [{ id: 9, nome: 'Fundamentos', nivel: 'Inicial', codigo: 'FUND', versao: 1, concedidaEm: '2026-10-22' }],
+    progresso: [{ definicaoId: 7, nome: 'Fundamentos', nivel: 'Inicial', codigo: 'FUND', versao: 1, concedida: true, requisitosAtendidos: 4, totalRequisitos: 4, requisitosPendentes: 0 }]
+  });
   assert.equal((await request('/api/certificacoes', null, { 'x-usuario': '3', 'x-perfil': 'administrador' })).status, 403);
   assert.equal(abertura.status, 200); assert.equal(JSON.parse(abertura.text).treinamento.questoes.length, 5);
   assert.ok(!abertura.text.includes('correta')); assert.ok(!abertura.text.includes('chaves'));

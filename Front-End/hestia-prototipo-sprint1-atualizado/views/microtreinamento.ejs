@@ -2,7 +2,7 @@
 <!-- SCRUM-486: certificações vinculadas aos cursos existentes -->
 <section id="mt-certificacoes" class="mt-cert-section" aria-labelledby="mt-cert-title">
   <div class="mt-toolbar"><div><h2 id="mt-cert-title">Minhas certificações</h2>
-  <p>Certificações concedidas conforme os requisitos publicados pela empresa.</p></div></div>
+  <p>Acompanhe as certificações concedidas e o progresso nos requisitos publicados pela empresa.</p></div></div>
   <div class="mt-cert-grid" id="mt-cert-list" aria-live="polite">
     <div class="mt-empty">Carregando certificações...</div>
   </div>
@@ -466,9 +466,8 @@ async function mostrarCertificacoes() {
     try {
         const resultado = await buscarDados("/api/certificacoes", "GET", null);
         lista.replaceChildren();
-        if (resultado.certificacoes.length === 0) {
-            lista.textContent = "Nenhuma certificação concedida. Conclua os requisitos publicados pela empresa.";
-        }
+        const progresso = Array.isArray(resultado.progresso) ? resultado.progresso : [];
+        if (resultado.certificacoes.length === 0 && progresso.length === 0) lista.textContent = "Nenhuma certificação foi configurada pela empresa.";
         for (const certificado of resultado.certificacoes) {
             const card = document.createElement("article");
             card.className = "mt-cert-card";
@@ -482,6 +481,21 @@ async function mostrarCertificacoes() {
             botao.textContent = "Ver certificado";
             botao.addEventListener("click", () => abrirCertificado(certificado));
             card.append(titulo, descricao, botao);
+            lista.append(card);
+        }
+        for (const situacao of progresso.filter(item => !item.concedida)) {
+            const card = document.createElement("article");
+            card.className = "mt-cert-card";
+            const titulo = document.createElement("h3");
+            titulo.textContent = situacao.nome;
+            const descricao = document.createElement("p");
+            descricao.textContent = situacao.nivel + " | Versão " + situacao.versao;
+            const andamento = document.createElement("p");
+            andamento.className = "mt-cert-status";
+            andamento.textContent = situacao.requisitosAtendidos + " de " + situacao.totalRequisitos + " requisitos atendidos";
+            const pendencias = document.createElement("p");
+            pendencias.textContent = situacao.requisitosPendentes === 1 ? "Falta concluir e aprovar 1 requisito obrigatório." : "Faltam concluir e aprovar " + situacao.requisitosPendentes + " requisitos obrigatórios.";
+            card.append(titulo, descricao, andamento, pendencias);
             lista.append(card);
         }
     } catch (erro) {
