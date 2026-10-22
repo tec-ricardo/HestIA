@@ -2,6 +2,8 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 const session = require("express-session");
+const { autenticarContaReal, criarRotaMaturidade } = require("./confianca-maturidade");
+const { logoutApi } = require("./sessao-api");
 
 const api = axios.create({
     baseURL: process.env.API_URL || "http://localhost:8080",
@@ -10,6 +12,7 @@ const api = axios.create({
 
 
 app.set("view engine", "ejs");
+app.set("views", require("path").join(__dirname, "views"));
 
 app.use(express.static("public"));
 
@@ -79,7 +82,9 @@ app.get("/acesso", (req, res) => {
 });
 
 
-app.post("/acesso", (req, res) => {
+app.post("/acesso", async (req, res, next) => {
+    try { if (await autenticarContaReal(req, res, api)) return; }
+    catch (erro) { return next(erro); }
 
     req.session.email = String(req.body.email || "").trim().toLowerCase();
 
@@ -551,7 +556,9 @@ function obterIndicadoresDepartamentais() {
 }
 
 
-app.get("/maturidade", async (req, res) => {
+app.get("/maturidade", criarRotaMaturidade(api));
+
+app.get("/maturidade/demonstracao", async (req, res) => {
 
     if (req.session.perfil == "") {
 
@@ -760,7 +767,7 @@ app.get("/maturidade", async (req, res) => {
         );
 
 
-    res.render("maturidade", {
+    res.set("Cache-Control", "no-store").render("maturidade-demonstracao", {
 
         perfil: req.session.perfil,
 
@@ -2182,20 +2189,7 @@ app.get("/assistente-rag", (req, res) => {
 
 /* SAIR */
 
-app.get("/sair", (req, res) => {
-
-    req.session.destroy(function(erro) {
-
-        if (erro) {
-            return res.redirect("/");
-        }
-
-        res.clearCookie("connect.sid");
-        res.redirect("/acesso?saiu=1");
-
-    });
-
-});
+app.get("/sair", logoutApi(api));
 
 
 /* INTEGRACAO COM O BACKEND */
@@ -3091,13 +3085,10 @@ app.post("/api/microtreinamentos/:id/avaliacao",apenasColaboradorMicro,(req,res)
 
 /* SERVIDOR */
 
-app.listen(3000, () => {
-
-    console.log(
-        "Servidor rodando"
-    );
-
-});
+if (require.main === module) {
+    app.listen(process.env.PORT || 3000, () => console.log("Servidor rodando"));
+}
+module.exports = app;
 
 async function consultarReutilizacoes(empresaId) {
     try {
