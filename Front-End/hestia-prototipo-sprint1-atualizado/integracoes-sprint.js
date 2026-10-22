@@ -24,8 +24,13 @@ module.exports = function montarIntegracoes(app, api) {
   };
   const adaptar = t => ({ ...t, id: String(t.id), bloqueado: false, nivel: 'Conteúdo disponível', motivo: 'Requisitos e avaliação definidos pela empresa', recomendado: false, xpAtual: null, medalhaAtual: 'Não utilizada como requisito' });
   router.get('/api/certificacoes', colaborador, executar(async (req, res) => {
-    const { data } = await api.get(`/certificacoes/usuarios/${id(req.session.usuarioId)}`);
-    res.json({ certificacoes: data.map(c => ({ id: c.id, nome: c.nome, nivel: c.nivel, codigo: c.codigo, versao: c.versao, concedidaEm: c.concedida_em })) });
+    const usuarioId = id(req.session.usuarioId);
+    const { data: situacoes } = await api.post(`/certificacoes/usuarios/${usuarioId}/verificar`);
+    const { data: concessoes } = await api.get(`/certificacoes/usuarios/${usuarioId}`);
+    res.json({
+      certificacoes: concessoes.map(c => ({ id: c.id, nome: c.nome, nivel: c.nivel, codigo: c.codigo, versao: c.versao, concedidaEm: c.concedida_em })),
+      progresso: situacoes.map(s => ({ definicaoId: s.definicaoId, nome: s.nome, nivel: s.nivel, codigo: s.codigo, versao: s.versao, concedida: s.concedida, requisitosAtendidos: s.requisitosAtendidos, totalRequisitos: s.totalRequisitos, requisitosPendentes: s.avaliacoesPendentes.length }))
+    });
   }));
   router.get('/api/microtreinamentos', colaborador, executar(async (req, res) => {
     const { data } = await api.get('/aprendizagem/conteudos');
