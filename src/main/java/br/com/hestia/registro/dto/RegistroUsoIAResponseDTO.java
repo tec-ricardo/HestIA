@@ -21,7 +21,10 @@ public record RegistroUsoIAResponseDTO(
         Integer tokensTotal,
         BigDecimal custoEstimado,
         StatusExecucao statusExecucao,
-        Long tempoRespostaMs
+        Long tempoRespostaMs,
+        br.com.hestia.registro.model.OrigemRegistro origem,
+        String eventoOrigem,
+        LocalDateTime capturadoEm
 ) {
     public static RegistroUsoIAResponseDTO from(RegistroUsoIA registro) {
         return new RegistroUsoIAResponseDTO(
@@ -38,6 +41,6 @@ public record RegistroUsoIAResponseDTO(
                 registro.getTokensTotal(),
                 registro.getCustoEstimado(),
                 registro.getStatusExecucao(),
-                registro.getTempoRespostaMs());
+                registro.getTempoRespostaMs(),registro.getOrigem(),registro.getEventoOrigem(),registro.getCapturadoEm());
     }
 }

@@ -12,6 +12,8 @@ import java.util.List;
 
 @Service
 public class AcessoRespostaService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private br.com.hestia.auditoria.service.DecisaoRecuperacaoService decisoes;
     private final RespostaReutilizavelRepository repository;
 
     public AcessoRespostaService(RespostaReutilizavelRepository repository) {
@@ -43,6 +45,7 @@ public class AcessoRespostaService {
         }
         Long autorizada = usuario.getEmpresa().getId();
         if (empresaId != null && !autorizada.equals(empresaId)) {
+            if(decisoes!=null)decisoes.registrar(usuario,null,"ESCOPO_EMPRESA",false,"EMPRESA_NAO_AUTORIZADA");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Empresa não autorizada");
         }
         return autorizada;
@@ -54,8 +57,10 @@ public class AcessoRespostaService {
         Long autorizada = validarEmpresa(usuario, empresaId);
         String filtro = prompt == null ? null : prompt.replace("!", "!!").replace("%", "!%")
                 .replace("_", "!_");
-        return repository.recuperarAutorizadas(autorizada, usuario.getPerfil(), id, filtro,
-                exigirEmbedding, limite);
+        var resultado=repository.recuperarAutorizadas(autorizada, usuario.getPerfil(), id, filtro,
+                exigirEmbedding, java.time.LocalDateTime.now(),limite);
+        if(decisoes!=null)decisoes.registrar(usuario,id,"RECUPERACAO_TEXTUAL",id==null||!resultado.isEmpty(),resultado.isEmpty()?"SEM_CONTEUDO_AUTORIZADO":"EMPRESA_PERFIL_ELEGIBILIDADE_VALIDOS");
+        return resultado;
     }
 
     @Transactional(readOnly = true)

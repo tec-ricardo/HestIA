@@ -18,6 +18,7 @@ test('HTTP: demonstração identificada, sessão expirada e logout com API indis
     const backend = http.createServer((req,res) => {
         res.setHeader('Content-Type','application/json');
         if(req.url==='/auth/login') return res.end(JSON.stringify({token:'secreto',perfil:'ADMIN'}));
+        if(req.url==='/api/contexto') return res.end(JSON.stringify({usuarioId:1,empresaId:10,perfil:'ADMIN'}));
         if(req.url==='/auth/logout') { logoutChamado=true; res.writeHead(503); return res.end('{}'); }
         res.writeHead(401); res.end('{}');
     });

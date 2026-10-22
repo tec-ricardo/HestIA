@@ -11,6 +11,8 @@ import java.util.List;
 
 @Service
 public class ConsultaEfetividadeCapacitacaoService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private VinculosTrilhaConclusaoPort trilhas;
 
     private final RecorrenciaCapacitacaoService acompanhamento;
     private final FonteRecorrenciaConformidade fonte;
@@ -94,14 +96,17 @@ public class ConsultaEfetividadeCapacitacaoService {
                         leitura.antes(),
                         leitura.depois(),
                         limitacao
-                )
+                ),
+                trilhas==null?List.of():trilhas.consultar(autenticado,conclusaoId)
         );
     }
 
     public record Resultado(
             EfetividadeCapacitacaoService.Resultado indicador,
-            Cobertura cobertura
+            Cobertura cobertura,
+            List<java.util.Map<String,Object>> trilhas
     ) {
+        public Resultado(EfetividadeCapacitacaoService.Resultado indicador,Cobertura cobertura){this(indicador,cobertura,List.of());}
     }
 
     public record Cobertura(

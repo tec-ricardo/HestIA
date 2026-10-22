@@ -15,6 +15,14 @@ public class RespostaReutilizavel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING) @Column(nullable=false,length=30)
+    private StatusQualidadeResposta statusQualidade=StatusQualidadeResposta.APROVADA;
+    private LocalDateTime expiraEm;
+    public StatusQualidadeResposta getStatusQualidade(){return statusQualidade;}
+    public void setStatusQualidade(StatusQualidadeResposta status){this.statusQualidade=status;}
+    public LocalDateTime getExpiraEm(){return expiraEm;}
+    public void setExpiraEm(LocalDateTime data){this.expiraEm=data;}
+    public boolean isElegivel(){return statusQualidade==StatusQualidadeResposta.APROVADA&&Boolean.TRUE.equals(reutilizavel)&&Boolean.FALSE.equals(possuiDadosSensiveis)&&(expiraEm==null||expiraEm.isAfter(LocalDateTime.now()));}
 
     @Column(name = "usuario_id")
     private Long usuarioId;

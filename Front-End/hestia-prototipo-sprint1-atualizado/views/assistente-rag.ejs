@@ -52,7 +52,7 @@
 
           <div class="rag-heading">
 
-            <div><h2>Assistente de Governança</h2><p>Protótipo demonstrativo — não consulta documentos reais.</p></div>
+            <div><h2>Assistente de Governança</h2><p>Consulta conteúdo autorizado da empresa e informa quando a fonte está indisponível.</p></div>
 
             <span class="rag-tag">Demonstração</span>
 
@@ -146,21 +146,21 @@
 
         <h2 id="ragEconomiaTitulo">Economia e recompensa por reutilização</h2>
 
-        <p class="rag-muted">Estimativas demonstrativas deste navegador; não são valores medidos nem XP creditado no HestIA Pass.</p>
+        <p class="rag-muted">Reutilizações confirmadas no servidor nesta sessão. Tempo e XP não são estimados nesta tela.</p>
 
         <div class="rag-economia-cards">
 
           <div class="rag-economia-card"><strong id="ragTotalReusos">0</strong><span>Respostas reutilizadas</span></div>
 
-          <div class="rag-economia-card"><strong id="ragTempoEconomizado">0 min</strong><span>Tempo estimado economizado</span></div>
+          <div class="rag-economia-card"><strong id="ragTempoEconomizado">Não medido</strong><span>Tempo observado</span></div>
 
-          <div class="rag-economia-card"><strong id="ragXpEstimado">0 XP</strong><span>Recompensa ilustrativa</span></div>
+          <div class="rag-economia-card"><strong id="ragXpEstimado">Consulte o Passe HestIA</strong><span>Recompensa registrada</span></div>
 
         </div>
 
         <p class="rag-muted" id="ragUltimaReutilizacao" aria-live="polite">Nenhuma reutilização registrada.</p>
 
-        <p class="rag-muted">Regra de demonstração: 5 minutos e 10 XP estimados por reutilização. A recompensa real depende de validação e integração com o backend.</p>
+        <p class="rag-muted">Os efeitos reais de reutilização e as recompensas seguem os registros e regras do backend.</p>
 
       </section>
 
@@ -260,7 +260,7 @@
 
       'use strict';
 
-      const key = 'hestia_rag_historico_v2';
+      const key = 'hestia-rag-sessao-' + <%- JSON.stringify(String(email || '')) %>;
 
       const bankKey = 'hestia_rag_banco_respostas_v1';
 
@@ -276,7 +276,7 @@
 
       try {
 
-        const dados = JSON.parse(localStorage.getItem(reuseKey));
+        const dados = [];
 
         if (Array.isArray(dados)) reutilizacoes = dados;
 
@@ -290,9 +290,9 @@
 
         document.getElementById('ragTotalReusos').textContent = total;
 
-        document.getElementById('ragTempoEconomizado').textContent = (total * minutosPorReuso) + ' min';
+        document.getElementById('ragTempoEconomizado').textContent = 'Não medido';
 
-        document.getElementById('ragXpEstimado').textContent = (total * xpPorReuso) + ' XP';
+        document.getElementById('ragXpEstimado').textContent = 'Consulte o Passe HestIA';
 
         const ultima = reutilizacoes[reutilizacoes.length - 1];
 
@@ -312,11 +312,11 @@
 
         try {
 
-          localStorage.setItem(reuseKey, JSON.stringify(reutilizacoes));
+          void 0;
 
           atualizarEconomia();
 
-          notify('Resposta copiada! Economia estimada: +5 min; recompensa ilustrativa: +10 XP (não creditados).');
+          notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
 
         } catch (_) {
 
@@ -350,33 +350,13 @@
 
       const notice = document.getElementById('ragNotice');
 
-      // Políticas fictícias para demonstração; não são documentos oficiais.
-
-      const knowledge = [
-
-        { terms: ['pessoal', 'pessoais', 'dados', 'cpf', 'senha', 'privacidade', 'sigilo', 'lgpd'], answer: 'Não compartilhe dados pessoais, senhas ou informações confidenciais com ferramentas de IA sem autorização e avaliação das regras da organização.', policy: 'Política de Proteção de Dados e Privacidade (simulada)', policyId: 'POL-001', section: 'Seção 3 — Tratamento de dados', source: 'Exemplo didático: proteção de dados', similarity: 92, confidence: 88 },
-
-        { terms: ['ferramenta', 'ferramentas', 'chatgpt', 'autorizada', 'autorizadas', 'aprovada', 'permitidas'], answer: 'Confirme se a ferramenta de IA foi autorizada pela organização antes de utilizá-la em atividades profissionais.', policy: 'Política de Uso Responsável de IA (simulada)', policyId: 'POL-002', section: 'Seção 2 — Ferramentas autorizadas', source: 'Exemplo didático: uso de ferramentas de IA', similarity: 89, confidence: 85 },
-
-        { terms: ['erro', 'resposta', 'verificar', 'alucinacao', 'validar'], answer: 'Confira fatos, números e referências das respostas geradas por IA antes de tomar decisões ou publicar conteúdos.', policy: 'Política de Validação de Conteúdo Gerado por IA (simulada)', policyId: 'POL-003', section: 'Seção 4 — Verificação de resultados', source: 'Exemplo didático: validação de respostas', similarity: 91, confidence: 86 },
-
-        { terms: ['politica', 'governanca', 'regras', 'conformidade'], answer: 'Siga as políticas internas, proteja os dados, valide resultados e registre as utilizações de IA quando aplicável.', policy: 'Política de Governança de IA (simulada)', policyId: 'POL-004', section: 'Seção 1 — Diretrizes gerais', source: 'Exemplo didático: governança de IA', similarity: 87, confidence: 83 }
-
-      ];
-
       // Compatibilidade com respostas antigas já salvas no navegador.
 
       function policyFor(item) {
 
         if (item.policy) return { name: item.policy, id: item.policyId || '', section: item.section || '' };
 
-        const matched = knowledge.find(k => k.source === item.source);
-
-        return matched
-
-          ? { name: matched.policy, id: matched.policyId, section: matched.section }
-
-          : { name: 'Nenhuma política associada (simulação)', id: '', section: '' };
+        return { name: 'Nenhuma fonte autorizada', id: '', section: '' };
 
       }
 
@@ -398,7 +378,7 @@
 
       try {
 
-        const stored = JSON.parse(localStorage.getItem(key));
+        const stored = [];
 
         if (Array.isArray(stored)) conversations = stored.filter(c => c && Array.isArray(c.messages));
 
@@ -408,7 +388,7 @@
 
       try {
 
-        const storedBank = JSON.parse(localStorage.getItem(bankKey));
+        const storedBank = [];
 
         if (Array.isArray(storedBank)) savedAnswers = storedBank.filter(x => x && typeof x.question === 'string' && typeof x.text === 'string');
 
@@ -430,7 +410,7 @@
 
       const persist = () => {
 
-        try { localStorage.setItem(key, JSON.stringify(conversations)); }
+        try { void 0; }
 
         catch (_) { notify('Não foi possível salvar o histórico.', true); }
 
@@ -438,7 +418,7 @@
 
       function persistBank() {
 
-        try { localStorage.setItem(bankKey, JSON.stringify(savedAnswers)); return true; }
+        try { void 0; return true; }
 
         catch (_) { notify('Não foi possível salvar o Banco de Respostas.', true); return false; }
 
@@ -457,6 +437,7 @@
           id: String(Date.now()) + '-' + Math.random().toString(36).slice(2),
 
           question: message.question,
+          respostaId: message.respostaId,
 
           text: message.text,
 
@@ -518,9 +499,14 @@
 
           use.addEventListener('click', async () => {
 
-            try { await copyText(item.text); registrarReutilizacao(item); }
+            try {
+              if (!item.respostaId) throw Error('Fonte não identificada');
+              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
+              const dados = await resposta.json(); if (!resposta.ok || !dados.resposta) throw Error(dados.erro || 'Fonte indisponível');
+              await copyText(dados.resposta); registrarReutilizacao(item);
+            }
 
-            catch (_) { notify('Não foi possível copiar a resposta.', true); }
+            catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
 
           });
 
@@ -574,7 +560,7 @@
 
           const policy = policyFor(message);
 
-          box.append(element('p', 'Política utilizada: ' + policy.name, 'rag-meta'));
+          box.append(element('p', 'Fonte utilizada: ' + policy.name, 'rag-meta'));
 
           if (policy.id || policy.section) box.append(element('p', [policy.id, policy.section].filter(Boolean).join(' · '), 'rag-meta'));
 
@@ -584,7 +570,14 @@
 
           copy.type = 'button';
 
-          copy.addEventListener('click', () => saveAnswer(message));
+          copy.disabled = !message.respostaId;
+          copy.addEventListener('click', async () => {
+            try {
+              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: message.question, modo: 'REUTILIZAR', respostaId: message.respostaId }) });
+              const dados = await resposta.json(); if (!resposta.ok) throw new Error(dados.erro || 'Resposta indisponível para reutilização.');
+              await copyText(dados.resposta); registrarReutilizacao(message); saveAnswer({ ...message, text: dados.resposta });
+            } catch (erro) { notify(erro.message, true); }
+          });
 
           const retry = element('button', 'Gerar nova resposta', 'rag-secondary');
 
@@ -595,6 +588,7 @@
             if (busy) return;
 
             question.value = message.question;
+            proximoModo = 'GERAR_NOVA';
 
             mostrarSugestoes();
 
@@ -842,7 +836,7 @@
 
               registrarReutilizacao(item.resposta);
 
-            } catch (_) { notify('Não foi possível copiar a resposta.', true); }
+            } catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
 
           });
 
@@ -862,28 +856,14 @@
 
       historySearch.addEventListener('input', renderHistory);
 
-      function answerFor(input) {
-
-        const text = normalize(input);
-
-        // Teste didático: digite exatamente "simular erro" para testar o estado de erro.
-
-        if (text === 'simular erro') throw new Error('Erro simulado para teste');
-
-        const matches = knowledge.map(k => ({ ...k, score: k.terms.filter(t => text.includes(normalize(t))).length }))
-
-          .sort((a, b) => b.score - a.score);
-
-        if (!matches[0] || !matches[0].score) {
-
-          return { role: 'assistant', text: 'Nenhuma orientação demonstrativa encontrada para essa pergunta. Consulte a equipe responsável pelas políticas da sua organização.', question: input };
-
-        }
-
-        const result = matches[0];
-
-        return { role: 'assistant', text: result.answer, policy: result.policy, policyId: result.policyId, section: result.section, source: result.source, similarity: result.similarity, confidence: result.confidence, question: input };
-
+      let proximoModo = 'CONSULTAR';
+      async function answerFor(input) {
+        const modo = proximoModo; proximoModo = 'CONSULTAR';
+        const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo }) });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
+        const fonte = dados.fontes && dados.fontes[0];
+        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
       }
 
       form.addEventListener('submit', e => {
@@ -924,17 +904,17 @@
 
         renderHistory();
 
-        const loading = element('p', 'Buscando resposta demonstrativa...', 'rag-muted');
+        const loading = element('p', 'Consultando conteúdo autorizado...', 'rag-muted');
 
         chat.append(loading);
 
         chat.scrollTop = chat.scrollHeight;
 
-        setTimeout(() => {
+        setTimeout(async () => {
 
           try {
 
-            const result = answerFor(input);
+            const result = await answerFor(input);
 
             current.messages.push(result);
 
@@ -946,7 +926,7 @@
 
             if (!result.source) notify('Nenhum resultado encontrado.');
 
-          } catch (_) {
+          } catch (erro) {
 
             current.messages.push({ role: 'assistant', text: 'Não foi possível preparar a resposta. Tente novamente.', question: input });
 
@@ -956,7 +936,7 @@
 
             renderHistory();
 
-            notify('Erro ao preparar a resposta (simulação).', true);
+            notify(erro.message || 'Erro ao consultar o serviço.', true);
 
           } finally {
 
@@ -1015,6 +995,14 @@
       renderBank();
 
       atualizarEconomia();
+      fetch('/api/rag/historico').then(r => { if (!r.ok) throw Error('Histórico indisponível'); return r.json(); }).then(linhas => {
+        if (conversations.length) return;
+        conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
+          { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
+          { role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
+        ] }));
+        renderHistory();
+      }).catch(() => notify('Histórico do servidor indisponível.', true));
 
     })();
 

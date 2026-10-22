@@ -22,6 +22,8 @@ import java.util.Set;
 
 @Service
 public class AvaliacaoConformidadeService {
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    private org.springframework.context.ApplicationEventPublisher eventosCapacitacao;
     private final AvaliacaoConformidadeRepository avaliacaoRepository;
     private final RegistroUsoIARepository registroRepository;
     private final PoliticaUsoRepository politicaRepository;
@@ -69,7 +71,9 @@ public class AvaliacaoConformidadeService {
         avaliacao.preservarFundamentos(versao, REGRA_CODIGO, REGRA_VERSAO,
                 FundamentosConformidade.from(
                         avaliacao.getStatus(), avaliacao.getCriteriosAtendidos()));
-        return AvaliacaoConformidadeResponseDTO.from(avaliacaoRepository.save(avaliacao));
+        var salva=avaliacaoRepository.save(avaliacao);
+        if(eventosCapacitacao!=null)eventosCapacitacao.publishEvent(new br.com.hestia.trilha.service.MotorTrilhasService.ConformidadeRegistrada(registro.getUsuario().getId(),registro.getUsuario().getEmpresa().getId()));
+        return AvaliacaoConformidadeResponseDTO.from(salva);
     }
 
     @Transactional(readOnly = true)

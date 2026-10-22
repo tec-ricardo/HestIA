@@ -19,16 +19,18 @@ public interface RespostaReutilizavelRepository
             where r.empresaId = :empresaId
               and :perfil member of r.perfisPermitidos
               and r.reutilizavel = true and r.possuiDadosSensiveis = false
+              and r.statusQualidade = br.com.hestia.reutilizavel.model.StatusQualidadeResposta.APROVADA
+              and (r.expiraEm is null or r.expiraEm > :agora)
               and (:id is null or r.id = :id)
-              and (:prompt is null or lower(r.promptOriginal) like
-                   lower(concat('%', :prompt, '%')) escape '!')
+              and (cast(:prompt as string) is null or lower(r.promptOriginal) like
+                   lower(concat('%', cast(:prompt as string), '%')) escape '!')
               and (:exigirEmbedding = false or (r.embedding is not null and trim(r.embedding) <> ''))
             order by r.dataCriacao desc, r.id desc
             """)
     List<RespostaReutilizavel> recuperarAutorizadas(
             @Param("empresaId") Long empresaId, @Param("perfil") PerfilUsuario perfil,
             @Param("id") Long id, @Param("prompt") String prompt,
-            @Param("exigirEmbedding") boolean exigirEmbedding, Pageable pageable);
+            @Param("exigirEmbedding") boolean exigirEmbedding,@Param("agora") java.time.LocalDateTime agora, Pageable pageable);
 
     List<RespostaReutilizavel> findByEmpresaId(Long empresaId);
 
