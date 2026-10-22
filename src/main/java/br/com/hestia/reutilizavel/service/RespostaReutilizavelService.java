@@ -68,6 +68,7 @@ public class RespostaReutilizavelService {
 
         RespostaReutilizavel resposta =
                 new RespostaReutilizavel();
+        resposta.setStatusQualidade(br.com.hestia.reutilizavel.model.StatusQualidadeResposta.EM_REVISAO);
 
         Long empresaId = acesso.validarEmpresa(usuario, dto.getEmpresaId());
         resposta.setPerfisPermitidos(java.util.Set.of(usuario.getPerfil()));
@@ -159,7 +160,7 @@ public class RespostaReutilizavelService {
         RespostaReutilizavel resposta =
                 buscarPorId(id);
 
-        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+        if (!resposta.isElegivel()) {
 
             throw new IllegalStateException(
                     "A resposta selecionada não está disponível para reutilização."

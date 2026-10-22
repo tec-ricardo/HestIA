@@ -160,7 +160,7 @@ function carregarAvaliacao() {
     let tela = document.getElementById("mt-exam");
     let id = tela.getAttribute("data-course");
 
-    buscarDados("/api/microtreinamentos/" + id, "GET", null).then(function(resultado) {
+    buscarDados("/api/microtreinamentos/" + id + "?avaliacao=1", "GET", null).then(function(resultado) {
         cursoAtual = resultado.treinamento;
         if (cursoAtual.etapa < cursoAtual.totalEtapas) {
             window.location.href = "/microtreinamentos/" + id;
@@ -175,7 +175,7 @@ function carregarAvaliacao() {
 function mostrarAvaliacao() {
     let tela = document.getElementById("mt-exam");
     let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
-    html += '<p>Responda todas as perguntas. Nota minima: 70%.</p>';
+    html += '<p>Responda todas as perguntas. Nota minima: 80%.</p>';
     html += '<form id="formAvaliacao">';
 
     for (let i = 0; i < cursoAtual.questoes.length; i++) {

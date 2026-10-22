@@ -9,4 +9,5 @@ public interface RegistroUsoIARepository
         JpaSpecificationExecutor<RegistroUsoIA> {
 
     long countByUsuarioEmpresaId(Long empresaId);
+    java.util.Optional<RegistroUsoIA> findByUsuarioIdAndOrigemAndEventoOrigem(Long usuarioId,br.com.hestia.registro.model.OrigemRegistro origem,String evento);
 }

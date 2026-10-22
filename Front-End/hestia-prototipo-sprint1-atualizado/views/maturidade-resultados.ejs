@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HestIA — Maturidade</title><link rel="stylesheet" href="/styles.css"></head>
+<body><div class="app-shell">
+<%- include("menu", { perfil, email, active }) %>
+<main class="main">
+<h1>Maturidade em IA</h1>
+<p><a href="/maturidade">Indicadores operacionais e confiabilidade</a></p>
+<p>Consulte as notas observadas e sua cobertura. A proposta 0.1 está em validação pelo grupo.</p>
+<form method="get" action="/maturidade/resultados">
+<p><label>Início <input required type="date" name="inicio" value="<%= filtros.inicio || '' %>"></label>
+<label>Fim <input required type="date" name="fim" value="<%= filtros.fim || '' %>"></label></p>
+<p><label>Fonte <select required name="fonte"><option value="">Selecione</option><option value="SINTETICA" <%= filtros.fonte === 'SINTETICA' ? 'selected' : '' %>>Sintética</option><option value="OPERACIONAL" <%= filtros.fonte === 'OPERACIONAL' ? 'selected' : '' %>>Operacional</option></select></label></p>
+<details><summary>Filtros da consulta</summary>
+<p><label>Hash do snapshot sintético <input name="snapshot" maxlength="64" pattern="[0-9a-fA-F]{64}" value="<%= filtros.snapshot || '' %>"></label></p>
+<p><label>ID do departamento autorizado <input name="departamentoId" type="number" min="1" value="<%= filtros.departamentoId || '' %>"></label></p>
+<p><label>Departamento de origem (administrador) <input name="departamentoOrigem" value="<%= filtros.departamentoOrigem || '' %>"></label></p>
+<p><label>Tipo de issue para produtividade <input name="tipoIssue" value="<%= filtros.tipoIssue || '' %>"></label></p>
+<p>O escopo é validado no servidor. A consulta sintética exige um snapshot e mapeamento autorizado.</p>
+</details>
+<button type="submit">Consultar resultados</button>
+</form>
+<p><a href="/maturidade/metodologia">Consultar metodologia e versões</a></p>
+<% if (erro) { %><p role="alert"><%= erro %></p><% } %>
+<% if (resultado) { %>
+<h2>Resultado da consulta</h2>
+<p>Fonte: <%= resultado.naturezaDados %>. Período: <%= resultado.inicio %> a <%= resultado.fim %>.</p>
+<p>Score global: <strong><%= resultado.scoreGlobal == null ? 'Indisponível' : Number(resultado.scoreGlobal).toFixed(2) %></strong></p>
+<p>Score parcial exploratório: <strong><%= resultado.scoreParcial == null ? 'Indisponível' : Number(resultado.scoreParcial).toFixed(2) %></strong>.
+Cobertura dos pesos elegíveis: <%= (100 * Number(resultado.coberturaPesos)).toFixed(2) %>%.</p>
+<p>Um resultado parcial não pode ser comparado ao índice completo. Falta de dados não significa imaturidade.</p>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Fator</th><th>Nota</th><th>Estado</th><th>Amostra</th><th>Cobertura técnica</th><th>Elegível no global</th><th>Motivo</th></tr></thead>
+<tbody><% for (const fator of resultado.fatores) { %>
+<tr><td><%= fator.codigo %></td><td><%= fator.nota == null ? 'Indisponível' : Number(fator.nota).toFixed(2) %></td><td><%= fator.estado %></td><td><%= fator.amostra %></td>
+<td><%= fator.coberturaTecnica == null ? 'Desconhecida' : (100 * Number(fator.coberturaTecnica)).toFixed(2) + '%' %></td><td><%= fator.elegivelGlobal ? 'Sim' : 'Não' %></td><td><%= fator.motivo %></td></tr>
+<% } %></tbody></table></div>
+<p>Pesos: <%= resultado.versaoPesos %>. Cálculo: <%= resultado.versaoCalculo %>. Parâmetros: <%= resultado.versaoParametros %>.</p>
+<% for (const aviso of resultado.avisos || []) { %><p><%= aviso %></p><% } %>
+<% } %>
+<p><a href="/maturidade/metodologia/detalhes">Entenda a metodologia e os limites dos indicadores</a></p><%- include('integracao-apuracoes') %></main></div></body></html>

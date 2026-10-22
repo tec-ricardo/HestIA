@@ -176,7 +176,7 @@ class BuscaVetorialPostgresTest {
 
     @Test
     void migratesAllVersionsAndCreatesVectorIndexAndStaging() {
-        assertThat(flyway.info().applied()).hasSize(17);
+        assertThat(flyway.info().applied()).hasSize(23);
         assertThat(flyway.validateWithResult().validationSuccessful).isTrue();
         assertThat(flyway.migrate().migrationsExecuted).isZero();
 
@@ -200,6 +200,19 @@ class BuscaVetorialPostgresTest {
                 "SELECT to_regclass('base_sintetica.import_linhas')::text",
                 String.class
         )).isEqualTo("base_sintetica.import_linhas");
+    }
+
+    @Test
+    void statusEValidadeFiltramAntesDoLimiteComRelogioDaAplicacao(){
+        long bloqueada=row(1,PerfilUsuario.FUNCIONARIO,false,true,1,0);
+        long expirada=row(1,PerfilUsuario.FUNCIONARIO,false,true,1,0);
+        long aprovada=row(1,PerfilUsuario.FUNCIONARIO,false,true,0.95,0.1);
+        jdbc.update("UPDATE respostas_reutilizaveis SET status_qualidade='BLOQUEADA' WHERE id=?",bloqueada);
+        jdbc.update("UPDATE respostas_reutilizaveis SET expira_em=? WHERE id=?",java.time.LocalDateTime.now().minusMinutes(1),expirada);
+        var futura=java.time.LocalDateTime.now().plusMinutes(10);
+        jdbc.update("UPDATE respostas_reutilizaveis SET expira_em=? WHERE id=?",futura,aprovada);
+        entities.get(aprovada).setExpiraEm(futura);
+        assertThat(service.buscarSemelhantes(1L,"Pergunta de teste",1)).extracting(RespostaReutilizavel::getId).containsExactly(aprovada);
     }
 
     @Test

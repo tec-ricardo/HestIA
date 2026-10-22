@@ -113,6 +113,9 @@
 
         </header>
 <%- include("maturidade-conteudo") %>
+<% if (["administrador", "gestor"].includes(perfil)) { %>
+<p><a href="/maturidade/resultados">Consultar fontes, metodologia e histórico de apurações</a></p>
+<% } %>
 </main>
 </div>
 <script src="/app.js"></script>

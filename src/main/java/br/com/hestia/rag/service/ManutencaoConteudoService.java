@@ -74,7 +74,8 @@ public class ManutencaoConteudoService {
     ) {
         RespostaReutilizavel resposta = bloquearParaManutencao(id, usuario);
 
-        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+        if (resposta.getStatusQualidade()==br.com.hestia.reutilizavel.model.StatusQualidadeResposta.RETIRADA
+                || resposta.getStatusQualidade()==br.com.hestia.reutilizavel.model.StatusQualidadeResposta.APROVADA&&!Boolean.TRUE.equals(resposta.getReutilizavel())) {
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "O conteúdo foi retirado."
@@ -104,6 +105,7 @@ public class ManutencaoConteudoService {
 
         resposta.setPromptOriginal(dto.promptOriginal());
         resposta.setRespostaGerada(dto.respostaGerada());
+        resposta.setStatusQualidade(br.com.hestia.reutilizavel.model.StatusQualidadeResposta.EM_REVISAO);
 
         versoes.save(new RespostaVersao(
                 resposta,
@@ -120,7 +122,7 @@ public class ManutencaoConteudoService {
     public void retirar(Long id, Usuario usuario) {
         RespostaReutilizavel resposta = bloquearParaManutencao(id, usuario);
 
-        if (!Boolean.TRUE.equals(resposta.getReutilizavel())) {
+        if (resposta.getStatusQualidade()==br.com.hestia.reutilizavel.model.StatusQualidadeResposta.RETIRADA) {
             return;
         }
 
@@ -137,6 +139,7 @@ public class ManutencaoConteudoService {
         }
 
         resposta.setReutilizavel(false);
+        resposta.setStatusQualidade(br.com.hestia.reutilizavel.model.StatusQualidadeResposta.RETIRADA);
         invalidarEmbedding(resposta);
     }
 

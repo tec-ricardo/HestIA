@@ -4,12 +4,15 @@ const app = express();
 const session = require("express-session");
 const { autenticarContaReal, criarRotaMaturidade } = require("./confianca-maturidade");
 const { logoutApi } = require("./sessao-api");
+const { contextoApi, anexarCredenciais, empresaAtual } = require("./api-contexto");
 
 const api = axios.create({
     baseURL: process.env.API_URL || "http://localhost:8080",
     timeout: 5000
 });
 
+
+api.interceptors.request.use(anexarCredenciais);
 
 app.set("view engine", "ejs");
 app.set("views", require("path").join(__dirname, "views"));
@@ -47,18 +50,29 @@ app.use(function(req, res, next) {
         return res.redirect("/acesso?expirada=1");
     }
 
+    if (!req.session.apiToken && !["/maturidade", "/maturidade/demonstracao", "/sair"].includes(req.path)) {
+        if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
+        return res.redirect("/acesso?expirada=1");
+    }
     next();
 
 });
 
 
 
+app.use((req, res, next) => contextoApi.run({
+    tokenApi: req.path === "/acesso" ? undefined : req.session?.apiToken,
+    empresaId: req.session?.empresaId
+}, next));
+
+require("./integracoes-sprint")(app, api);
+
 /* USUARIO */
 
 let email = "";
 let perfil = "";
 /* SCRUM-376: variaveis antigas preservadas; autenticacao agora usa req.session. */
-const empresaAtualId = Number(process.env.HESTIA_EMPRESA_ID || 1);
+// A empresa é obtida da sessão autenticada, sem ID global de fallback.
 
 
 /* LOGIN */
@@ -83,66 +97,9 @@ app.get("/acesso", (req, res) => {
 
 
 app.post("/acesso", async (req, res, next) => {
-    try { if (await autenticarContaReal(req, res, api)) return; }
-    catch (erro) { return next(erro); }
-
-    req.session.email = String(req.body.email || "").trim().toLowerCase();
-
-    const senha = String(req.body.senha || "");
-
-    req.session.perfil = "";
-
-
-    if (senha == "") {
-
-        return res.render("login", {
-            erro: "Informe a senha."
-        });
-
-    }
-
-
-    if (req.session.email.endsWith("@adm")) {
-
-        req.session.perfil = "administrador";
-
-    }
-
-    else if (req.session.email.endsWith("@gestor")) {
-
-        req.session.perfil = "gestor";
-
-    }
-
-    else if (req.session.email.endsWith("@colaborador")) {
-
-        req.session.perfil = "colaborador";
-
-    }
-
-    else {
-
-        return res.render("login", {
-            erro: "Perfil não identificado."
-        });
-
-    }
-
-
-    req.session.save(function(erro) {
-
-        if (erro) {
-            return res.render("login", {
-                erro: "Não foi possível iniciar sua sessão. Tente novamente."
-            });
-        }
-
-        res.redirect("/");
-
-    });
-
+    try { await autenticarContaReal(req, res, api); }
+    catch (erro) { next(erro); }
 });
-
 
 /* VISAO GERAL */
 
@@ -556,7 +513,11 @@ function obterIndicadoresDepartamentais() {
 }
 
 
-app.get("/maturidade", criarRotaMaturidade(api));
+const consultarConfianca = criarRotaMaturidade(api);
+app.get("/maturidade", (req, res, next) => {
+    if (req.query.fonte) return res.redirect("/maturidade/resultados?" + new URLSearchParams(req.query).toString());
+    return consultarConfianca(req, res, next);
+});
 
 app.get("/maturidade/demonstracao", async (req, res) => {
 
@@ -831,6 +792,34 @@ app.get("/maturidade/demonstracao", async (req, res) => {
 
 });
 
+app.get("/maturidade/metodologia", async (req, res) => {
+    try { return res.json((await api.get("/indicadores/maturidade/metodologia")).data); }
+    catch (erro) { return res.status(erro.response?.status || 503).json({ erro: "Metodologia indisponível." }); }
+});
+
+app.get("/maturidade/resultados", async (req, res) => {
+    const filtros = {};
+    for (const campo of ["inicio", "fim", "fonte", "snapshot", "departamentoId", "departamentoOrigem", "tipoIssue"]) {
+        if (typeof req.query[campo] === "string" && req.query[campo].trim()) filtros[campo] = req.query[campo].trim();
+    }
+    let resultado = null;
+    let erro = null;
+    let status = 200;
+    if (filtros.inicio && filtros.fim && filtros.fonte) {
+        try { resultado = (await api.get("/indicadores/maturidade/resultados", { params: filtros })).data; }
+        catch (falha) {
+            status = [400, 401, 403, 409, 422].includes(falha.response?.status) ? falha.response.status : 503;
+            if (status === 401) { delete req.session.apiToken; delete req.session.perfil; }
+            erro = falha.response?.status === 403 ? "Seu perfil não permite consultar esse escopo." :
+                falha.response?.status === 409 ? "O mapeamento ou a configuração deste escopo ainda está pendente." :
+                falha.response?.status === 400 ? "Confira o período, a fonte e os filtros informados." :
+                "Não foi possível consultar os resultados. Nenhuma nota foi estimada.";
+        }
+    }
+    return res.set("Cache-Control", "no-store").status(status).render("maturidade-resultados", {
+        perfil: req.session.perfil, email: req.session.email, active: "maturidade", filtros, resultado, erro
+    });
+});
 
 /* CREDITOS */
 
@@ -1084,7 +1073,7 @@ app.get("/utilizacoes", async (req, res) => {
         historico: historico,
 
         respostasReutilizaveis:
-            await consultarReutilizacoes(empresaAtualId),
+            await consultarReutilizacoes(empresaAtual()),
 
         resumoHistorico:
             resumoHistorico
@@ -1101,7 +1090,7 @@ app.get("/reutilizacoes/buscar", async (req, res) => {
 
     try {
         const response = await api.get(
-            `/api/respostas-reutilizaveis/empresa/${empresaAtualId}/buscar`,
+            `/api/respostas-reutilizaveis/empresa/${empresaAtual()}/buscar`,
             { params: { prompt } }
         );
         return res.json(response.data);
@@ -3034,61 +3023,13 @@ app.get("/microtreinamentos",(req,res)=>{
  if(req.session?.perfil!=="colaborador") return res.redirect("/");
  res.render("microtreinamento",{perfil:req.session.perfil,email:req.session.email,active:"microtreinamentos"});
 });
-app.get("/microtreinamentos/:id/avaliacao",(req,res)=>{
- if(req.session?.perfil!=="colaborador") return res.redirect("/");
- const t=microCatalogo.find(x=>x.id===req.params.id);
- if(!t) return res.redirect("/microtreinamentos");
- const p=progressoMicro(req)[t.id];
- if(listarMicro(req).find(x=>x.id===t.id).bloqueado || !p || p.etapa<t.licoes.length) return res.redirect("/microtreinamentos/"+t.id);
- res.render("microtreinamento-avaliacao",{perfil:req.session.perfil,active:"microtreinamentos",cursoId:t.id});
-});
-app.get("/microtreinamentos/:id",(req,res)=>{
- if(req.session?.perfil!=="colaborador") return res.redirect("/");
- const t=microCatalogo.find(x=>x.id===req.params.id);
- if(!t || listarMicro(req).find(x=>x.id===t.id).bloqueado) return res.redirect("/microtreinamentos");
- res.render("microtreinamento-curso",{perfil:req.session.perfil,active:"microtreinamentos",cursoId:t.id});
-});
-app.get("/api/microtreinamentos",apenasColaboradorMicro,(req,res)=>{
- res.json({treinamentos:listarMicro(req)});
-});
-app.get("/api/microtreinamentos/:id",apenasColaboradorMicro,(req,res)=>{
- const t=microCatalogo.find(x=>x.id===req.params.id);
- if(!t) return res.status(404).json({erro:"Treinamento não encontrado."});
- const resumo=listarMicro(req).find(x=>x.id===t.id);
- if(resumo.bloqueado) return res.status(403).json({erro:"Conclua o pré-requisito para desbloquear."});
- res.json({treinamento:{...resumo,licoes:t.licoes,questoes:t.questoes.map(({pergunta,opcoes})=>({pergunta,opcoes}))}});
-});
-app.post("/api/microtreinamentos/:id/progresso",apenasColaboradorMicro,(req,res)=>{
- const t=microCatalogo.find(x=>x.id===req.params.id);
- if(!t) return res.status(404).json({erro:"Treinamento não encontrado."});
- if(listarMicro(req).find(x=>x.id===t.id).bloqueado) return res.status(403).json({erro:"Treinamento bloqueado."});
- const progresso=progressoMicro(req), p=progresso[t.id]||{etapa:0,concluido:false};
- const etapa=Number(req.body.etapa);
- if(!Number.isInteger(etapa)||etapa<0||etapa>t.licoes.length||etapa>p.etapa+1) return res.status(400).json({erro:"Etapa inválida."});
- p.etapa=Math.max(p.etapa,etapa); progresso[t.id]=p;
- res.json({etapa:p.etapa,totalEtapas:t.licoes.length});
-});
-app.post("/api/microtreinamentos/:id/avaliacao",apenasColaboradorMicro,(req,res)=>{
- const t=microCatalogo.find(x=>x.id===req.params.id);
- if(!t) return res.status(404).json({erro:"Treinamento não encontrado."});
- const progresso=progressoMicro(req), p=progresso[t.id]||{etapa:0,concluido:false};
- if(p.etapa<t.licoes.length) return res.status(403).json({erro:"Conclua o conteúdo antes da avaliação."});
- const respostas=req.body.respostas;
- if(!Array.isArray(respostas)||respostas.length!==t.questoes.length||!respostas.every(Number.isInteger))
-  return res.status(400).json({erro:"Responda todas as perguntas."});
- const acertos=t.questoes.filter((q,i)=>q.correta===respostas[i]).length;
- const nota=Math.round(acertos/t.questoes.length*100);
- const aprovado=nota>=70;
- if(aprovado) {p.concluido=true; progresso[t.id]=p;}
- res.json({nota,acertos,total:t.questoes.length,aprovado,mensagem:aprovado?"Treinamento concluído!":"Você precisa de pelo menos 70%. Tente novamente."});
-});
+// As rotas de conteúdo e avaliação agora são adaptadas por integracoes-sprint.js.
 
 /* SERVIDOR */
 
 if (require.main === module) {
     app.listen(process.env.PORT || 3000, () => console.log("Servidor rodando"));
 }
-module.exports = app;
 
 async function consultarReutilizacoes(empresaId) {
     try {
@@ -3139,3 +3080,4 @@ function adaptarPasseHestIA(passeApi, fallback) {
         }))
     };
 }
+module.exports = app;

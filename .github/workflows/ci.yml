@@ -24,6 +24,8 @@ jobs:
           --health-retries 10
     env:
       HESTIA_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_ci
+      HESTIA_MATURIDADE_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_validacao
+      HESTIA_SPRINT_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_validacao
       HESTIA_PG_TEST_USER: hestia_ci
       HESTIA_PG_TEST_PASSWORD: hestia_ci_ephemeral
     steps:
@@ -33,6 +35,8 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+      - name: Create disposable integration database
+        run: docker exec ${{ job.services.postgres.id }} createdb -U hestia_ci hestia_validacao
       - name: Run tests
         run: ./mvnw --batch-mode test
       - name: Preserve Java test evidence

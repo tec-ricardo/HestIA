@@ -59,6 +59,17 @@ public class RegistroUsoIAService {
 
     @Transactional
     public RegistroUsoIAResponseDTO criar(RegistroUsoIACriacaoDTO dto) {
+        return criarInterno(dto,br.com.hestia.registro.model.OrigemRegistro.MANUAL,null);
+    }
+    @Transactional
+    public RegistroUsoIAResponseDTO criarCapturado(RegistroUsoIACriacaoDTO dto,String evento){
+        if(evento==null||evento.isBlank()||evento.length()>160)throw new IllegalArgumentException("Evento de plataforma identificável obrigatório");
+        var existente=registroRepository.findByUsuarioIdAndOrigemAndEventoOrigem(dto.usuarioId(),br.com.hestia.registro.model.OrigemRegistro.PLATAFORMA,evento);
+        if(existente.isPresent()){validarEmpresa(existente.get().getUsuario().getEmpresa().getId());return RegistroUsoIAResponseDTO.from(existente.get());}
+        return criarInterno(dto,br.com.hestia.registro.model.OrigemRegistro.PLATAFORMA,evento);
+    }
+    private RegistroUsoIAResponseDTO criarInterno(RegistroUsoIACriacaoDTO dto,br.com.hestia.registro.model.OrigemRegistro origem,String evento){
+        if(dto==null||dto.usuarioId()==null||dto.ferramentaId()==null||dto.modeloIa()==null||dto.modeloIa().isBlank()||dto.modeloIa().length()>100||dto.finalidade()==null||dto.tokensEntrada()==null||dto.tokensSaida()==null||dto.tokensEntrada()<0||dto.tokensSaida()<0||(long)dto.tokensEntrada()+dto.tokensSaida()>Integer.MAX_VALUE||dto.statusExecucao()==null||dto.custoEstimado()!=null&&dto.custoEstimado().signum()<0||dto.tempoRespostaMs()!=null&&dto.tempoRespostaMs()<0||dto.dataHora()!=null&&dto.dataHora().isAfter(LocalDateTime.now()))throw new IllegalArgumentException("Dados do registro inválidos; não inferir valores ausentes");
         Usuario usuario = usuarioRepository.findById(dto.usuarioId())
                 .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));
 
@@ -67,6 +78,8 @@ public class RegistroUsoIAService {
 
         validarEmpresa(usuario.getEmpresa().getId());
         validarMesmoTenant(usuario, ferramenta);
+        if(!Boolean.TRUE.equals(usuario.getAtivo()))throw new IllegalArgumentException("Usuário inativo não pode registrar uso");
+        if(empresaAtual!=null){var autor=usuarioRepository.findById(empresaAtual.obterContexto().usuarioId()).orElseThrow();if(autor.getPerfil()==br.com.hestia.usuario.model.PerfilUsuario.FUNCIONARIO&&!autor.getId().equals(usuario.getId()))throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN,"Registre apenas sua própria utilização");}
         validarFerramentaDisponivel(ferramenta);
 
         RegistroUsoIA registro = new RegistroUsoIA(
@@ -82,6 +95,7 @@ public class RegistroUsoIAService {
                 dto.tempoRespostaMs()
         );
 
+        registro.identificarOrigem(origem,evento);
         return RegistroUsoIAResponseDTO.from(
                 registroRepository.save(registro)
         );

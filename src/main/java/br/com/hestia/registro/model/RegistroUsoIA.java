@@ -18,6 +18,14 @@ public class RegistroUsoIA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING) @Column(nullable=false,length=30)
+    private OrigemRegistro origem=OrigemRegistro.DESCONHECIDA;
+    @Column(length=160) private String eventoOrigem;
+    private LocalDateTime capturadoEm;
+    public OrigemRegistro getOrigem(){return origem;}
+    public String getEventoOrigem(){return eventoOrigem;}
+    public LocalDateTime getCapturadoEm(){return capturadoEm;}
+    public void identificarOrigem(OrigemRegistro origem,String evento){this.origem=origem;this.eventoOrigem=evento;this.capturadoEm=LocalDateTime.now();}
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -91,7 +99,7 @@ public class RegistroUsoIA {
     }
 
     private void calcularTokensTotal() {
-        tokensTotal = valorSeguro(tokensEntrada) + valorSeguro(tokensSaida);
+        tokensTotal = Math.addExact(valorSeguro(tokensEntrada),valorSeguro(tokensSaida));
     }
 
     private int valorSeguro(Integer valor) {

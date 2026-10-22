@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface ConclusaoMicrotreinamentoRepository
         extends JpaRepository<ConclusaoMicrotreinamento, Long> {
 
+    java.util.List<ConclusaoMicrotreinamento> findByUsuarioId(Long usuarioId);
+
     Optional<ConclusaoMicrotreinamento>
     findByUsuarioIdAndMicrotreinamentoId(
             Long usuarioId,

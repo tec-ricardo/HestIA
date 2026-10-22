@@ -2,11 +2,11 @@
 <!-- SCRUM-486: certificações vinculadas aos cursos existentes -->
 <section id="mt-certificacoes" class="mt-cert-section" aria-labelledby="mt-cert-title">
   <div class="mt-toolbar"><div><h2 id="mt-cert-title">Minhas certificações</h2>
-  <p>Certificados demonstrativos disponíveis após aprovação no curso.</p></div></div>
+  <p>Certificações concedidas conforme os requisitos publicados pela empresa.</p></div></div>
   <div class="mt-cert-grid" id="mt-cert-list" aria-live="polite">
     <div class="mt-empty">Carregando certificações...</div>
   </div>
-  <small class="mt-cert-note">Certificados demonstrativos do MVP, sem validade oficial.</small>
+  <small class="mt-cert-note">A conclusão da leitura, por si só, não concede uma certificação.</small>
 </section>
 <style>
 .mt-cert-section{margin-top:28px}.mt-cert-section h2{margin:0 0 6px}.mt-cert-section p{margin:0 0 14px;color:#64748b}
@@ -344,7 +344,7 @@ function carregarAvaliacao() {
 
 
 
-    buscarDados("/api/microtreinamentos/" + id, "GET", null).then(function(resultado) {
+    buscarDados("/api/microtreinamentos/" + id + "?avaliacao=1", "GET", null).then(function(resultado) {
 
         cursoAtual = resultado.treinamento;
 
@@ -373,9 +373,7 @@ function mostrarAvaliacao() {
     let tela = document.getElementById("mt-exam");
 
     let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
-
-    html += '<p>Responda todas as perguntas. Nota minima: 70%.</p>';
-
+    html += '<p>Responda todas as perguntas. Nota minima: 80%.</p>';
     html += '<form id="formAvaliacao">';
 
 
@@ -461,62 +459,53 @@ function enviarAvaliacao(evento) {
 
 
 
-// SCRUM-486: usa o mesmo campo "concluido" retornado pela API de microtreinamentos.
-// A aprovação na avaliação é controlada pelo backend atual; aqui só mostramos seu resultado.
-function mostrarCertificacoes() {
-    let lista = document.getElementById("mt-cert-list");
+// SCRUM-486 integrada às concessões persistidas das SCRUM-484/485.
+async function mostrarCertificacoes() {
+    const lista = document.getElementById("mt-cert-list");
     if (!lista) return;
-    lista.innerHTML = "";
-    if (!Array.isArray(cursos) || cursos.length === 0) {
-        lista.textContent = "Nenhum treinamento disponível.";
-        return;
-    }
-    for (let i = 0; i < cursos.length; i++) {
-        let curso = cursos[i];
-        let concluido = curso.concluido === true;
-        let card = document.createElement("article");
-        card.className = "mt-cert-card";
-        let topo = document.createElement("div");
-        topo.className = "mt-cert-top";
-        let nivel = document.createElement("span");
-        nivel.className = "mt-tag";
-        nivel.textContent = "🏅 " + (curso.nivel || "Treinamento");
-        let status = document.createElement("span");
-        status.className = "mt-cert-status";
-        status.textContent = concluido ? "✓ Desbloqueado" : "🔒 Bloqueado";
-        topo.append(nivel, status);
-        let titulo = document.createElement("h3");
-        titulo.textContent = curso.titulo || "Treinamento";
-        let descricao = document.createElement("p");
-        descricao.textContent = concluido ? "Treinamento concluído. Certificado demonstrativo disponível." : "Conclua o treinamento e seja aprovado na avaliação para desbloquear.";
-        let botao = document.createElement("button");
-        botao.type = "button";
-        botao.className = "mt-btn mt-btn-primary";
-        botao.textContent = concluido ? "Ver certificado" : "Certificado bloqueado";
-        botao.disabled = !concluido;
-        if (concluido) botao.addEventListener("click", function () { abrirCertificado(curso); });
-        card.append(topo, titulo, descricao, botao);
-        lista.appendChild(card);
+    try {
+        const resultado = await buscarDados("/api/certificacoes", "GET", null);
+        lista.replaceChildren();
+        if (resultado.certificacoes.length === 0) {
+            lista.textContent = "Nenhuma certificação concedida. Conclua os requisitos publicados pela empresa.";
+        }
+        for (const certificado of resultado.certificacoes) {
+            const card = document.createElement("article");
+            card.className = "mt-cert-card";
+            const titulo = document.createElement("h3");
+            titulo.textContent = certificado.nome;
+            const descricao = document.createElement("p");
+            descricao.textContent = certificado.nivel + " | Versão " + certificado.versao + " | Concedida em " + certificado.concedidaEm;
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "mt-btn mt-btn-primary";
+            botao.textContent = "Ver certificado";
+            botao.addEventListener("click", () => abrirCertificado(certificado));
+            card.append(titulo, descricao, botao);
+            lista.append(card);
+        }
+    } catch (erro) {
+        lista.textContent = erro.message;
     }
 }
-function abrirCertificado(curso) {
-    if (!curso || curso.concluido !== true) return;
+function abrirCertificado(certificado) {
+    if (!certificado || !certificado.id) return;
     let janela = window.open("", "_blank");
     if (!janela) { alert("Permita pop-ups para visualizar o certificado."); return; }
     janela.document.open();
-    janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Certificado demonstrativo HestIA</title>
+    janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Certificação HestIA</title>
     <style>body{font-family:Arial,sans-serif;background:#f3f6fb;color:#14243e;padding:35px;text-align:center}
     .folha{background:white;border:7px double #3154d9;padding:60px 25px;max-width:850px;margin:auto}
     h1{color:#3154d9;font-size:42px}h2{font-size:28px}p{line-height:1.6}
     button{background:#3154d9;color:white;border:0;border-radius:6px;padding:12px 22px;cursor:pointer;margin-top:25px}
     @media print{body{background:white;padding:0}button{display:none}.folha{border-color:#3154d9}}</style></head><body>
-    <div class="folha"><h1>HestIA</h1><p>Certificado de conclusão — demonstração</p>
-    <p>Treinamento concluído:</p><h2 id="cert-nome"></h2><p id="cert-nivel"></p>
-    <p>Documento demonstrativo do MVP. Não constitui certificação oficial.</p>
+    <div class="folha"><h1>HestIA</h1><p>Certificação de aprendizagem</p>
+    <p>Certificação concedida:</p><h2 id="cert-nome"></h2><p id="cert-nivel"></p>
+    <p>Registro de concessão da plataforma conforme os requisitos publicados pela empresa.</p>
     <button onclick="window.print()">Imprimir / Salvar como PDF</button></div></body></html>`);
     janela.document.close();
-    janela.document.getElementById("cert-nome").textContent = curso.titulo || "Treinamento";
-    janela.document.getElementById("cert-nivel").textContent = "Nível: " + (curso.nivel || "Não informado");
+    janela.document.getElementById("cert-nome").textContent = certificado.nome;
+    janela.document.getElementById("cert-nivel").textContent = "Nível: " + certificado.nivel + " | Versão " + certificado.versao + " | Registro #" + certificado.id + " | " + certificado.concedidaEm;
 }
 
 if (document.getElementById("mt-list") != null) {

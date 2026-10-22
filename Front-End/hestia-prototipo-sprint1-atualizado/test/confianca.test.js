@@ -80,6 +80,7 @@ test("login real, sessão BFF, consulta, expiração e logout funcionam por HTTP
             return res.end(JSON.stringify({ token: "token-teste", perfil: "GESTOR" }));
         }
         if (req.url === "/auth/logout") { revogado = true; res.writeHead(204); return res.end(); }
+        if (req.url === "/api/contexto") return res.end(JSON.stringify({ usuarioId: 1, empresaId: 10, departamentoId: 2, perfil: "GESTOR" }));
         if (req.url.startsWith("/indicadores/confiabilidade")) {
             assert.equal(req.headers.authorization, "Bearer token-teste");
             if (req.url.includes("inicio=2000")) { res.writeHead(401); return res.end("{}"); }
