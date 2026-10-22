@@ -2,7 +2,6 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 const session = require("express-session");
-const { autenticarContaReal, criarRotaMaturidade } = require("./confianca-maturidade");
 
 const api = axios.create({
     baseURL: process.env.API_URL || "http://localhost:8080",
@@ -80,8 +79,7 @@ app.get("/acesso", (req, res) => {
 });
 
 
-app.post("/acesso", async (req, res) => {
-    if (await autenticarContaReal(req, res, api)) return;
+app.post("/acesso", (req, res) => {
 
     req.session.email = String(req.body.email || "").trim().toLowerCase();
 
@@ -553,7 +551,278 @@ function obterIndicadoresDepartamentais() {
 }
 
 
-app.get("/maturidade", criarRotaMaturidade(api));
+app.get("/maturidade", async (req, res) => {
+
+    if (req.session.perfil == "") {
+
+        return res.redirect("/acesso");
+
+    }
+
+
+    const indicadores =
+        await consultarObjetoComFallback(
+            "/indicadores/maturidade",
+            obterIndicadoresMaturidade()
+        );
+
+
+    const maturityScore =
+        calcularMaturityScore(
+            indicadores
+        );
+
+
+    const departamentosCalculados =
+        obterIndicadoresDepartamentais()
+            .map(function(departamento) {
+
+                return {
+
+                    nome:
+                    departamento.nome,
+
+                    indicadores:
+                    departamento.indicadores,
+
+                    score:
+                        calcularMaturityScore(
+                            departamento.indicadores
+                        )
+
+                };
+
+            });
+
+
+    const departamentosMaturidade =
+        await consultarListaComFallback(
+            "/indicadores/maturidade/departamentos",
+            departamentosCalculados
+        );
+
+
+    const eficienciaDepartamentos =
+        await consultarListaComFallback(
+            "/registros-uso-ia/eficiencia",
+            []
+        );
+
+
+    const rankingDepartamentos =
+        departamentosMaturidade
+            .map(function(departamento) {
+
+                const eficienciaEncontrada =
+                    eficienciaDepartamentos.find(
+                        function(item) {
+
+                            return item.departamento ==
+                                departamento.nome;
+
+                        }
+                    );
+
+
+                const eficiencia =
+                    eficienciaEncontrada
+                        ?
+                        eficienciaEncontrada.eficiencia
+                        :
+                        0;
+
+
+                const departamentoBase =
+                    departamentosCalculados.find(
+                        function(item) {
+
+                            return item.nome ==
+                                departamento.nome;
+
+                        }
+                    );
+
+
+                const usoResponsavel =
+                    departamento.indicadores
+                        ?
+                        departamento.indicadores.usoResponsavel
+                        :
+                        departamentoBase.indicadores.usoResponsavel;
+
+
+                const pontuacao =
+                    calcularPontuacaoRankingDepartamento(
+                        departamento.score,
+                        eficiencia,
+                        usoResponsavel
+                    );
+
+
+                return {
+
+                    nome:
+                    departamento.nome,
+
+                    maturityScore:
+                    departamento.score,
+
+                    eficiencia:
+                    eficiencia,
+
+                    usoResponsavel:
+                    usoResponsavel,
+
+                    pontuacao:
+                        Math.round(
+                            pontuacao * 100
+                        ) / 100
+
+                };
+
+            })
+            .sort(function(a, b) {
+
+                return b.pontuacao -
+                    a.pontuacao;
+
+            })
+            .map(function(departamento, index) {
+
+                return {
+
+                    posicao:
+                        index + 1,
+
+                    nome:
+                    departamento.nome,
+
+                    maturityScore:
+                    departamento.maturityScore,
+
+                    eficiencia:
+                    departamento.eficiencia,
+
+                    usoResponsavel:
+                    departamento.usoResponsavel,
+
+                    pontuacao:
+                    departamento.pontuacao
+
+                };
+
+            });
+
+
+    const mediaDepartamental =
+        departamentosMaturidade.reduce(
+            function(total, departamento) {
+
+                return total +
+                    departamento.score;
+
+            },
+
+            0
+
+        ) / departamentosMaturidade.length;
+
+
+    const maiorMaturidade =
+        departamentosMaturidade.reduce(
+            function(maior, departamento) {
+
+                if (departamento.score > maior.score) {
+
+                    return departamento;
+
+                }
+
+                return maior;
+
+            }
+        );
+
+
+    const menorMaturidade =
+        departamentosMaturidade.reduce(
+            function(menor, departamento) {
+
+                if (departamento.score < menor.score) {
+
+                    return departamento;
+
+                }
+
+                return menor;
+
+            }
+        );
+
+
+    res.render("maturidade", {
+
+        perfil: req.session.perfil,
+
+        email: req.session.email,
+
+        active: "maturidade",
+
+        indicadores: indicadores,
+
+        maturityScore:
+            maturityScore.toFixed(2),
+
+        departamentosMaturidade:
+        departamentosMaturidade,
+
+        rankingDepartamentos:
+        rankingDepartamentos,
+
+        mediaDepartamental:
+            mediaDepartamental.toFixed(2),
+
+        maiorMaturidade:
+        maiorMaturidade,
+
+        menorMaturidade:
+        menorMaturidade,
+
+        // SCRUM-449: contrato preparado; sem backend de apuração disponível.
+        // O template interpreta propriedades ausentes como "não apurado".
+        // SCRUM-447/448: dados inteiramente fictícios para demonstrar o layout.
+        // SCRUM-449: substituir por resposta do backend Java quando disponível.
+        narrativaBanco: {
+            origem: "Mock demonstrativo no BFF (não é dado do banco)",
+            demonstrativo: true,
+            inicio: "2026-01",
+            fim: "2026-06",
+            totalUtilizacoes: 11150,
+            treinamentos: 94,
+            eventosSeguranca: 7,
+            evolucao: [
+                { mes: "2026-01", registros: 1200 },
+                { mes: "2026-02", registros: 1450 },
+                { mes: "2026-03", registros: 1680 },
+                { mes: "2026-04", registros: 1920 },
+                { mes: "2026-05", registros: 2150 },
+                { mes: "2026-06", registros: 2750 }
+            ]
+        },
+
+        maturidadeMeta: {
+            periodoInicio: null,
+            periodoFim: null,
+            coberturaIndicadores: null,
+            versaoRegra: "1.0",
+            versaoCalculo: null,
+            status: "Aguardando apuração validada",
+            indicadores: []
+        }
+
+    });
+
+});
 
 
 /* CREDITOS */
@@ -1913,11 +2182,7 @@ app.get("/assistente-rag", (req, res) => {
 
 /* SAIR */
 
-app.get("/sair", async (req, res) => {
-    if (req.session.apiToken) {
-        try { await api.post("/auth/logout", null, { headers: { Authorization: "Bearer " + req.session.apiToken } }); }
-        catch (_) { /* A sessão local é encerrada mesmo se a API estiver indisponível. */ }
-    }
+app.get("/sair", (req, res) => {
 
     req.session.destroy(function(erro) {
 
@@ -2826,10 +3091,13 @@ app.post("/api/microtreinamentos/:id/avaliacao",apenasColaboradorMicro,(req,res)
 
 /* SERVIDOR */
 
-if (require.main === module) {
-    app.listen(process.env.PORT || 3000, () => console.log("Servidor rodando"));
-}
-module.exports = app;
+app.listen(3000, () => {
+
+    console.log(
+        "Servidor rodando"
+    );
+
+});
 
 async function consultarReutilizacoes(empresaId) {
     try {
