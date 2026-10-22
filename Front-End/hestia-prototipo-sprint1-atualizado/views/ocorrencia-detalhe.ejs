@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HestIA — Detalhe da ocorrência</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .oc-page{padding:8px 0 35px}.oc-panel{background:#fff;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin:18px 0}.oc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.oc-panel dt{font-size:13px;font-weight:600;color:#64748b}.oc-panel dd{margin:5px 0 15px;overflow-wrap:anywhere}.oc-muted{color:#64748b}.oc-alert,.oc-success{padding:12px 15px;border-radius:8px;margin:12px 0}.oc-alert{background:#fff0f0;color:#a32a2a}.oc-success{background:#e3f7ec;color:#216b44}.oc-back{display:inline-block;margin:8px 0;color:#2545a5;font-weight:600}.oc-form{display:grid;gap:14px}.oc-form label{font-weight:600}.oc-form select,.oc-form textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:#fff;color:#18263d;font:inherit}.oc-form textarea{min-height:120px;resize:vertical}.oc-form button{justify-self:start;border:0;border-radius:8px;padding:11px 18px;background:#2545a5;color:#fff;font-weight:700;cursor:pointer}.oc-form small{color:#64748b}@media(max-width:760px){.oc-grid{grid-template-columns:1fr}.oc-panel{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <%- include("menu", {perfil, email, active}) %>
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
+      <div><p class="eyebrow">Governança</p><h1>Detalhe da ocorrência</h1></div>
+      <div class="profile-switch"><span><%= email %></span></div>
+      <a class="topbar-logout" href="/sair">Sair</a>
+    </header>
+    <div class="oc-page">
+      <a class="oc-back" href="/ocorrencias">← Voltar à lista</a>
+      <% if (erro) { %>
+        <div class="oc-alert" role="alert"><%= erro %> <% if (erro.includes("sessão")) { %><a href="/acesso">Entrar novamente</a><% } %></div>
+      <% } %>
+      <% if (sucesso) { %><div class="oc-success" role="status">Tratamento atualizado com sucesso.</div><% } %>
+      <% if (detalhe) { const t = detalhe.tratamento, o = detalhe.ocorrencia, a = detalhe.avaliacao, p = detalhe.politicaAplicada; %>
+        <section class="oc-panel">
+          <h2>Tratamento #<%= t.id %></h2>
+          <div class="oc-grid">
+            <dl>
+              <dt>Status</dt><dd><%= nomesStatus[t.status] || t.status %></dd>
+              <dt>Responsável</dt><dd><%= t.responsavelId ?? "Ainda não definido" %></dd>
+              <dt>Ação corretiva</dt><dd><%= t.acaoCorretiva || "Ainda não definida" %></dd>
+            </dl>
+            <dl>
+              <dt>Avaliação de origem</dt><dd>#<%= t.avaliacaoId %></dd>
+              <dt>Departamento</dt><dd><%= t.departamentoId ?? "Não informado" %></dd>
+              <dt>Aberta em</dt><dd><%= t.criadoEm ? new Date(t.criadoEm).toLocaleString("pt-BR") : "Não informada" %></dd>
+              <dt>Versão do registro</dt><dd><%= t.versaoRegistro %></dd>
+            </dl>
+          </div>
+        </section>
+        <section class="oc-panel">
+          <h2>Atualizar tratamento</h2>
+          <form class="oc-form" method="post" action="/ocorrencias/<%= t.id %>/tratamento">
+            <input type="hidden" name="versaoRegistro" value="<%= t.versaoRegistro %>">
+            <div>
+              <label for="responsavelId">Responsável</label>
+              <select id="responsavelId" name="responsavelId">
+                <option value="">Não definido</option>
+                <% responsaveis.forEach(usuario => { %>
+                  <option value="<%= usuario.id %>" <%= t.responsavelId === usuario.id ? "selected" : "" %>><%= usuario.nome %> (#<%= usuario.id %>)</option>
+                <% }); %>
+                <% if (t.responsavelId && !responsaveis.some(usuario => usuario.id === t.responsavelId)) { %>
+                  <option value="<%= t.responsavelId %>" selected>Usuário #<%= t.responsavelId %></option>
+                <% } %>
+              </select>
+              <% if (responsaveis.length === 0) { %><small>Nenhum usuário ativo foi disponibilizado pela API.</small><% } %>
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status" name="status" required>
+                <% Object.entries(nomesStatus).forEach(([codigo, nome]) => { %>
+                  <option value="<%= codigo %>" <%= t.status === codigo ? "selected" : "" %>><%= nome %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div>
+              <label for="acaoCorretiva">Ação corretiva</label>
+              <textarea id="acaoCorretiva" name="acaoCorretiva" maxlength="1000"><%= t.acaoCorretiva || "" %></textarea>
+              <small>Em tratamento e resolvida exigem responsável e ação corretiva.</small>
+            </div>
+            <button type="submit">Salvar tratamento</button>
+          </form>
+        </section>
+        <section class="oc-panel">
+          <h2>Uso de IA associado</h2>
+          <div class="oc-grid">
+            <dl>
+              <dt>Registro</dt><dd>#<%= o.id %></dd>
+              <dt>Ferramenta</dt><dd><%= o.ferramentaNome || ("#" + o.ferramentaId) %></dd>
+              <dt>Modelo</dt><dd><%= o.modeloIa || "Não informado" %></dd>
+            </dl>
+            <dl>
+              <dt>Usuário</dt><dd><%= o.usuarioNome || ("#" + o.usuarioId) %></dd>
+              <dt>Finalidade</dt><dd><%= o.finalidade || "Não informada" %></dd>
+              <dt>Data do uso</dt><dd><%= o.dataHora ? new Date(o.dataHora).toLocaleString("pt-BR") : "Não informada" %></dd>
+            </dl>
+          </div>
+        </section>
+        <section class="oc-panel">
+          <h2>Fundamento da avaliação</h2>
+          <dl>
+            <dt>Resultado</dt><dd><%= a.status || "Não informado" %></dd>
+            <dt>Motivo preservado</dt><dd><%= a.motivo || a.justificativa || "Não informado" %></dd>
+            <dt>Regra aplicada</dt><dd><%= a.regraAplicada || "Não informada" %></dd>
+            <dt>Limitações</dt><dd><%= a.limitacoes || "Não informadas" %></dd>
+            <dt>Política aplicada</dt><dd><%= p ? (p.titulo || "Política #" + p.politicaUsoId) + " — versão " + (p.versao || a.politicaVersao || "não informada") : "Versão histórica indisponível" %></dd>
+          </dl>
+        </section>
+      <% } %>
+    </div>
+  </main>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
