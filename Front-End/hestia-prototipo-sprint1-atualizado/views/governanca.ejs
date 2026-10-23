@@ -1,631 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        HestIA - Governança
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HestIA - Governança</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
+<div class="app-shell">
+    <%- include("menu", { perfil, email, active }) %>
+    <main class="main">
+        <header class="topbar">
+            <button class="menu-button" id="menuButton">☰</button>
+            <div><p class="eyebrow">Governança</p><h1>Políticas e conformidade</h1></div>
+            <div class="profile-switch"><span><%= email %></span></div>
+            <a class="topbar-logout" href="/sair">Sair</a>
+        </header>
 
-    <div class="app-shell">
+        <% if (mensagem) { %><div class="feedback success"><%= mensagem %></div><% } %>
+        <% if (erro) { %><div class="feedback error"><%= erro %></div><% } %>
 
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
+        <section class="hero-card">
+            <p class="eyebrow"><%= perfil === 'colaborador' ? 'Meu uso' : 'Visão da empresa' %></p>
+            <h2>Regras vigentes e resultados registrados</h2>
+            <p>Esta tela utiliza somente políticas e avaliações persistidas no banco do HestIA.</p>
+        </section>
 
+        <section class="dashboard-summary">
+            <article class="dashboard-summary-card"><span>Políticas cadastradas</span><strong><%= politicas.length %></strong><p><%= politicas.filter(p => p.ativa && !p.excluida).length %> ativas</p></article>
+            <article class="dashboard-summary-card"><span>Usos registrados</span><strong><%= resumoConformidade ? resumoConformidade.registros : '—' %></strong><p><%= perfil === 'colaborador' ? 'Associados à sua conta' : 'No escopo da empresa' %></p></article>
+            <article class="dashboard-summary-card"><span>Usos avaliados</span><strong><%= resumoConformidade ? resumoConformidade.avaliadas : '—' %></strong><p>Avaliações de conformidade persistidas</p></article>
+            <article class="dashboard-summary-card"><span>Conformidade</span><strong><%= resumoConformidade && resumoConformidade.percentualConformidade !== null ? Number(resumoConformidade.percentualConformidade).toLocaleString('pt-BR') + '%' : '—' %></strong><p><%= resumoConformidade && resumoConformidade.avaliadas ? resumoConformidade.conformes + ' conformes de ' + resumoConformidade.avaliadas + ' avaliadas' : 'Ainda não há amostra avaliada' %></p></article>
+        </section>
 
-        <main class="main">
+        <section class="grid three">
+            <article class="metric-card"><span>Conformes</span><strong><%= resumoConformidade ? resumoConformidade.conformes : '—' %></strong><p>Atendem à política aplicada.</p></article>
+            <article class="metric-card"><span>Não conformes</span><strong><%= resumoConformidade ? resumoConformidade.nao_conformes : '—' %></strong><p>Demandam tratamento.</p></article>
+            <article class="metric-card"><span>Em revisão</span><strong><%= resumoConformidade ? resumoConformidade.requerem_revisao : '—' %></strong><p>Aguardam decisão complementar.</p></article>
+        </section>
 
-            <!-- TOPO -->
-
-            <header class="topbar">
-
-                <button
-                    class="menu-button"
-                    id="menuButton">
-
-                    ☰
-
-                </button>
-
-
-                <div>
-
-                    <p class="eyebrow">
-                        Governança
-                    </p>
-
-                    <h1>
-                        Políticas e conformidade
-                    </h1>
-
-                </div>
-
-
-                <div class="profile-switch">
-
-                    <span>
-                        <%= email %>
-                    </span>
-
-                </div>
-
-
-                <a
-                    class="topbar-logout"
-                    href="/sair">
-
-                    Sair
-
-                </a>
-
-            </header>
-
-
-            <% if (mensagem) { %>
-
-                <div class="feedback success">
-                    <%= mensagem %>
-                </div>
-
+        <section class="panel">
+            <div class="panel-head"><div><h3>Políticas e diretrizes</h3><p>Versões atualmente registradas para a empresa autenticada.</p></div></div>
+            <% if (!politicas.length) { %>
+                <p class="muted">Nenhuma política cadastrada. Um administrador precisa publicar a primeira política antes das avaliações.</p>
+            <% } else { %>
+                <div class="table-wrap"><table>
+                    <thead><tr><th>Política</th><th>Versão</th><th>Revisão</th><th>Situação</th><th>Atualizada em</th></tr></thead>
+                    <tbody><% politicas.forEach(politica => { %><tr>
+                        <td><strong><%= politica.titulo %></strong><br><small><%= politica.descricao %></small></td>
+                        <td><%= politica.versao %></td><td><%= politica.revisao || 1 %></td>
+                        <td><%= politica.ativa && !politica.excluida ? 'Ativa' : 'Inativa' %></td>
+                        <td><%= politica.dataAtualizacao ? new Date(politica.dataAtualizacao).toLocaleString('pt-BR') : '—' %></td>
+                    </tr><% }) %></tbody>
+                </table></div>
             <% } %>
+        </section>
 
-
-            <% if (erro) { %>
-
-                <div class="feedback error">
-                    <%= erro %>
-                </div>
-
-            <% } %>
-
-
-            <!-- INDICADORES -->
-
-            <section class="grid two">
-
-                <article class="metric-card">
-
-                    <span>
-                        Políticas
-                    </span>
-
-                    <strong>
-                        <%= politicas.length ? politicas.length : 3 %>
-                    </strong>
-
-                    <p>
-                        <%= politicas.length ? "Políticas registradas no backend." : "Políticas demonstrativas do protótipo." %>
-                    </p>
-
-                </article>
-
-
-                <article class="metric-card">
-
-                    <span>
-                        Conformidade
-                    </span>
-
-                    <strong>
-                        82%
-                    </strong>
-
-                    <p>
-                        82 de 100 utilizações estão conformes.
-                    </p>
-
-                </article>
-
-            </section>
-
-
-            <!-- DASHBOARD -->
-
+        <% if (perfil === 'administrador') { %>
             <section class="panel">
-
-                <div class="panel-head">
-
-                    <h3>
-                        Conformidade das utilizações
-                    </h3>
-
-                </div>
-
-
-                <div class="dashboard-chart governanca-chart">
-
-                    <canvas id="graficoConformidade"></canvas>
-
-                    <div
-                        class="chart-empty"
-                        id="semConformidade">
-
-                        Nenhum registro de conformidade disponível.
-
-                    </div>
-
-                </div>
-
+                <div class="panel-head"><div><h3>Cadastrar política</h3><p>A política será vinculada automaticamente à empresa da sua sessão.</p></div></div>
+                <form class="form-grid" action="/governanca/politicas" method="post">
+                    <label class="full">Título<input name="titulo" type="text" maxlength="150" required></label>
+                    <label>Versão<input name="versao" type="text" maxlength="20" value="1.0" required></label>
+                    <label class="full">Descrição<input name="descricao" type="text" maxlength="500" required></label>
+                    <label class="full">Conteúdo<textarea name="conteudo" rows="6" required></textarea></label>
+                    <button class="primary" type="submit">Cadastrar política</button>
+                </form>
             </section>
-
-
-            <!-- POLITICAS -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <h3>
-                        Políticas e diretrizes
-                    </h3>
-
-                </div>
-
-
-                <div class="table-wrap">
-
-                    <table>
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Política / diretriz
-                                </th>
-
-                                <th>
-                                    Situação
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            <% politicas.forEach(function(politica) { %>
-
-                                <tr>
-
-                                    <td>
-                                        <%= politica.titulo %>
-                                        <small>
-                                            v<%= politica.versao %>
-                                        </small>
-                                    </td>
-
-                                    <td>
-                                        <%= politica.ativa ? "Ativa" : "Inativa" %>
-                                    </td>
-
-                                </tr>
-
-                            <% }) %>
-
-
-                            <% if (!politicas.length) { %>
-
-                                <tr>
-
-                                    <td>
-                                        Uso responsável de IA
-                                        <small>v1.0</small>
-                                    </td>
-
-                                    <td>
-                                        Ativa
-                                    </td>
-
-                                </tr>
-
-
-                                <tr>
-
-                                    <td>
-                                        Proteção de dados
-                                        <small>v1.0</small>
-                                    </td>
-
-                                    <td>
-                                        Ativa
-                                    </td>
-
-                                </tr>
-
-
-                                <tr>
-
-                                    <td>
-                                        Uso de informações corporativas
-                                        <small>v1.0</small>
-                                    </td>
-
-                                    <td>
-                                        Ativa
-                                    </td>
-
-                                </tr>
-
-                            <% } %>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </section>
-
-
-            <!-- ADMINISTRADOR -->
-
-            <% if (perfil == "administrador") { %>
-
-                <section class="grid two">
-
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Cadastrar política ou diretriz
-                            </h3>
-
-                        </div>
-
-
-                        <form
-                            class="form-grid"
-                            action="/governanca/politicas"
-                            method="post">
-
-
-                            <label class="full">
-
-                                Política ou diretriz
-
-                                <input
-                                    name="titulo"
-                                    type="text"
-                                    required>
-
-                            </label>
-
-
-                            <label>
-
-                                Empresa
-
-                                <select
-                                    name="empresaId"
-                                    required>
-
-                                    <option value="">
-                                        Selecione
-                                    </option>
-
-                                    <% empresas.forEach(function(empresa) { %>
-
-                                        <option value="<%= empresa.id %>">
-                                            <%= empresa.nome %>
-                                        </option>
-
-                                    <% }) %>
-
-                                </select>
-
-                            </label>
-
-
-                            <label>
-
-                                Versão
-
-                                <input
-                                    name="versao"
-                                    type="text"
-                                    value="1.0"
-                                    required>
-
-                            </label>
-
-
-                            <label class="full">
-
-                                Descrição
-
-                                <input
-                                    name="descricao"
-                                    type="text"
-                                    required>
-
-                            </label>
-
-
-                            <label class="full">
-
-                                Conteúdo
-
-                                <textarea
-                                    name="conteudo"
-                                    rows="4"
-                                    required></textarea>
-
-                            </label>
-
-
-                            <button
-                                class="primary"
-                                type="submit">
-
-                                Cadastrar
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-
-                    <!-- REGISTRAR CONFORMIDADE -->
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Registrar conformidade
-                            </h3>
-
-                        </div>
-
-
-                        <form
-                            class="form-grid"
-                            onsubmit="return false;">
-
-
-                            <label>
-
-                                Utilização de IA
-
-                                <select required>
-
-                                    <option value="">
-                                        Selecione uma utilização
-                                    </option>
-
-                                    <option>
-                                        Resumo de documento - w@colaborador
-                                    </option>
-
-                                    <option>
-                                        Apoio na elaboração de relatório - w@colaborador
-                                    </option>
-
-                                    <option>
-                                        Análise de dados - w@colaborador
-                                    </option>
-
-                                    <option>
-                                        Geração de apresentação - w@colaborador
-                                    </option>
-
-                                </select>
-
-                            </label>
-
-
-                            <label>
-
-                                Conformidade
-
-                                <select required>
-
-                                    <option value="">
-                                        Selecione
-                                    </option>
-
-                                    <option value="conforme">
-                                        Conforme
-                                    </option>
-
-                                    <option value="nao-conforme">
-                                        Não conforme
-                                    </option>
-
-                                </select>
-
-                            </label>
-
-
-                            <!-- SCRUM 194 - DETALHES DA CONFORMIDADE -->
-
-                            <label class="full">
-
-                                Política / regra acionada
-
-                                <select required>
-
-                                    <option value="">
-                                        Selecione uma política ou regra
-                                    </option>
-
-
-                                    <% if (politicas.length) { %>
-
-                                        <% politicas.forEach(function(politica) { %>
-
-                                            <option value="<%= politica.id %>">
-                                                <%= politica.titulo %> - v<%= politica.versao %>
-                                            </option>
-
-                                        <% }) %>
-
-                                    <% } else { %>
-
-                                        <option>
-                                            Uso responsável de IA - v1.0
-                                        </option>
-
-                                        <option>
-                                            Proteção de dados - v1.0
-                                        </option>
-
-                                        <option>
-                                            Uso de informações corporativas - v1.0
-                                        </option>
-
-                                    <% } %>
-
-                                </select>
-
-                            </label>
-
-
-                            <label class="full">
-
-                                Justificativa
-
-                                <textarea
-                                    rows="4"
-                                    placeholder="Informe a justificativa da avaliação de conformidade"
-                                    required></textarea>
-
-                            </label>
-
-
-                            <button
-                                class="primary fake-save"
-                                type="button">
-
-                                Registrar
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-                </section>
-
-            <% } %>
-
-
-            <div
-                class="toast"
-                id="toast">
-
-                Dados persistidos pelo backend HestIA.
-
-            </div>
-
-        </main>
-
-    </div>
-
-
-    <!-- CHART JS -->
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-    <!-- GRAFICO DE CONFORMIDADE -->
-
-    <script>
-
-        const graficoConformidade =
-            document.getElementById("graficoConformidade");
-
-
-        const tiposConformidade = [
-            "Conforme",
-            "Não conforme"
-        ];
-
-
-        const valoresConformidade = [
-            82,
-            18
-        ];
-
-
-        if (
-            graficoConformidade &&
-            tiposConformidade.length > 0
-        ) {
-
-            document
-                .getElementById("semConformidade")
-                .style.display = "none";
-
-
-            new Chart(graficoConformidade, {
-
-                type: "doughnut",
-
-                data: {
-
-                    labels: tiposConformidade,
-
-                    datasets: [{
-
-                        data: valoresConformidade
-
-                    }]
-
-                },
-
-
-                options: {
-
-                    responsive: true,
-
-                    maintainAspectRatio: false,
-
-                    cutout: "65%",
-
-                    plugins: {
-
-                        legend: {
-
-                            position: "top"
-
-                        }
-
-                    }
-
-                }
-
-            });
-
-        }
-
-    </script>
-
-
-    <script src="/app.js"></script>
-
+        <% } %>
+
+        <section class="panel">
+            <div class="panel-head"><div><h3>Como uma avaliação é registrada</h3><p>A conformidade nasce da avaliação de um registro de uso contra uma política e sua revisão exata.</p></div></div>
+            <p>Consulte os registros para acompanhar o uso. A avaliação preserva a política, a regra, o motivo e as limitações utilizados na decisão.</p>
+            <a class="personal-card-link" href="/utilizacoes/registros">Ver registros de uso →</a>
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
 </body>
-
 </html>

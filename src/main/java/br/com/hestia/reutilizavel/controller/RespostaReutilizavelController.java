@@ -145,7 +145,8 @@ public class RespostaReutilizavelController {
     ) {
         return ResponseEntity.ok(
                 service.registrarReutilizacao(
-                        acesso.buscarPorId(usuario, id).getId()
+                        acesso.buscarPorId(usuario, id).getId(),
+                        usuario.getId()
                 )
         );
     }

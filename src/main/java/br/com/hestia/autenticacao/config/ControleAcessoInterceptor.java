@@ -38,7 +38,7 @@ public class ControleAcessoInterceptor implements HandlerInterceptor {
             empresaAtual.definir(new ContextoEmpresa(usuarioId, sessao.getUsuario().getEmpresa().getId()));
 
             PerfilUsuario perfil = sessao.getUsuario().getPerfil();
-            if (!permitido(request.getRequestURI(), perfil)) {
+            if (!permitido(request.getRequestURI(), request.getMethod(), perfil)) {
                 responder(response, 403, "FORBIDDEN", "Seu perfil não permite acessar este recurso");
                 return false;
             }
@@ -53,7 +53,9 @@ public class ControleAcessoInterceptor implements HandlerInterceptor {
         }
     }
 
-    private boolean permitido(String rota, PerfilUsuario perfil) {
+    private boolean permitido(String rota, String metodo, PerfilUsuario perfil) {
+        if (rota.startsWith("/politicas") && "GET".equals(metodo)) return true;
+        if (rota.equals("/avaliacoes-conformidade/resumo") && "GET".equals(metodo)) return true;
         if (rota.startsWith("/usuarios") || rota.startsWith("/empresas")
                 || rota.startsWith("/departamentos") || rota.startsWith("/politicas")
                 || rota.startsWith("/auditoria")) {

@@ -13,7 +13,7 @@ test('consulta descarta IDs de empresa e usuário enviados pelo navegador', asyn
     });
 });
 
-test('HTTP: demonstração identificada, sessão expirada e logout com API indisponível', async () => {
+test('HTTP: maturidade exige conta gerencial real, trata sessão expirada e logout indisponível', async () => {
     let logoutChamado = false;
     const backend = http.createServer((req,res) => {
         res.setHeader('Content-Type','application/json');
@@ -36,15 +36,14 @@ test('HTTP: demonstração identificada, sessão expirada e logout com API indis
     };
     try {
         const demo=await login('pessoa@colaborador');
-        const tela=await fetch(base+'/maturidade',{headers:{Cookie:demo}});
-        const html=await tela.text();
-        assert.match(html,/Acesso demonstrativo/);
-        assert.doesNotMatch(html,/11150|11\.150|Confiável/);
-        const demonstracao=await fetch(base+'/maturidade/demonstracao',{headers:{Cookie:demo}});
-        assert.equal(demonstracao.status,200);
-        assert.match(await demonstracao.text(),/Demonstração com dados fictícios/);
+        const tela=await fetch(base+'/maturidade',{headers:{Cookie:demo},redirect:'manual'});
+        assert.equal(tela.status,302);
+        assert.match(tela.headers.get('location'),/^\/acesso/);
+        const demonstracao=await fetch(base+'/maturidade/demonstracao',{headers:{Cookie:demo},redirect:'manual'});
+        assert.equal(demonstracao.status,302);
+        assert.match(demonstracao.headers.get('location'),/^\/acesso/);
         const cookie=await login('admin@example.test');
-        const expirada=await fetch(base+'/maturidade',{headers:{Cookie:cookie}});
+        const expirada=await fetch(base+'/maturidade/confiabilidade',{headers:{Cookie:cookie}});
         assert.equal(expirada.status,401);
         assert.match(await expirada.text(),/sessão da API expirou/);
         // Novo login para comprovar que logout tenta revogar o token e sempre encerra localmente.

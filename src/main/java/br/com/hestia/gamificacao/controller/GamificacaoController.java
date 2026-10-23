@@ -1,6 +1,7 @@
 package br.com.hestia.gamificacao.controller;
 import br.com.hestia.gamificacao.dto.*;
 import br.com.hestia.gamificacao.service.GamificacaoService;
+import br.com.hestia.usuario.model.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,4 +11,5 @@ public class GamificacaoController {
     public GamificacaoController(GamificacaoService service) { this.service = service; }
     @PostMapping("/acoes") public PasseHestIAResponseDTO registrar(@Valid @RequestBody RegistroAcaoDTO dto) { return service.registrarAcao(dto); }
     @GetMapping("/usuarios/{usuarioId}/passe") public PasseHestIAResponseDTO passe(@PathVariable Long usuarioId) { return service.passe(usuarioId); }
+    @GetMapping("/creditos") public AiCreditsResponseDTO creditos(@RequestAttribute("usuarioAutenticado") Usuario usuario) { return service.creditos(usuario); }
 }

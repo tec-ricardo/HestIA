@@ -544,6 +544,22 @@ if (document.getElementById("mt-list") != null) {
 
     carregarCursos();
 
+    if ("BroadcastChannel" in window) {
+
+        const canalPasse = new BroadcastChannel("hestia-pass");
+
+        canalPasse.addEventListener("message", carregarCursos);
+
+    }
+
+    window.addEventListener("storage", function(evento) {
+
+        if (evento.key == "hestia-pass-atualizado") carregarCursos();
+
+    });
+
+    window.addEventListener("focus", carregarCursos);
+
 }
 
 if (document.getElementById("mt-course") != null) carregarCurso();

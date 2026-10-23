@@ -63,6 +63,38 @@ public class GamificacaoService {
                 proximo == null ? null : proximo.getXpMinimo(), percentual, missoes);
     }
 
+    @Transactional(readOnly = true)
+    public AiCreditsResponseDTO creditos(Usuario usuarioAutenticado) {
+        Long empresaId = usuarioAutenticado.getEmpresa().getId();
+        List<ProgressoUsuario> progressos = progressoRepository
+                .findByUsuarioEmpresaIdAndUsuarioAtivoTrueOrderByXpTotalDesc(empresaId);
+        List<AiCreditsResponseDTO.ItemRanking> ranking = new ArrayList<>();
+        Integer posicaoAtual = null;
+        int posicao = 0;
+        int posicaoDoGrupo = 0;
+        Integer pontuacaoAnterior = null;
+        int saldo = 0;
+
+        for (ProgressoUsuario progresso : progressos) {
+            posicao++;
+            if (pontuacaoAnterior == null || progresso.getXpTotal() != pontuacaoAnterior) {
+                posicaoDoGrupo = posicao;
+                pontuacaoAnterior = progresso.getXpTotal();
+            }
+            boolean atual = progresso.getUsuario().getId().equals(usuarioAutenticado.getId());
+            if (atual) {
+                saldo = progresso.getXpTotal();
+                posicaoAtual = posicaoDoGrupo;
+            }
+            ranking.add(new AiCreditsResponseDTO.ItemRanking(
+                    posicaoDoGrupo, progresso.getUsuario().getId(), progresso.getUsuario().getNome(),
+                    progresso.getNivel().name(), progresso.getXpTotal(), atual));
+        }
+
+        return new AiCreditsResponseDTO(saldo, posicaoAtual, ranking.size(),
+                "1 AI Credit corresponde a 1 ponto validado no histórico do HestIA Pass.", ranking);
+    }
+
     private void atualizarMissoes(Usuario usuario, ProgressoUsuario progresso, AcaoExperiencia acao) {
         for (Missao missao : missaoRepository.findByAtivaTrueAndAcaoAlvo(acao)) {
             ProgressoMissao progressoMissao = progressoMissaoRepository

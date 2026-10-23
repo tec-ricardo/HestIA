@@ -1,294 +1,62 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        HestIA - Competências
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HestIA - Competências</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
-
-    <div class="app-shell">
-
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
-
-
-        <main class="main">
-
-            <!-- TOPO -->
-
-            <header class="topbar">
-
-                <button
-                    class="menu-button"
-                    id="menuButton">
-
-                    ☰
-
-                </button>
-
-                <div>
-
-                    <p class="eyebrow">
-                        Desenvolvimento
-                    </p>
-
-                    <h1>
-                        Competências
-                    </h1>
-
-                </div>
-
-                <div class="profile-switch">
-
-                    <span>
-                        <%= email %>
-                    </span>
-
-                </div>
-
-                <a
-                    class="topbar-logout"
-                    href="/sair">
-
-                    Sair
-
-                </a>
-
-            </header>
-
-
-            <!-- COLABORADOR -->
-
-            <% if (perfil == "colaborador") { %>
-
-                <section class="grid two">
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                AI Literacy
-                            </h3>
-
-                        </div>
-
-                        <div class="empty-state">
-
-                            A avaliação do nível de conhecimento
-                            e capacidade no uso de Inteligência
-                            Artificial será exibida aqui.
-
-                        </div>
-
-                    </article>
-
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Capacitações
-                            </h3>
-
-                        </div>
-
-                        <form
-                            class="form-grid"
-                            onsubmit="return false;">
-
-                            <label class="full">
-
-                                Capacitação realizada
-
-                                <input
-                                    type="text"
-                                    required>
-
-                            </label>
-
-                            <button
-                                class="primary fake-save"
-                                type="button">
-
-                                Registrar capacitação
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Certificações
-                            </h3>
-
-                        </div>
-
-                        <form
-                            class="form-grid"
-                            onsubmit="return false;">
-
-                            <label class="full">
-
-                                Certificação
-
-                                <input
-                                    type="text"
-                                    required>
-
-                            </label>
-
-                            <button
-                                class="primary fake-save"
-                                type="button">
-
-                                Registrar certificação
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-                </section>
-
+<div class="app-shell">
+    <%- include("menu", { perfil, email, active }) %>
+    <main class="main">
+        <header class="topbar">
+            <button class="menu-button" id="menuButton">☰</button>
+            <div><p class="eyebrow">Desenvolvimento</p><h1>Competências</h1></div>
+            <div class="profile-switch"><span><%= email %></span></div>
+            <a class="topbar-logout" href="/sair">Sair</a>
+        </header>
+
+        <section class="hero-card">
+            <p class="eyebrow">AI Literacy</p>
+            <h2>Conhecimento comprovado por aprendizagem</h2>
+            <p>O indicador usa somente leituras e avaliações concluídas nos microtreinamentos publicados para sua empresa.</p>
+        </section>
+
+        <% if (!literacy) { %>
+            <section class="panel"><p class="error-message">Não foi possível consultar a AI Literacy agora.</p></section>
+        <% } else { const nomes={NAO_AVALIADO:'Ainda não avaliado',INICIAL:'Inicial',EM_DESENVOLVIMENTO:'Em desenvolvimento',COMPETENTE:'Competente',AVANCADO:'Avançado'}; %>
+            <section class="dashboard-summary">
+                <article class="dashboard-summary-card"><span>AI Literacy</span><strong><%= literacy.notaMedia === null ? '—' : Number(literacy.notaMedia).toLocaleString('pt-BR') + '/100' %></strong><p><%= nomes[literacy.nivel] || literacy.nivel %></p></article>
+                <article class="dashboard-summary-card"><span>Cobertura</span><strong><%= literacy.cobertura === null ? '—' : Number(literacy.cobertura).toLocaleString('pt-BR') + '%' %></strong><p>Avaliações concluídas sobre conteúdos publicados</p></article>
+                <article class="dashboard-summary-card"><span>Conteúdos lidos</span><strong><%= literacy.conteudosLidos %> / <%= literacy.conteudosPublicados %></strong><p>Leituras confirmadas e versionadas</p></article>
+                <article class="dashboard-summary-card"><span>Avaliações aprovadas</span><strong><%= literacy.avaliacoesAprovadas %> / <%= literacy.avaliacoesConcluidas %></strong><p>Aprovação exige nota mínima de 80</p></article>
+            </section>
+
+            <section class="grid two">
+                <article class="panel">
+                    <div class="panel-head"><div><h3>Como a nota é calculada</h3><p>Regra <%= literacy.versaoRegra %></p></div></div>
+                    <p>A nota é a média da melhor avaliação concluída em cada conteúdo publicado. Tentativas abertas não entram no cálculo e nenhum valor é estimado.</p>
+                    <% if (literacy.notaMedia === null) { %><p class="muted">Conclua a leitura e a avaliação de um microtreinamento para gerar sua primeira evidência.</p><% } %>
+                    <a class="personal-card-link" href="/microtreinamentos">Ir para microtreinamentos →</a>
+                </article>
+                <article class="panel">
+                    <div class="panel-head"><div><h3>Faixas de desenvolvimento</h3><p>Classificação transparente da nota observada.</p></div></div>
+                    <div class="list-clean"><span>Inicial: abaixo de 60</span><span>Em desenvolvimento: 60 a 79,99</span><span>Competente: 80 a 89,99</span><span>Avançado: 90 a 100</span></div>
+                </article>
+            </section>
+        <% } %>
+
+        <section class="panel">
+            <div class="panel-head"><div><h3>Certificações concedidas</h3><p>Somente certificações verificadas pelo backend são exibidas.</p></div></div>
+            <% if (!certificacoes.length) { %><p class="muted">Nenhuma certificação concedida até o momento.</p><% } else { %>
+                <div class="table-wrap"><table><thead><tr><th>Certificação</th><th>Nível</th><th>Versão</th><th>Concedida em</th></tr></thead><tbody>
+                <% certificacoes.forEach(item => { %><tr><td><%= item.nome %></td><td><%= item.nivel %></td><td><%= item.versao %></td><td><%= new Date(item.concedida_em || item.concedidaEm).toLocaleString('pt-BR') %></td></tr><% }) %>
+                </tbody></table></div>
             <% } %>
-
-
-            <!-- ADMINISTRADOR -->
-
-            <% if (perfil == "administrador") { %>
-
-                <section class="grid two">
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Cadastrar competência
-                            </h3>
-
-                        </div>
-
-                        <form
-                            class="form-grid"
-                            onsubmit="return false;">
-
-                            <label class="full">
-
-                                Competência
-
-                                <input
-                                    type="text"
-                                    required>
-
-                            </label>
-
-                            <button
-                                class="primary fake-save"
-                                type="button">
-
-                                Cadastrar competência
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-
-                    <article class="panel">
-
-                        <div class="panel-head">
-
-                            <h3>
-                                Associar competência ao colaborador
-                            </h3>
-
-                        </div>
-
-                        <form
-                            class="form-grid"
-                            onsubmit="return false;">
-
-                            <label>
-
-                                Colaborador
-
-                                <input
-                                    type="text"
-                                    required>
-
-                            </label>
-
-                            <label>
-
-                                Competência
-
-                                <input
-                                    type="text"
-                                    required>
-
-                            </label>
-
-                            <button
-                                class="primary fake-save"
-                                type="button">
-
-                                Associar competência
-
-                            </button>
-
-                        </form>
-
-                    </article>
-
-                </section>
-
-            <% } %>
-
-
-            <div
-                class="toast"
-                id="toast">
-
-                Ação demonstrativa do protótipo visual.
-
-            </div>
-
-        </main>
-
-    </div>
-
-
-    <script src="/app.js"></script>
-
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
 </body>
-
 </html>

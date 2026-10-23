@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
 @Service
 public class RespostaReutilizavelService {
 
-    static final int LIMITE_RECOMPENSAS_REUTILIZACAO = 10;
 
     private final RespostaReutilizavelRepository repository;
     private final AcessoRespostaService acesso;
@@ -154,7 +153,7 @@ public class RespostaReutilizavelService {
 
     @Transactional
     public RespostaReutilizavel registrarReutilizacao(
-            Long id
+            Long id, Long usuarioReutilizadorId
     ) {
 
         RespostaReutilizavel resposta =
@@ -172,13 +171,11 @@ public class RespostaReutilizavelService {
         RespostaReutilizavel salva =
                 repository.save(resposta);
 
-        if (salva.getUsuarioId() != null
-                && salva.getQuantidadeReutilizacoes()
-                <= LIMITE_RECOMPENSAS_REUTILIZACAO) {
+        if (usuarioReutilizadorId != null) {
 
             gamificacaoService.registrarAcao(
                     new RegistroAcaoDTO(
-                            salva.getUsuarioId(),
+                            usuarioReutilizadorId,
                             AcaoExperiencia.REUTILIZACAO_RESPOSTA,
                             "REUTILIZACAO:"
                                     + salva.getId()

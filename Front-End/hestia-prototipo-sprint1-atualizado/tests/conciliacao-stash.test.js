@@ -49,7 +49,7 @@ test('a mesma sessão atende confiabilidade, resultados e registros; login recus
     });
     const entrada = await login('certa');
     const cookie = entrada.headers.get('set-cookie').split(';')[0];
-    for (const rota of ['/maturidade', '/maturidade/resultados?inicio=2026-01-01&fim=2026-01-31&fonte=OPERACIONAL']) {
+    for (const rota of ['/maturidade/confiabilidade', '/maturidade/resultados?inicio=2026-01-01&fim=2026-01-31&fonte=OPERACIONAL']) {
         const pagina = await fetch(base + rota, { headers: { cookie } });
         assert.equal(pagina.status, 200);
         assert.equal(pagina.headers.get('cache-control'), 'no-store');

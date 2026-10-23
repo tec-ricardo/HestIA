@@ -312,7 +312,15 @@
 
         try {
 
-          void 0;
+          const atualizacao = { tipo: 'xp-atualizado', instante: Date.now() };
+
+          if ('BroadcastChannel' in window) {
+            const canal = new BroadcastChannel('hestia-pass');
+            canal.postMessage(atualizacao);
+            canal.close();
+          }
+
+          localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
 
           atualizarEconomia();
 
@@ -329,6 +337,11 @@
       }
 
 
+
+      function confirmarReutilizacaoAutomatica(item) {
+        registrarReutilizacao(item);
+        notify('+15 XP registrados no HestIA Pass pela resposta aprovada reutilizada.');
+      }
 
       const bankBody = document.getElementById('ragBankBody');
 
@@ -570,7 +583,8 @@
 
           copy.type = 'button';
 
-          copy.disabled = !message.respostaId;
+          copy.disabled = !message.respostaId || message.reutilizada;
+          if (message.reutilizada) copy.textContent = 'Resposta reutilizada (+15 XP)';
           copy.addEventListener('click', async () => {
             try {
               const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: message.question, modo: 'REUTILIZAR', respostaId: message.respostaId }) });
@@ -863,7 +877,7 @@
         const dados = await resposta.json();
         if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
         const fonte = dados.fontes && dados.fontes[0];
-        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
       }
 
       form.addEventListener('submit', e => {
@@ -924,7 +938,8 @@
 
             renderHistory();
 
-            if (!result.source) notify('Nenhum resultado encontrado.');
+            if (result.reutilizada) confirmarReutilizacaoAutomatica(result);
+            else if (!result.source) notify('Nenhum resultado encontrado.');
 
           } catch (erro) {
 

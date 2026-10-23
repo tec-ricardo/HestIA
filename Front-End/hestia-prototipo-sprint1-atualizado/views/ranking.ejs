@@ -1,366 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking HestIA</title>
-
-    <link
-        rel="stylesheet"
-        href="/styles.css"
-    >
-
-    <style>
-        /* Medalhas: estilos isolados para não alterar o ranking existente. */
-        .ranking-achievements { margin-top: 18px; padding: 22px; background: #fff; border: 1px solid #dce4ef; border-radius: 12px; }
-        .ranking-achievements-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
-        .ranking-achievements-head h2 { margin: 0 0 4px; font-size: 19px; color: #12233e; }
-        .ranking-achievements-head p { margin: 0; font-size: 12px; color: #64748b; }
-        .ranking-achievements-count { background: #eef2ff; color: #3155cf; border-radius: 99px; padding: 6px 10px; font-size: 12px; white-space: nowrap; }
-        .ranking-achievements-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-        .ranking-achievement { min-width: 0; padding: 17px 12px; text-align: center; border: 1px solid #e0e6ef; border-radius: 10px; background: #fff; }
-        .ranking-achievement-icon { width: 46px; height: 46px; display: grid; place-items: center; margin: 0 auto 10px; border-radius: 50%; font-size: 23px; background: #FCE8DC; color: #B87333; }
-        .ranking-achievement:nth-child(2) .ranking-achievement-icon { background: #E8EDF4; color: #8793A5; }
-        .ranking-achievement:nth-child(3) .ranking-achievement-icon { background: #FFF2C7; color: #D4A017; }
-        .ranking-achievement h3 { margin: 0 0 7px; font-size: 13px; color: #14243d; }
-        .ranking-achievement p { margin: 0 0 10px; font-size: 11px; line-height: 1.5; color: #64748b; }
-        .ranking-achievement-status { font-size: 11px; font-weight: 700; color: #16835b; }
-        .ranking-achievement.is-locked { background: #fafbfd; opacity: .75; }
-        .ranking-achievement.is-locked .ranking-achievement-icon { background: #edf0f5; color: #94a3b8; }
-        .ranking-achievement.is-locked .ranking-achievement-status { color: #64748b; }
-        .ranking-achievement-track { height: 5px; margin: 9px 0 7px; background: #e4e9f1; border-radius: 99px; overflow: hidden; }
-        .ranking-achievement-fill { height: 100%; background: #365cde; border-radius: 99px; }
-        .ranking-achievements-disclaimer { margin: 13px 0 0; font-size: 11px; color: #64748b; }
-        @media (max-width: 1000px) { .ranking-achievements-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 560px) { .ranking-achievements { padding: 16px; } .ranking-achievements-grid { grid-template-columns: 1fr; } }
-    </style>
-
+    <link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
-
 <div class="app-shell">
-
-    <%- include("menu", {
-        active: active,
-        perfil: perfil
-    }) %>
-
-
+    <%- include("menu", { active, perfil, email }) %>
     <main class="main-content ranking-page">
-
-
-        <!-- CABECALHO -->
-
         <header class="page-header">
-
             <div>
-
-                <h1>
-                    Ranking HestIA
-                </h1>
-
-                <p>
-                    Acompanhe sua posição e a evolução dos colaboradores
-                    na jornada de uso responsável de Inteligência Artificial.
-                </p>
-
+                <h1>Ranking HestIA</h1>
+                <p>Evolução dos colaboradores pelo XP validado no HestIA Pass.</p>
             </div>
-
         </header>
 
-
-
-        <!-- RESUMO PESSOAL -->
-
-        <section class="ranking-personal-card">
-
-            <div class="ranking-personal-position">
-
-                <span>
-                    Sua posição
-                </span>
-
-                <strong>
-                    <%= ranking.posicaoUsuario %>º
-                </strong>
-
-            </div>
-
-
-            <div class="ranking-personal-info">
-
-                <span class="ranking-small-label">
-                    Seu desempenho
-                </span>
-
-                <h2>
-                    <%= ranking.usuario.nome %>
-                </h2>
-
-                <div class="ranking-personal-details">
-
-                    <div>
-
-                        <span>
-                            Nível
-                        </span>
-
-                        <strong>
-                            <%= ranking.usuario.nivel %>
-                        </strong>
-
+        <% if (erro || !ranking) { %>
+            <section class="ranking-section"><p class="error-message"><%= erro %></p></section>
+        <% } else { %>
+            <section class="ranking-personal-card">
+                <div class="ranking-personal-position">
+                    <span>Sua posição</span>
+                    <strong><%= ranking.posicaoUsuario ? ranking.posicaoUsuario + 'º' : '—' %></strong>
+                </div>
+                <div class="ranking-personal-info">
+                    <span class="ranking-small-label">Seu desempenho</span>
+                    <h2><%= ranking.usuario.nome %></h2>
+                    <div class="ranking-personal-details">
+                        <div><span>Nível</span><strong><%= ranking.usuario.nivel %></strong></div>
+                        <div><span>XP acumulado</span><strong><%= ranking.usuario.xp %> XP</strong></div>
                     </div>
+                </div>
+            </section>
 
+            <section class="ranking-info-card">
+                <div><span class="ranking-info-icon">★</span></div>
+                <div>
+                    <strong>Ranking baseado no HestIA Pass</strong>
+                    <p>A classificação usa o mesmo histórico validado que alimenta o Passe e o AI Credits. Empates recebem a mesma posição.</p>
+                </div>
+            </section>
 
-                    <div>
+            <section class="ranking-section">
+                <div class="ranking-section-header">
+                    <div><h2>Classificação da empresa</h2><p>Somente participantes com ações pontuadas aparecem aqui.</p></div>
+                    <span class="ranking-total"><%= ranking.totalParticipantes %> participante<%= ranking.totalParticipantes === 1 ? '' : 's' %></span>
+                </div>
 
-                        <span>
-                            XP acumulado
-                        </span>
-
-                        <strong>
-                            <%= ranking.usuario.xp %> XP
-                        </strong>
-
+                <% if (!ranking.classificacao.length) { %>
+                    <p class="muted">Ainda não há participantes com XP validado.</p>
+                <% } else { %>
+                    <div class="ranking-table-wrapper">
+                        <table class="ranking-table">
+                            <thead><tr><th>Posição</th><th>Colaborador</th><th>Nível</th><th>XP</th></tr></thead>
+                            <tbody>
+                            <% ranking.classificacao.forEach(item => { %>
+                                <tr class="<%= item.usuarioAtual ? 'ranking-current-user' : '' %>">
+                                    <td><div class="ranking-position"><%= item.posicao === 1 ? '★' : item.posicao + 'º' %></div></td>
+                                    <td><div class="ranking-user"><div class="ranking-avatar"><%= item.iniciais %></div><div><strong><%= item.nome %></strong><% if (item.usuarioAtual) { %><span>Você</span><% } %></div></div></td>
+                                    <td><span class="ranking-level"><%= item.nivel %></span></td>
+                                    <td><strong class="ranking-xp"><%= item.xp %> XP</strong></td>
+                                </tr>
+                            <% }) %>
+                            </tbody>
+                        </table>
                     </div>
+                <% } %>
+            </section>
 
+            <%
+                const marcos = [
+                    { nome: 'Primeiros passos', requisito: 10, simbolo: '★' },
+                    { nome: 'Colaborador consciente', requisito: 100, simbolo: '◆' },
+                    { nome: 'Evolução responsável', requisito: 300, simbolo: '✦' },
+                    { nome: 'Embaixador de IA', requisito: 700, simbolo: '♛' }
+                ];
+                const conquistadas = marcos.filter(m => ranking.usuario.xp >= m.requisito).length;
+            %>
+            <section class="ranking-achievements" aria-labelledby="tituloConquistas">
+                <div class="ranking-achievements-head">
+                    <div><h2 id="tituloConquistas">Marcos da jornada</h2><p>Reconhecimentos calculados pelo XP real do HestIA Pass.</p></div>
+                    <span class="ranking-achievements-count"><%= conquistadas %> de <%= marcos.length %> alcançados</span>
                 </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- EXPLICACAO -->
-
-        <section class="ranking-info-card">
-
-            <div>
-
-                <span class="ranking-info-icon">
-                    ★
-                </span>
-
-            </div>
-
-            <div>
-
-                <strong>
-                    Ranking baseado na evolução do HestIA Pass
-                </strong>
-
-                <p>
-                    A posição considera o XP acumulado durante a jornada.
-                    O XP é atualizado conforme as regras de progressão
-                    definidas pelo programa HestIA.
-                </p>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- RANKING -->
-
-        <section class="ranking-section">
-
-            <div class="ranking-section-header">
-
-                <div>
-
-                    <h2>
-                        Classificação
-                    </h2>
-
-                    <p>
-                        Colaboradores ordenados pelo XP acumulado.
-                    </p>
-
+                <div class="ranking-achievements-grid">
+                    <% marcos.forEach(marco => { const alcançado = ranking.usuario.xp >= marco.requisito; const progresso = Math.min(100, Math.round(ranking.usuario.xp / marco.requisito * 100)); %>
+                        <article class="ranking-achievement <%= alcançado ? '' : 'is-locked' %>">
+                            <div class="ranking-achievement-icon" aria-hidden="true"><%= alcançado ? marco.simbolo : '🔒' %></div>
+                            <h3><%= marco.nome %></h3>
+                            <p>Alcance <%= marco.requisito %> XP no HestIA Pass.</p>
+                            <% if (alcançado) { %><span class="ranking-achievement-status">✓ Alcançado</span><% } else { %>
+                                <div class="ranking-achievement-track"><div class="ranking-achievement-fill" style="width:<%= progresso %>%"></div></div>
+                                <span class="ranking-achievement-status"><%= ranking.usuario.xp %> / <%= marco.requisito %> XP</span>
+                            <% } %>
+                        </article>
+                    <% }) %>
                 </div>
-
-                <span class="ranking-total">
-                    <%= ranking.totalParticipantes %> participantes
-                </span>
-
-            </div>
-
-
-            <div class="ranking-table-wrapper">
-
-                <table class="ranking-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Posição
-                            </th>
-
-                            <th>
-                                Colaborador
-                            </th>
-
-                            <th>
-                                Nível
-                            </th>
-
-                            <th>
-                                XP
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <% ranking.classificacao.forEach(function(item) { %>
-
-                            <tr class="<%= item.usuarioAtual ? 'ranking-current-user' : '' %>">
-
-                                <td>
-
-                                    <div class="ranking-position">
-
-                                        <% if (item.posicao == 1) { %>
-
-                                            <span class="ranking-medal">
-                                                ★
-                                            </span>
-
-                                        <% } else { %>
-
-                                            <strong>
-                                                <%= item.posicao %>º
-                                            </strong>
-
-                                        <% } %>
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    <div class="ranking-user">
-
-                                        <div class="ranking-avatar">
-
-                                            <%= item.iniciais %>
-
-                                        </div>
-
-                                        <div>
-
-                                            <strong>
-                                                <%= item.nome %>
-                                            </strong>
-
-                                            <% if (item.usuarioAtual) { %>
-
-                                                <span>
-                                                    Você
-                                                </span>
-
-                                            <% } %>
-
-                                        </div>
-
-                                    </div>
-
-                                </td>
-
-
-                                <td>
-
-                                    <span class="ranking-level">
-                                        <%= item.nivel %>
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    <strong class="ranking-xp">
-                                        <%= item.xp %> XP
-                                    </strong>
-
-                                </td>
-
-                            </tr>
-
-                        <% }); %>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- CONQUISTAS E MEDALHAS (SCRUM-524) -->
-        <%
-            // Demonstração: critérios provisórios baseados somente no XP já disponível.
-            // O back-end poderá substituir por conquistas reais no futuro.
-            const medalhasXP = Number(ranking.usuario.xp) || 0;
-            const medalhas = [
-                { nome: 'Primeiros passos', descricao: 'Alcance 10 XP no HestIA Pass.', requisito: 10, simbolo: '★' },
-                { nome: 'Colaborador consciente', descricao: 'Alcance 100 XP no HestIA Pass.', requisito: 100, simbolo: '◆' },
-                { nome: 'Evolução responsável', descricao: 'Alcance 200 XP no HestIA Pass.', requisito: 200, simbolo: '✦' },
-                { nome: 'Proficiência em IA', descricao: 'Alcance 300 XP no HestIA Pass.', requisito: 300, simbolo: '♛' }
-            ];
-            const medalhasConquistadas = medalhas.filter(m => medalhasXP >= m.requisito).length;
-        %>
-        <section class="ranking-achievements" aria-labelledby="ranking-achievements-title">
-            <div class="ranking-achievements-head">
-                <div>
-                    <h2 id="ranking-achievements-title">Conquistas e Medalhas</h2>
-                    <p>Reconhecimentos pela sua evolução no HestIA Pass.</p>
-                </div>
-                <span class="ranking-achievements-count"><%= medalhasConquistadas %> de <%= medalhas.length %> conquistadas</span>
-            </div>
-            <div class="ranking-achievements-grid">
-                <% medalhas.forEach(function(medalha) {
-                    const conquistada = medalhasXP >= medalha.requisito;
-                    const progresso = Math.max(0, Math.min(100, Math.round(medalhasXP / medalha.requisito * 100)));
-                %>
-                    <article class="ranking-achievement <%= conquistada ? '' : 'is-locked' %>">
-                        <div class="ranking-achievement-icon" aria-hidden="true"><%= conquistada ? medalha.simbolo : '🔒' %></div>
-                        <h3><%= medalha.nome %></h3>
-                        <p><%= medalha.descricao %></p>
-                        <% if (conquistada) { %>
-                            <span class="ranking-achievement-status">✓ Conquistada</span>
-                        <% } else { %>
-                            <div class="ranking-achievement-track" aria-label="<%= progresso %>% do requisito alcançado">
-                                <div class="ranking-achievement-fill" style="width: <%= progresso %>%"></div>
-                            </div>
-                            <span class="ranking-achievement-status"><%= medalhasXP %> / <%= medalha.requisito %> XP</span>
-                        <% } %>
-                    </article>
-                <% }); %>
-            </div>
-            <p class="ranking-achievements-disclaimer">Medalhas demonstrativas calculadas pelo XP atual. Os critérios poderão ser integrados às regras oficiais do programa.</p>
-        </section>    </main>
-
+            </section>
+        <% } %>
+    </main>
 </div>
-
+<script src="/app.js"></script>
 </body>
-
 </html>

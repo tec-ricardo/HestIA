@@ -29,7 +29,17 @@ public class InteracaoRagService {
         if(!anteriores.isEmpty()){var r=anteriores.getFirst();exigir(p.pergunta().equals(r.get("pergunta"))&&p.modo().name().equals(r.get("modo")),HttpStatus.CONFLICT,"Chave já utilizada para outra interação");return ler(u,r);}
         List<RespostaReutilizavel> candidatas;
         if(p.modo()==Modo.REUTILIZAR){exigir(p.respostaId()!=null,HttpStatus.BAD_REQUEST,"Resposta para reutilização obrigatória");candidatas=List.of(acesso.buscarPorId(u,p.respostaId()));}
-        else {try{candidatas=busca.buscarSemelhantes(empresa,p.pergunta(),5);}catch(org.springframework.web.server.ResponseStatusException e){throw e;}catch(RuntimeException e){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Recuperação vetorial indisponível");}}
+        else {
+            // Perguntas já conhecidas não precisam consumir embeddings. A recuperação
+            // textual aplica os mesmos filtros de empresa, perfil, revisão, validade
+            // e sensibilidade usados pela recuperação vetorial.
+            candidatas=respostas.buscarRespostasAnteriores(u,empresa,p.pergunta());
+            if(candidatas.isEmpty()){
+                try{candidatas=busca.buscarSemelhantes(empresa,p.pergunta(),5);}
+                catch(org.springframework.web.server.ResponseStatusException e){throw e;}
+                catch(RuntimeException e){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Recuperação vetorial indisponível");}
+            }
+        }
         // Revalidação após a busca: somente estes trechos entram no prompt de geração.
         List<Fonte> fontes=new ArrayList<>();int caracteres=0;
         for(var candidata:candidatas){var r=acesso.buscarPorId(u,candidata.getId());String trecho=r.getRespostaGerada();if(trecho.length()>6000)trecho=trecho.substring(0,6000);if(caracteres+trecho.length()>18000)break;caracteres+=trecho.length();var versoes=db.jdbc().queryForList("SELECT numero_versao,conteudo_sha256 FROM resposta_versoes WHERE resposta_id=? ORDER BY numero_versao DESC",r.getId());fontes.add(new Fonte(r.getId(),r.getPromptOriginal(),trecho,versoes.isEmpty()?null:((Number)versoes.getFirst().get("numero_versao")).intValue(),versoes.isEmpty()?hash(r.getPromptOriginal()+"\n"+r.getRespostaGerada()):(String)versoes.getFirst().get("conteudo_sha256")));}
@@ -37,7 +47,12 @@ public class InteracaoRagService {
         if(!fontes.isEmpty()&&p.modo()==Modo.GERAR_NOVA){var resposta=geracao.gerar(p.pergunta(),fontes.stream().map(f->"[Fonte "+f.id()+"] "+f.trecho()).toList());texto=resposta.texto();modelo=resposta.modelo();entrada=resposta.tokensEntrada();saida=resposta.tokensSaida();estado="GERADA_COM_FONTES";
             if(ferramentaId>0&&entrada!=null&&saida!=null&&entrada>=0&&saida>=0&&entrada<=Integer.MAX_VALUE&&saida<=Integer.MAX_VALUE&&entrada+saida<=Integer.MAX_VALUE&&db.jdbc().queryForObject("SELECT count(*) FROM ferramentas_ia WHERE id=? AND empresa_id=? AND status='APROVADA'",Long.class,ferramentaId,empresa)==1)registro=registros.criarCapturado(new RegistroUsoIACriacaoDTO(u.getId(),ferramentaId,modelo,LocalDateTime.now(),FinalidadeUso.GERACAO_CONTEUDO,entrada.intValue(),saida.intValue(),null,StatusExecucao.SUCESSO,null),"RAG:"+u.getId()+":"+p.chave()).id();
         }
-        if(!fontes.isEmpty()&&p.modo()==Modo.REUTILIZAR){respostas.registrarReutilizacao(fontes.getFirst().id());estado="REUTILIZADA";}
+        // Entregar diretamente uma resposta aprovada também é uma reutilização.
+        // O usuário não precisa confirmar a mesma ação em um segundo botão.
+        if(!fontes.isEmpty()&&(p.modo()==Modo.CONSULTAR||p.modo()==Modo.REUTILIZAR)){
+            respostas.registrarReutilizacao(fontes.getFirst().id(),u.getId());
+            estado="REUTILIZADA";
+        }
         Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,modelo,tokens_entrada,tokens_saida,registro_uso_id,criada_em) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),estado,texto,db.escrever(fontes),modelo,entrada,saida,registro,LocalDateTime.now());
         return ler(u,db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE id=? AND empresa_id=? AND usuario_id=?",nova,empresa,u.getId()).getFirst());
     }

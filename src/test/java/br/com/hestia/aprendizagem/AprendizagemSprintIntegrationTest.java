@@ -8,6 +8,7 @@ import br.com.hestia.reutilizavel.service.*;
 import br.com.hestia.rag.service.*;
 import br.com.hestia.autenticacao.contexto.*;
 import br.com.hestia.trilha.service.*;
+import br.com.hestia.microtreinamento.model.TipoErro;
 import br.com.hestia.ferramenta.model.*;
 import br.com.hestia.registro.dto.*;
 import br.com.hestia.registro.model.*;
@@ -126,6 +127,56 @@ class AprendizagemSprintIntegrationTest {
         assertThat(prova.get("concluida_em")).isNotNull();assertThat(prova.get("data_conclusao")).isNotNull();
         assertThatThrownBy(()->vinculos.consultar(outro,conclusao)).isInstanceOf(ResponseStatusException.class);
     }
+    record InfraTrilha(long ferramenta,long politica,long versaoPolitica){}
+    InfraTrilha infraestruturaTrilha(){
+        long ferramenta=a.inserir("INSERT INTO ferramentas_ia(nome,fornecedor,descricao,tipo,finalidade_uso,url_acesso,status,nivel_risco,trata_dados_pessoais,data_cadastro,data_atualizacao,empresa_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)","IA Teste","Teste","Teste","CHAT","Treinamento",null,"ATIVA","BAIXO",false,LocalDateTime.now(),LocalDateTime.now(),empresa.getId());
+        long politica=a.inserir("INSERT INTO politicas_uso(titulo,descricao,conteudo,versao,ativa,data_criacao,data_atualizacao,empresa_id,revisao,excluida,versao_registro) VALUES(?,?,?,?,?,?,?,?,?,?,?)","Política","Teste","Conteúdo","1.0",true,LocalDateTime.now(),LocalDateTime.now(),empresa.getId(),1,false,0);
+        long versao=a.inserir("INSERT INTO politica_uso_versoes(politica_uso_id,empresa_id,revisao,titulo,descricao,conteudo,versao,ativa,excluida,origem,registrada_em,autor_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",politica,empresa.getId(),1,"Política","Teste","Conteúdo","1.0",true,false,"TESTE",LocalDateTime.now(),admin.getId());
+        return new InfraTrilha(ferramenta,politica,versao);
+    }
+    long ocorrenciaConfirmada(InfraTrilha i,TipoErro tipo,LocalDateTime data){
+        long registro=a.inserir("INSERT INTO registros_uso_ia(usuario_id,ferramenta_id,modelo_ia,data_hora,finalidade,tokens_entrada,tokens_saida,tokens_total,custo_estimado,status_execucao,tempo_resposta_ms) VALUES(?,?,?,?,?,?,?,?,?,?,?)",aluno.getId(),i.ferramenta(),"modelo",data,"OUTRO",0,0,0,null,"SUCESSO",1);
+        long avaliacao=a.inserir("INSERT INTO avaliacoes_conformidade(registro_uso_id,politica_uso_id,status,justificativa,data_avaliacao,politica_versao_id,regra_codigo,regra_versao,motivo_preservado,regra_preservada,limitacoes_preservadas) VALUES(?,?,?,?,?,?,?,?,?,?,?)",registro,i.politica(),"NAO_CONFORME","Confirmada",data,i.versaoPolitica(),"CONFORMIDADE_CRITERIOS","1.0","Teste","Teste","Teste");
+        a.inserir("INSERT INTO trilha_ocorrencias_confirmadas(empresa_id,usuario_id,avaliacao_id,tipo_erro,ocorrido_em,confirmado_por,confirmado_em,justificativa) VALUES(?,?,?,?,?,?,?,?)",empresa.getId(),aluno.getId(),avaliacao,tipo.name(),data,admin.getId(),LocalDateTime.now(),"Evidência confirmada");
+        return avaliacao;
+    }
+    void publicarAvaliacao(long treinamento){a.publicar(admin,new Publicacao(treinamento,1,questoes()));}
+    @Test void recorrenciaAcionaUmaTrilhaEReprocessamentoNaoDuplica(){
+        publicarAvaliacao(5L);var infra=infraestruturaTrilha();var agora=LocalDateTime.now();
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(3));
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(2));
+        motor.processar(admin,aluno.getId());assertThat(motor.ciclos(admin,aluno.getId())).isEmpty();
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(1));
+        motor.processar(admin,aluno.getId());
+        assertThat(motor.ciclos(admin,aluno.getId())).hasSize(1);
+        assertThat(a.jdbc().queryForObject("SELECT count(*) FROM trilha_evidencias WHERE usuario_id=?",Long.class,aluno.getId())).isEqualTo(3);
+        motor.processar(admin,aluno.getId());
+        assertThat(motor.ciclos(admin,aluno.getId())).hasSize(1);
+        assertThat(a.jdbc().queryForObject("SELECT count(*) FROM trilha_evidencias WHERE usuario_id=?",Long.class,aluno.getId())).isEqualTo(3);
+    }
+    @Test void reincidenciaPosteriorCriaNovoCicloVinculado(){
+        publicarAvaliacao(5L);var infra=infraestruturaTrilha();var agora=LocalDateTime.now();
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(3));
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(2));
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(1));
+        motor.processar(admin,aluno.getId());var primeiro=motor.ciclos(admin,aluno.getId()).getFirst();
+        var conclusao=LocalDateTime.now().minusMinutes(1);
+        a.jdbc().update("UPDATE participacoes_trilha SET status='CONCLUIDA',concluida_em=? WHERE id=?",conclusao,primeiro.get("participacao_id"));
+        ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,LocalDateTime.now());
+        motor.processar(admin,aluno.getId());var ciclos=motor.ciclos(admin,aluno.getId());
+        assertThat(ciclos).hasSize(2);
+        assertThat(((Number)ciclos.getLast().get("anterior_id")).longValue()).isEqualTo(((Number)primeiro.get("id")).longValue());
+        assertThat(ciclos.getLast().get("corte_aprendizagem")).isNotNull();
+    }
+    @Test void temaSemCatalogoRegistraPendenciaEAbreQuandoConfigurado(){
+        var infra=infraestruturaTrilha();ocorrenciaConfirmada(infra,TipoErro.DADOS_SENSIVEIS,LocalDateTime.now().minusHours(1));
+        motor.processar(admin,aluno.getId());
+        assertThat(motor.ciclos(admin,aluno.getId())).isEmpty();
+        assertThat(motor.pendencias(admin,aluno.getId())).extracting(p->p.get("tema")).contains("PROTECAO_DE_DADOS");
+        publicarAvaliacao(1L);motor.processar(admin,aluno.getId());
+        assertThat(motor.ciclos(admin,aluno.getId())).hasSize(1);
+        assertThat(motor.pendencias(admin,aluno.getId())).extracting(p->p.get("tema")).doesNotContain("PROTECAO_DE_DADOS");
+    }
     RespostaReutilizavel resposta(){var r=new RespostaReutilizavel();r.setEmpresaId(empresa.getId());r.setUsuarioId(admin.getId());r.setPromptOriginal("Pergunta sobre política");r.setRespostaGerada("Somente ferramentas autorizadas.");r.setPerfisPermitidos(Set.of(PerfilUsuario.ADMIN,PerfilUsuario.FUNCIONARIO));return respostas.saveAndFlush(r);}
     @Test void revisaoBloqueiaExpiradasEHistoricoDeRetirada(){
         var r=resposta();assertThat(acesso.recuperar(aluno,null,r.getId(),null,false,org.springframework.data.domain.Pageable.unpaged())).hasSize(1);
@@ -164,7 +215,7 @@ class AprendizagemSprintIntegrationTest {
         var primeira=new br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Consulta(LocalDate.of(2026,1,1),LocalDate.of(2026,1,31),br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Natureza.OPERACIONAL,null,null,null,null);
         var segunda=new br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Consulta(LocalDate.of(2026,3,1),LocalDate.of(2026,3,31),primeira.fonte(),null,null,null,null);
         var consulta=apuracoes.consultar(admin,primeira);assertThat(consulta.resultado().scoreGlobal()).isNull();
-        assertThat(consulta.confianca()).allMatch(c->c.classificacao().equals("NAO_CLASSIFICADA"));
+        assertThat(consulta.confianca()).allMatch(c->c.classificacao().equals("DADOS_INSUFICIENTES"));
         Long x=apuracoes.registrar(admin,primeira),y=apuracoes.registrar(admin,segunda);
         var preservada=apuracoes.obter(admin,x);assertThat((String)preservada.get("conteudo")).contains("proposta-0.1","scoreGlobal");
         assertThat(apuracoes.evolucao(admin,x,y).get("comparavel")).isEqualTo(true);
