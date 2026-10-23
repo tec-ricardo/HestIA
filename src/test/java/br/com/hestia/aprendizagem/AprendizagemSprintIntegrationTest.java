@@ -215,7 +215,7 @@ class AprendizagemSprintIntegrationTest {
         var primeira=new br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Consulta(LocalDate.of(2026,1,1),LocalDate.of(2026,1,31),br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Natureza.OPERACIONAL,null,null,null,null);
         var segunda=new br.com.hestia.indicadores.maturidade.ResultadoMaturidadeService.Consulta(LocalDate.of(2026,3,1),LocalDate.of(2026,3,31),primeira.fonte(),null,null,null,null);
         var consulta=apuracoes.consultar(admin,primeira);assertThat(consulta.resultado().scoreGlobal()).isNull();
-        assertThat(consulta.confianca()).allMatch(c->c.classificacao().equals("NAO_CLASSIFICADA"));
+        assertThat(consulta.confianca()).allMatch(c->c.classificacao().equals("DADOS_INSUFICIENTES"));
         Long x=apuracoes.registrar(admin,primeira),y=apuracoes.registrar(admin,segunda);
         var preservada=apuracoes.obter(admin,x);assertThat((String)preservada.get("conteudo")).contains("proposta-0.1","scoreGlobal");
         assertThat(apuracoes.evolucao(admin,x,y).get("comparavel")).isEqualTo(true);
