@@ -36,8 +36,6 @@
         </a> 
  
  
-        <a class="nav-link" href="/utilizacoes/registros">Registros e origem</a>
-
         <!-- COLABORADOR --> 
  
         <% if (perfil == "colaborador") { %> 
@@ -94,14 +92,6 @@
  
  
             <a 
-                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" 
-                href="/maturidade"> 
- 
-                AI Maturity Score 
- 
-            </a> 
- 
-            <a 
                 class="nav-link <%= active == 'creditos' ? 'active' : '' %>" 
                 href="/creditos"> 
  
@@ -136,7 +126,7 @@
  
             <a 
                 class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" 
-                href="/maturidade"> 
+                href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">
  
                 AI Maturity Score 
  
@@ -181,6 +171,14 @@
  
         <% if (perfil == "administrador") { %>
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+
+            <a
+                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>"
+                href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">
+
+                AI Maturity Score
+
+            </a>
  
  
             <a 

@@ -39,6 +39,16 @@ function porcentagem(curso) {
     return Math.round(curso.etapa * 100 / curso.totalEtapas);
 }
 
+function avisarAtualizacaoDoPasse() {
+    const atualizacao = { tipo: "xp-atualizado", origem: "microtreinamento", instante: Date.now() };
+    if ("BroadcastChannel" in window) {
+        const canal = new BroadcastChannel("hestia-pass");
+        canal.postMessage(atualizacao);
+        canal.close();
+    }
+    localStorage.setItem("hestia-pass-atualizado", JSON.stringify(atualizacao));
+}
+
 function carregarCursos() {
     let lista = document.getElementById("mt-list");
     lista.innerHTML = "Carregando cursos...";
@@ -148,6 +158,7 @@ function mostrarAula(numero) {
         buscarDados("/api/microtreinamentos/" + curso.id + "/progresso", "POST", { etapa: numero + 1 })
             .then(function() {
                 curso.etapa = numero + 1;
+                if (curso.etapa >= curso.totalEtapas) avisarAtualizacaoDoPasse();
                 mostrarAula(numero + 1);
             }).catch(function(erro) {
                 alert(erro.message);

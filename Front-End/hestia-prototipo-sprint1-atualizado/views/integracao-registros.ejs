@@ -1,3 +1,181 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Registros de uso | HestIA</title><style>main{max-width:1000px;margin:auto;padding:24px;font-family:Arial}label,input,select{display:block}input,select{padding:8px;margin:5px 0 15px;max-width:100%;width:400px}table{border-collapse:collapse;width:100%}th,td{padding:10px;text-align:left;border-bottom:1px solid #ddd}button{padding:12px}</style></head><body><%- include('menu') %><main><h1>Meus registros de uso</h1><p><%= contexto.aviso %></p><p>Usuário: <%= contexto.usuarioId %> | Empresa: <%= contexto.empresaId %> | Origem deste formulário: manual.</p><table><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr><% for(const r of registros){ %><tr><td><%= r.dataHora %></td><td><%= r.ferramentaNome %></td><td><%= r.origem %></td><td><%= r.statusExecucao %></td></tr><% } %></table><h2>Registrar utilização manual</h2><p>Informe apenas medidas observadas. Campos opcionais desconhecidos podem ficar em branco.</p><form id="formRegistro"><label>Ferramenta<select name="ferramentaId" required><% for(const f of contexto.ferramentas){ %><option value="<%= f.id %>"><%= f.nome %></option><% } %></select></label><label>Modelo utilizado<input name="modeloIa" maxlength="100" required></label><label>Data e hora da utilização<input name="dataHora" type="datetime-local" required></label><label>Finalidade<select name="finalidade"><option value="PESQUISA">Pesquisa</option><option value="GERACAO_CODIGO">Geração de código</option><option value="GERACAO_CONTEUDO">Geração de conteúdo</option><option value="ANALISE_DADOS">Análise de dados</option><option value="RESUMO">Resumo</option><option value="AUTOMACAO">Automação</option><option value="SUPORTE_DECISAO">Suporte à decisão</option><option value="OUTROS">Outros</option></select></label><label>Tokens de entrada observados<input name="tokensEntrada" type="number" min="0" required></label><label>Tokens de saída observados<input name="tokensSaida" type="number" min="0" required></label><label>Custo observado, se disponível<input name="custoEstimado" type="number" min="0" step="0.000001"></label><label>Situação<select name="statusExecucao"><option value="SUCESSO">Sucesso</option><option value="ERRO">Erro</option></select></label><button>Salvar registro</button><p id="avisoRegistro" role="status"></p></form><script>
-document.getElementById('formRegistro').addEventListener('submit',async e=>{e.preventDefault();const dados=Object.fromEntries(new FormData(e.target));for(const k of ['ferramentaId','tokensEntrada','tokensSaida'])dados[k]=Number(dados[k]);dados.custoEstimado=dados.custoEstimado===''?null:Number(dados.custoEstimado);const aviso=document.getElementById('avisoRegistro');try{const r=await fetch('/api/registros',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(dados)});const d=await r.json();if(!r.ok)throw Error(d.erro||'Registro não salvo');location.reload();}catch(erro){aviso.textContent=erro.message;}});
-</script></main></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros de uso | HestIA</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app-shell">
+    <%- include("menu", { active: active, perfil: perfil }) %>
+
+    <main class="main-content usage-records-page">
+        <header class="usage-records-header">
+            <div>
+                <span class="usage-records-kicker">Governança de IA</span>
+                <h1>Registros de uso</h1>
+                <p>Acompanhe suas utilizações e mantenha o uso de IA rastreável.</p>
+            </div>
+            <div class="usage-origin-pill"><span class="usage-origin-dot"></span>Registro manual</div>
+        </header>
+
+        <section class="usage-summary" aria-label="Resumo dos registros">
+            <article class="usage-summary-card">
+                <span>Registros encontrados</span>
+                <strong><%= registros.length %></strong>
+                <small>Utilizações vinculadas à sua conta</small>
+            </article>
+            <article class="usage-summary-card">
+                <span>Ferramentas disponíveis</span>
+                <strong><%= contexto.ferramentas.length %></strong>
+                <small>Aprovadas para registro nesta empresa</small>
+            </article>
+            <article class="usage-summary-card usage-summary-highlight">
+                <span>Recompensa</span>
+                <strong>+10 XP</strong>
+                <small>Por cada registro válido enviado</small>
+            </article>
+        </section>
+
+        <div class="usage-records-layout">
+            <section class="usage-panel usage-form-panel">
+                <div class="usage-panel-heading">
+                    <div>
+                        <span class="usage-step">Novo registro</span>
+                        <h2>Registrar utilização</h2>
+                        <p>Informe os dados observados durante o uso da ferramenta.</p>
+                    </div>
+                </div>
+
+                <% if (contexto.aviso) { %><div class="usage-info"><%= contexto.aviso %></div><% } %>
+
+                <form id="formRegistro" class="usage-form">
+                    <label class="usage-field usage-field-full">
+                        <span>Ferramenta utilizada</span>
+                        <select name="ferramentaId" required>
+                            <% for (const f of contexto.ferramentas) { %><option value="<%= f.id %>"><%= f.nome %></option><% } %>
+                        </select>
+                    </label>
+                    <label class="usage-field">
+                        <span>Modelo de IA</span>
+                        <input name="modeloIa" maxlength="100" placeholder="Ex.: GPT-4.1 mini" required>
+                    </label>
+                    <label class="usage-field">
+                        <span>Data e hora</span>
+                        <input name="dataHora" type="datetime-local" required>
+                    </label>
+                    <label class="usage-field usage-field-full">
+                        <span>Finalidade</span>
+                        <select name="finalidade" required>
+                            <option value="PESQUISA">Pesquisa</option>
+                            <option value="GERACAO_CODIGO">Geração de código</option>
+                            <option value="GERACAO_CONTEUDO">Geração de conteúdo</option>
+                            <option value="ANALISE_DADOS">Análise de dados</option>
+                            <option value="RESUMO">Resumo</option>
+                            <option value="AUTOMACAO">Automação</option>
+                            <option value="SUPORTE_DECISAO">Suporte à decisão</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </label>
+                    <label class="usage-field">
+                        <span>Tokens de entrada</span>
+                        <input name="tokensEntrada" type="number" min="0" placeholder="0" required>
+                    </label>
+                    <label class="usage-field">
+                        <span>Tokens de saída</span>
+                        <input name="tokensSaida" type="number" min="0" placeholder="0" required>
+                    </label>
+                    <label class="usage-field">
+                        <span>Custo observado <small>opcional</small></span>
+                        <div class="usage-money-input"><b>R$</b><input name="custoEstimado" type="number" min="0" step="0.000001" placeholder="0,00"></div>
+                    </label>
+                    <label class="usage-field">
+                        <span>Situação</span>
+                        <select name="statusExecucao" required>
+                            <option value="SUCESSO">Concluída com sucesso</option>
+                            <option value="ERRO">Finalizada com erro</option>
+                            <option value="INTERROMPIDA">Interrompida</option>
+                        </select>
+                    </label>
+                    <div class="usage-form-footer usage-field-full">
+                        <p>Os registros ajudam a empresa a medir o uso responsável sem alterar os dados informados.</p>
+                        <button class="usage-submit" type="submit"><span>Salvar registro</span><b>+10 XP</b></button>
+                    </div>
+                    <p id="avisoRegistro" class="usage-feedback usage-field-full" role="status" hidden></p>
+                </form>
+            </section>
+
+            <section class="usage-panel usage-history-panel">
+                <div class="usage-panel-heading usage-history-heading">
+                    <div>
+                        <span class="usage-step">Histórico</span>
+                        <h2>Utilizações recentes</h2>
+                        <p>Registros armazenados e vinculados à sua conta.</p>
+                    </div>
+                    <span class="usage-count"><%= registros.length %></span>
+                </div>
+
+                <% if (registros.length === 0) { %>
+                    <div class="usage-empty"><span>◎</span><strong>Nenhum registro ainda</strong><p>Seu primeiro registro aparecerá aqui após o envio.</p></div>
+                <% } else { %>
+                    <div class="usage-table-wrap">
+                        <table class="usage-table">
+                            <thead><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr></thead>
+                            <tbody>
+                            <% for (const r of registros) { %>
+                                <tr>
+                                    <td><strong><%= new Date(r.dataHora).toLocaleDateString('pt-BR') %></strong><small><%= new Date(r.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></small></td>
+                                    <td><%= r.ferramentaNome || 'Ferramenta não informada' %></td>
+                                    <td><span class="usage-source"><%= r.origem %></span></td>
+                                    <td><span class="usage-status usage-status-<%= String(r.statusExecucao).toLowerCase() %>"><%= r.statusExecucao === 'SUCESSO' ? 'Sucesso' : (r.statusExecucao === 'ERRO' ? 'Erro' : 'Interrompida') %></span></td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+const formRegistro = document.getElementById('formRegistro');
+const dataHora = formRegistro.elements.dataHora;
+const agora = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+dataHora.value = agora.toISOString().slice(0, 16);
+
+formRegistro.addEventListener('submit', async function (evento) {
+    evento.preventDefault();
+    const botao = formRegistro.querySelector('.usage-submit');
+    const aviso = document.getElementById('avisoRegistro');
+    const dados = Object.fromEntries(new FormData(formRegistro));
+    for (const campo of ['ferramentaId', 'tokensEntrada', 'tokensSaida']) dados[campo] = Number(dados[campo]);
+    dados.custoEstimado = dados.custoEstimado === '' ? null : Number(dados.custoEstimado);
+    botao.disabled = true;
+    botao.querySelector('span').textContent = 'Salvando...';
+    aviso.hidden = true;
+    aviso.className = 'usage-feedback usage-field-full';
+    try {
+        const resposta = await fetch('/api/registros', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados)});
+        const resultado = await resposta.json();
+        if (!resposta.ok) throw new Error(resultado.erro || 'Registro não salvo');
+        const atualizacao = {tipo: 'xp-atualizado', origem: 'registro-uso', instante: Date.now()};
+        if ('BroadcastChannel' in window) { const canal = new BroadcastChannel('hestia-pass'); canal.postMessage(atualizacao); canal.close(); }
+        localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
+        aviso.textContent = 'Registro salvo com sucesso. +10 XP adicionados ao HestIA Pass.';
+        aviso.classList.add('usage-feedback-success');
+        aviso.hidden = false;
+        setTimeout(() => location.reload(), 700);
+    } catch (erro) {
+        aviso.textContent = erro.message;
+        aviso.classList.add('usage-feedback-error');
+        aviso.hidden = false;
+        botao.disabled = false;
+        botao.querySelector('span').textContent = 'Salvar registro';
+    }
+});
+</script>
+</body>
+</html>

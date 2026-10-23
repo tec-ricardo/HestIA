@@ -22,7 +22,57 @@ module.exports = function montarIntegracoes(app, api) {
     }
     return Number(valor);
   };
-  const adaptar = t => ({ ...t, id: String(t.id), bloqueado: false, nivel: 'Conteúdo disponível', motivo: 'Requisitos e avaliação definidos pela empresa', recomendado: false, xpAtual: null, medalhaAtual: 'Não utilizada como requisito' });
+  const niveisPasse = Object.freeze({
+    APRENDIZ: { numero: 1, nome: 'Aprendiz' },
+    CONSCIENTE: { numero: 2, nome: 'Consciente' },
+    GUARDIAO: { numero: 3, nome: 'Guardião' },
+    EMBAIXADOR: { numero: 4, nome: 'Embaixador' }
+  });
+  const nivelNecessarioPorPosicao = indice => indice < 3 ? 1 : indice < 5 ? 2 : 3;
+  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião' })[numero] || 'Guardião';
+  const consultarNivelPasse = async req => {
+    const usuarioId = id(req.session.usuarioId);
+    const { data } = await api.get(`/gamificacao/usuarios/${usuarioId}/passe`);
+    return niveisPasse[String(data?.nivel || '').toUpperCase()] || niveisPasse.APRENDIZ;
+  };
+  const adaptar = (treinamento, indice, nivelAtual) => {
+    const exigido = nivelNecessarioPorPosicao(indice);
+    const bloqueado = nivelAtual.numero < exigido;
+    return {
+      ...treinamento,
+      id: String(treinamento.id),
+      bloqueado,
+      nivel: `Nível ${exigido} — ${nomeNivel(exigido)}`,
+      motivo: bloqueado
+        ? `Alcance o nível ${nomeNivel(exigido)} no HestIA Pass para liberar.`
+        : 'Liberado pela evolução no HestIA Pass.',
+      recomendado: exigido === nivelAtual.numero,
+      xpAtual: null,
+      medalhaAtual: nivelAtual.nome
+    };
+  };
+  const consultarTreinamentosComNivel = async req => {
+    const [{ data }, nivelAtual] = await Promise.all([
+      api.get('/aprendizagem/conteudos'),
+      consultarNivelPasse(req)
+    ]);
+    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)), nivelAtual };
+  };
+  const exigirCursoLiberado = async (req, cursoId) => {
+    const { treinamentos } = await consultarTreinamentosComNivel(req);
+    const treinamento = treinamentos.find(item => String(item.id) === String(cursoId));
+    if (!treinamento) {
+      const erro = new Error('Microtreinamento não encontrado.');
+      erro.response = { status: 404, data: { message: erro.message } };
+      throw erro;
+    }
+    if (treinamento.bloqueado) {
+      const erro = new Error(treinamento.motivo);
+      erro.response = { status: 403, data: { message: erro.message } };
+      throw erro;
+    }
+    return treinamento;
+  };
   router.get('/api/certificacoes', colaborador, executar(async (req, res) => {
     const usuarioId = id(req.session.usuarioId);
     const { data: situacoes } = await api.post(`/certificacoes/usuarios/${usuarioId}/verificar`);
@@ -33,12 +83,15 @@ module.exports = function montarIntegracoes(app, api) {
     });
   }));
   router.get('/api/microtreinamentos', colaborador, executar(async (req, res) => {
-    const { data } = await api.get('/aprendizagem/conteudos');
-    res.json({ treinamentos: data.map(adaptar) });
+    const { treinamentos, nivelAtual } = await consultarTreinamentosComNivel(req);
+    res.json({ treinamentos, nivelAtual });
   }));
   router.get('/api/microtreinamentos/:id', colaborador, executar(async (req, res) => {
-    const { data } = await api.get(`/aprendizagem/conteudos/${id(req.params.id)}`);
-    const treinamento = adaptar(data); treinamento.questoes = [];
+    const cursoId = id(req.params.id);
+    const liberado = await exigirCursoLiberado(req, cursoId);
+    const { data } = await api.get(`/aprendizagem/conteudos/${cursoId}`);
+    const treinamento = { ...data, bloqueado: false, nivel: liberado.nivel, motivo: liberado.motivo, recomendado: liberado.recomendado, medalhaAtual: liberado.medalhaAtual };
+    treinamento.questoes = [];
     if (req.query.avaliacao === '1') {
       if (!data.catalogoId) return res.status(409).json({ erro: 'A avaliação deste conteúdo ainda não foi publicada pela empresa.' });
       const { data: tentativa } = await api.post(`/aprendizagem/catalogo/${id(data.catalogoId)}/tentativas`);
@@ -50,10 +103,13 @@ module.exports = function montarIntegracoes(app, api) {
     res.json({ treinamento });
   }));
   router.post('/api/microtreinamentos/:id/progresso', colaborador, executar(async (req, res) => {
-    res.json((await api.post(`/aprendizagem/conteudos/${id(req.params.id)}/progresso`, { etapa: req.body.etapa, chave: randomUUID() })).data);
+    const cursoId = id(req.params.id);
+    await exigirCursoLiberado(req, cursoId);
+    res.json((await api.post(`/aprendizagem/conteudos/${cursoId}/progresso`, { etapa: req.body.etapa, chave: randomUUID() })).data);
   }));
   router.post('/api/microtreinamentos/:id/avaliacao', colaborador, executar(async (req, res) => {
-    id(req.params.id);
+    const cursoId = id(req.params.id);
+    await exigirCursoLiberado(req, cursoId);
     const tentativa = req.session.tentativasAprendizagem?.[req.params.id];
     if (!tentativa) return res.status(409).json({ erro: 'Abra a avaliação antes de enviar.' });
     const valores = req.body.respostas;

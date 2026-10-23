@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +39,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
     private JdbcTemplate jdbc;
     private BuscaVetorialService busca;
     private GeracaoRagService geracao;
+    private RespostaReutilizavelService respostas;
     private InteracaoRagService service;
     private Usuario usuario;
 
@@ -117,7 +119,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 busca,
                 acessoResposta,
                 geracao,
-                mock(RespostaReutilizavelService.class),
+                respostas = mock(RespostaReutilizavelService.class),
                 mock(RegistroUsoIAService.class),
                 0L
         );
@@ -130,7 +132,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 new Pergunta("consulta-politica-1", PERGUNTA, Modo.CONSULTAR, null)
         );
 
-        assertThat(resultado.estado()).isEqualTo("RECUPERADA");
+        assertThat(resultado.estado()).isEqualTo("REUTILIZADA");
         assertThat(resultado.resposta()).isEqualTo(POLITICA);
         assertThat(resultado.fontes()).singleElement().satisfies(fonte -> {
             assertThat(fonte.id()).isEqualTo(77L);
@@ -149,6 +151,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historico(usuario))
                 .extracting(InteracaoRagService.Resultado::id)
                 .containsExactly(resultado.id());
+        verify(respostas).registrarReutilizacao(77L, 10L);
     }
 
     @Test
@@ -192,6 +195,26 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(resultado.resposta()).isNull();
         assertThat(resultado.fontes()).isEmpty();
         verifyNoInteractions(geracao);
+    }
+
+    @Test
+    void falhaDaGeracaoNaoViraRespostaInventadaNemHistoricoDeSucesso() {
+        when(geracao.gerar(eq(PERGUNTA), anyList()))
+                .thenThrow(new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE,
+                        "Modelo indisponível"
+                ));
+
+        assertThatThrownBy(() -> service.perguntar(
+                usuario,
+                new Pergunta("geracao-indisponivel-1", PERGUNTA, Modo.GERAR_NOVA, null)
+        )).isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+
+        assertThat(jdbc.queryForObject(
+                "SELECT count(*) FROM interacoes_rag WHERE chave=?",
+                Long.class,
+                "geracao-indisponivel-1"
+        )).isZero();
     }
 
     private RespostaReutilizavel fontePolitica() {

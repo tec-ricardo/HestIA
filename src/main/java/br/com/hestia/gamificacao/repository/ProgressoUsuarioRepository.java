@@ -1,5 +1,9 @@
 package br.com.hestia.gamificacao.repository;
 import br.com.hestia.gamificacao.model.ProgressoUsuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 import java.util.Optional;
-public interface ProgressoUsuarioRepository extends JpaRepository<ProgressoUsuario, Long> { Optional<ProgressoUsuario> findByUsuarioId(Long usuarioId); }
+public interface ProgressoUsuarioRepository extends JpaRepository<ProgressoUsuario, Long> {
+    Optional<ProgressoUsuario> findByUsuarioId(Long usuarioId);
+    List<ProgressoUsuario> findByUsuarioEmpresaIdAndUsuarioAtivoTrueOrderByXpTotalDesc(Long empresaId);
+}

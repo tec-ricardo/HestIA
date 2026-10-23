@@ -29,7 +29,7 @@
     }) %>
 
 
-    <main class="main-content pass-page">
+    <main class="main-content pass-page" data-hestia-pass-xp="<%= passe.xpAtual %>">
 
 
         <!-- CABECALHO -->
@@ -136,11 +136,11 @@
                 </span>
 
                 <strong>
-                    <%= passe.taxaConformidade %>%
+                    <%= passe.taxaConformidade == null ? '—' : passe.taxaConformidade + '%' %>
                 </strong>
 
                 <small>
-                    das utilizações avaliadas
+                    <%= passe.taxaConformidade == null ? 'Indicador ainda não fornecido pela API' : 'das utilizações avaliadas' %>
                 </small>
 
             </article>
@@ -153,11 +153,11 @@
                 </span>
 
                 <strong>
-                    <%= passe.totalUtilizacoesAvaliadas %>
+                    <%= passe.totalUtilizacoesAvaliadas == null ? '—' : passe.totalUtilizacoesAvaliadas %>
                 </strong>
 
                 <small>
-                    experiências analisadas
+                    <%= passe.totalUtilizacoesAvaliadas == null ? 'Indicador ainda não fornecido pela API' : 'experiências analisadas' %>
                 </small>
 
             </article>
@@ -170,11 +170,11 @@
                 </span>
 
                 <strong>
-                    <%= passe.totalUtilizacoesConformes %>
+                    <%= passe.totalUtilizacoesConformes == null ? '—' : passe.totalUtilizacoesConformes %>
                 </strong>
 
                 <small>
-                    práticas responsáveis
+                    <%= passe.totalUtilizacoesConformes == null ? 'Indicador ainda não fornecido pela API' : 'práticas responsáveis' %>
                 </small>
 
             </article>
@@ -187,11 +187,11 @@
                 </span>
 
                 <strong>
-                    <%= passe.sequenciaConforme %>
+                    <%= passe.sequenciaConforme == null ? '—' : passe.sequenciaConforme %>
                 </strong>
 
                 <small>
-                    utilizações conformes
+                    <%= passe.sequenciaConforme == null ? 'Indicador ainda não fornecido pela API' : 'utilizações conformes' %>
                 </small>
 
             </article>
@@ -563,6 +563,64 @@
     </main>
 
 </div>
+
+<script>
+    (() => {
+        let xpExibido = Number(document.querySelector('[data-hestia-pass-xp]')?.dataset.hestiaPassXp || 0);
+        let atualizando = false;
+
+        async function substituirConteudoDoPasse() {
+            if (atualizando) return;
+            atualizando = true;
+
+            try {
+                const resposta = await fetch('/passe-hestia?atualizacao=' + Date.now(), {
+                    cache: 'no-store',
+                    headers: { 'X-HestIA-Update': 'pass' }
+                });
+                if (!resposta.ok) return;
+
+                const documento = new DOMParser().parseFromString(await resposta.text(), 'text/html');
+                const novoConteudo = documento.querySelector('.main-content.pass-page');
+                const conteudoAtual = document.querySelector('.main-content.pass-page');
+                if (!novoConteudo || !conteudoAtual) return;
+
+                conteudoAtual.replaceWith(novoConteudo);
+                xpExibido = Number(novoConteudo.dataset.hestiaPassXp || xpExibido);
+            } finally {
+                atualizando = false;
+            }
+        }
+
+        async function verificarAtualizacao() {
+            try {
+                const resposta = await fetch('/api/passe-hestia/status?atualizacao=' + Date.now(), {
+                    cache: 'no-store'
+                });
+                if (!resposta.ok) return;
+                const status = await resposta.json();
+                if (Number(status.xpTotal) !== xpExibido) await substituirConteudoDoPasse();
+            } catch (_) {
+                // A próxima verificação tenta novamente sem interromper a demonstração.
+            }
+        }
+
+        if ('BroadcastChannel' in window) {
+            const canal = new BroadcastChannel('hestia-pass');
+            canal.addEventListener('message', verificarAtualizacao);
+        }
+
+        window.addEventListener('storage', evento => {
+            if (evento.key === 'hestia-pass-atualizado') verificarAtualizacao();
+        });
+        window.addEventListener('focus', verificarAtualizacao);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) verificarAtualizacao();
+        });
+
+        setInterval(verificarAtualizacao, 2000);
+    })();
+</script>
 
 </body>
 

@@ -14,6 +14,9 @@ import br.com.hestia.registro.model.StatusExecucao;
 import br.com.hestia.registro.repository.RegistroUsoIARepository;
 import br.com.hestia.usuario.model.Usuario;
 import br.com.hestia.usuario.repository.UsuarioRepository;
+import br.com.hestia.gamificacao.dto.RegistroAcaoDTO;
+import br.com.hestia.gamificacao.model.AcaoExperiencia;
+import br.com.hestia.gamificacao.service.GamificacaoService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,25 +39,36 @@ public class RegistroUsoIAService {
     private final FerramentaIARepository ferramentaRepository;
     private final ConfiguracaoEmpresaRepository configuracaoRepository;
     private final EmpresaAtual empresaAtual;
+    private final GamificacaoService gamificacaoService;
 
     @Autowired
     public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
                                 UsuarioRepository usuarioRepository,
                                 FerramentaIARepository ferramentaRepository,
                                 ConfiguracaoEmpresaRepository configuracaoRepository,
-                                EmpresaAtual empresaAtual) {
+                                EmpresaAtual empresaAtual,
+                                GamificacaoService gamificacaoService) {
         this.registroRepository = registroRepository;
         this.usuarioRepository = usuarioRepository;
         this.ferramentaRepository = ferramentaRepository;
         this.configuracaoRepository = configuracaoRepository;
         this.empresaAtual = empresaAtual;
+        this.gamificacaoService = gamificacaoService;
     }
 
     public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
                                 UsuarioRepository usuarioRepository,
                                 FerramentaIARepository ferramentaRepository,
                                 ConfiguracaoEmpresaRepository configuracaoRepository) {
-        this(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository, null);
+        this(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository, null, null);
+    }
+
+    public RegistroUsoIAService(RegistroUsoIARepository registroRepository,
+                                UsuarioRepository usuarioRepository,
+                                FerramentaIARepository ferramentaRepository,
+                                ConfiguracaoEmpresaRepository configuracaoRepository,
+                                EmpresaAtual empresaAtual) {
+        this(registroRepository, usuarioRepository, ferramentaRepository, configuracaoRepository, empresaAtual, null);
     }
 
     @Transactional
@@ -96,9 +110,15 @@ public class RegistroUsoIAService {
         );
 
         registro.identificarOrigem(origem,evento);
-        return RegistroUsoIAResponseDTO.from(
-                registroRepository.save(registro)
-        );
+        RegistroUsoIA salvo = registroRepository.save(registro);
+        if (gamificacaoService != null) {
+            gamificacaoService.registrarAcao(new RegistroAcaoDTO(
+                    usuario.getId(),
+                    AcaoExperiencia.REGISTRO_USO,
+                    "REGISTRO_USO:" + salvo.getId()
+            ));
+        }
+        return RegistroUsoIAResponseDTO.from(salvo);
     }
 
     @Transactional(readOnly = true)

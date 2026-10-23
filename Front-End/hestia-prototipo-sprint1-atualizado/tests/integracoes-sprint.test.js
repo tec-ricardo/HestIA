@@ -13,6 +13,9 @@ test('adapta avaliações reais, mantém tentativa e não expõe gabarito', asyn
   const api = {
     async get(url) {
       chamadas.push(['GET', url]);
+      if (url === '/gamificacao/usuarios/1/passe') return { data: { xpTotal: 150, nivel: 'CONSCIENTE' } };
+      if (url === '/gamificacao/usuarios/2/passe') return { data: { xpTotal: 0, nivel: 'APRENDIZ' } };
+      if (url === '/aprendizagem/conteudos') return { data: Array.from({ length: 7 }, (_, i) => ({ id: i + 1, titulo: `Curso ${i + 1}` })) };
       if (url.startsWith('/aprendizagem/conteudos/')) return { data: { id: 1, titulo: 'Dados', licoes: [], etapa: 1, totalEtapas: 1, catalogoId: 11, notaMinima: 80 } };
       if (url === '/api/admin/respostas') return { data: [] };
       if (url === '/certificacoes/usuarios/1') return { data: [{ id: 9, nome: 'Fundamentos', nivel: 'Inicial', codigo: 'FUND', versao: 1, concedida_em: '2026-10-22', evidencias: 'privadas' }] };
@@ -43,6 +46,11 @@ test('adapta avaliações reais, mantém tentativa e não expõe gabarito', asyn
     return { status: r.status, text: await r.text() };
   };
   const abertura = await request('/api/microtreinamentos/1?avaliacao=1');
+  const catalogo = await request('/api/microtreinamentos');
+  const cursos = JSON.parse(catalogo.text).treinamentos;
+  assert.equal(cursos.filter(c => !c.bloqueado).length, 5);
+  assert.equal(cursos.filter(c => c.bloqueado).length, 2);
+  assert.equal((await request('/api/microtreinamentos/6')).status, 403);
   const certificacoes = await request('/api/certificacoes?usuarioId=999');
   assert.equal(certificacoes.status, 200);
   assert.deepEqual(JSON.parse(certificacoes.text), {
@@ -73,6 +81,11 @@ test('scripts das telas integradas são válidos e a prova informa a regra do se
   }
   const prova = fs.readFileSync(path.join(__dirname, '../views/microtreinamento-avaliacao.ejs'), 'utf8');
   assert.ok(prova.includes('Nota minima: 80%')); assert.ok(prova.includes('?avaliacao=1'));
+  const curso = fs.readFileSync(path.join(__dirname, '../views/microtreinamento-curso.ejs'), 'utf8');
+  assert.ok(curso.includes('new BroadcastChannel("hestia-pass")'));
+  assert.ok(curso.includes('curso.etapa >= curso.totalEtapas'));
+  const lista = fs.readFileSync(path.join(__dirname, '../views/microtreinamento.ejs'), 'utf8');
+  assert.ok(lista.includes('canalPasse.addEventListener("message", carregarCursos)'));
 });
 
 
@@ -145,4 +158,66 @@ test('preserva a política recuperada no fluxo RAG entre interface e backend', a
   assert.equal(body.estado, 'RECUPERADA');
   assert.equal(body.resposta, politica.trecho);
   assert.deepEqual(body.fontes, [politica]);
+});
+
+test('mantém os três modos do RAG no BFF e confirma a reutilização no backend', async t => {
+  const chamadas = [];
+  const fonte = { id: 77, titulo: 'Política de IA', trecho: 'Use somente ferramentas aprovadas.', versao: 2 };
+  const api = {
+    async post(url, body) {
+      chamadas.push({ url, body });
+      const estados = {
+        CONSULTAR: { estado: 'RECUPERADA', resposta: fonte.trecho, fontes: [fonte] },
+        GERAR_NOVA: { estado: 'GERADA_COM_FONTES', resposta: 'Resposta nova fundamentada.', fontes: [fonte] },
+        REUTILIZAR: { estado: 'REUTILIZADA', resposta: fonte.trecho, fontes: [fonte] }
+      };
+      return { data: estados[body.modo] };
+    }
+  };
+  const app = express();
+  app.use(express.json());
+  app.use((req, res, next) => {
+    req.session = { usuarioId: 10, perfil: 'colaborador', email: 'funcionario@qsoft.test' };
+    next();
+  });
+  montar(app, api);
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise(resolve => server.once('listening', resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const enviar = async payload => {
+    const resposta = await fetch(base + '/api/rag/perguntas', {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    assert.equal(resposta.status, 200);
+    return resposta.json();
+  };
+
+  assert.equal((await enviar({ chave: 'c1', pergunta: 'Qual regra?', modo: 'CONSULTAR' })).estado, 'RECUPERADA');
+  assert.equal((await enviar({ chave: 'c2', pergunta: 'Qual regra?', modo: 'GERAR_NOVA' })).estado, 'GERADA_COM_FONTES');
+  assert.equal((await enviar({ chave: 'c3', pergunta: 'Qual regra?', modo: 'REUTILIZAR', respostaId: 77 })).estado, 'REUTILIZADA');
+  assert.deepEqual(chamadas[2].body, {
+    chave: 'c3', pergunta: 'Qual regra?', modo: 'REUTILIZAR', respostaId: 77
+  });
+});
+
+test('as telas explicam fonte, reutilização, evolução, conquistas e próximo passo', () => {
+  const rag = fs.readFileSync(path.join(__dirname, '../views/assistente-rag.ejs'), 'utf8');
+  assert.ok(rag.includes("modo: 'REUTILIZAR'"));
+  assert.ok(rag.includes("modo = proximoModo"));
+  assert.ok(rag.includes('Fonte utilizada:'));
+  assert.ok(rag.includes('Reutilização confirmada no servidor'));
+  assert.ok(rag.includes("new BroadcastChannel('hestia-pass')"));
+  assert.ok(rag.includes('+15 XP registrados no HestIA Pass'));
+  assert.ok(rag.includes("reutilizada: dados.estado === 'REUTILIZADA'"));
+  assert.ok(rag.includes("fetch('/api/rag/historico')"));
+
+  const passe = fs.readFileSync(path.join(__dirname, '../views/passe-hestia.ejs'), 'utf8');
+  assert.ok(passe.includes('Nível atual'));
+  assert.ok(passe.includes('Sua jornada'));
+  assert.ok(passe.includes('Próximo objetivo'));
+  assert.ok(passe.includes('Desafios de Progressão'));
+  assert.ok(passe.includes('Reconhecimento'));
+  assert.ok(passe.includes("fetch('/api/passe-hestia/status?atualizacao='"));
+  assert.ok(passe.includes("setInterval(verificarAtualizacao, 2000)"));
 });

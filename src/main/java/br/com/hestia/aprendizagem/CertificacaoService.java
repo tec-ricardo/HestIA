@@ -32,9 +32,14 @@ public class CertificacaoService {
         for(var def:a.jdbc().queryForList("SELECT * FROM certificacao_definicoes d WHERE empresa_id=? AND versao=(SELECT max(n.versao) FROM certificacao_definicoes n WHERE n.empresa_id=d.empresa_id AND n.codigo=d.codigo) ORDER BY id",empresa)){
             Long definicao=id(def,"id");List<Long> pendentes=new ArrayList<>();List<Map<String,Object>> evidencias=new ArrayList<>();int totalRequisitos=0;
             try {
-                var requisitos=a.json().readTree((String)def.get("requisitos"));
+                var documento=a.json().readTree((String)def.get("requisitos"));
+                // Compatibilidade com definições antigas do ambiente de demonstração,
+                // que armazenavam {"catalogos":[1]} antes do contrato versionado.
+                var requisitos=documento.isArray()?documento:documento.path("catalogos");
+                if(!requisitos.isArray())throw new IllegalStateException("Requisitos de certificação inválidos");
                 totalRequisitos=requisitos.size();
-                for(var req:requisitos){long catalogo=req.get("catalogoId").asLong();
+                for(var req:requisitos){long catalogo=req.isIntegralNumber()?req.asLong():req.path("catalogoId").asLong(0);
+                    if(catalogo<=0)throw new IllegalStateException("Requisito de certificação sem catálogo");
                     var provas=a.jdbc().queryForList("SELECT t.id AS tentativa_id,t.nota,t.finalizada_em,c.catalogo_id,a.versao,a.conteudo_sha256,l.id AS leitura_id,l.conclusao_id FROM aprendizagem_tentativas t JOIN aprendizagem_ciclos c ON c.id=t.ciclo_id JOIN aprendizagem_catalogo a ON a.id=c.catalogo_id JOIN aprendizagem_leituras l ON l.empresa_id=c.empresa_id AND l.usuario_id=c.usuario_id AND l.treinamento_id=a.treinamento_id AND l.conteudo_sha256=a.conteudo_sha256 WHERE c.empresa_id=? AND c.usuario_id=? AND c.catalogo_id=? AND t.status='APROVADA' AND t.finalizada_em IS NOT NULL ORDER BY t.id,l.id",empresa,usuario,catalogo);
                     if(provas.isEmpty())pendentes.add(catalogo);else evidencias.add(provas.getFirst());
                 }

@@ -5,8 +5,8 @@
 <%- include("menu", { perfil, email, active }) %>
 <main class="main">
 <h1>Maturidade em IA</h1>
-<p><a href="/maturidade">Indicadores operacionais e confiabilidade</a></p>
-<p>Consulte as notas observadas e sua cobertura. A proposta 0.1 está em validação pelo grupo.</p>
+<p><a href="/maturidade/confiabilidade">Indicadores operacionais e confiabilidade</a></p>
+<p>Consulte as notas observadas na base autorizada da QSoft e sua cobertura. A proposta 0.1 está em validação pelo grupo.</p>
 <form method="get" action="/maturidade/resultados">
 <p><label>Início <input required type="date" name="inicio" value="<%= filtros.inicio || '' %>"></label>
 <label>Fim <input required type="date" name="fim" value="<%= filtros.fim || '' %>"></label></p>
@@ -16,7 +16,7 @@
 <p><label>ID do departamento autorizado <input name="departamentoId" type="number" min="1" value="<%= filtros.departamentoId || '' %>"></label></p>
 <p><label>Departamento de origem (administrador) <input name="departamentoOrigem" value="<%= filtros.departamentoOrigem || '' %>"></label></p>
 <p><label>Tipo de issue para produtividade <input name="tipoIssue" value="<%= filtros.tipoIssue || '' %>"></label></p>
-<p>O escopo é validado no servidor. A consulta sintética exige um snapshot e mapeamento autorizado.</p>
+<p>O escopo é validado no servidor. Funcionários anônimos da origem são usados apenas de forma agregada e não são convertidos em contas HestIA.</p>
 </details>
 <button type="submit">Consultar resultados</button>
 </form>

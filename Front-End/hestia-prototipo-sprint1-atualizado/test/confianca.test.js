@@ -101,7 +101,7 @@ test("login real, sessão BFF, consulta, expiração e logout funcionam por HTTP
         assert.equal(login.status, 302);
         assert.equal(login.headers.get("location"), "/maturidade");
         const cookie = login.headers.get("set-cookie").split(";")[0];
-        const pagina = await fetch(base + "/maturidade", { headers: { Cookie: cookie }});
+        const pagina = await fetch(base + "/maturidade/confiabilidade", { headers: { Cookie: cookie }});
         assert.equal(pagina.status, 200);
         assert.equal(pagina.headers.get("cache-control"), "no-store");
         const html = await pagina.text();

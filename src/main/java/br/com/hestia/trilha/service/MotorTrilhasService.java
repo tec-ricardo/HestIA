@@ -64,8 +64,9 @@ public class MotorTrilhasService {
             if(novos.isEmpty())continue;
             boolean imediato=novos.stream().anyMatch(e->e.erro()==null||Set.of(TipoErro.DADOS_SENSIVEIS,TipoErro.FERRAMENTA_NAO_AUTORIZADA,TipoErro.VIOLACAO_POLITICA_INTERNA,TipoErro.VIOLACAO_LGPD).contains(e.erro()));
             boolean recorrente=novos.stream().filter(e->e.erro()!=null).collect(java.util.stream.Collectors.groupingBy(Evento::erro,java.util.stream.Collectors.counting())).values().stream().anyMatch(n->n>=3);
+            boolean reincidenciaPosConclusao=corte!=null&&!novos.isEmpty();
             boolean ativo=anterior!=null&&!"CONCLUIDA".equals(anterior.get("status"));
-            if(!ativo&&!imediato&&!recorrente)continue;
+            if(!ativo&&!imediato&&!recorrente&&!reincidenciaPosConclusao)continue;
             Long ciclo;
             if(ativo)ciclo=id(anterior,"id");
             else {

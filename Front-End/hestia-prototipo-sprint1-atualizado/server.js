@@ -50,9 +50,13 @@ app.use(function(req, res, next) {
         return res.redirect("/acesso?expirada=1");
     }
 
-    if (!req.session.apiToken && !["/maturidade", "/maturidade/demonstracao", "/sair"].includes(req.path)) {
+    if (!req.session.apiToken && req.path !== "/sair") {
         if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
         return res.redirect("/acesso?expirada=1");
+    }
+
+    if (req.path.startsWith("/maturidade") && !["gestor", "administrador"].includes(req.session.perfil)) {
+        return res.redirect("/");
     }
     next();
 
@@ -104,226 +108,68 @@ app.post("/acesso", async (req, res, next) => {
 /* VISAO GERAL */
 
 app.get("/", async (req, res) => {
+    const usuarioId = Number(req.session.usuarioId);
+    const colaborador = req.session.perfil === "colaborador";
 
-    if (req.session.perfil == "") {
+    const [indicadores, creditos, passe, registros] = await Promise.all([
+        carregarIndicadores(),
+        consultarObjetoComFallback("/gamificacao/creditos", null),
+        Number.isSafeInteger(usuarioId) && usuarioId > 0
+            ? consultarObjetoComFallback(`/gamificacao/usuarios/${usuarioId}/passe`, null)
+            : Promise.resolve(null),
+        consultarListaComFallback(
+            colaborador
+                ? `/registros-uso-ia?usuarioId=${encodeURIComponent(usuarioId)}`
+                : "/registros-uso-ia",
+            []
+        )
+    ]);
 
-        return res.redirect("/acesso");
+    const maturityUrl = "/indicadores/maturidade/resultados?" + new URLSearchParams({
+        inicio: "2025-06-01",
+        fim: "2026-08-10",
+        fonte: "SINTETICA",
+        snapshot: "11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3"
+    }).toString();
+    const maturidade = colaborador
+        ? null
+        : await consultarObjetoComFallback(maturityUrl, null);
 
-    }
-
-
-    const indicadores =
-        await carregarIndicadores();
-
-
-    const indicadoresMaturidade =
-        await consultarObjetoComFallback(
-            "/indicadores/maturidade",
-            obterIndicadoresMaturidade()
-        );
-
-
-    const maturityScore =
-        calcularMaturityScore(
-            indicadoresMaturidade
-        );
-
-
-    const resumoPessoal = {
-
-        maturityScore:
-            maturityScore.toFixed(2),
-
-        aiCredits: 680,
-
-        ranking: "4º",
-
-        usoResponsavel:
-            indicadoresMaturidade.usoResponsavel
-
+    const nomesNiveis = {
+        APRENDIZ: "Aprendiz",
+        CONSCIENTE: "Consciente",
+        GUARDIAO: "Guardião",
+        EMBAIXADOR: "Embaixador"
+    };
+    const registrosOrdenados = [...registros].sort((a, b) =>
+        String(b.dataHora || "").localeCompare(String(a.dataHora || ""))
+    );
+    const resumo = {
+        creditos: creditos ? Number(creditos.saldo || 0) : null,
+        posicao: creditos?.posicao || null,
+        participantes: Number(creditos?.participantes || 0),
+        xp: passe ? Number(passe.xpTotal || 0) : null,
+        nivel: passe ? (nomesNiveis[passe.nivel] || passe.nivel) : null,
+        percentualProgresso: passe ? Number(passe.percentualProgresso || 0) : null,
+        xpProximoNivel: passe?.xpProximoNivel ?? null,
+        totalRegistros: registros.length,
+        registrosComSucesso: registros.filter(item => item.statusExecucao === "SUCESSO").length,
+        tokensRegistrados: registros.reduce((total, item) => total + Number(item.tokensTotal || 0), 0),
+        atividadeRecente: registrosOrdenados.slice(0, 5),
+        maturidadeParcial: maturidade?.scoreParcial ?? null,
+        coberturaMaturidade: maturidade?.coberturaPesos != null
+            ? Math.round(Number(maturidade.coberturaPesos) * 100)
+            : null
     };
 
-
-    /*
-        SCRUM-198 / SCRUM-200
-
-        RESUMO PESSOAL DO COLABORADOR
-
-        Esta área complementa a Visão Geral
-        apresentando informações relacionadas
-        à jornada individual do colaborador.
-
-        Os dados abaixo são demonstrativos.
-
-        Quando o backend disponibilizar
-        o endpoint correspondente, os dados
-        poderão ser carregados através do Axios.
-
-        O endpoint /resumo-pessoal deverá ser
-        confirmado com a equipe do backend.
-    */
-
-    const detalhesResumoPessoalMock = {
-
-        progresso: {
-
-            nivel: "Consciente",
-
-            nivelNumero: 2,
-
-            xpAtual: 235,
-
-            xpProximoNivel: 300,
-
-            xpFaltante: 65,
-
-            proximoNivel: "Proficiente"
-
-        },
-
-
-        destaques: {
-
-            sequenciaConforme: 7,
-
-            utilizacoesConformes: 20,
-
-            utilizacoesAvaliadas: 23
-
-        },
-
-
-        atividadeRecente: [
-
-            {
-
-                titulo:
-                    "Resumo de documento",
-
-                modelo:
-                    "ChatGPT",
-
-                status:
-                    "Conforme"
-
-            },
-
-            {
-
-                titulo:
-                    "Apoio na elaboração de relatório",
-
-                modelo:
-                    "Copilot",
-
-                status:
-                    "Conforme"
-
-            },
-
-            {
-
-                titulo:
-                    "Análise de dados",
-
-                modelo:
-                    "ChatGPT",
-
-                status:
-                    "Não conforme"
-
-            }
-
-        ],
-
-
-        conquistasRecentes: [
-
-            {
-
-                descricao:
-                    "Utilização conforme",
-
-                recompensa:
-                    "+10 XP",
-
-                data:
-                    "Hoje"
-
-            },
-
-            {
-
-                descricao:
-                    "Utilização conforme",
-
-                recompensa:
-                    "+10 XP",
-
-                data:
-                    "Ontem"
-
-            },
-
-            {
-
-                descricao:
-                    "Reutilização eficiente",
-
-                recompensa:
-                    "XP conforme regra",
-
-                data:
-                    "20/09"
-
-            }
-
-        ]
-
-    };
-
-
-    /*
-        AXIOS DO RESUMO PESSOAL
-
-        Se o backend responder,
-        utiliza os dados reais.
-
-        Se o backend ainda estiver
-        indisponível, utiliza os dados
-        demonstrativos acima.
-    */
-
-    const detalhesResumoPessoal =
-        req.session.perfil == "colaborador"
-            ?
-            await consultarObjetoComFallback(
-                "/resumo-pessoal",
-                detalhesResumoPessoalMock
-            )
-            :
-            detalhesResumoPessoalMock;
-
-
-    res.render("index", {
-
+    return res.set("Cache-Control", "no-store").render("index", {
         perfil: req.session.perfil,
-
         email: req.session.email,
-
         active: "dashboard",
-
-        indicadores: indicadores,
-
-        resumoPessoal: resumoPessoal,
-
-        detalhesResumoPessoal:
-            detalhesResumoPessoal
-
+        indicadores,
+        resumo
     });
-
 });
-
 
 
 /* MATURIDADE */
@@ -515,9 +361,16 @@ function obterIndicadoresDepartamentais() {
 
 const consultarConfianca = criarRotaMaturidade(api);
 app.get("/maturidade", (req, res, next) => {
-    if (req.query.fonte) return res.redirect("/maturidade/resultados?" + new URLSearchParams(req.query).toString());
-    return consultarConfianca(req, res, next);
+    if (Object.keys(req.query).length) return res.redirect("/maturidade/resultados?" + new URLSearchParams(req.query).toString());
+    return res.redirect("/maturidade/resultados?" + new URLSearchParams({
+        inicio: "2025-06-01",
+        fim: "2026-08-10",
+        fonte: "SINTETICA",
+        snapshot: "11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3"
+    }).toString());
 });
+
+app.get("/maturidade/confiabilidade", consultarConfianca);
 
 app.get("/maturidade/demonstracao", async (req, res) => {
 
@@ -823,7 +676,7 @@ app.get("/maturidade/resultados", async (req, res) => {
 
 /* CREDITOS */
 
-app.get("/creditos", (req, res) => {
+app.get("/creditos", async (req, res) => {
 
     if (req.session.perfil == "") {
 
@@ -832,13 +685,19 @@ app.get("/creditos", (req, res) => {
     }
 
 
-    res.render("creditos", {
+    const creditos = await consultarObjetoComFallback("/gamificacao/creditos", null);
+
+    res.set("Cache-Control", "no-store").render("creditos", {
 
         perfil: req.session.perfil,
 
         email: req.session.email,
 
-        active: "creditos"
+        active: "creditos",
+
+        creditos: creditos,
+
+        erro: creditos ? null : "Não foi possível consultar os AI Credits agora."
 
     });
 
@@ -854,6 +713,10 @@ app.get("/utilizacoes", async (req, res) => {
         return res.redirect("/");
 
     }
+
+    // A página antiga apenas simulava registros no navegador. O fluxo oficial
+    // usa a API, o banco e a identidade da sessão autenticada.
+    return res.redirect("/utilizacoes/registros");
 
 
     /*
@@ -1174,32 +1037,27 @@ app.post("/utilizacoes/registrar", async (req, res) => {
 
 /* COMPETENCIAS */
 
-app.get("/competencias", (req, res) => {
-
-    if (
-        req.session.perfil != "colaborador" &&
-        req.session.perfil != "administrador"
-    ) {
-
+app.get("/competencias", async (req, res) => {
+    if (!["colaborador", "administrador"].includes(req.session.perfil)) {
         return res.redirect("/");
-
     }
 
+    const usuarioId = Number(req.session.usuarioId);
+    const [literacy, certificacoes] = Number.isSafeInteger(usuarioId) && usuarioId > 0
+        ? await Promise.all([
+            consultarObjetoComFallback(`/aprendizagem/usuarios/${usuarioId}/ai-literacy`, null),
+            consultarListaComFallback(`/certificacoes/usuarios/${usuarioId}`, [])
+        ])
+        : [null, []];
 
-    res.render("competencias", {
-
+    return res.set("Cache-Control", "no-store").render("competencias", {
         perfil: req.session.perfil,
-
         email: req.session.email,
-
-        active: "competencias"
-
+        active: "competencias",
+        literacy,
+        certificacoes
     });
-
 });
-
-
-
 
 /* SCRUM-389: listagem e detalhe reais, isolados das rotas de maturidade. */
 require("./ocorrencias-api").registrarRotasOcorrencias(app, api);
@@ -1215,12 +1073,12 @@ app.get("/governanca", async (req, res) => {
     }
 
 
-    const [politicas, empresas] =
+    const [politicas, resumoConformidade] =
         await Promise.all([
 
             consultar("/politicas"),
 
-            consultar("/empresas")
+            consultarObjetoComFallback("/avaliacoes-conformidade/resumo", null)
 
         ]);
 
@@ -1235,7 +1093,7 @@ app.get("/governanca", async (req, res) => {
 
         politicas: politicas,
 
-        empresas: empresas,
+        resumoConformidade: resumoConformidade,
 
         mensagem:
             req.query.mensagem || "",
@@ -1952,13 +1810,10 @@ app.get(
             indisponível, utiliza passeMock.
         */
 
-        const usuarios = await consultar("/usuarios");
-        const usuarioAtual = usuarios.find(
-            usuario => String(usuario.email || "").toLowerCase() === String(req.session.email).toLowerCase()
-        );
-        const passeApi = usuarioAtual
+        const usuarioId = Number(req.session.usuarioId);
+        const passeApi = Number.isSafeInteger(usuarioId) && usuarioId > 0
             ? await consultarObjetoComFallback(
-                `/gamificacao/usuarios/${usuarioAtual.id}/passe`,
+                `/gamificacao/usuarios/${usuarioId}/passe`,
                 null
             )
             : null;
@@ -1967,7 +1822,7 @@ app.get(
             : passeMock;
 
 
-        res.render("passe-hestia", {
+        res.set("Cache-Control", "no-store").render("passe-hestia", {
 
             perfil: req.session.perfil,
 
@@ -1982,162 +1837,93 @@ app.get(
     }
 );
 
+app.get("/api/passe-hestia/status", async (req, res) => {
+    if (req.session.perfil !== "colaborador") {
+        return res.status(403).json({ erro: "Acesso restrito ao colaborador." });
+    }
+
+    const usuarioId = Number(req.session.usuarioId);
+    if (!Number.isSafeInteger(usuarioId) || usuarioId <= 0) {
+        return res.status(401).json({ erro: "Sessão de usuário inválida." });
+    }
+
+    try {
+        const response = await api.get(`/gamificacao/usuarios/${usuarioId}/passe`);
+        return res
+            .set("Cache-Control", "no-store")
+            .json({
+                xpTotal: Number(response.data?.xpTotal || 0),
+                nivel: response.data?.nivel || null
+            });
+    } catch (error) {
+        console.error(`Falha ao atualizar o HestIA Pass: ${mensagemDaApi(error)}`);
+        return res.status(502).json({ erro: "Não foi possível atualizar o HestIA Pass." });
+    }
+});
+
 /* RANKING HESTIA */
 
-app.get(
-    "/ranking",
-    async (req, res) => {
-
-        if (req.session.perfil != "colaborador") {
-
-            return res.redirect("/");
-
-        }
-
-
-        /*
-            SCRUM-275 / SCRUM-277
-
-            DADOS MOCKADOS DO RANKING
-
-            O ranking utiliza a progressão
-            do HestIA Pass como referência.
-
-            Quando o backend disponibilizar
-            o endpoint definitivo, os dados
-            poderão ser carregados pelo Axios.
-
-            O endpoint /ranking deverá ser
-            confirmado com a equipe do backend.
-        */
-
-        const rankingMock = {
-
-            posicaoUsuario: 4,
-
-            totalParticipantes: 8,
-
-            usuario: {
-
-                nome: "Você",
-
-                nivel: "Consciente",
-
-                xp: 235
-
-            },
-
-
-            classificacao: [
-
-                {
-                    posicao: 1,
-                    nome: "Ana Martins",
-                    iniciais: "AM",
-                    nivel: "Proficiente",
-                    xp: 480,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 2,
-                    nome: "Lucas Ferreira",
-                    iniciais: "LF",
-                    nivel: "Proficiente",
-                    xp: 390,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 3,
-                    nome: "Mariana Costa",
-                    iniciais: "MC",
-                    nivel: "Proficiente",
-                    xp: 315,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 4,
-                    nome: "Você",
-                    iniciais: "KL",
-                    nivel: "Consciente",
-                    xp: 235,
-                    usuarioAtual: true
-                },
-
-                {
-                    posicao: 5,
-                    nome: "Rafael Souza",
-                    iniciais: "RS",
-                    nivel: "Consciente",
-                    xp: 210,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 6,
-                    nome: "Beatriz Lima",
-                    iniciais: "BL",
-                    nivel: "Consciente",
-                    xp: 180,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 7,
-                    nome: "Gabriel Rocha",
-                    iniciais: "GR",
-                    nivel: "Consciente",
-                    xp: 145,
-                    usuarioAtual: false
-                },
-
-                {
-                    posicao: 8,
-                    nome: "Camila Alves",
-                    iniciais: "CA",
-                    nivel: "Iniciante",
-                    xp: 75,
-                    usuarioAtual: false
-                }
-
-            ]
-
-        };
-
-
-        /*
-            AXIOS DO RANKING
-
-            Se o backend responder,
-            utiliza os dados reais.
-
-            Se o backend ainda estiver
-            indisponível, utiliza rankingMock.
-        */
-
-        const ranking =
-            await consultarObjetoComFallback(
-                "/ranking",
-                rankingMock
-            );
-
-
-        res.render("ranking", {
-
-            perfil: req.session.perfil,
-
-            email: req.session.email,
-
-            active: "ranking",
-
-            ranking: ranking
-
-        });
-
+app.get("/ranking", async (req, res) => {
+    if (req.session.perfil !== "colaborador") {
+        return res.redirect("/");
     }
-);
+
+    const creditos = await consultarObjetoComFallback("/gamificacao/creditos", null);
+    const usuarioId = Number(req.session.usuarioId);
+    const passe = Number.isSafeInteger(usuarioId) && usuarioId > 0
+        ? await consultarObjetoComFallback(`/gamificacao/usuarios/${usuarioId}/passe`, null)
+        : null;
+
+    if (!creditos || !passe) {
+        return res.set("Cache-Control", "no-store").status(503).render("ranking", {
+            perfil: req.session.perfil,
+            email: req.session.email,
+            active: "ranking",
+            ranking: null,
+            erro: "Não foi possível consultar o ranking agora."
+        });
+    }
+
+    const nomesNiveis = {
+        APRENDIZ: "Aprendiz",
+        CONSCIENTE: "Consciente",
+        GUARDIAO: "Guardião",
+        EMBAIXADOR: "Embaixador"
+    };
+    const iniciais = nome => String(nome || "")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(parte => parte[0])
+        .join("")
+        .toUpperCase();
+
+    const ranking = {
+        posicaoUsuario: creditos.posicao,
+        totalParticipantes: Number(creditos.participantes || 0),
+        usuario: {
+            nome: passe.nome,
+            nivel: nomesNiveis[passe.nivel] || passe.nivel,
+            xp: Number(passe.xpTotal || 0)
+        },
+        classificacao: (creditos.ranking || []).map(item => ({
+            posicao: item.posicao,
+            nome: item.nome,
+            iniciais: iniciais(item.nome),
+            nivel: nomesNiveis[item.nivel] || item.nivel,
+            xp: Number(item.creditos || 0),
+            usuarioAtual: Boolean(item.usuarioAtual)
+        }))
+    };
+
+    return res.set("Cache-Control", "no-store").render("ranking", {
+        perfil: req.session.perfil,
+        email: req.session.email,
+        active: "ranking",
+        ranking,
+        erro: null
+    });
+});
 
 
 /* SCRUM-514 / 515 / 516 / 517 - CURADORIA (FRONTEND) */
@@ -2228,10 +2014,7 @@ app.post(
                     req.body.estruturaHierarquica ||
                     null,
 
-                empresaId:
-                    Number(
-                        req.body.empresaId
-                    )
+                empresaId: Number(req.session.empresaId)
 
             },
             "/administracao",
@@ -2360,10 +2143,7 @@ app.post(
 
                 ativa: true,
 
-                empresaId:
-                    Number(
-                        req.body.empresaId
-                    )
+                empresaId: Number(req.session.empresaId)
 
             },
             "/governanca",
@@ -3045,6 +2825,14 @@ function adaptarPasseHestIA(passeApi, fallback) {
     const xpAtual = Number(passeApi.xpTotal || 0);
     const xpProximoNivel = passeApi.xpProximoNivel || fallback.xpProximoNivel;
     const missoes = Array.isArray(passeApi.missoes) ? passeApi.missoes : [];
+    const ordemNiveis = [
+        { codigo: "APRENDIZ", nivel: 1, nome: "Aprendiz", xpNecessario: 0 },
+        { codigo: "CONSCIENTE", nivel: 2, nome: "Consciente", xpNecessario: 100 },
+        { codigo: "GUARDIAO", nivel: 3, nome: "Guardião", xpNecessario: 300 },
+        { codigo: "EMBAIXADOR", nivel: 4, nome: "Embaixador", xpNecessario: 700 }
+    ];
+    const indiceAtual = ordemNiveis.findIndex(nivel => nivel.codigo === String(passeApi.nivel || "").toUpperCase());
+    const proximo = indiceAtual >= 0 ? ordemNiveis[indiceAtual + 1] : null;
 
     return {
         ...fallback,
@@ -3052,6 +2840,23 @@ function adaptarPasseHestIA(passeApi, fallback) {
         nomeNivel: nivelApi ? nivelApi.nome : fallback.nomeNivel,
         xpAtual,
         xpProximoNivel,
+        taxaConformidade: null,
+        totalUtilizacoesAvaliadas: null,
+        totalUtilizacoesConformes: null,
+        sequenciaConforme: null,
+        regrasXp: [
+            { titulo: "Registro de uso", descricao: "Registro válido de utilização de IA.", xp: "+10 XP", tipo: "positivo" },
+            { titulo: "Utilização conforme", descricao: "Após avaliação de conformidade.", xp: "+25 XP", tipo: "positivo" },
+            { titulo: "Microtreinamento", descricao: "Após conclusão válida.", xp: "+40 XP", tipo: "bonus" },
+            { titulo: "Reutilização eficiente", descricao: "Resposta aprovada reutilizada.", xp: "+15 XP", tipo: "reutilizacao" },
+            { titulo: "Missão concluída", descricao: "Conclusão de uma missão do passe.", xp: "+50 XP", tipo: "bonus" }
+        ],
+        proximoNivel: proximo ? {
+            nivel: proximo.nivel,
+            nome: proximo.nome,
+            xpNecessario: proximo.xpNecessario,
+            descricao: "Continue realizando ações responsáveis para avançar."
+        } : { nivel: nivelAtual, nome: "nível máximo", xpNecessario: xpAtual, descricao: "Nível máximo alcançado." },
         desafios: missoes.map(missao => ({
             titulo: missao.titulo,
             descricao: missao.descricao,
@@ -3060,8 +2865,10 @@ function adaptarPasseHestIA(passeApi, fallback) {
             recompensaXp: missao.recompensaXp,
             concluido: missao.concluida
         })),
-        niveis: fallback.niveis.map(nivel => ({
-            ...nivel,
+        niveis: ordemNiveis.map(nivel => ({
+            nivel: nivel.nivel,
+            nome: nivel.nome,
+            xpNecessario: nivel.xpNecessario,
             status: nivel.nivel < nivelAtual
                 ? "concluido"
                 : nivel.nivel === nivelAtual
