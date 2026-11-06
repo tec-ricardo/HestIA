@@ -1,7 +1,7 @@
 # SCRUM-539 — Regras, fontes e decisões dos oito indicadores
 
-Versão documental: 1.0, 06/11/2026. Base examinada: develop 08f4c9b.
-Situação: consolidação para aceite de Luccas/grupo; não há registro de aprovação empresarial ou acadêmica.
+Versão documental: 1.1, 06/11/2026. Base examinada: develop 08f4c9b.
+Situação: decisões de Luccas registradas em SCRUM-539-decisoes-luccas.md; esse registro posterior prevalece sobre os itens pendentes históricos deste documento. Não há aprovação empresarial/acadêmica presumida.
 Rastreabilidade: PO-132, PO-133, PO-134 e PO-135.
 
 ## Referências e alcance
