@@ -8,4 +8,8 @@ public class InteracaoRagController {
     public InteracaoRagController(InteracaoRagService service){this.service=service;}
     @PostMapping("/perguntas") public Object perguntar(@RequestAttribute("usuarioAutenticado")Usuario u,@RequestBody InteracaoRagService.Pergunta dto){return service.perguntar(u,dto);}
     @GetMapping("/historico") public Object historico(@RequestAttribute("usuarioAutenticado")Usuario u){return service.historico(u);}
+    public record NovaConversa(String titulo){}
+    @PostMapping("/conversas") public Object criarConversa(@RequestAttribute("usuarioAutenticado")Usuario u,@RequestBody NovaConversa dto){return service.criarConversa(u,dto.titulo());}
+    @GetMapping("/conversas") public Object conversas(@RequestAttribute("usuarioAutenticado")Usuario u){return service.conversas(u);}
+    @GetMapping("/conversas/{id}/historico") public Object historicoConversa(@RequestAttribute("usuarioAutenticado")Usuario u,@PathVariable Long id){return service.historicoConversa(u,id);}
 }
