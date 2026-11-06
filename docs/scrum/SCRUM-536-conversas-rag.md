@@ -27,3 +27,11 @@ Os testes de serviço usam H2 com fontes e provedor simulados. Não são homolog
 O frontend de conversas pertence à SCRUM-553. Interpretação de continuação pertence à SCRUM-546; limite/resumo de contexto à SCRUM-547; extensão da revogação ao contexto à SCRUM-551; homologação com IA real à SCRUM-556. Esta entrega organiza o histórico, sem afirmar que essas dependências foram implementadas.
 
 Commit e publicação serão feitos pelo usuário no GitHub Desktop. A tarefa permanece Em desenvolvimento até revisão e aceite.
+
+## Correção da validação completa do CI — 06/11/2026
+
+A execução completa antes da correção reproduziu 4 falhas e 2 erros: contagens de migrações antigas, variável de banco incompatível com a proteção do teste e SETVAL indisponível no H2. A validação anterior com nove testes não cobria a suíte inteira.
+
+A V24 agora usa IDs gerados e vínculo temporário de migração para preservar as interações, sem SETVAL nem dependência de igualdade entre IDs de conversa e interação. O vínculo temporário é removido ao terminar. Os testes continuam verificando texto, associação, sequência válida e isolamento. Os três testes existentes de migração foram atualizados para V24. ConversasRagPostgresTest usa HESTIA_SPRINT_PG_TEST_URL, já apontada para hestia_validacao no CI, preservando a verificação do nome do banco.
+
+Executado mvnw.cmd -o --batch-mode test com as três variáveis de banco do CI habilitadas e PostgreSQL 17/pgvector descartável: 309 testes contabilizados, 307 aprovados, 0 falhas, 0 erros, 2 ignorados por condições existentes; BUILD SUCCESS. Esta é validação local equivalente à configuração Java do CI; a execução remota só será atualizada após commit e push do usuário. Nenhum teste foi desabilitado nesta correção.
