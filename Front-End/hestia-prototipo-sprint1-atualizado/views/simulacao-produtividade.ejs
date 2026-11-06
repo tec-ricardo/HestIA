@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HestIA — Simulação de produtividade</title><link rel="stylesheet" href="/styles.css"></head>
+<body><div class="app-shell"><%- include('menu', { perfil, email, active }) %><main class="main">
+<h1>Simulação de produtividade</h1>
+<p><strong>Dados simulados: esta página demonstra hipóteses, não resultados reais da QSoft ou da HestIA.</strong></p>
+<p>Compare a mesma tarefa, com qualidade e complexidade equivalentes, antes da fiscalização e com a plataforma. Informe os tempos que deseja testar; não existe uma média real presumida.</p>
+<form method="get">
+<p><label>Tempo por tarefa antes, em minutos <input required name="minutosAntes" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosAntes || '' %>"></label></p>
+<p><label>Tempo por tarefa com a plataforma, em minutos <input required name="minutosDepois" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosDepois || '' %>"></label></p>
+<p><label>Quantidade de tarefas comparáveis <input required name="tarefas" type="number" min="1" max="10000" step="1" value="<%= filtros.tarefas || '' %>"></label></p>
+<button type="submit">Comparar hipóteses</button></form>
+<% if (erro) { %><p role="alert"><%= erro %></p><% } %>
+<% if (resultado) { const n = valor => Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); %>
+<h2>Comparação simulada</h2>
+<table><caption>Mesmo volume e qualidade de trabalho nos dois cenários</caption><thead><tr><th>Cenário</th><th>Minutos por tarefa</th><th>Total de minutos</th></tr></thead>
+<tbody><tr><td>Antes da fiscalização — simulado</td><td><%= n(resultado.minutosAntes) %></td><td><%= n(resultado.minutosAntes * resultado.tarefas) %></td></tr>
+<tr><td>Com a plataforma — simulado</td><td><%= n(resultado.minutosDepois) %></td><td><%= n(resultado.minutosDepois * resultado.tarefas) %></td></tr></tbody></table>
+<p>Redução simulada do tempo: <strong><%= n(resultado.reducaoTempoPercentual) %>%</strong>. Valores negativos indicam aumento do tempo.</p>
+<p>Variação simulada da capacidade na mesma jornada: <strong><%= n(resultado.variacaoCapacidadePercentual) %>%</strong>.</p>
+<p>Tempo total economizado: <%= n(resultado.minutosTotaisEconomizados) %> minutos. Valores negativos indicam tempo adicional.</p>
+<p><strong><%= resultado.aviso %></strong></p>
+<p>Valor financeiro: não informado, aguardando definição. Não há conversão de tempo em dinheiro.</p>
+<% } %>
+<p><a href="/maturidade/resultados">Voltar aos indicadores</a></p>
+</main></div></body></html>

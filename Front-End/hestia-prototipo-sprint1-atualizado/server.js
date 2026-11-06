@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const app = express();
+app.locals.qualidadeIndicador = require("./qualidade-indicadores").qualidadeIndicador;
 const session = require("express-session");
 const { autenticarContaReal, criarRotaMaturidade } = require("./confianca-maturidade");
 const { logoutApi } = require("./sessao-api");
@@ -70,6 +71,7 @@ app.use((req, res, next) => contextoApi.run({
 }, next));
 
 require("./integracoes-sprint")(app, api);
+require("./simulacao-produtividade").registrarRotasSimulacao(app);
 
 /* USUARIO */
 

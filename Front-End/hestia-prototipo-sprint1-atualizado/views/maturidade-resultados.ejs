@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HestIA — Maturidade</title><link rel="stylesheet" href="/styles.css"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HestIA — Maturidade</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/qualidade-indicadores.css"></head>
 <body><div class="app-shell">
 <%- include("menu", { perfil, email, active }) %>
 <main class="main">
-<h1>Maturidade em IA</h1>
+<h1>Maturidade em IA</h1><p><a href="/maturidade/simulacao-produtividade">Comparar cenários simulados de produtividade</a></p>
 <p><a href="/maturidade/confiabilidade">Indicadores operacionais e confiabilidade</a></p>
 <p>Consulte as notas observadas na base autorizada da QSoft e sua cobertura. A proposta 0.1 está em validação pelo grupo.</p>
 <form method="get" action="/maturidade/resultados">
@@ -29,10 +29,14 @@
 <p>Score parcial exploratório: <strong><%= resultado.scoreParcial == null ? 'Indisponível' : Number(resultado.scoreParcial).toFixed(2) %></strong>.
 Cobertura dos pesos elegíveis: <%= (100 * Number(resultado.coberturaPesos)).toFixed(2) %>%.</p>
 <p>Um resultado parcial não pode ser comparado ao índice completo. Falta de dados não significa imaturidade.</p>
-<div style="overflow-x:auto"><table>
-<thead><tr><th>Fator</th><th>Nota</th><th>Estado</th><th>Amostra</th><th>Cobertura técnica</th><th>Elegível no global</th><th>Motivo</th></tr></thead>
-<tbody><% for (const fator of resultado.fatores) { %>
-<tr><td><%= fator.codigo %></td><td><%= fator.nota == null ? 'Indisponível' : Number(fator.nota).toFixed(2) %></td><td><%= fator.estado %></td><td><%= fator.amostra %></td>
+<section class="legenda-qualidade" aria-label="Legenda da qualidade dos dados">
+<h3>Qualidade dos dados</h3>
+<p><span class="qualidade qualidade-fragil">Laranja: informação frágil</span> — amostra, cobertura ou evidência insuficiente. <span class="qualidade qualidade-suficiente">Verde: dados suficientes</span> — critérios do indicador atendidos. <span class="qualidade qualidade-indisponivel">Cinza: indisponível</span> — sem dados ou configuração.</p>
+<p>Nos fatores com mínimo de amostra: pelo menos 30 observações válidas e 95% de cobertura. Segurança e FinOps exigem o universo completo. As cores indicam qualidade da informação, não desempenho; verde não é garantia estatística.</p>
+</section><div style="overflow-x:auto"><table>
+<thead><tr><th>Fator</th><th>Nota</th><th>Estado</th><th>Qualidade dos dados</th><th>Amostra</th><th>Cobertura técnica</th><th>Elegível no global</th><th>Motivo</th></tr></thead>
+<tbody><% for (const fator of resultado.fatores) { const qualidade = qualidadeIndicador(fator); %>
+<tr><td><%= fator.codigo %></td><td><%= fator.nota == null ? 'Indisponível' : Number(fator.nota).toFixed(2) %></td><td><%= fator.estado %></td><td><span class="qualidade qualidade-<%= qualidade.classe %>"><%= qualidade.rotulo %></span><p><%= qualidade.detalhe %></p></td><td><%= fator.amostra %></td>
 <td><%= fator.coberturaTecnica == null ? 'Desconhecida' : (100 * Number(fator.coberturaTecnica)).toFixed(2) + '%' %></td><td><%= fator.elegivelGlobal ? 'Sim' : 'Não' %></td><td><%= fator.motivo %></td></tr>
 <% } %></tbody></table></div>
 <p>Pesos: <%= resultado.versaoPesos %>. Cálculo: <%= resultado.versaoCalculo %>. Parâmetros: <%= resultado.versaoParametros %>.</p>

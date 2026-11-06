@@ -1,0 +1,5 @@
+.qualidade { display: inline-block; padding: .3rem .6rem; border: 2px solid; border-radius: .4rem; font-weight: 700; }
+.qualidade-fragil { color: #7a3500; background: #fff1df; border-color: #b45309; }
+.qualidade-suficiente { color: #14532d; background: #ecfdf5; border-color: #166534; }
+.qualidade-indisponivel { color: #374151; background: #f3f4f6; border-color: #6b7280; }
+.legenda-qualidade { padding: 1rem; border: 1px solid #6b7280; margin: 1rem 0; }
