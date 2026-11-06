@@ -17,7 +17,10 @@ import static br.com.hestia.aprendizagem.AvaliacaoAprendizagemService.id;
 @Service @Transactional
 public class InteracaoRagService {
     public enum Modo { CONSULTAR, GERAR_NOVA, REUTILIZAR }
-    public record Pergunta(String chave,String pergunta,Modo modo,Long respostaId){}
+    public record Pergunta(String chave,String pergunta,Modo modo,Long respostaId,Long conversaId){
+        public Pergunta(String chave,String pergunta,Modo modo,Long respostaId){this(chave,pergunta,modo,respostaId,null);}
+    }
+    public record Conversa(Long id,String titulo,LocalDateTime criadaEm){}
     public record Fonte(Long id,String titulo,String trecho,Integer versao,String conteudoSha256){}
     public record Resultado(Long id,String pergunta,LocalDateTime criadaEm,String estado,String resposta,List<Fonte> fontes,Double similaridade,String confianca,String natureza,String aviso){}
     private final br.com.hestia.shared.RepositorioIntegracao db;private final BuscaVetorialService busca;private final AcessoRespostaService acesso;
@@ -26,7 +29,10 @@ public class InteracaoRagService {
     public Resultado perguntar(Usuario u,Pergunta p){
         Long empresa=acesso.validarEmpresa(u,null);exigir(p!=null&&p.chave()!=null&&!p.chave().isBlank()&&p.chave().length()<=100&&p.pergunta()!=null&&!p.pergunta().isBlank()&&p.pergunta().length()<=4000&&p.modo()!=null,HttpStatus.BAD_REQUEST,"Pergunta, modo e chave obrigatórios");db.acesso().serializar(u.getId());
         var anteriores=db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? AND chave=?",empresa,u.getId(),p.chave());
-        if(!anteriores.isEmpty()){var r=anteriores.getFirst();exigir(p.pergunta().equals(r.get("pergunta"))&&p.modo().name().equals(r.get("modo")),HttpStatus.CONFLICT,"Chave já utilizada para outra interação");return ler(u,r);}
+        if(!anteriores.isEmpty()){var r=anteriores.getFirst();exigir(p.pergunta().equals(r.get("pergunta"))&&p.modo().name().equals(r.get("modo"))&&(p.conversaId()==null||p.conversaId().equals(id(r,"conversa_id"))),HttpStatus.CONFLICT,"Chave já utilizada para outra interação");return ler(u,r);}
+        Long conversa=p.conversaId();
+        if(conversa==null)conversa=criarConversa(u,p.pergunta()).id();
+        else validarConversa(u,empresa,conversa);
         List<RespostaReutilizavel> candidatas;
         if(p.modo()==Modo.REUTILIZAR){exigir(p.respostaId()!=null,HttpStatus.BAD_REQUEST,"Resposta para reutilização obrigatória");candidatas=List.of(acesso.buscarPorId(u,p.respostaId()));}
         else {
@@ -53,7 +59,7 @@ public class InteracaoRagService {
             respostas.registrarReutilizacao(fontes.getFirst().id(),u.getId());
             estado="REUTILIZADA";
         }
-        Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,modelo,tokens_entrada,tokens_saida,registro_uso_id,criada_em) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),estado,texto,db.escrever(fontes),modelo,entrada,saida,registro,LocalDateTime.now());
+        Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,modelo,tokens_entrada,tokens_saida,registro_uso_id,criada_em,conversa_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),estado,texto,db.escrever(fontes),modelo,entrada,saida,registro,LocalDateTime.now(),conversa);
         return ler(u,db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE id=? AND empresa_id=? AND usuario_id=?",nova,empresa,u.getId()).getFirst());
     }
     Resultado ler(Usuario u,Map<String,Object> row){
@@ -62,4 +68,25 @@ public class InteracaoRagService {
         return new Resultado(id(row,"id"),(String)row.get("pergunta"),((java.sql.Timestamp)row.get("criada_em")).toLocalDateTime(),(String)row.get("estado"),(String)row.get("resposta"),fontes,null,"NAO_CLASSIFICADA","PLATAFORMA","Histórico restrito ao autor e revalidado no acesso");
     }
     public List<Resultado> historico(Usuario u){Long empresa=acesso.validarEmpresa(u,null);return db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId()).stream().map(r->ler(u,r)).toList();}
+    public Conversa criarConversa(Usuario u,String titulo){
+        Long empresa=acesso.validarEmpresa(u,null);
+        exigir(titulo!=null&&!titulo.isBlank(),HttpStatus.BAD_REQUEST,"Título obrigatório");
+        String nome=titulo.strip();if(nome.length()>120)nome=nome.substring(0,120);
+        var agora=LocalDateTime.now();
+        Long id=db.inserir("INSERT INTO conversas_rag(empresa_id,usuario_id,titulo,criada_em) VALUES(?,?,?,?)",empresa,u.getId(),nome,agora);
+        return new Conversa(id,nome,agora);
+    }
+    public List<Conversa> conversas(Usuario u){
+        Long empresa=acesso.validarEmpresa(u,null);
+        return db.jdbc().queryForList("SELECT * FROM conversas_rag WHERE empresa_id=? AND usuario_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId()).stream()
+            .map(r->new Conversa(id(r,"id"),(String)r.get("titulo"),((java.sql.Timestamp)r.get("criada_em")).toLocalDateTime())).toList();
+    }
+    public List<Resultado> historicoConversa(Usuario u,Long conversa){
+        Long empresa=acesso.validarEmpresa(u,null);validarConversa(u,empresa,conversa);
+        var linhas=db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? AND conversa_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId(),conversa);
+        Collections.reverse(linhas);return linhas.stream().map(r->ler(u,r)).toList();
+    }
+    private void validarConversa(Usuario u,Long empresa,Long conversa){
+        exigir(db.jdbc().queryForObject("SELECT count(*) FROM conversas_rag WHERE id=? AND empresa_id=? AND usuario_id=?",Long.class,conversa,empresa,u.getId())==1,HttpStatus.NOT_FOUND,"Conversa não encontrada");
+    }
 }
