@@ -6224,3 +6224,170 @@ th{
         flex-direction: column;
     }
 }
+
+/* ===== AI MATURITY - INDICADORES ===== */
+
+/* Campos de consulta */
+.maturidade-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.maturidade-filtros label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.maturidade-filtros input,
+.maturidade-filtros select {
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #fff;
+    color: #14233d;
+    font-size: 13px;
+}
+
+.maturidade-filtros input:focus,
+.maturidade-filtros select:focus {
+    outline: 2px solid #bfdbfe;
+    border-color: #3154d5;
+}
+
+.maturidade-filtros .primary {
+    min-height: 42px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #3154d5;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.maturidade-filtros .primary:hover {
+    background: #2442b0;
+}
+
+/* Cartões dos indicadores */
+.maturidade-fonte {
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+.maturidade-fonte h3 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: #14233d;
+}
+
+.maturidade-fonte h2 {
+    margin: 18px 0;
+    font-size: 25px;
+    color: #14233d;
+}
+
+.maturidade-fonte dl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px 20px;
+    margin: 20px 0;
+}
+
+.maturidade-fonte dt {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.maturidade-fonte dd {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #14233d;
+}
+
+.maturidade-fonte ul {
+    padding-left: 20px;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* Selos de confiança */
+.confianca-selo {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.confianca-selo[data-classe="CONFIAVEL"] {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.confianca-selo[data-classe="PARCIAL"] {
+    background: #fef3c7;
+    color: #854d0e;
+}
+
+.confianca-selo[data-classe="ESTIMADO"] {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+/* Fonte e critérios */
+.maturidade-fonte details {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.maturidade-fonte summary {
+    cursor: pointer;
+    color: #3154d5;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.maturidade-fonte details p {
+    margin: 10px 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #475569;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .maturidade-filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .maturidade-filtros label,
+    .maturidade-filtros input,
+    .maturidade-filtros select,
+    .maturidade-filtros .primary {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .maturidade-fonte {
+        padding: 18px;
+    }
+}

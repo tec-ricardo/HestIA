@@ -1,1 +1,386 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Metodologia | HestIA</title><link rel="stylesheet" href="/style.css"><style>main{max-width:1000px;margin:auto;padding:30px}article{padding:20px;border-bottom:1px solid #ddd}p{line-height:1.6;overflow-wrap:anywhere}</style></head><body><%- include('menu') %><main><h1>Como os indicadores são calculados</h1><p><%= metodologia.statusNotas %></p><p><%= metodologia.tratamentoAusencia %></p><% for(const fonte of metodologia.fontes){ %><article><h2><%= fonte.fator %></h2><p><strong>Fórmula:</strong> <%= fonte.formula || 'Consultar proposta 0.1 e versão preservada na apuração.' %></p><p><strong>Fonte:</strong> <%= fonte.fontePotencial %></p><p><strong>Unidade:</strong> <%= fonte.unidade || 'Nota derivada de 0 a 100' %></p><p><%= fonte.situacao %></p><p><%= fonte.referencia %></p></article><% } %><p><a href="/maturidade">Voltar aos resultados</a></p></main></body></html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologia dos Indicadores | HestIA</title>
+
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        /* Estilos exclusivos da página de metodologia */
+
+        .metodologia-page {
+            width: 100%;
+            min-width: 0;
+            padding: 32px;
+        }
+
+        .metodologia-container {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        .metodologia-header {
+            margin-bottom: 28px;
+        }
+
+        .metodologia-eyebrow {
+            display: inline-block;
+            margin-bottom: 12px;
+            color: #6479dc;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+        }
+
+        .metodologia-header h1 {
+            margin: 0 0 12px;
+            font-size: clamp(26px, 3vw, 36px);
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+        }
+
+        .metodologia-subtitulo {
+            max-width: 760px;
+            margin: 0;
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .metodologia-resumo {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .metodologia-info {
+            padding: 22px 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 3px 14px rgba(15, 23, 42, 0.035);
+        }
+
+        .metodologia-info-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .metodologia-info p {
+            margin: 0;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .metodologia-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin: 0 0 18px;
+        }
+
+        .metodologia-section-header h2 {
+            margin: 0;
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .metodologia-count {
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: #edf2ff;
+            color: #3b5bcc;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .metodologia-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .metodologia-card {
+            min-width: 0;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            background: #ffffff;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.045);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .metodologia-card:hover {
+            border-color: #b8c6f6;
+            box-shadow: 0 8px 26px rgba(15, 23, 42, 0.07);
+        }
+
+        .metodologia-card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .metodologia-card-icon {
+            display: flex;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #edf2ff;
+            color: #365bd2;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .metodologia-card h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .metodologia-field {
+            margin-bottom: 18px;
+        }
+
+        .metodologia-field-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .metodologia-field-value {
+            margin: 0;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .metodologia-formula {
+            padding: 14px 16px;
+            border: 1px solid #dce5ff;
+            border-radius: 10px;
+            background: #f5f7ff;
+            color: #304c9e;
+            font-weight: 600;
+        }
+
+        .metodologia-card-footer {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .metodologia-card-footer p {
+            margin: 0 0 12px;
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .metodologia-card-footer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .metodologia-actions {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 30px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .metodologia-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 20px;
+            border: 1px solid #d5def2;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #365bd2;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .metodologia-back:hover {
+            background: #edf2ff;
+        }
+
+        @media (max-width: 900px) {
+            .metodologia-grid,
+            .metodologia-resumo {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .metodologia-page {
+                padding: 20px 16px;
+            }
+
+            .metodologia-card,
+            .metodologia-info {
+                padding: 19px;
+            }
+
+            .metodologia-section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+
+        <%- include('menu', { perfil, email, active }) %>
+
+        <main class="main metodologia-page">
+            <div class="metodologia-container">
+
+                <header class="metodologia-header">
+                    <span class="metodologia-eyebrow">
+                        AI MATURITY SCORE / METODOLOGIA
+                    </span>
+
+                    <h1>Como os indicadores são calculados</h1>
+
+                    <p class="metodologia-subtitulo">
+                        Entenda as fórmulas, as fontes de dados e os critérios
+                        utilizados para calcular os indicadores de maturidade
+                        em Inteligência Artificial da HestIA.
+                    </p>
+                </header>
+
+                <section class="metodologia-resumo">
+
+                    <div class="metodologia-info">
+                        <span class="metodologia-info-label">
+                            Status das notas
+                        </span>
+
+                        <p><%= metodologia.statusNotas %></p>
+                    </div>
+
+                    <div class="metodologia-info">
+                        <span class="metodologia-info-label">
+                            Tratamento de dados ausentes
+                        </span>
+
+                        <p><%= metodologia.tratamentoAusencia %></p>
+                    </div>
+
+                </section>
+
+                <section aria-labelledby="metodologia-indicadores-titulo">
+
+                    <div class="metodologia-section-header">
+                        <h2 id="metodologia-indicadores-titulo">
+                            Indicadores e fórmulas
+                        </h2>
+
+                        <span class="metodologia-count">
+                            <%= metodologia.fontes.length %>
+                            indicadores
+                        </span>
+                    </div>
+
+                    <div class="metodologia-grid">
+
+                        <% for (const fonte of metodologia.fontes) { %>
+
+                            <article class="metodologia-card">
+
+                                <div class="metodologia-card-top">
+                                    
+                                    <h3><%= fonte.fator %></h3>
+                                </div>
+
+                                <div class="metodologia-field">
+                                    <span class="metodologia-field-label">
+                                        Fórmula de cálculo
+                                    </span>
+
+                                    <p class="metodologia-field-value metodologia-formula">
+                                        <%= fonte.formula || 'Consultar proposta 0.1 e versão preservada na apuração.' %>
+                                    </p>
+                                </div>
+
+                                <div class="metodologia-field">
+                                    <span class="metodologia-field-label">
+                                        Fonte dos dados
+                                    </span>
+
+                                    <p class="metodologia-field-value">
+                                        <%= fonte.fontePotencial %>
+                                    </p>
+                                </div>
+
+                                <div class="metodologia-field">
+                                    <span class="metodologia-field-label">
+                                        Unidade de medida
+                                    </span>
+
+                                    <p class="metodologia-field-value">
+                                        <%= fonte.unidade || 'Nota derivada de 0 a 100' %>
+                                    </p>
+                                </div>
+
+                                <div class="metodologia-card-footer">
+
+                                    <p><%= fonte.situacao %></p>
+
+                                    <p><%= fonte.referencia %></p>
+
+                                </div>
+
+                            </article>
+
+                        <% } %>
+
+                    </div>
+                </section>
+
+                <div class="metodologia-actions">
+                    <a href="/maturidade/resultados"
+                       class="metodologia-back">
+                        ← Voltar aos resultados
+                    </a>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>
