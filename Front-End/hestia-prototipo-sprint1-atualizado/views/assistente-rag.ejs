@@ -34,17 +34,7 @@
 
         </div>
 
-        <div class="profile-switch">
-
-          <span><%= email %></span>
-
-          <select disabled><option selected><%= perfil.charAt(0).toUpperCase() + perfil.slice(1) %></option></select>
-
-        </div>
-
-        <a class="topbar-logout" href="/sair">Sair</a>
-
-      </header>
+</header>
 
       <section class="rag-layout">
 
@@ -52,27 +42,29 @@
 
           <div class="rag-heading">
 
-            <div><h2>Assistente de Governança</h2><p>Consulta conteúdo autorizado da empresa e informa quando a fonte está indisponível.</p></div>
+            <div><h2>Converse com a HestIA</h2></div>
 
-            <span class="rag-tag">Demonstração</span>
-
-          </div>
+</div>
 
           <div class="rag-chat" id="ragChat" aria-live="polite"></div>
 
           <p class="rag-notice" id="ragNotice" role="status" hidden></p>
 
-          <form id="ragForm" class="rag-form">
+          <form id="ragForm" class="rag-form rag-composer-form">
 
-            <label for="ragQuestion">Sua pergunta</label>
+            <label for="ragQuestion" class="rag-composer-label">Sua pergunta</label>
 
-            <textarea id="ragQuestion" rows="3" maxlength="1000" placeholder="Ex.: Posso inserir dados pessoais em uma IA?" required></textarea>
+            <div class="rag-composer">
 
-            <div class="rag-buttons">
+              <textarea id="ragQuestion" rows="1" maxlength="1000" placeholder="Pergunte para a HestIA..." required aria-label="Sua pergunta"></textarea>
+
+              <button class="rag-primary rag-composer-send" type="submit" id="ragSend" aria-label="Enviar pergunta" title="Enviar pergunta"><span aria-hidden="true">↑</span></button>
+
+            </div>
+
+            <div class="rag-composer-footer">
 
               <button class="rag-secondary" type="button" id="ragNew">Nova conversa</button>
-
-              <button class="rag-primary" type="submit" id="ragSend">Enviar pergunta</button>
 
             </div>
 
@@ -93,8 +85,6 @@
         <aside class="rag-panel">
 
           <h2>Histórico</h2>
-
-          <p class="rag-muted">Salvo somente neste navegador. Clique em uma pergunta para ver sua resposta.</p>
 
           <label for="ragHistorySearch" class="rag-history-search-label">Pesquisar no histórico</label>
 
@@ -146,8 +136,6 @@
 
         <h2 id="ragEconomiaTitulo">Economia e recompensa por reutilização</h2>
 
-        <p class="rag-muted">Reutilizações confirmadas no servidor nesta sessão. Tempo e XP não são estimados nesta tela.</p>
-
         <div class="rag-economia-cards">
 
           <div class="rag-economia-card"><strong id="ragTotalReusos">0</strong><span>Respostas reutilizadas</span></div>
@@ -160,9 +148,7 @@
 
         <p class="rag-muted" id="ragUltimaReutilizacao" aria-live="polite">Nenhuma reutilização registrada.</p>
 
-        <p class="rag-muted">Os efeitos reais de reutilização e as recompensas seguem os registros e regras do backend.</p>
-
-      </section>
+</section>
 
     </main>
 
@@ -224,8 +210,6 @@
 
     @media (max-width: 680px) { .rag-bank-header { flex-direction: column; } }
 
-
-
     /* SCRUM-509: sugestões automáticas do Banco de Respostas */
 
     .rag-suggestions { margin-top: 14px; border: 1px solid #d3ddec; border-radius: 9px; padding: 14px; background: #f8fbff; }
@@ -249,6 +233,268 @@
     .rag-economia-card span { display: block; margin-top: 5px; font-size: 13px; color: #4b5871; }
 
     @media (max-width: 680px) { .rag-economia-cards { grid-template-columns: 1fr; } }
+
+    /* SCRUM-553: conversa em balões alternados, somente apresentação visual. */
+
+    #ragChat.rag-chat {
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: stretch;
+
+      gap: 14px;
+
+      padding: 20px;
+
+      background: #f4f7fb;
+
+      border-radius: 12px;
+
+      min-height: 220px;
+
+      overflow-y: auto;
+
+    }
+
+    #ragChat .rag-message, #ragChat .rag-welcome {
+
+      box-sizing: border-box;
+
+      width: fit-content;
+
+      max-width: min(82%, 680px);
+
+      margin: 0;
+
+      padding: 14px 17px;
+
+      border-radius: 16px;
+
+      overflow-wrap: anywhere;
+
+      line-height: 1.55;
+
+      box-shadow: 0 1px 3px rgba(21, 38, 66, 0.06);
+
+    }
+
+    #ragChat .rag-user {
+
+      align-self: flex-end;
+
+      background: #3158d8;
+
+      color: #ffffff;
+
+      border-bottom-right-radius: 5px;
+
+      text-align: left;
+
+    }
+
+    #ragChat .rag-assistant, #ragChat .rag-welcome {
+
+      align-self: flex-start;
+
+      background: #ffffff;
+
+      color: #18253a;
+
+      border: 1px solid #e1e8f2;
+
+      border-bottom-left-radius: 5px;
+
+      text-align: left;
+
+    }
+
+    #ragChat .rag-message strong, #ragChat .rag-welcome strong {
+
+      display: block;
+
+      margin-bottom: 6px;
+
+    }
+
+    #ragChat .rag-message p, #ragChat .rag-welcome p {
+
+      margin: 0 0 8px;
+
+      white-space: pre-wrap;
+
+    }
+
+    #ragChat .rag-message p:last-child, #ragChat .rag-welcome p:last-child {
+
+      margin-bottom: 0;
+
+    }
+
+    #ragChat .rag-user p, #ragChat .rag-user strong {
+
+      color: #ffffff;
+
+    }
+
+    #ragChat .rag-assistant .rag-meta {
+
+      color: #61718b;
+
+      font-size: 12px;
+
+    }
+
+    #ragChat .rag-message-actions {
+
+      margin-top: 12px;
+
+    }
+
+    @media (max-width: 680px) {
+
+      #ragChat.rag-chat { padding: 12px; gap: 10px; }
+
+      #ragChat .rag-message, #ragChat .rag-welcome {
+
+        max-width: 92%;
+
+        padding: 12px;
+
+      }
+
+    }
+
+    /* SCRUM-553: símbolo da chama de Héstia ao lado das mensagens da IA. */
+
+    #ragChat .rag-assistant, #ragChat .rag-welcome {
+
+      position: relative;
+
+      margin-left: 42px;
+
+    }
+
+    #ragChat .rag-assistant::before, #ragChat .rag-welcome::before {
+
+      content: "🔥";
+
+      position: absolute;
+
+      top: 0;
+
+      left: -43px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      width: 32px;
+
+      height: 32px;
+
+      border-radius: 50%;
+
+      background: #172b49;
+
+      border: 1px solid #d4a15e;
+
+      font-size: 17px;
+
+      box-shadow: 0 2px 5px rgba(20, 35, 60, 0.12);
+
+    }
+
+    /* SCRUM-553: indicador animado de processamento da HestIA. */
+
+    #ragChat .rag-thinking { align-self: flex-start; display: flex; align-items: center; gap: 10px; margin: 0 0 0 0; min-height: 40px; }
+
+    #ragChat .rag-thinking-flame { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #172b49; border: 1px solid #d4a15e; font-size: 17px; box-shadow: 0 2px 5px rgba(20,35,60,.12); }
+
+    #ragChat .rag-thinking-dots { display: flex; align-items: center; gap: 5px; padding: 13px 16px; background: #fff; border: 1px solid #e1e8f2; border-radius: 16px; }
+
+    #ragChat .rag-thinking-dot { display: block; width: 7px; height: 7px; border-radius: 50%; background: #3158d8; animation: ragThinkingBounce 1s ease-in-out infinite; }
+
+    #ragChat .rag-thinking-dot:nth-child(2) { animation-delay: .15s; }
+
+    #ragChat .rag-thinking-dot:nth-child(3) { animation-delay: .3s; }
+
+    @keyframes ragThinkingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+    @media (prefers-reduced-motion: reduce) { #ragChat .rag-thinking-dot { animation: none; opacity: .8; } }
+
+    /* Campo de pergunta: visual moderno, sem alterar a API */
+
+    .rag-composer-form { margin-top: 16px; }
+
+    .rag-composer-label { display: block; margin-bottom: 9px; font-size: 13px; font-weight: 600; color: #24334c; }
+
+    .rag-composer { display: flex; align-items: flex-end; gap: 10px; padding: 10px 10px 10px 16px; border: 1px solid #d4deee; border-radius: 22px; background: #fff; box-shadow: 0 3px 14px rgba(23,45,85,.06); transition: border-color .18s,box-shadow .18s; }
+
+    .rag-composer:focus-within { border-color: #3159da; box-shadow: 0 0 0 3px rgba(49,89,218,.10); }
+
+    .rag-composer #ragQuestion { flex: 1; min-width: 0; width: 100%; min-height: 28px; max-height: 160px; height: 28px; margin: 0; padding: 5px 0; border: 0; outline: 0; box-shadow: none; border-radius: 0; resize: none; background: transparent; color: #172640; font: inherit; font-size: 14px; line-height: 20px; overflow-y: hidden; scrollbar-width: none; }
+
+    .rag-composer #ragQuestion:focus { outline: none; border: 0; box-shadow: none; }
+
+    .rag-composer #ragQuestion::-webkit-scrollbar { display: none; }
+
+    .rag-composer #ragQuestion::placeholder { color: #8290a6; }
+
+    .rag-composer .rag-composer-send { flex: 0 0 38px; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; min-width: 38px; padding: 0; margin: 0; border: 0; border-radius: 13px; background: #3158d9; color: white; cursor: pointer; font-size: 24px; line-height: 1; }
+
+    .rag-composer .rag-composer-send:hover:not(:disabled) { background: #2348bf; }
+
+    .rag-composer .rag-composer-send:disabled { opacity: .55; cursor: wait; }
+
+    .rag-composer-footer { display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-top: 9px; }
+
+    .rag-composer-hint { color: #8290a6; font-size: 11px; }
+
+    @media (max-width: 680px) { .rag-composer-hint { font-size: 10px; } }
+
+    /* SCRUM-553: refinamento visual da pagina, sem alterar a logica do RAG. */
+
+    .rag-layout { align-items: start; gap: 20px; }
+
+    .rag-layout > .rag-panel { min-width: 0; }
+
+    .rag-layout > .rag-panel:first-child { display: flex; flex-direction: column; }
+
+    .rag-layout > .rag-panel:first-child .rag-heading { margin-bottom: 16px; }
+
+    #ragChat.rag-chat { height: 440px; min-height: 440px; max-height: 440px; }
+
+    .rag-layout > aside.rag-panel { padding-top: 24px; }
+
+    .rag-layout > aside.rag-panel h2 { margin-bottom: 16px; }
+
+    .rag-bank-panel { margin-top: 20px; }
+
+    .rag-bank-header { align-items: center; }
+
+    .rag-economia-cards { gap: 16px; }
+
+    .rag-economia-card { border-radius: 12px; }
+
+    @media (max-width: 900px) {
+
+      #ragChat.rag-chat { height: 380px; min-height: 380px; max-height: 380px; }
+
+      .rag-layout > aside.rag-panel { padding-top: 20px; }
+
+    }
+
+    @media (max-width: 680px) {
+
+      #ragChat.rag-chat { height: 350px; min-height: 350px; max-height: 350px; }
+
+      .rag-economia-cards { gap: 10px; }
+
+    }
 
   </style>
 
@@ -282,8 +528,6 @@
 
       } catch (_) {}
 
-
-
       function atualizarEconomia() {
 
         const total = reutilizacoes.length;
@@ -304,8 +548,6 @@
 
       }
 
-
-
       function registrarReutilizacao(item) {
 
         reutilizacoes.push({ pergunta: item.question, data: new Date().toISOString() });
@@ -315,9 +557,13 @@
           const atualizacao = { tipo: 'xp-atualizado', instante: Date.now() };
 
           if ('BroadcastChannel' in window) {
+
             const canal = new BroadcastChannel('hestia-pass');
+
             canal.postMessage(atualizacao);
+
             canal.close();
+
           }
 
           localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
@@ -336,11 +582,12 @@
 
       }
 
-
-
       function confirmarReutilizacaoAutomatica(item) {
+
         registrarReutilizacao(item);
+
         notify('+15 XP registrados no HestIA Pass pela resposta aprovada reutilizada.');
+
       }
 
       const bankBody = document.getElementById('ragBankBody');
@@ -450,6 +697,7 @@
           id: String(Date.now()) + '-' + Math.random().toString(36).slice(2),
 
           question: message.question,
+
           respostaId: message.respostaId,
 
           text: message.text,
@@ -513,10 +761,15 @@
           use.addEventListener('click', async () => {
 
             try {
+
               if (!item.respostaId) throw Error('Fonte não identificada');
+
               const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
+
               const dados = await resposta.json(); if (!resposta.ok || !dados.resposta) throw Error(dados.erro || 'Fonte indisponível');
+
               await copyText(dados.resposta); registrarReutilizacao(item);
+
             }
 
             catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
@@ -584,13 +837,21 @@
           copy.type = 'button';
 
           copy.disabled = !message.respostaId || message.reutilizada;
+
           if (message.reutilizada) copy.textContent = 'Resposta reutilizada (+15 XP)';
+
           copy.addEventListener('click', async () => {
+
             try {
+
               const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: message.question, modo: 'REUTILIZAR', respostaId: message.respostaId }) });
+
               const dados = await resposta.json(); if (!resposta.ok) throw new Error(dados.erro || 'Resposta indisponível para reutilização.');
+
               await copyText(dados.resposta); registrarReutilizacao(message); saveAnswer({ ...message, text: dados.resposta });
+
             } catch (erro) { notify(erro.message, true); }
+
           });
 
           const retry = element('button', 'Gerar nova resposta', 'rag-secondary');
@@ -602,6 +863,7 @@
             if (busy) return;
 
             question.value = message.question;
+
             proximoModo = 'GERAR_NOVA';
 
             mostrarSugestoes();
@@ -624,13 +886,17 @@
 
         chat.replaceChildren();
 
+        const boasVindas = element('div', undefined, 'rag-welcome');
+
+        boasVindas.append(element('strong', 'Assistente HestIA'));
+
+        boasVindas.append(element('p', 'Olá! Pergunte sobre boas práticas e governança de IA.'));
+
+        chat.append(boasVindas);
+
         const current = currentConversation();
 
-        if (!current || !current.messages.length) {
-
-          appendMessage({ role: 'assistant', text: 'Olá! Pergunte sobre boas práticas e governança de IA.' });
-
-        } else current.messages.forEach(appendMessage);
+        if (current && current.messages.length) current.messages.forEach(appendMessage);
 
       }
 
@@ -758,64 +1024,98 @@
 
       }
 
-
-
       // SCRUM-509: encontra respostas parecidas no banco que já existe.
 
       const suggestionBox = document.getElementById('ragSuggestions');
 
       const suggestionList = document.getElementById('ragSuggestionList');
 
-
-
       // SCRUM-509: aproxima termos equivalentes, sem exigir frase idêntica.
+
       function palavrasImportantes(texto) {
+
         const ignorar = ['como', 'qual', 'quais', 'para', 'com', 'uma', 'uns', 'umas', 'que', 'por', 'posso', 'pode', 'sobre', 'isso', 'esse', 'essa', 'meu', 'minha', 'dos', 'das', 'nos', 'nas', 'tem', 'ser', 'voce', 'estou', 'mais', 'entre', 'onde', 'quando', 'fazer', 'preciso', 'devo', 'quero', 'queria', 'gostaria', 'este', 'esta', 'sao', 'aos', 'eu', 'em', 'de', 'do', 'da', 'um', 'as', 'os'];
+
         return normalize(texto).replace(/[^a-z0-9 ]/g, ' ').split(/\s+/)
+
           .filter(p => p.length > 1 && !ignorar.includes(p));
+
       }
 
       function conceito(palavra) {
+
         const grupos = {
+
           utilizacao: ['usar', 'uso', 'utilizar', 'utilizacao', 'utilizo', 'usando', 'utilizando', 'empregar'],
+
           inteligencia: ['ia', 'inteligencia', 'artificial', 'chatgpt', 'chatbot'],
+
           ferramenta: ['ferramenta', 'ferramentas', 'aplicativo', 'aplicativos', 'plataforma', 'plataformas'],
+
           permissao: ['permitido', 'permitida', 'permitidas', 'autorizado', 'autorizada', 'autorizadas', 'aprovado', 'aprovada', 'liberado', 'liberada'],
+
           dados: ['dado', 'dados', 'informacao', 'informacoes'],
+
           privacidade: ['pessoal', 'pessoais', 'privado', 'privados', 'confidencial', 'confidenciais'],
+
           compartilhar: ['compartilhar', 'inserir', 'colocar', 'enviar', 'fornecer'],
+
           resposta: ['resposta', 'respostas', 'resultado', 'resultados'],
+
           verificacao: ['verificar', 'validar', 'conferir', 'checar', 'revisar']
+
         };
+
         for (const nome in grupos) {
+
           if (grupos[nome].includes(palavra)) return nome;
+
         }
+
         if (palavra.length > 5 && palavra.endsWith('oes')) return palavra.slice(0, -3);
+
         if (palavra.length > 4 && palavra.endsWith('s')) return palavra.slice(0, -1);
+
         return palavra;
+
       }
 
       function buscarSemelhantes(pergunta) {
+
         const normalizada = normalize(pergunta).replace(/[^a-z0-9 ]/g, ' ').trim().replace(/\s+/g, ' ');
+
         const termos = new Set(palavrasImportantes(pergunta).map(conceito));
+
         if (!normalizada || !termos.size) return [];
 
         return savedAnswers.map(resposta => {
+
           const perguntaSalva = normalize(resposta.question).replace(/[^a-z0-9 ]/g, ' ').trim().replace(/\s+/g, ' ');
+
           const palavras = new Set(palavrasImportantes(resposta.question).map(conceito));
+
           const comuns = [...termos].filter(p => palavras.has(p));
+
           const identica = perguntaSalva === normalizada;
+
           const proporcao = comuns.length / Math.max(termos.size, palavras.size, 1);
 
           // Aceita 2 conceitos em comum ou 1 conceito específico,
+
           // desde que seja relevante para a pergunta digitada.
+
           const genericos = ['inteligencia', 'utilizacao', 'resposta', 'ferramenta'];
+
           const conceitoEspecifico = comuns.some(p => !genericos.includes(p) && p.length >= 4);
+
           const sugestao = identica || comuns.length >= 2 || (conceitoEspecifico && proporcao >= 0.34);
 
           return { resposta: resposta, pontuacao: identica ? 2 : proporcao, sugestao: sugestao };
+
         }).filter(item => item.sugestao)
+
           .sort((a, b) => b.pontuacao - a.pontuacao).slice(0, 3);
+
       }
 
       function mostrarSugestoes() {
@@ -862,22 +1162,58 @@
 
       }
 
+      // Ajuste visual da altura e envio por Enter (Shift + Enter insere quebra de linha).
 
+      function ajustarAlturaPergunta() {
+
+        question.style.height = '28px';
+
+        question.style.height = Math.min(question.scrollHeight, 160) + 'px';
+
+        question.style.overflowY = question.scrollHeight > 160 ? 'auto' : 'hidden';
+
+      }
+
+      question.addEventListener('input', ajustarAlturaPergunta);
+
+      question.addEventListener('keydown', e => {
+
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+
+          e.preventDefault();
+
+          if (!busy && question.value.trim()) {
+
+            if (form.requestSubmit) form.requestSubmit();
+
+            else send.click();
+
+          }
+
+        }
+
+      });
 
       question.addEventListener('input', mostrarSugestoes);
 
-
-
       historySearch.addEventListener('input', renderHistory);
 
-      let proximoModo = 'CONSULTAR';
+      let proximoModo = 'GERAR_NOVA';
+
       async function answerFor(input) {
-        const modo = proximoModo; proximoModo = 'CONSULTAR';
+
+        const modo = proximoModo; proximoModo = 'GERAR_NOVA';
+
         const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo }) });
+
         const dados = await resposta.json();
+
         if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
+
         const fonte = dados.fontes && dados.fontes[0];
+
         return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+
       }
 
       form.addEventListener('submit', e => {
@@ -894,7 +1230,7 @@
 
         send.disabled = true;
 
-        send.textContent = 'Consultando...';
+        send.disabled = true; send.setAttribute('aria-label', 'Consultando...'); send.title = 'Consultando...';
 
         notice.hidden = true;
 
@@ -912,23 +1248,51 @@
 
         question.value = '';
 
+        ajustarAlturaPergunta();
+
         persist();
 
         renderChat();
 
         renderHistory();
 
-        const loading = element('p', 'Consultando conteúdo autorizado...', 'rag-muted');
+        const loading = element('div', undefined, 'rag-thinking');
+
+        loading.setAttribute('role', 'status');
+
+        loading.setAttribute('aria-label', 'Assistente HestIA preparando a resposta');
+
+        const flame = element('span', '🔥', 'rag-thinking-flame');
+
+        flame.setAttribute('aria-hidden', 'true');
+
+        const dots = element('span', undefined, 'rag-thinking-dots');
+
+        dots.setAttribute('aria-hidden', 'true');
+
+        for (let i = 0; i < 3; i++) dots.append(element('span', undefined, 'rag-thinking-dot'));
+
+        loading.append(flame, dots);
 
         chat.append(loading);
 
         chat.scrollTop = chat.scrollHeight;
 
-        setTimeout(async () => {
+        (async () => {
 
           try {
 
-            const result = await answerFor(input);
+            const [consulta] = await Promise.allSettled([
+
+              answerFor(input),
+
+              new Promise(resolve => setTimeout(resolve, 2000))
+
+            ]);
+
+            if (consulta.status === 'rejected') throw consulta.reason;
+
+            const result = consulta.value;
 
             current.messages.push(result);
 
@@ -939,6 +1303,7 @@
             renderHistory();
 
             if (result.reutilizada) confirmarReutilizacaoAutomatica(result);
+
             else if (!result.source) notify('Nenhum resultado encontrado.');
 
           } catch (erro) {
@@ -959,11 +1324,11 @@
 
             send.disabled = false;
 
-            send.textContent = 'Enviar pergunta';
+            send.setAttribute('aria-label', 'Enviar pergunta'); send.title = 'Enviar pergunta';
 
           }
 
-        }, 600);
+        })();
 
       });
 
@@ -974,6 +1339,8 @@
         currentId = null;
 
         question.value = '';
+
+        ajustarAlturaPergunta();
 
         mostrarSugestoes();
 
@@ -1010,13 +1377,21 @@
       renderBank();
 
       atualizarEconomia();
+
       fetch('/api/rag/historico').then(r => { if (!r.ok) throw Error('Histórico indisponível'); return r.json(); }).then(linhas => {
+
         if (conversations.length) return;
+
         conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
+
           { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
+
           { role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
+
         ] }));
+
         renderHistory();
+
       }).catch(() => notify('Histórico do servidor indisponível.', true));
 
     })();

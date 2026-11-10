@@ -164,6 +164,33 @@ public class BuscaVetorialService {
             );
         }
 
+        // Não chamar a OpenAI se não existe nenhum vetor autorizado para pesquisar.
+        // Sem fontes, o serviço deve retornar lista vazia, não erro 503.
+        Long quantidade = jdbcTemplate.queryForObject(
+                """
+                SELECT count(*) FROM respostas_reutilizaveis r
+                WHERE r.empresa_id = ?
+                  AND r.reutilizavel = true
+                  AND r.status_qualidade = 'APROVADA'
+                  AND (r.expira_em IS NULL OR r.expira_em > ?)
+                  AND r.possui_dados_sensiveis = false
+                  AND r.embedding_vector IS NOT NULL
+                  AND EXISTS (
+                      SELECT 1 FROM resposta_perfis p
+                      WHERE p.resposta_id = r.id AND p.perfil = ?
+                  )
+                """,
+                Long.class,
+                empresaId,
+                java.time.LocalDateTime.now(),
+                usuario.getPerfil().name()
+        );
+        if (quantidade == null || quantidade == 0) {
+            if (decisoes != null) decisoes.registrar(usuario, null,
+                    "RECUPERACAO_VETORIAL", true, "SEM_CONTEUDO_AUTORIZADO");
+            return List.of();
+        }
+
         String vetor = gerarVetor(pergunta);
 
         List<Long> ids = jdbcTemplate.queryForList(

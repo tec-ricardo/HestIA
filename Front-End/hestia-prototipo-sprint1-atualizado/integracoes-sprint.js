@@ -1,6 +1,5 @@
 const express = require('express');
 const { randomUUID } = require('node:crypto');
-
 // Adaptadores HTTP das tasks de Ricardo; preservam os templates de Kevin.
 module.exports = function montarIntegracoes(app, api) {
   const router = express.Router();
@@ -8,8 +7,10 @@ module.exports = function montarIntegracoes(app, api) {
   const executar = fn => async (req, res) => {
     try { await fn(req, res); }
     catch (erro) {
-      const status = erro.response?.status || 503;
-      const mensagem = erro.response?.data?.message || erro.response?.data?.detail || 'Serviço indisponível. Nenhum resultado demonstrativo foi usado.';
+      const status = erro.response?.status || (erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 504 : 503);
+      const origem = erro.response?.data;
+      const mensagem = origem?.message || origem?.detail || origem?.erro || (typeof origem === 'string' && origem.trim() ? origem.slice(0, 300) : null) || (erro.code === 'ECONNREFUSED' ? 'Spring Boot inacessível. Confira API_URL e se a porta 8080 está ativa.' : erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 'Tempo limite ao consultar o Spring Boot.' : erro.response ? 'O Spring Boot recusou a operação. Consulte o log do Java.' : 'Falha de comunicação com o Spring Boot. Consulte o terminal do Node.js.');
+      console.error('[HestIA API]', { metodo: req.method, rota: req.originalUrl, status, codigo: erro.code || null, backendStatus: erro.response?.status || null, mensagem: String(mensagem).slice(0, 500) });
       if (status === 401) return req.session.destroy(() => res.status(401).json({ erro: 'Sessão expirada. Entre novamente.' }));
       return res.status(status).json({ erro: mensagem });
     }
@@ -126,7 +127,7 @@ module.exports = function montarIntegracoes(app, api) {
   }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
     const { chave, pergunta, modo, respostaId } = req.body;
-    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'CONSULTAR', respostaId: respostaId == null ? null : id(respostaId) }, { timeout: 45000 })).data);
+    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'GERAR_NOVA', respostaId: respostaId == null ? null : id(respostaId) }, { timeout: 45000 })).data);
   }));
   router.get('/api/rag/historico', executar(async (req, res) => res.json((await api.get('/api/rag/historico')).data)));
   router.get('/api/registros/contexto', executar(async (req, res) => res.json((await api.get('/registros-uso-ia/contexto')).data)));
@@ -144,7 +145,7 @@ module.exports = function montarIntegracoes(app, api) {
   }));
   router.get('/api/admin/respostas', admin, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
   router.get('/api/admin/respostas/:id', admin, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));
-  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null })).data)));
+  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null, dadosSensiveisVerificados: req.body.dadosSensiveisVerificados === true })).data)));
   router.get('/administracao/respostas', admin, executar(async (req, res) => {
     const lista = (await api.get('/api/admin/respostas')).data;
     const detalhe = req.query.id ? (await api.get(`/api/admin/respostas/${id(req.query.id)}`)).data : null;

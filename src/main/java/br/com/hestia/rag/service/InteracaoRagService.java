@@ -43,7 +43,7 @@ public class InteracaoRagService {
             if(candidatas.isEmpty()){
                 try{candidatas=busca.buscarSemelhantes(empresa,p.pergunta(),5);}
                 catch(org.springframework.web.server.ResponseStatusException e){throw e;}
-                catch(RuntimeException e){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Recuperação vetorial indisponível");}
+                catch(RuntimeException e){org.slf4j.LoggerFactory.getLogger(InteracaoRagService.class).error("Falha real na recuperação vetorial do RAG",e);throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Recuperação vetorial indisponível; consulte o log Java");}
             }
         }
         // Revalidação após a busca: somente estes trechos entram no prompt de geração.
@@ -52,6 +52,21 @@ public class InteracaoRagService {
         String estado=fontes.isEmpty()?"SEM_CONTEUDO_AUTORIZADO":"RECUPERADA";String texto=fontes.isEmpty()?null:fontes.getFirst().trecho();String modelo=null;Long entrada=null,saida=null,registro=null;
         if(!fontes.isEmpty()&&p.modo()==Modo.GERAR_NOVA){var resposta=geracao.gerar(p.pergunta(),fontes.stream().map(f->"[Fonte "+f.id()+"] "+f.trecho()).toList());texto=resposta.texto();modelo=resposta.modelo();entrada=resposta.tokensEntrada();saida=resposta.tokensSaida();estado="GERADA_COM_FONTES";
             if(ferramentaId>0&&entrada!=null&&saida!=null&&entrada>=0&&saida>=0&&entrada<=Integer.MAX_VALUE&&saida<=Integer.MAX_VALUE&&entrada+saida<=Integer.MAX_VALUE&&db.jdbc().queryForObject("SELECT count(*) FROM ferramentas_ia WHERE id=? AND empresa_id=? AND status='APROVADA'",Long.class,ferramentaId,empresa)==1)registro=registros.criarCapturado(new RegistroUsoIACriacaoDTO(u.getId(),ferramentaId,modelo,LocalDateTime.now(),FinalidadeUso.GERACAO_CONTEUDO,entrada.intValue(),saida.intValue(),null,StatusExecucao.SUCESSO,null),"RAG:"+u.getId()+":"+p.chave()).id();
+        }
+        // Respostas novas, fundamentadas em fontes autorizadas, entram na curadoria.
+        // Não publicar automaticamente: cadastrar() atribui EM_REVISAO.
+        if ("GERADA_COM_FONTES".equals(estado) && texto != null && !texto.isBlank()) {
+            var pendente = new br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO();
+            pendente.setEmpresaId(empresa);
+            pendente.setPromptOriginal(p.pergunta());
+            pendente.setRespostaGerada(texto);
+            pendente.setCategoria("RAG - Aguardando curadoria");
+            pendente.setModeloIA(modelo);
+            if (entrada != null && entrada >= 0 && entrada <= Integer.MAX_VALUE) pendente.setTokensEntrada(entrada.intValue());
+            if (saida != null && saida >= 0 && saida <= Integer.MAX_VALUE) pendente.setTokensSaida(saida.intValue());
+            pendente.setPossuiDadosSensiveis(true); // conservador: revisão explícita antes de aprovar
+            pendente.setReutilizavel(false);
+            respostas.cadastrar(pendente, u);
         }
         // Entregar diretamente uma resposta aprovada também é uma reutilização.
         // O usuário não precisa confirmar a mesma ação em um segundo botão.
@@ -79,7 +94,7 @@ public class InteracaoRagService {
     public List<Conversa> conversas(Usuario u){
         Long empresa=acesso.validarEmpresa(u,null);
         return db.jdbc().queryForList("SELECT * FROM conversas_rag WHERE empresa_id=? AND usuario_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId()).stream()
-            .map(r->new Conversa(id(r,"id"),(String)r.get("titulo"),((java.sql.Timestamp)r.get("criada_em")).toLocalDateTime())).toList();
+                .map(r->new Conversa(id(r,"id"),(String)r.get("titulo"),((java.sql.Timestamp)r.get("criada_em")).toLocalDateTime())).toList();
     }
     public List<Resultado> historicoConversa(Usuario u,Long conversa){
         Long empresa=acesso.validarEmpresa(u,null);validarConversa(u,empresa,conversa);
