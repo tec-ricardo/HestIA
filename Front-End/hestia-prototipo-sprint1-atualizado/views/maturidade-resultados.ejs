@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,209 +9,113 @@
     <link rel="stylesheet" href="/qualidade-indicadores.css">
 
     <style>
-        .maturidade-conteudo {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px;
-            box-sizing: border-box;
-        }
 
-        .maturidade-conteudo h1 {
-            font-size: 30px;
-            margin: 0 0 10px;
-            color: #14233d;
-        }
+/* HestIA | identidade visual: marinho, creme, cobre e âmbar. Somente apresentação. */
+:root { --h-navy:#14243c; --h-cream:#f8f6f2; --h-white:#ffffff; --h-copper:#b87346; --h-amber:#e9a044; --h-ink:#223249; --h-muted:#697586; --h-border:#e7e1d9; }
+.main { min-width:0; background:var(--h-cream); }
+.maturidade-conteudo { box-sizing:border-box; width:100%; max-width:1640px; margin:0 auto; padding:clamp(22px,2.8vw,44px); color:var(--h-ink); font-family:inherit; }
+.maturidade-conteudo h1 { color:var(--h-navy); font-size:clamp(28px,2.35vw,38px); font-weight:800; letter-spacing:-.9px; line-height:1.2; margin:0 0 8px; }
+.maturidade-descricao { color:var(--h-muted); font-size:14px; line-height:1.6; margin:0 0 25px; }
+.maturidade-links { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:0 0 22px; }
+.maturidade-links a { position:relative; box-sizing:border-box; display:flex; align-items:center; min-height:73px; padding:16px 42px 16px 20px; background:var(--h-white); border:1px solid var(--h-border); border-radius:12px; color:var(--h-navy); font-size:13px; font-weight:700; line-height:1.5; text-decoration:none; box-shadow:0 5px 16px rgba(27,32,39,.035); transition:transform .16s,box-shadow .16s,border-color .16s; }
+.maturidade-links a::before { content:''; width:4px; position:absolute; left:0; top:16px; bottom:16px; background:var(--h-copper); border-radius:0 4px 4px 0; }
+.maturidade-links a::after { content:'↗'; position:absolute; right:16px; color:var(--h-copper); font-size:21px; }
+.maturidade-links a:hover { transform:translateY(-2px); border-color:#d8b69d; box-shadow:0 10px 22px rgba(42,30,20,.08); }
+.maturidade-card { box-sizing:border-box; background:var(--h-white); border:1px solid var(--h-border); border-radius:16px; padding:25px 27px; margin:0 0 19px; box-shadow:0 6px 24px rgba(36,31,26,.035); }
+.maturidade-card h2 { color:var(--h-navy); font-size:18px; letter-spacing:-.25px; font-weight:800; margin:0 0 16px; }
+.maturidade-nota { color:var(--h-muted); font-size:12px; line-height:1.65; }
+.maturidade-barra-consulta { background:#fffdfa; }
+.maturidade-barra-consulta h2 { font-size:14px; margin:0 0 16px; }
+.maturidade-filtros,.maturidade-barra-consulta .maturidade-filtros { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)) auto; align-items:end; gap:14px; margin:0; }
+.maturidade-campo { display:flex; flex-direction:column; gap:7px; color:#596476; font-size:12px; font-weight:700; }
+.maturidade-campo input,.maturidade-campo select { box-sizing:border-box; width:100%; min-height:45px; padding:10px 12px; color:var(--h-ink); background:#fff; border:1px solid #ded8d1; border-radius:9px; font:inherit; font-size:13px; }
+.maturidade-campo input:focus,.maturidade-campo select:focus { outline:2px solid rgba(184,115,70,.22); border-color:var(--h-copper); }
+.maturidade-botao { min-height:45px; padding:10px 24px; background:var(--h-navy); color:#fff; border:0; border-radius:9px; font-size:13px; font-weight:750; white-space:nowrap; cursor:pointer; transition:background .15s; }
+.maturidade-botao:hover { background:#254265; }
+.maturidade-detalhes { background:#fbfaf8; border:1px solid #ede7df; border-radius:9px; margin:14px 0 0; padding:12px 14px; }
+.maturidade-detalhes summary { color:#746e68; cursor:pointer; font-size:12px; font-weight:650; }
+.maturidade-detalhes .maturidade-filtros { grid-template-columns:repeat(2,minmax(0,1fr)); margin:15px 0 0; }
+.maturidade-alerta { background:#fff4ed; border:1px solid #edc7b2; color:#8b3f26; border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+.maturidade-indicadores { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; margin:17px 0 12px; }
+.maturidade-indicador { position:relative; box-sizing:border-box; background:linear-gradient(140deg,#fbf9f6,#f5f1ea); border:1px solid #e9e1d8; border-radius:12px; padding:22px 22px 23px; min-height:120px; overflow:hidden; }
+.maturidade-indicador::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--h-copper); }
+.maturidade-indicador:nth-child(2)::before { background:var(--h-amber); }
+.maturidade-indicador:nth-child(3)::before { background:var(--h-navy); }
+.maturidade-indicador span { display:block; color:#746f69; font-size:12px; font-weight:650; margin-bottom:13px; }
+.maturidade-indicador strong { display:block; color:var(--h-navy); font-size:clamp(21px,2.2vw,30px); font-weight:800; letter-spacing:-.6px; overflow-wrap:anywhere; }
+.maturidade-qualidade-card { padding:23px 27px; }
+.maturidade-qualidade-resumo { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.maturidade-qualidade-resumo span { box-sizing:border-box; display:flex; align-items:center; gap:7px; min-height:46px; background:#fbfaf8; border:1px solid #eee8e0; border-radius:9px; padding:10px 13px; color:#4c5663; font-size:12px; }
+.maturidade-dot { display:inline-block; flex-shrink:0; width:10px; height:10px; border-radius:50%; }
+.maturidade-dot.verde { background:#26865a; }.maturidade-dot.laranja { background:#d18a2e; }.maturidade-dot.cinza { background:#9aa3ae; }
+.legenda-qualidade { margin:13px 0 0; padding:0; background:transparent; border:0; }
+.legenda-qualidade summary { color:#9b5d39; cursor:pointer; font-size:12px; font-weight:700; }
+.legenda-qualidade[open] summary { margin-bottom:10px; }
+.maturidade-tabela-wrapper { margin-top:18px; overflow-x:auto; border:1px solid #e6dfd6; border-radius:11px; }
+.maturidade-tabela { width:100%; border-collapse:collapse; }
+.maturidade-tabela-completa { min-width:1120px; }
+.maturidade-tabela-completa thead th { background:#f2eee8; color:#465161; text-transform:uppercase; letter-spacing:.35px; font-size:11px; font-weight:800; white-space:normal; }
+.maturidade-tabela-completa th,.maturidade-tabela-completa td { text-align:left; vertical-align:middle; padding:15px 13px; border-bottom:1px solid #ece7e1; font-size:12px; line-height:1.55; }
+.maturidade-tabela-completa tbody th { min-width:155px; font-size:13px; font-weight:750; color:var(--h-navy); }
+.maturidade-tabela-completa tbody tr:nth-child(even) { background:#fcfaf7; }
+.maturidade-tabela-completa tbody tr:hover { background:#f7f0e8; }
+.maturidade-tabela-nota { font-weight:800; color:var(--h-navy); font-size:16px!important; white-space:nowrap; }
+.maturidade-qualidade-detalhe { display:block; color:#79828e; font-size:11px; margin-top:5px; }
+.maturidade-motivo-celula { min-width:180px; max-width:260px; color:#596474; }
+/* Preserva semântica da qualidade e garante legibilidade dos badges externos */
+.maturidade-tabela .qualidade { display:inline-block; border-radius:6px; padding:3px 7px; font-size:11px; font-weight:750; }
+@media(max-width:1100px) { .maturidade-links { grid-template-columns:1fr; } .maturidade-filtros,.maturidade-barra-consulta .maturidade-filtros { grid-template-columns:repeat(2,minmax(0,1fr)); } .maturidade-qualidade-resumo { grid-template-columns:1fr; } }
+@media(max-width:720px) { .maturidade-conteudo { padding:18px 13px; } .maturidade-card { padding:18px 15px; } .maturidade-indicadores,.maturidade-filtros,.maturidade-barra-consulta .maturidade-filtros,.maturidade-detalhes .maturidade-filtros { grid-template-columns:1fr; } .maturidade-botao { width:100%; } }
 
-        .maturidade-conteudo h2 {
-            font-size: 21px;
-            margin: 30px 0 15px;
-            color: #14233d;
-        }
 
-        .maturidade-conteudo h3 {
-            color: #14233d;
-        }
+        /* Paleta HestIA — contraste corporativo: azul-marinho, cinza-azulado e cobre */
+        :root { --hest-navy:#14243C; --hest-bg:#F1F5F9; --hest-card:#FFFFFF; --hest-copper:#B87346; --hest-amber:#E9A044; --hest-border:#DCE4EE; --hest-muted:#64748B; }
+        body, .main { background:var(--hest-bg) !important; }
+        .maturidade-conteudo { color:var(--hest-navy); }
+        .maturidade-conteudo h1,.maturidade-conteudo h2,.maturidade-conteudo h3 { color:var(--hest-navy); }
+        .maturidade-descricao,.maturidade-nota { color:var(--hest-muted); }
+        .maturidade-card { background:var(--hest-card) !important; border-color:var(--hest-border) !important; box-shadow:0 6px 24px rgba(20,36,60,.055); }
+        .maturidade-links a { background:#fff !important; color:var(--hest-navy) !important; border-color:var(--hest-border) !important; }
+        .maturidade-links a::before { background:var(--hest-copper) !important; }
+        .maturidade-links a::after { color:var(--hest-copper) !important; }
+        .maturidade-links a:hover { background:#F8FAFC !important; border-color:#CDA184 !important; }
+        .maturidade-barra-consulta { background:#fff !important; }
+        .maturidade-campo { color:#34465D; }
+        .maturidade-campo input,.maturidade-campo select { background:#F8FAFC !important; color:var(--hest-navy); border-color:var(--hest-border) !important; }
+        .maturidade-campo input:focus,.maturidade-campo select:focus { border-color:var(--hest-copper) !important; box-shadow:0 0 0 3px rgba(184,115,70,.15) !important; }
+        .maturidade-botao { background:var(--hest-navy) !important; color:#fff !important; box-shadow:0 5px 15px rgba(20,36,60,.15) !important; }
+        .maturidade-botao:hover { background:#243C5B !important; }
+        .maturidade-detalhes { background:#F8FAFC !important; border-color:var(--hest-border) !important; }
+        .maturidade-detalhes summary,.legenda-qualidade summary { color:#59677A !important; }
+        .maturidade-indicador { background:#fff !important; border-color:var(--hest-border) !important; }
+        .maturidade-indicador::before { background:var(--hest-copper) !important; }
+        .maturidade-indicador span { color:var(--hest-muted) !important; }
+        .maturidade-indicador strong { color:var(--hest-navy) !important; }
+        .maturidade-qualidade-resumo span { background:#F8FAFC !important; border-color:var(--hest-border) !important; color:#43546B !important; }
+        .maturidade-tabela-wrapper { border-color:var(--hest-border) !important; }
+        .maturidade-tabela-completa thead th { background:#E9EFF6 !important; color:var(--hest-navy) !important; border-color:var(--hest-border) !important; }
+        .maturidade-tabela-completa tbody tr:nth-child(even) { background:#F8FAFC !important; }
+        .maturidade-tabela-completa tbody tr:hover { background:#EDF3F8 !important; }
+        .maturidade-tabela-completa tbody th,.maturidade-tabela-nota { color:var(--hest-navy) !important; }
+        .maturidade-qualidade-detalhe,.maturidade-motivo-celula { color:#52637A !important; }
+        .maturidade-alerta { background:#FFF6F0 !important; border-color:#E7B79B !important; color:#924D2B !important; }
 
-        .maturidade-descricao {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
+    
+/* Critérios de qualidade: identificação visual clara por cor */
+.maturidade-criterios-cores { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:14px; }
+.maturidade-criterio { display:flex; gap:11px; align-items:flex-start; padding:15px; border:1px solid; border-radius:11px; }
+.maturidade-criterio-sinal { flex:none; width:12px; height:12px; border-radius:50%; margin-top:4px; }
+.maturidade-criterio strong { display:block; font-size:12px; line-height:1.4; }
+.maturidade-criterio p { margin:6px 0 0; font-size:12px; line-height:1.5; }
+.maturidade-criterio-verde { background:#edf9f2; border-color:#b7e5c9; color:#17633d; }
+.maturidade-criterio-verde .maturidade-criterio-sinal { background:#198754; }
+.maturidade-criterio-laranja { background:#fff5e8; border-color:#f1d2a2; color:#97550c; }
+.maturidade-criterio-laranja .maturidade-criterio-sinal { background:#e38b16; }
+.maturidade-criterio-cinza { background:#f1f5f9; border-color:#d2dce6; color:#475569; }
+.maturidade-criterio-cinza .maturidade-criterio-sinal { background:#8795a8; }
+@media(max-width:900px) { .maturidade-criterios-cores { grid-template-columns:1fr; } }
 
-        .maturidade-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .maturidade-links a {
-            display: inline-block;
-            padding: 11px 15px;
-            border: 1px solid #dbe3ee;
-            border-radius: 9px;
-            background: white;
-            color: #3154c9;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .maturidade-links a:hover {
-            background: #eef3ff;
-        }
-
-        .maturidade-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 22px;
-            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
-        }
-
-        .maturidade-card h2 {
-            margin-top: 0;
-        }
-
-        .maturidade-filtros {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-
-        .maturidade-campo {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
-        }
-
-        .maturidade-campo input,
-        .maturidade-campo select {
-            width: 100%;
-            min-height: 42px;
-            padding: 9px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: white;
-            color: #17243d;
-            box-sizing: border-box;
-        }
-
-        .maturidade-detalhes {
-            margin: 18px 0;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 9px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .maturidade-detalhes summary {
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .maturidade-detalhes .maturidade-filtros {
-            margin-top: 18px;
-        }
-
-        .maturidade-botao {
-            border: none;
-            border-radius: 8px;
-            background: #3154d5;
-            color: white;
-            padding: 12px 20px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .maturidade-botao:hover {
-            background: #2442b0;
-        }
-
-        .maturidade-alerta {
-            padding: 14px 16px;
-            border: 1px solid #fecaca;
-            border-radius: 9px;
-            background: #fef2f2;
-            color: #991b1b;
-            margin: 18px 0;
-        }
-
-        .maturidade-indicadores {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 16px;
-            margin: 20px 0;
-        }
-
-        .maturidade-indicador {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .maturidade-indicador span {
-            display: block;
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 10px;
-        }
-
-        .maturidade-indicador strong {
-            font-size: 27px;
-            color: #14233d;
-        }
-
-        .maturidade-tabela {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .maturidade-tabela th,
-        .maturidade-tabela td {
-            padding: 13px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-            vertical-align: top;
-        }
-
-        .maturidade-tabela th {
-            background: #f1f5f9;
-            color: #334155;
-            white-space: nowrap;
-        }
-
-        .maturidade-tabela td p {
-            margin: 7px 0 0;
-        }
-
-        .maturidade-nota {
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.6;
-        }
-
-        @media (max-width: 768px) {
-            .maturidade-conteudo {
-                padding: 18px;
-            }
-
-            .maturidade-card {
-                padding: 16px;
-            }
-
-            .maturidade-conteudo h1 {
-                font-size: 25px;
-            }
-        }
-    </style>
+</style>
 </head>
 
 <body>
@@ -224,11 +127,6 @@
 
             <h1>Maturidade em IA</h1>
 
-            <p class="maturidade-descricao">
-                Consulte as notas observadas na base autorizada da QSoft
-                e sua cobertura. A proposta 0.1 está em validação pelo grupo.
-            </p>
-
             <div class="maturidade-links">
                 <a href="/maturidade/simulacao-produtividade">
                     Comparar cenários simulados de produtividade
@@ -238,13 +136,13 @@
                     Indicadores operacionais e confiabilidade
                 </a>
 
-                <a href="/maturidade/metodologia/detalhes">
+                <a href="/maturidade/metodologia/detalhes?<%= new URLSearchParams(filtros || {}).toString().replace(/&/g, '&amp;') %>">
                     Consultar metodologia e versões
                 </a>
             </div>
 
-            <section class="maturidade-card">
-                <h2>Consultar indicadores</h2>
+            <section class="maturidade-card maturidade-barra-consulta">
+                <h2>Período de análise</h2>
 
                 <form method="get" action="/maturidade/resultados">
 
@@ -273,10 +171,11 @@
                                 </option>
                             </select>
                         </label>
+                        <button class="maturidade-botao" type="submit">Ver período</button>
                     </div>
 
                     <details class="maturidade-detalhes">
-                        <summary>Filtros da consulta</summary>
+                        <summary>Filtros avançados (opcional)</summary>
 
                         <div class="maturidade-filtros">
                             <label class="maturidade-campo">
@@ -304,17 +203,8 @@
                                        value="<%= filtros.tipoIssue || '' %>">
                             </label>
                         </div>
-
-                        <p class="maturidade-nota">
-                            O escopo é validado no servidor. Funcionários anônimos
-                            da origem são usados apenas de forma agregada e não
-                            são convertidos em contas HestIA.
-                        </p>
                     </details>
 
-                    <button class="maturidade-botao" type="submit">
-                        Consultar resultados
-                    </button>
                 </form>
             </section>
 
@@ -326,7 +216,7 @@
 
             <% if (resultado) { %>
                 <section class="maturidade-card">
-                    <h2>Resultado da consulta</h2>
+                    <h2>Resumo do período</h2>
 
                     <p class="maturidade-nota">
                         Fonte: <%= resultado.naturezaDados %>.
@@ -360,114 +250,88 @@
                         </div>
                     </div>
 
-                    <p class="maturidade-nota">
-                        Um resultado parcial não pode ser comparado ao índice completo.
-                        Falta de dados não significa imaturidade.
-                    </p>
 
-                    <section class="legenda-qualidade" aria-label="Legenda da qualidade dos dados">
-                        <h3>Qualidade dos dados</h3>
+                </section>
 
-                        <p>
-                            <span class="qualidade qualidade-fragil">Laranja: informação frágil</span>
-                            — amostra, cobertura ou evidência insuficiente.
+                <section class="maturidade-card maturidade-qualidade-card" aria-label="Qualidade dos dados">
+                    <h2>Qualidade dos dados</h2>
+                    <div class="maturidade-qualidade-resumo">
+                        <span><i class="maturidade-dot verde"></i> <strong>Verde:</strong> dados suficientes</span>
+                        <span><i class="maturidade-dot laranja"></i> <strong>Laranja:</strong> informação frágil</span>
+                        <span><i class="maturidade-dot cinza"></i> <strong>Cinza:</strong> indisponível</span>
+                    </div>
+                    <details class="legenda-qualidade" aria-label="Legenda da qualidade dos dados">
+                        <summary>Ver critérios de avaliação</summary>
 
-                            <span class="qualidade qualidade-suficiente">Verde: dados suficientes</span>
-                            — critérios do indicador atendidos.
-
-                            <span class="qualidade qualidade-indisponivel">Cinza: indisponível</span>
-                            — sem dados ou configuração.
-                        </p>
-
-                        <p class="maturidade-nota">
-                            Nos fatores com mínimo de amostra: pelo menos 30 observações
-                            válidas e 95% de cobertura. Segurança e FinOps exigem o universo
-                            completo. As cores indicam qualidade da informação, não desempenho;
-                            verde não é garantia estatística.
-                        </p>
-                    </section>
+                        <div class="maturidade-criterios-cores">
+                            <div class="maturidade-criterio maturidade-criterio-verde"><span class="maturidade-criterio-sinal" aria-hidden="true"></span><div><strong>Verde — Dados suficientes</strong><p>Os critérios de qualidade do indicador foram atendidos.</p></div></div>
+                            <div class="maturidade-criterio maturidade-criterio-laranja"><span class="maturidade-criterio-sinal" aria-hidden="true"></span><div><strong>Laranja — Informação frágil</strong><p>A amostra, a cobertura ou as evidências são insuficientes.</p></div></div>
+                            <div class="maturidade-criterio maturidade-criterio-cinza"><span class="maturidade-criterio-sinal" aria-hidden="true"></span><div><strong>Cinza — Indisponível</strong><p>Não existem dados ou configuração disponíveis para o indicador.</p></div></div>
+                        </div>
+                    </details>
                 </section>
 
                 <section class="maturidade-card">
-                    <h2>Indicadores por fator</h2>
+                    <h2>Indicadores e notas</h2>
 
-                    <div style="overflow-x:auto">
-                        <table class="maturidade-tabela">
+                    <% const nomesIndicadores = {
+                        aiLiteracy: 'Alfabetização em IA',
+                        governanca: 'Governança',
+                        produtividade: 'Produtividade',
+                        finOps: 'Gestão de custos',
+                        seguranca: 'Segurança',
+                        colaboracao: 'Colaboração',
+                        desenvolvimentoCompetencias: 'Desenvolvimento de competências',
+                        usoResponsavel: 'Uso responsável'
+                    }; %>
+                    <div class="maturidade-tabela-wrapper" role="region" aria-label="Indicadores e notas com dados técnicos" tabindex="0">
+                        <table class="maturidade-tabela maturidade-tabela-completa">
                             <thead>
                                 <tr>
-                                    <th>Fator</th>
-                                    <th>Nota</th>
-                                    <th>Estado</th>
-                                    <th>Qualidade dos dados</th>
-                                    <th>Amostra</th>
-                                    <th>Cobertura técnica</th>
-                                    <th>Elegível no global</th>
-                                    <th>Motivo</th>
+                                    <th scope="col">Indicador</th>
+                                    <th scope="col">Nota</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Qualidade dos dados</th>
+                                    <th scope="col">Amostra</th>
+                                    <th scope="col">Cobertura técnica</th>
+                                    <th scope="col">Elegível no global</th>
+                                    <th scope="col">Motivo</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 <% for (const fator of resultado.fatores) {
                                     const qualidade = qualidadeIndicador(fator);
                                 %>
                                     <tr>
-                                        <td><%= fator.codigo %></td>
-
-                                        <td>
-                                            <%= fator.nota == null
-                                                ? 'Indisponível'
-                                                : Number(fator.nota).toFixed(2) %>
-                                        </td>
-
+                                        <th scope="row"><%= nomesIndicadores[fator.codigo] || fator.codigo %></th>
+                                        <td class="maturidade-tabela-nota"><%= fator.nota == null ? '—' : Number(fator.nota).toFixed(2) %></td>
                                         <td><%= fator.estado %></td>
-
                                         <td>
-                                            <span class="qualidade qualidade-<%= qualidade.classe %>">
-                                                <%= qualidade.rotulo %>
-                                            </span>
-                                            <p><%= qualidade.detalhe %></p>
+                                            <span class="qualidade qualidade-<%= qualidade.classe %>"><%= qualidade.rotulo %></span>
+                                            <span class="maturidade-qualidade-detalhe"><%= qualidade.detalhe %></span>
                                         </td>
-
                                         <td><%= fator.amostra %></td>
-
-                                        <td>
-                                            <%= fator.coberturaTecnica == null
-                                                ? 'Desconhecida'
-                                                : (100 * Number(fator.coberturaTecnica)).toFixed(2) + '%' %>
-                                        </td>
-
+                                        <td><%= fator.coberturaTecnica == null ? 'Desconhecida' : (100 * Number(fator.coberturaTecnica)).toFixed(2) + '%' %></td>
                                         <td><%= fator.elegivelGlobal ? 'Sim' : 'Não' %></td>
-
-                                        <td><%= fator.motivo %></td>
+                                        <td class="maturidade-motivo-celula"><%= fator.motivo %></td>
                                     </tr>
                                 <% } %>
                             </tbody>
                         </table>
                     </div>
 
-                    <p class="maturidade-nota">
-                        Pesos: <%= resultado.versaoPesos %>.
-                        Cálculo: <%= resultado.versaoCalculo %>.
-                        Parâmetros: <%= resultado.versaoParametros %>.
-                    </p>
-
-                    <% for (const aviso of resultado.avisos || []) { %>
-                        <p class="maturidade-nota"><%= aviso %></p>
-                    <% } %>
+                    <% const avisosOcultos = [
+                          'Cálculo experimental: proposta 0.1 ainda sujeita à validação do grupo',
+                          'Score parcial é exploratório e não comparável ao global',
+                          'Populações sintética e operacional são mantidas separadas'
+                      ]; %>
+                      <% for (const aviso of resultado.avisos || []) { %>
+                          <% if (!avisosOcultos.includes(String(aviso).trim().replace(/[.!]+$/, ''))) { %>
+                              <p class="maturidade-nota"><%= aviso %></p>
+                          <% } %>
+                      <% } %>
                 </section>
             <% } %>
-
-            <section class="maturidade-card">
-                <h2>Metodologia e histórico</h2>
-
-                <p>
-                    <a href="/maturidade/metodologia/detalhes">
-                        Entenda a metodologia e os limites dos indicadores
-                    </a>
-                </p>
-
-                <%- include('integracao-apuracoes') %>
-            </section>
 
         </div>
     </main>
