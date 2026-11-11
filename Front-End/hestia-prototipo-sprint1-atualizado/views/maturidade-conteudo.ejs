@@ -5,6 +5,19 @@
  .confianca-selo[data-classe="CONFIAVEL"]{background:#dcfce7;color:#166534}
  .confianca-selo[data-classe="PARCIAL"]{background:#fef3c7;color:#854d0e}
  .maturidade-fonte{overflow-wrap:anywhere}.maturidade-fonte dl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.maturidade-fonte dd{margin:0}
+ .maturidade-voltar-indicadores { padding-left: 27px; }
+ @media (max-width: 700px) { .maturidade-voltar-indicadores { padding-left: 0; } }
+ .maturidade-voltar-indicadores a,
+ .maturidade-voltar-indicadores a:link,
+ .maturidade-voltar-indicadores a:visited {
+   color: #B87346 !important;
+   background: transparent !important;
+   border: none !important;
+   box-shadow: none !important;
+   text-decoration: none;
+   font-weight: 700;
+ }
+ .maturidade-voltar-indicadores a:hover { color: #9B5C34 !important; text-decoration: underline; }
 </style>
 <form class="maturidade-filtros" action="/maturidade" method="get">
  <label>Início <input type="date" name="inicio" value="<%= inicio %>" required></label>
@@ -24,12 +37,11 @@
  const percentual=v=>typeof v==='number' && Number.isFinite(v)?numero(v*100)+'%':'Não disponível';
  const rotulo=c=>({SEM_DADOS:'Sem dados',FONTE_PENDENTE:'Fonte pendente'}[c.situacao] || {CONFIAVEL:'Confiável',PARCIAL:'Parcial',ESTIMADO:'Estimado'}[c.classificacao] || 'Não classificado');
 %>
- <p>Período: <%= dados.periodo.inicio %> a <%= dados.periodo.fim %> · <%= dados.visao==='PESSOAL'?'Meus registros':'Meu escopo gerencial' %></p>
- <section class="grid two">
+ <section class="maturidade-resumo">
   <article class="metric-card"><span>AI Maturity Score completo</span><strong><%= numero(dados.scoreGlobal) %></strong><p>Depende de todas as oito dimensões elegíveis.</p></article>
   <article class="metric-card"><span>Índice parcial exploratório</span><strong><%= numero(dados.scoreParcial) %></strong><p>Cobertura dos pesos: <%= percentual(dados.coberturaPesos) %>. Não equivale ao índice completo.</p></article>
  </section>
- <section class="grid two">
+ <section class="maturidade-grade">
  <% for(const item of dados.indicadores){ const c=item.confianca; %>
   <article class="panel maturidade-fonte">
    <h3><%= item.nome %></h3><span class="confianca-selo" data-classe="<%= c.classificacao %>"><%= rotulo(c) %></span>
@@ -43,10 +55,9 @@
   </article>
  <% } %>
  </section>
- <section class="panel"><h3>Contexto da apuração</h3><p>Dados operacionais cadastrados no HestIA. Apurado em: <%= dados.apuradoEm %>.</p>
-  <p>Composição: <%= dados.versaoComposicao %> · Confiança: <%= dados.versaoConfianca %></p>
-  <ul><% for(const limite of dados.limitacoes){ %><li><%= limite %></li><% } %></ul>
- </section>
+
 <% } %>
-<details class="panel"><summary>Visualização demonstrativa</summary><p>Explore o layout e a narrativa com exemplos fictícios, sem representar resultados da empresa.</p>
- <a href="/maturidade/demonstracao">Abrir demonstração identificada</a></details>
+
+<div class="maturidade-voltar-indicadores">
+  <a href="/maturidade/resultados">← Voltar aos indicadores</a>
+</div>

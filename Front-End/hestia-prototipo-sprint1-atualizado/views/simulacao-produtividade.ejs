@@ -1,25 +1,119 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HestIA — Simulação de produtividade</title><link rel="stylesheet" href="/styles.css"></head>
-<body><div class="app-shell"><%- include('menu', { perfil, email, active }) %><main class="main">
-<h1>Simulação de produtividade</h1>
-<p><strong>Dados simulados: esta página demonstra hipóteses, não resultados reais da QSoft ou da HestIA.</strong></p>
-<p>Compare a mesma tarefa, com qualidade e complexidade equivalentes, antes da fiscalização e com a plataforma. Informe os tempos que deseja testar; não existe uma média real presumida.</p>
-<form method="get">
-<p><label>Tempo por tarefa antes, em minutos <input required name="minutosAntes" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosAntes || '' %>"></label></p>
-<p><label>Tempo por tarefa com a plataforma, em minutos <input required name="minutosDepois" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosDepois || '' %>"></label></p>
-<p><label>Quantidade de tarefas comparáveis <input required name="tarefas" type="number" min="1" max="10000" step="1" value="<%= filtros.tarefas || '' %>"></label></p>
-<button type="submit">Comparar hipóteses</button></form>
-<% if (erro) { %><p role="alert"><%= erro %></p><% } %>
-<% if (resultado) { const n = valor => Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); %>
-<h2>Comparação simulada</h2>
-<table><caption>Mesmo volume e qualidade de trabalho nos dois cenários</caption><thead><tr><th>Cenário</th><th>Minutos por tarefa</th><th>Total de minutos</th></tr></thead>
-<tbody><tr><td>Antes da fiscalização — simulado</td><td><%= n(resultado.minutosAntes) %></td><td><%= n(resultado.minutosAntes * resultado.tarefas) %></td></tr>
-<tr><td>Com a plataforma — simulado</td><td><%= n(resultado.minutosDepois) %></td><td><%= n(resultado.minutosDepois * resultado.tarefas) %></td></tr></tbody></table>
-<p>Redução simulada do tempo: <strong><%= n(resultado.reducaoTempoPercentual) %>%</strong>. Valores negativos indicam aumento do tempo.</p>
-<p>Variação simulada da capacidade na mesma jornada: <strong><%= n(resultado.variacaoCapacidadePercentual) %>%</strong>.</p>
-<p>Tempo total economizado: <%= n(resultado.minutosTotaisEconomizados) %> minutos. Valores negativos indicam tempo adicional.</p>
-<p><strong><%= resultado.aviso %></strong></p>
-<p>Valor financeiro: não informado, aguardando definição. Não há conversão de tempo em dinheiro.</p>
-<% } %>
-<p><a href="/maturidade/resultados">Voltar aos indicadores</a></p>
-</main></div></body></html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HestIA — Simulação de produtividade</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .sim-page { width: 100%; max-width: 1120px; margin: 0 auto; padding: 32px; box-sizing: border-box; color: #17243d; }
+    .sim-page h1 { margin: 0 0 12px; font-size: clamp(26px, 3vw, 34px); color: #14233d; }
+    .sim-page h2 { margin: 0 0 16px; font-size: 21px; color: #14233d; }
+    .sim-intro { color: #64748b; line-height: 1.7; margin-bottom: 26px; }
+    .sim-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 26px; margin: 0 0 22px; box-shadow: 0 4px 18px rgba(15,23,42,.045); }
+    .sim-description { line-height: 1.7; color: #475569; margin: 0 0 14px; }
+    .sim-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 22px 0; }
+    .sim-field { display: flex; flex-direction: column; gap: 9px; font-weight: 650; font-size: 14px; color: #334155; }
+    .sim-field input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; box-sizing: border-box; font: inherit; color: #17243d; background: #fff; }
+    .sim-field input:focus { outline: 2px solid #a5b4fc; outline-offset: 1px; }
+    .sim-button { background: #3154d5; color: white; border: none; border-radius: 9px; padding: 13px 20px; font-weight: 700; cursor: pointer; }
+    .sim-button:hover { background: #2442b0; }
+    .sim-alert { padding: 14px 16px; border: 1px solid #fecaca; background: #fef2f2; color: #991b1b; border-radius: 9px; margin-bottom: 20px; }
+    .sim-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .sim-metric { padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; min-width: 0; }
+    .sim-metric span { display: block; color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+    .sim-metric strong { font-size: clamp(21px, 2.5vw, 29px); color: #14233d; overflow-wrap: anywhere; }
+    .sim-table-wrap { overflow-x: auto; }
+    .sim-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .sim-table caption { text-align: left; color: #64748b; padding: 0 0 14px; }
+    .sim-table th, .sim-table td { padding: 15px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+    .sim-table th { background: #f1f5f9; color: #334155; white-space: nowrap; }
+    .sim-note { color: #64748b; font-size: 13px; line-height: 1.65; }
+    .sim-back { display: inline-block; color: #3154d5; font-weight: 700; text-decoration: none; padding: 10px 0; }
+    .sim-back:hover { text-decoration: underline; }
+    /* Paleta HestIA — consistente com AI Maturity Score e Metodologia */
+    .sim-page { max-width: 1440px; color: #14243c; }
+    .sim-page h1, .sim-page h2 { color: #14243c; }
+    .sim-intro, .sim-note { color: #64748b; }
+    .sim-card { background: #ffffff; border: 1px solid #dce4ee; box-shadow: 0 5px 18px rgba(20,36,60,.04); }
+    .sim-card:first-of-type { border-top: 3px solid #b87346; }
+    .sim-description { color: #53657d; }
+    .sim-field { color: #14243c; }
+    .sim-field input { background: #f8fafc; border-color: #dce4ee; color: #14243c; }
+    .sim-field input:focus { outline: 2px solid #b87346; }
+    .sim-button { background: #14243c; color: #fff; }
+    .sim-button:hover { background: #263d5d; }
+    .sim-metric { background: #f1f5f9; border-color: #dce4ee; border-left: 3px solid #b87346; }
+    .sim-metric strong { color: #14243c; }
+    .sim-table th { background: #f1f5f9; color: #14243c; }
+    .sim-table th, .sim-table td { border-color: #dce4ee; }
+    .sim-back { color: #a96539; }
+    .sim-page .sim-back:focus-visible, .sim-button:focus-visible { outline: 2px solid #e9a044; outline-offset: 3px; }
+    @media (max-width: 800px) { .sim-grid, .sim-metrics { grid-template-columns: 1fr; } .sim-page { padding: 20px 16px; } .sim-card { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <%- include('menu', { perfil, email, active }) %>
+    <main class="main" style="background:#f1f5f9;">
+      <div class="sim-page">
+        <h1>Simulação de produtividade</h1>
+        <p class="sim-intro">Explore como diferentes tempos de execução podem impactar a produtividade em tarefas comparáveis.</p>
+
+        <section class="sim-card" aria-labelledby="sim-como-funciona">
+          <h2 id="sim-como-funciona">Como funciona a simulação?</h2>
+          <p class="sim-description">Esta ferramenta permite comparar o tempo necessário para realizar uma mesma tarefa em dois cenários: antes da utilização da plataforma e com o apoio da HestIA. Informe o tempo estimado por tarefa em cada cenário e a quantidade de tarefas que deseja analisar.</p>
+          <p class="sim-description">A comparação considera atividades com o mesmo nível de complexidade e qualidade, permitindo visualizar possíveis reduções de tempo, ganhos de produtividade e alterações na capacidade de execução. Os resultados são estimativas baseadas nos valores informados, não medições reais de desempenho.</p>
+        </section>
+
+        <section class="sim-card" aria-labelledby="sim-parametros">
+          <h2 id="sim-parametros">Parâmetros da comparação</h2>
+          <form method="get">
+            <div class="sim-grid">
+              <label class="sim-field">Tempo por tarefa antes (minutos)
+                <input required name="minutosAntes" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosAntes || '' %>">
+              </label>
+              <label class="sim-field">Tempo por tarefa com a plataforma (minutos)
+                <input required name="minutosDepois" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosDepois || '' %>">
+              </label>
+              <label class="sim-field">Quantidade de tarefas comparáveis
+                <input required name="tarefas" type="number" min="1" max="10000" step="1" value="<%= filtros.tarefas || '' %>">
+              </label>
+            </div>
+            <button class="sim-button" type="submit">Comparar hipóteses</button>
+          </form>
+        </section>
+
+        <% if (erro) { %>
+          <div class="sim-alert" role="alert"><%= erro %></div>
+        <% } %>
+
+        <% if (resultado) { const n = valor => Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); %>
+          <section class="sim-card" aria-labelledby="sim-resultado">
+            <h2 id="sim-resultado">Comparação simulada</h2>
+            <div class="sim-metrics">
+              <div class="sim-metric"><span>Redução simulada do tempo</span><strong><%= n(resultado.reducaoTempoPercentual) %>%</strong></div>
+              <div class="sim-metric"><span>Variação da capacidade na mesma jornada</span><strong><%= n(resultado.variacaoCapacidadePercentual) %>%</strong></div>
+              <div class="sim-metric"><span>Tempo total economizado</span><strong><%= n(resultado.minutosTotaisEconomizados) %> min</strong></div>
+            </div>
+            <p class="sim-note">Valores negativos na redução de tempo e na economia indicam aumento do tempo necessário. Uma variação negativa da capacidade indica redução da quantidade de tarefas possíveis na mesma jornada.</p>
+            <div class="sim-table-wrap">
+              <table class="sim-table">
+                <caption>Mesmo volume e qualidade de trabalho nos dois cenários</caption>
+                <thead><tr><th>Cenário</th><th>Minutos por tarefa</th><th>Total de minutos</th></tr></thead>
+                <tbody>
+                  <tr><td>Antes da utilização da plataforma — simulado</td><td><%= n(resultado.minutosAntes) %></td><td><%= n(resultado.minutosAntes * resultado.tarefas) %></td></tr>
+                  <tr><td>Com a plataforma — simulado</td><td><%= n(resultado.minutosDepois) %></td><td><%= n(resultado.minutosDepois * resultado.tarefas) %></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="sim-note"><strong><%= resultado.aviso %></strong></p>
+            <p class="sim-note">Valor financeiro: não informado, aguardando definição. Não há conversão de tempo em dinheiro.</p>
+          </section>
+        <% } %>
+        <a class="sim-back" href="/maturidade/resultados">← Voltar aos indicadores</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -32,6 +32,46 @@
 
 </style>
 
+
+<style>
+/* HestIA: tema executivo azul-marinho, cinza-azulado, cobre e âmbar */
+.maturidade-pagina { min-width:0; background:#f1f5f9; color:#14243c; padding-bottom:48px; }
+.maturidade-pagina .maturidade-topbar { background:transparent; border:0; box-shadow:none; border-radius:0; padding:20px 32px 8px; }
+.maturidade-pagina .maturidade-topbar h1 { color:#14243c; font-size:clamp(25px,2.4vw,35px); letter-spacing:-.7px; }
+.maturidade-pagina .maturidade-topbar .eyebrow { color:#b87346; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.maturidade-pagina .maturidade-filtros,.maturidade-pagina .maturidade-painel,.maturidade-pagina .maturidade-contexto { margin-left:32px; margin-right:32px; }
+.maturidade-pagina .maturidade-filtros { display:grid; grid-template-columns:1fr 1fr 1fr auto; align-items:end; gap:14px; background:#fff; padding:23px 25px; border:1px solid #dce4ee; border-radius:16px; box-shadow:0 5px 18px rgba(20,36,60,.04); margin-top:25px; margin-bottom:24px; }
+.maturidade-pagina .maturidade-filtros label { display:grid; gap:8px; color:#51627a; font-size:13px; font-weight:700; }
+.maturidade-pagina .maturidade-filtros input,.maturidade-pagina .maturidade-filtros select { width:100%; min-width:0; height:45px; border:1px solid #dce4ee; border-radius:9px; background:#f8fafc; padding:9px 12px; color:#14243c; }
+.maturidade-pagina .maturidade-filtros button { height:45px; background:#14243c; color:#fff; border:0; border-radius:9px; padding:0 23px; font-weight:750; cursor:pointer; }
+.maturidade-pagina .maturidade-filtros button:hover { background:#263d5d; }
+.maturidade-pagina .maturidade-periodo { margin:0 32px 18px; color:#61718a; font-size:13px; }
+.maturidade-pagina .maturidade-resumo { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin:0 32px 23px; }
+.maturidade-pagina .maturidade-resumo .metric-card { min-width:0; background:#fff; border:1px solid #dce4ee; border-left:4px solid #b87346; border-radius:15px; padding:25px; box-shadow:0 5px 20px rgba(20,36,60,.04); }
+.maturidade-pagina .maturidade-resumo .metric-card span { display:block; font-size:13px; color:#596b83; font-weight:700; }
+.maturidade-pagina .maturidade-resumo .metric-card strong { display:block; font-size:clamp(23px,2.5vw,33px); color:#14243c; margin:12px 0 8px; overflow-wrap:anywhere; }
+.maturidade-pagina .maturidade-resumo .metric-card p { color:#66768d; font-size:13px; margin:0; line-height:1.5; }
+.maturidade-pagina .maturidade-grade { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin:0 32px 23px; }
+.maturidade-pagina .maturidade-grade .maturidade-fonte { min-width:0; background:#fff; border:1px solid #dce4ee; border-radius:15px; padding:24px; box-shadow:0 5px 20px rgba(20,36,60,.04); overflow-wrap:anywhere; }
+.maturidade-pagina .maturidade-fonte h3 { font-size:19px; color:#14243c; margin:0 0 12px; letter-spacing:-.25px; }
+.maturidade-pagina .maturidade-fonte h2 { font-size:clamp(23px,2.3vw,31px); color:#14243c; margin:17px 0; }
+.maturidade-pagina .confianca-selo { display:inline-block; padding:6px 12px; font-size:12px; font-weight:750; border-radius:999px; background:#e9eef5; color:#56677e; }
+.maturidade-pagina .confianca-selo[data-classe="CONFIAVEL"] { background:#e2f6e9; color:#177245; }
+.maturidade-pagina .confianca-selo[data-classe="PARCIAL"] { background:#fff0dc; color:#98601a; }
+.maturidade-pagina .maturidade-fonte dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:18px 0; }
+.maturidade-pagina .maturidade-fonte dl dt { color:#718198; font-size:12px; margin-bottom:4px; }
+.maturidade-pagina .maturidade-fonte dl dd { margin:0; font-size:16px; color:#14243c; font-weight:800; }
+.maturidade-pagina .maturidade-fonte dl .maturidade-dado { padding:12px 14px; border:1px solid #e4eaf2; background:#f8fafc; border-radius:10px; }
+.maturidade-pagina .maturidade-fonte ul { padding-left:19px; color:#66768d; font-size:13px; line-height:1.6; }
+.maturidade-pagina .maturidade-fonte details { margin-top:16px; border-top:1px solid #e5ebf3; padding-top:15px; color:#53657d; font-size:13px; }
+.maturidade-pagina .maturidade-fonte summary { cursor:pointer; color:#a96539; font-weight:750; }
+.maturidade-pagina .maturidade-fonte details p { overflow-wrap:anywhere; line-height:1.55; }
+.maturidade-pagina .maturidade-contexto { background:#fff; border:1px solid #dce4ee; border-radius:15px; padding:24px 26px; }
+.maturidade-pagina .maturidade-contexto h3 { color:#14243c; margin-top:0; }
+.maturidade-pagina .maturidade-contexto p,.maturidade-pagina .maturidade-contexto li { color:#607188; font-size:13px; line-height:1.65; }
+@media(max-width:1000px){.maturidade-pagina .maturidade-filtros{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){.maturidade-pagina .maturidade-topbar{padding:17px}.maturidade-pagina .maturidade-filtros,.maturidade-pagina .maturidade-contexto{margin-left:16px;margin-right:16px}.maturidade-pagina .maturidade-filtros,.maturidade-pagina .maturidade-resumo,.maturidade-pagina .maturidade-grade{grid-template-columns:1fr}.maturidade-pagina .maturidade-resumo,.maturidade-pagina .maturidade-grade{margin-left:16px;margin-right:16px}.maturidade-pagina .maturidade-periodo{margin-left:16px;margin-right:16px}}
+</style>
 </head>
 
 <body>
@@ -45,11 +85,11 @@
     }) %>
 
 
-    <main class="main">
+    <main class="main maturidade-pagina">
 
         <!-- TOPO -->
 
-        <header class="topbar">
+        <header class="topbar maturidade-topbar">
 
             <button
                     class="menu-button"
@@ -72,50 +112,9 @@
 
             </div>
 
-
-            <div class="profile-switch">
-
-                    <span>
-                        <%= email %>
-                    </span>
-
-                <select disabled>
-
-                    <% if (perfil == "colaborador") { %>
-
-                        <option selected>
-                            Colaborador
-                        </option>
-
-                    <% } %>
-
-
-                    <% if (perfil == "gestor" || perfil == "administrador") { %>
-
-                        <option selected>
-                            <%= perfil === "administrador" ? "Administrador" : "Gestor" %>
-                        </option>
-
-                    <% } %>
-
-                </select>
-
-            </div>
-
-
-            <a
-                    class="topbar-logout"
-                    href="/sair">
-
-                Sair
-
-            </a>
-
         </header>
 <%- include("maturidade-conteudo") %>
-<% if (["administrador", "gestor"].includes(perfil)) { %>
-<p><a href="/maturidade/resultados">Consultar fontes, metodologia e histórico de apurações</a></p>
-<% } %>
+
 </main>
 </div>
 <script src="/app.js"></script>
