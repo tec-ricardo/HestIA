@@ -24,4 +24,60 @@ public class GeracaoRagOpenAIService implements GeracaoRagService {
             return new Gerada(texto,resposta.model(),usage.map(u->u.promptTokens()).orElse(null),usage.map(u->u.completionTokens()).orElse(null));
         }catch(org.springframework.web.server.ResponseStatusException e){throw e;}catch(RuntimeException e){org.slf4j.LoggerFactory.getLogger(GeracaoRagOpenAIService.class).error("Falha no provedor de geração RAG: {}",e.getClass().getSimpleName(),e);throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Geração indisponível; verifique credenciais, modelo e conexão com o provedor");}finally{if(client!=null)client.close();}
     }
+    public Gerada gerarRespostaGeral(String pergunta) {
+        exigir(pergunta != null && !pergunta.isBlank(),
+                HttpStatus.BAD_REQUEST, "Informe uma pergunta válida");
+
+        exigir(modelo != null && !modelo.isBlank(),
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Modelo de geração não configurado no servidor");
+
+        com.openai.client.OpenAIClient client = null;
+
+        try {
+            client = OpenAIOkHttpClient.fromEnv();
+
+            var resposta = client.chat().completions().create(
+                    ChatCompletionCreateParams.builder()
+                            .model(modelo)
+                            .addSystemMessage(
+                                    "Responda em português de forma clara. " +
+                                            "Esta resposta não utiliza fontes internas autorizadas. " +
+                                            "Não invente informações ou políticas da HestIA."
+                            )
+                            .addUserMessage(pergunta)
+                            .build()
+            );
+
+            var usage = resposta.usage();
+
+            String texto = resposta.choices().isEmpty()
+                    ? null
+                    : resposta.choices().getFirst()
+                    .message().content().orElse(null);
+
+            exigir(texto != null && !texto.isBlank(),
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Provedor não retornou resposta textual");
+
+            return new Gerada(
+                    texto,
+                    resposta.model(),
+                    usage.map(u -> u.promptTokens()).orElse(null),
+                    usage.map(u -> u.completionTokens()).orElse(null)
+            );
+
+        } catch (org.springframework.web.server.ResponseStatusException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            org.slf4j.LoggerFactory
+                    .getLogger(GeracaoRagOpenAIService.class)
+                    .error("Falha na geração geral", e);
+
+            throw erro(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Geração indisponível; verifique credenciais e modelo");
+        } finally {
+            if (client != null) client.close();
+        }
+    }
 }

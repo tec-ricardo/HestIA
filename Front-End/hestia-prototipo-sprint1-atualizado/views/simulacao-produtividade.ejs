@@ -9,7 +9,7 @@
 <p><label>Tempo por tarefa com a plataforma, em minutos <input required name="minutosDepois" type="number" min="0.01" max="1000000" step="any" value="<%= filtros.minutosDepois || '' %>"></label></p>
 <p><label>Quantidade de tarefas comparáveis <input required name="tarefas" type="number" min="1" max="10000" step="1" value="<%= filtros.tarefas || '' %>"></label></p>
 <button type="submit">Comparar hipóteses</button></form>
-<% if (erro) { %><p role="alert"><%= erro %></p><% } %>
+<% if (erro) { %><p role="alert"><%= erro %></p><% } %> 
 <% if (resultado) { const n = valor => Number(valor).toLocaleString('pt-BR', { maximumFractionDigits: 2 }); %>
 <h2>Comparação simulada</h2>
 <table><caption>Mesmo volume e qualidade de trabalho nos dois cenários</caption><thead><tr><th>Cenário</th><th>Minutos por tarefa</th><th>Total de minutos</th></tr></thead>
