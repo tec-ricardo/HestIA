@@ -28,15 +28,29 @@ module.exports = function montarIntegracoes(app, api) {
     GUARDIAO: { numero: 3, nome: 'Guardião' },
     EMBAIXADOR: { numero: 4, nome: 'Embaixador' }
   });
-  const nivelNecessarioPorPosicao = indice => indice < 3 ? 1 : indice < 5 ? 2 : 3;
-  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião' })[numero] || 'Guardião';
+  const nivelNecessarioPorId = cursoId => {
+    const numero = Number(cursoId);
+    if (!Number.isInteger(numero) || numero < 1 || numero > 16) throw new Error(`Curso fora da trilha: ${cursoId}`);
+    return Math.ceil(numero / 4);
+  };
+  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião', 4: 'Embaixador' })[numero] || 'Embaixador';
   const consultarNivelPasse = async req => {
     const usuarioId = id(req.session.usuarioId);
     const { data } = await api.get(`/gamificacao/usuarios/${usuarioId}/passe`);
-    return niveisPasse[String(data?.nivel || '').toUpperCase()] || niveisPasse.APRENDIZ;
+    const xp = Number(data?.xpTotal);
+    if (!Number.isFinite(xp) || xp < 0) {
+      const erro = new Error('Não foi possível confirmar o XP do HestIA Pass. Acesso bloqueado por segurança.');
+      erro.response = { status: 503, data: { message: erro.message } };
+      throw erro;
+    }
+    const nivel = xp >= 2500 ? niveisPasse.EMBAIXADOR
+      : xp >= 750 ? niveisPasse.GUARDIAO
+      : xp >= 300 ? niveisPasse.CONSCIENTE
+      : niveisPasse.APRENDIZ;
+    return { ...nivel, xpAtual: xp };
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
-    const exigido = nivelNecessarioPorPosicao(indice);
+    const exigido = nivelNecessarioPorId(treinamento.id);
     const bloqueado = nivelAtual.numero < exigido;
     return {
       ...treinamento,
@@ -56,7 +70,7 @@ module.exports = function montarIntegracoes(app, api) {
       api.get('/aprendizagem/conteudos'),
       consultarNivelPasse(req)
     ]);
-    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)), nivelAtual };
+    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)).sort((a,b) => Number(a.id) - Number(b.id)), nivelAtual };
   };
   const exigirCursoLiberado = async (req, cursoId) => {
     const { treinamentos } = await consultarTreinamentosComNivel(req);
@@ -119,10 +133,10 @@ module.exports = function montarIntegracoes(app, api) {
     res.json({ ...data, total: data.questoes.length, aprovado: data.status === 'APROVADA', mensagem: data.status === 'APROVADA' ? 'Aprendizagem validada e registrada.' : 'Reveja o feedback. A aprovação exige pelo menos 80%; as tentativas são controladas pelo servidor.' });
   }));
   router.get('/microtreinamentos/:id/avaliacao', colaborador, executar(async (req, res) => {
-    id(req.params.id); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.get('/microtreinamentos/:id', colaborador, executar(async (req, res) => {
-    id(req.params.id); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
     const { chave, pergunta, modo, respostaId } = req.body;

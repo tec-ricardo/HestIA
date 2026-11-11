@@ -110,6 +110,7 @@ function carregarCursos() {
     buscarDados("/api/microtreinamentos", "GET", null).then(function(resultado) {
 
         cursos = resultado.treinamentos;
+        window.hestiaNivelAtual = resultado.nivelAtual;
 
         mostrarCursos();
         mostrarCertificacoes();
@@ -568,4 +569,6 @@ if (document.getElementById("mt-exam") != null) carregarAvaliacao();
 
 
 
-</script></body></html>
+</script>
+<script src="/microtreinamentos-busca.js" defer></script>
+</body></html>

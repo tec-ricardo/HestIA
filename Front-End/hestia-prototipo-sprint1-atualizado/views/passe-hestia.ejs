@@ -1,421 +1,236 @@
+<% // HestIA Pass: nivel calculado pelo XP, independentemente do nivel antigo salvo na API.
+const faixasPasse = [
+    { nivel: 1, nome: "Aprendiz", xpNecessario: 0 },
+    { nivel: 2, nome: "Consciente", xpNecessario: 300 },
+    { nivel: 3, nome: "Guardião", xpNecessario: 750 },
+    { nivel: 4, nome: "Embaixador", xpNecessario: 2500 }
+];
+const xpPasse = Math.max(0, Number(passe.xpAtual) || 0);
+const faixaAtual = [...faixasPasse].reverse().find(faixa => xpPasse >= faixa.xpNecessario) || faixasPasse[0];
+const faixaProxima = faixasPasse.find(faixa => faixa.nivel === faixaAtual.nivel + 1);
+passe.nivelAtual = faixaAtual.nivel;
+passe.nomeNivel = faixaAtual.nome;
+passe.xpProximoNivel = faixaProxima ? faixaProxima.xpNecessario : xpPasse;
+passe.proximoNivel = faixaProxima ? {
+    nivel: faixaProxima.nivel, nome: faixaProxima.nome,
+    xpNecessario: faixaProxima.xpNecessario,
+    descricao: "Continue realizando ações responsáveis para avançar."
+} : { nivel: 4, nome: "nível máximo", xpNecessario: 2500, descricao: "Nível máximo alcançado." };
+passe.niveis = faixasPasse.map(faixa => ({
+    ...faixa,
+    status: faixa.nivel < faixaAtual.nivel ? "concluido" :
+            faixa.nivel === faixaAtual.nivel ? "atual" : "bloqueado"
+}));
+%>
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta
-
         name="viewport"
-
         content="width=device-width, initial-scale=1.0"
-
     >
-
     <title>HestIA Pass</title>
-
     <link
-
         rel="stylesheet"
-
         href="/styles.css"
-
     >
-
 </head>
-
 <body>
-
 <div class="app-shell">
-
     <%- include("menu", {
-
         active: active,
-
         perfil: perfil
-
     }) %>
-
     <main class="main-content pass-page" data-hestia-pass-xp="<%= passe.xpAtual %>">
-
         <!-- CABECALHO -->
-
         <header class="page-header pass-page-header">
-
             <div>
-
                 <h1>
-
                     HestIA Pass
-
                 </h1>
-
                 <p>
-
                     Acompanhe sua evolução no uso responsável de Inteligência Artificial.
-
                 </p>
-
             </div>
-
         </header>
-
         <!-- NIVEL ATUAL -->
-
         <section class="pass-hero pass-hero-compact">
-
             <div class="pass-hero-main">
-
                 <div class="pass-level-badge pass-level-badge-compact">
-
                     <span>
-
                         Nível
-
                     </span>
-
                     <strong>
-
                         <%= passe.nivelAtual %>
-
                     </strong>
-
                 </div>
-
                 <div class="pass-hero-content">
-
                     <span class="pass-label">
-
                         Nível atual
-
                     </span>
-
                     <h2>
-
                         <%= passe.nomeNivel %>
-
                     </h2>
-
                     <div class="pass-xp-row">
-
                         <strong>
-
                             <%= passe.xpAtual %> XP
-
                         </strong>
-
                         <span>
-
                             <%= passe.xpProximoNivel %> XP para o próximo nível
-
                         </span>
-
                     </div>
-
                     <div class="pass-progress">
-
                         <div
-
                             class="pass-progress-fill"
-
                             style="width: <%= Math.min((passe.xpAtual / passe.xpProximoNivel) * 100, 100) %>%;">
-
                         </div>
-
                     </div>
-
                     <small class="pass-xp-remaining">
-
                         Faltam
-
                         <strong>
-
                             <%= Math.max(passe.xpProximoNivel - passe.xpAtual, 0) %> XP
-
                         </strong>
-
                         para alcançar
-
                         <%= passe.proximoNivel.nome %>.
-
                     </small>
-
                 </div>
-
             </div>
-
         </section>
-
         <!-- INDICADORES -->
-
         <section class="pass-stats pass-stats-compact">
-
             <article class="pass-stat-card">
-
                 <span>
-
                     Conformidade
-
                 </span>
-
                 <strong>
-
                     <%= passe.taxaConformidade == null ? '—' : passe.taxaConformidade + '%' %>
-
                 </strong>
-
                 <small>
-
                     <%= passe.taxaConformidade == null ? 'Indicador ainda não fornecido pela API' : 'das utilizações avaliadas' %>
-
                 </small>
-
             </article>
-
             <article class="pass-stat-card">
-
                 <span>
-
                     Utilizações avaliadas
-
                 </span>
-
                 <strong>
-
                     <%= passe.totalUtilizacoesAvaliadas == null ? '—' : passe.totalUtilizacoesAvaliadas %>
-
                 </strong>
-
                 <small>
-
                     <%= passe.totalUtilizacoesAvaliadas == null ? 'Indicador ainda não fornecido pela API' : 'experiências analisadas' %>
-
                 </small>
-
             </article>
-
             <article class="pass-stat-card">
-
                 <span>
-
                     Utilizações conformes
-
                 </span>
-
                 <strong>
-
                     <%= passe.totalUtilizacoesConformes == null ? '—' : passe.totalUtilizacoesConformes %>
-
                 </strong>
-
                 <small>
-
                     <%= passe.totalUtilizacoesConformes == null ? 'Indicador ainda não fornecido pela API' : 'práticas responsáveis' %>
-
                 </small>
-
             </article>
-
             <article class="pass-stat-card">
-
                 <span>
-
                     Sequência atual
-
                 </span>
-
                 <strong>
-
                     <%= passe.sequenciaConforme == null ? '—' : passe.sequenciaConforme %>
-
                 </strong>
-
                 <small>
-
                     <%= passe.sequenciaConforme == null ? 'Indicador ainda não fornecido pela API' : 'utilizações conformes' %>
-
                 </small>
-
             </article>
-
         </section>
-
         <!-- JORNADA -->
-
         <section class="pass-section">
-
             <div class="pass-section-header">
-
                 <div>
-
                     <h2>
-
                         Sua jornada
-
                     </h2>
-
                     <p>
-
                         Evolua através dos níveis conforme sua experiência
-
                         e uso responsável de IA.
-
                     </p>
-
                 </div>
-
             </div>
-
             <div class="pass-levels pass-levels-compact">
-
                 <% passe.niveis.forEach(function(nivel) { %>
-
                     <article
-
                         class="pass-level pass-level-<%= nivel.status %>"
-
                     >
-
                         <div class="pass-level-number">
-
                             <% if (nivel.status == "concluido") { %>
-
                                 ✓
-
                             <% } else { %>
-
                                 <%= nivel.nivel %>
-
                             <% } %>
-
                         </div>
-
                         <div class="pass-level-info">
-
                             <span>
-
                                 Nível <%= nivel.nivel %>
-
                             </span>
-
                             <strong>
-
                                 <%= nivel.nome %>
-
                             </strong>
-
                             <small>
-
                                 <%= nivel.xpNecessario %> XP
-
                             </small>
-
                         </div>
-
                         <div class="pass-level-status">
-
                             <% if (nivel.status == "concluido") { %>
-
                                 Concluído
-
                             <% } else if (nivel.status == "atual") { %>
-
                                 Nível atual
-
                             <% } else { %>
-
                                 Bloqueado
-
                             <% } %>
-
                         </div>
-
                     </article>
-
                 <% }); %>
-
             </div>
-
         </section>
-
         <!-- Minha jornada: acesso ao mapa -->
-
         <section class="hestia-path-entry" aria-label="Minha jornada">
-
             <div class="hestia-journey-content">
-
                 <span class="hestia-path-kicker">✦ SUA ASCENSÃO</span>
-
                 <h2>Minha jornada</h2>
-
-                <div class="hestia-journey-progress" role="progressbar" aria-label="Progresso da jornada" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= Math.round(Math.min(100, Math.max(0, (passe.xpAtual / 700) * 100))) %>">
-
-                    <div class="hestia-journey-progress-fill" style="width: <%= Math.min(100, Math.max(0, (passe.xpAtual / 700) * 100)) %>%;"></div>
-
+                <div class="hestia-journey-progress" role="progressbar" aria-label="Progresso da jornada" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= Math.round(Math.min(100, Math.max(0, (passe.xpAtual / 2500) * 100))) %>">
+                    <div class="hestia-journey-progress-fill" style="width: <%= Math.min(100, Math.max(0, (passe.xpAtual / 2500) * 100)) %>%;"></div>
                 </div>
-
-                <span class="hestia-journey-percent"><%= Math.round(Math.min(100, Math.max(0, (passe.xpAtual / 700) * 100))) %>% da jornada concluída</span>
-
+                <span class="hestia-journey-percent"><%= Math.round(Math.min(100, Math.max(0, (passe.xpAtual / 2500) * 100))) %>% da jornada concluída</span>
             </div>
-
             <button class="hestia-path-open" type="button" id="hestiaPathOpen">🔥 Ver meu caminho <span aria-hidden="true">→</span></button>
-
         </section>
-
         <!-- PROXIMO NIVEL -->
-
         <section class="pass-next-level pass-next-level-compact">
-
             <div>
-
                 <span class="pass-small-label">
-
                     Próximo objetivo
-
                 </span>
-
                 <h2>
-
                     Nível <%= passe.proximoNivel.nivel %>
-
                     —
-
                     <%= passe.proximoNivel.nome %>
-
                 </h2>
-
                 <p>
-
                     <%= passe.proximoNivel.descricao %>
-
                 </p>
-
             </div>
-
             <div class="pass-next-xp">
-
                 <span>
-
                     Requisito de XP
-
                 </span>
-
                 <strong>
-
                     <%= passe.proximoNivel.xpNecessario %> XP
-
                 </strong>
-
             </div>
-
         </section>
-
         <!-- RECONHECIMENTO MAXIMO -->
-
         <section class="pass-recognition pass-recognition-compact">
-
             <div class="pass-recognition-icon pass-recognition-flame" aria-label="Chama de Héstia: fogo e globo">
                 <svg viewBox="0 0 64 64" width="44" height="44" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
                     <circle cx="32" cy="39" r="19" stroke="#193C5A" stroke-width="2.5"/>
@@ -425,441 +240,222 @@
                     <path d="M32 23C35 31 28 34 30 40 C34 43 39 37 36 32 C36 29 34 26 32 23Z" fill="#FFD77B"/>
                 </svg>
             </div>
-
             <div class="pass-recognition-content">
-
                 <span class="pass-small-label">
-
                     Reconhecimento máximo
-
                 </span>
-
                 <h2>
-
                     <%= passe.reconhecimentoMaximo.titulo %>
-
                 </h2>
-
                 <p>
-
                     A Chama de Héstia simboliza a evolução contínua, o conhecimento e o compromisso com o uso responsável da Inteligência Artificial.
-
                 </p>
-
                 <div class="pass-requirements">
-
                     <strong>
-
                         Requisitos
-
                     </strong>
-
                     <ul>
-
                         <% passe.reconhecimentoMaximo.requisitos.forEach(function(requisito) { %>
-
                             <li>
-
                                 <%= requisito %>
-
                             </li>
-
                         <% }); %>
-
                     </ul>
-
                 </div>
-
                 <div class="pass-benefit">
-
                     <span>
-
                         Reconhecimento
-
                     </span>
-
                     <strong>
-
                         Reconhecimento institucional HestIA — Guardião da Chama
-
                     </strong>
-
                 </div>
-
             </div>
-
         </section>
-
             <!-- Caminho de Héstia: mapa interativo -->
-
         <div class="hestia-path-overlay" id="hestiaPathOverlay" role="dialog" aria-modal="true" aria-label="O Caminho de Héstia" aria-hidden="true" hidden>
-
   <div class="hestia-path-window">
-
     <div class="hestia-path-toolbar"><div><span>HESTIA PASS · JORNADA</span><h2>Ascensão ao Templo</h2></div><button type="button" id="hestiaPathClose" aria-label="Fechar caminho">✕ Voltar ao Passe</button></div>
-
     <div class="hestia-path-scene hestia-photo-scene" aria-label="Caminho de Héstia: quatro níveis, de Aprendiz a Embaixador">
-
       <img class="hestia-photo-background" src="/hestia-mapa-cenario-LIMPO.png" alt="Mapa ilustrado em tons pastel com castelo, montanhas, rio, ponte e templo grego" />
-
       <!-- Estrada: apenas o brilho é SVG; a estrada de pedras está no PNG limpo -->
-
       <svg class="hestia-progress-road" viewBox="0 0 1774 887" preserveAspectRatio="none" aria-hidden="true">
-
         <path id="hestiaRoadGlow" d="M 265 655 C 345 649 390 618 455 587 S 565 545 650 540 S 770 546 825 529 S 877 483 909 467 S 1004 450 1040 450 S 1160 438 1204 418 S 1293 386 1325 363 S 1408 330 1475 320" />
-
       </svg>
-
       <div class="hestia-map-levels" aria-hidden="true">
-
         <span class="hestia-map-level" style="left:15%;top:74%"><b>1</b><small>Aprendiz</small></span>
-
         <span class="hestia-map-level" style="left:37%;top:61%"><b>2</b><small>Consciente</small></span>
-
         <span class="hestia-map-level" style="left:59%;top:51%"><b>3</b><small>Guardião</small></span>
-
         <span class="hestia-map-level" style="left:83%;top:36%"><b>4</b><small>Embaixador</small></span>
-
       </div>
-
       <div id="hestiaPhotoPosition" class="hestia-photo-position" role="img" aria-label="Sua posição atual no caminho">
-
         <span class="hestia-photo-dot"></span>
-
         <span id="hestiaPhotoPositionText" class="hestia-photo-tooltip"></span>
-
       </div>
-
     </div>
-
     <div class="hestia-path-info">
-
       <div><span>SEU NÍVEL</span><strong id="hestiaPathLevel">—</strong></div>
-
       <div><span>EXPERIÊNCIA</span><strong id="hestiaPathXP">—</strong></div>
-
       <div><span>ATÉ O TEMPLO</span><strong id="hestiaPathRemaining">—</strong></div>
-
       <div><span>JORNADA</span><strong id="hestiaPathPercent">—</strong><div class="hestia-kpi-progress"><div id="hestiaKpiProgressFill"></div></div></div>
-
     </div>
-
   </div>
-
 </div>
-
         <!-- SECOES INFORMATIVAS RECOLHIDAS NO FINAL; CONTEUDO ORIGINAL PRESERVADO -->
-
         <details class="hestia-bottom-details">
-
             <summary><span class="hestia-bottom-details-title">Como funciona o XP</span><span class="hestia-bottom-details-sub">Ver regras e pontuações</span><span class="hestia-bottom-details-arrow" aria-hidden="true">⌄</span></summary>
-
         <!-- REGRAS DE XP -->
-
         <section class="pass-section pass-xp-rules-section">
-
             <div class="pass-section-header">
-
                 <div>
-
                     <h2>
-
                         Como funciona o XP
-
                     </h2>
-
                     <p>
-
                         Seu XP é atualizado automaticamente após a avaliação
-
                         de conformidade das suas utilizações.
-
                     </p>
-
                 </div>
-
             </div>
-
             <div class="pass-xp-rules">
-
                 <% passe.regrasXp.forEach(function(regra) { %>
-
                     <article class="pass-xp-rule pass-xp-rule-<%= regra.tipo %>">
-
                         <div>
-
                             <strong>
-
                                 <%= regra.titulo %>
-
                             </strong>
-
                             <span>
-
                                 <%= regra.descricao %>
-
                             </span>
-
                         </div>
-
                         <b>
-
                             <%= regra.xp %>
-
                         </b>
-
                     </article>
-
                 <% }); %>
-
             </div>
-
             <div class="pass-xp-note">
-
                 O colaborador não adiciona XP manualmente.
-
                 A avaliação é registrada na Governança e o HestIA
-
                 aplica a regra de progressão automaticamente.
-
             </div>
-
         </section>
-
         </details>
-
         <details class="hestia-bottom-details">
-
             <summary><span class="hestia-bottom-details-title">Desafios de Progressão</span><span class="hestia-bottom-details-sub">Ver desafios e progresso</span><span class="hestia-bottom-details-arrow" aria-hidden="true">⌄</span></summary>
-
         <!-- DESAFIOS -->
-
         <section class="pass-section">
-
             <div class="pass-section-header">
-
                 <div>
-
                     <h2>
-
                         Desafios de Progressão
-
                     </h2>
-
                     <p>
-
                         Complete desafios permanentes para ganhar XP adicional.
-
                     </p>
-
                 </div>
-
             </div>
-
             <div class="pass-challenges pass-challenges-compact">
-
                 <% passe.desafios.forEach(function(desafio) { %>
-
                     <article
-
                         class="pass-challenge-card <%= desafio.concluido ? 'pass-challenge-complete' : '' %>"
-
                     >
-
                         <div class="pass-challenge-top">
-
                             <div>
-
                                 <span class="pass-challenge-label">
-
                                     <%= desafio.concluido
-
                                         ? "Desafio concluído"
-
                                         : "Em andamento"
-
                                     %>
-
                                 </span>
-
                                 <h3>
-
                                     <%= desafio.titulo %>
-
                                 </h3>
-
                             </div>
-
                             <div class="pass-xp-reward">
-
                                 +<%= desafio.recompensaXp %> XP
-
                             </div>
-
                         </div>
-
                         <p>
-
                             <%= desafio.descricao %>
-
                         </p>
-
                         <div class="pass-challenge-progress-info">
-
                             <span>
-
                                 Progresso
-
                             </span>
-
                             <strong>
-
                                 <%= desafio.progressoAtual %>
-
                                 /
-
                                 <%= desafio.meta %>
-
                             </strong>
-
                         </div>
-
                         <div class="pass-progress">
-
                             <div
-
                                 class="pass-progress-fill"
-
                                 style="width: <%= Math.min((desafio.progressoAtual / desafio.meta) * 100, 100) %>%;">
-
                             </div>
-
                         </div>
-
                         <% if (desafio.concluido) { %>
-
                             <div class="pass-complete-message">
-
                                 ✓ Objetivo alcançado
-
                             </div>
-
                         <% } %>
-
                     </article>
-
                 <% }); %>
-
             </div>
-
         </section>
-
         </details>
-
     </main>
-
 </div>
-
 <script>
-
     (() => {
-
         let xpExibido = Number(document.querySelector('[data-hestia-pass-xp]')?.dataset.hestiaPassXp || 0);
-
         let atualizando = false;
-
         async function substituirConteudoDoPasse() {
-
             if (atualizando) return;
-
             atualizando = true;
-
             try {
-
                 const resposta = await fetch('/passe-hestia?atualizacao=' + Date.now(), {
-
                     cache: 'no-store',
-
                     headers: { 'X-HestIA-Update': 'pass' }
-
                 });
-
                 if (!resposta.ok) return;
-
                 const documento = new DOMParser().parseFromString(await resposta.text(), 'text/html');
-
                 const novoConteudo = documento.querySelector('.main-content.pass-page');
-
                 const conteudoAtual = document.querySelector('.main-content.pass-page');
-
                 if (!novoConteudo || !conteudoAtual) return;
-
                 conteudoAtual.replaceWith(novoConteudo);
-
                 xpExibido = Number(novoConteudo.dataset.hestiaPassXp || xpExibido);
-
             } finally {
-
                 atualizando = false;
-
             }
-
         }
-
         async function verificarAtualizacao() {
-
             try {
-
                 const resposta = await fetch('/api/passe-hestia/status?atualizacao=' + Date.now(), {
-
                     cache: 'no-store'
-
                 });
-
                 if (!resposta.ok) return;
-
                 const status = await resposta.json();
-
                 if (Number(status.xpTotal) !== xpExibido) await substituirConteudoDoPasse();
-
-            } catch (\_) {
-
+            } catch (_) {
                 // A próxima verificação tenta novamente sem interromper a demonstração.
-
             }
-
         }
-
         if ('BroadcastChannel' in window) {
-
             const canal = new BroadcastChannel('hestia-pass');
-
             canal.addEventListener('message', verificarAtualizacao);
-
         }
-
         window.addEventListener('storage', evento => {
-
             if (evento.key === 'hestia-pass-atualizado') verificarAtualizacao();
-
         });
-
         window.addEventListener('focus', verificarAtualizacao);
-
         document.addEventListener('visibilitychange', () => {
-
             if (!document.hidden) verificarAtualizacao();
-
         });
-
         setInterval(verificarAtualizacao, 2000);
-
     })();
-
 </script>
-
 <script src="/caminho-hestia.js" defer></script>
-
 </body>
-
 </html>

@@ -7010,3 +7010,68 @@ body { background:var(--bg); color:var(--ink); }
     height: 44px;
     display: block;
 }
+/* SCRUM-564: COLE SOMENTE AO FINAL DO public/styles.css */
+.mt-page .mt-discovery{background:linear-gradient(120deg,#18314e,#26496a);border-radius:18px;padding:24px;margin:20px 0 24px;color:#fff;box-shadow:0 10px 26px #19345118}
+.mt-page .mt-discovery-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}
+.mt-page .mt-discovery-head h3{font-size:22px;margin:6px 0;color:#fff}
+.mt-page .mt-discovery-head p{color:#d5e1ee;margin:0;font-size:13px}
+.mt-page .mt-discovery-eyebrow{color:#f7ca82;letter-spacing:1.3px;font-size:11px;font-weight:800}
+.mt-page .mt-discovery-icon{font-size:38px;color:#f7ca82}
+.mt-page .mt-discovery-controls{display:grid;grid-template-columns:minmax(220px,2fr) minmax(130px,1fr) minmax(140px,1fr);gap:12px}
+.mt-page .mt-discovery-controls label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#e5edf6}
+.mt-page .mt-discovery-controls input,.mt-page .mt-discovery-controls select{width:100%;height:43px;box-sizing:border-box;background:#fff;color:#1b3047;border:1px solid #c8d4e1;border-radius:10px;padding:0 13px;font:inherit;outline-offset:2px}
+.mt-page .mt-discovery-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:#e4edf7}
+.mt-page #mt-clear-search{border:0;background:none;color:#ffe0aa;text-decoration:underline;cursor:pointer;font:inherit}
+.mt-page .mt-recommendation{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff8ec;color:#46351f;border:1px solid #e8c792;border-radius:13px;padding:16px 18px;margin-top:18px}
+.mt-page .mt-recommendation>div{display:flex;flex-direction:column;gap:5px}
+.mt-page .mt-recommendation-tag{font-size:11px;font-weight:800;color:#a56a25}
+.mt-page .mt-recommendation strong{font-size:16px}
+.mt-page .mt-recommendation small{color:#755f45}
+.mt-page .mt-recommendation-link{background:#b86f29;color:white;text-decoration:none;padding:11px 15px;border-radius:10px;white-space:nowrap;font-size:12px;font-weight:800}
+.mt-page .mt-filters{display:flex;flex-wrap:wrap;gap:8px}
+.mt-page .mt-filter{padding:9px 13px;border-radius:999px;border:1px solid #d6dfeb;background:#fff;color:#29425e;cursor:pointer;font-weight:600}
+.mt-page .mt-filter.active{background:#26496a;color:#fff;border-color:#26496a}
+.mt-page .mt-card-upgraded{display:flex;flex-direction:column;gap:11px;border:1px solid #dce4ed;border-radius:15px;padding:20px;box-shadow:0 5px 16px #1d355012;transition:transform .2s,box-shadow .2s}
+.mt-page .mt-card-upgraded:hover{transform:translateY(-3px);box-shadow:0 12px 25px #1d355020}
+.mt-page .mt-card-upgraded h3{font-size:16px;line-height:1.4;margin:0;color:#152b45}
+.mt-page .mt-card-upgraded p{line-height:1.6;margin:0;color:#62748b;flex:1}
+.mt-page .mt-card-upgraded .mt-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mt-page .mt-card-upgraded .mt-tag,.mt-page .mt-status{border-radius:999px;background:#eef4fa;padding:6px 9px;font-size:11px;color:#36536e}
+.mt-page .mt-status.is-done{background:#e5f6ec;color:#167349}
+.mt-page .mt-status.is-running{background:#fff0d8;color:#9c631b}
+.mt-page .mt-status.is-locked{background:#f1f2f5;color:#758094}
+.mt-page .mt-card-recommended{align-self:flex-start;color:#aa6a1f;background:#fff2dc;padding:5px 9px;border-radius:7px;font-size:11px;font-weight:700}
+.mt-page .mt-card-upgraded .mt-meta{font-size:12px;color:#62748b}
+.mt-page .mt-card-upgraded .mt-progress{height:8px;border-radius:999px;background:#e4eaf1;overflow:hidden}
+.mt-page .mt-card-upgraded .mt-progress span{display:block;height:100%;background:linear-gradient(90deg,#c77b32,#f0b95b);border-radius:999px}
+.mt-page .mt-card-upgraded .mt-card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.mt-page .mt-card-upgraded .mt-btn-primary{background:#3158d7;color:#fff;padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:700}
+.mt-page .mt-empty-upgraded{padding:28px;grid-column:1/-1;text-align:center}
+@media(max-width:800px){.mt-page .mt-discovery-controls{grid-template-columns:1fr}.mt-page .mt-recommendation{flex-direction:column;align-items:flex-start}.mt-page .mt-toolbar{flex-wrap:wrap}}    
+/* HestIA Academy: acrescentar APENAS ao final de public/styles.css */
+#mt-course,#mt-exam{background:transparent;border:0;box-shadow:none;padding:0;color:#17273f}
+.academy-eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#7361b5;margin-bottom:12px}
+.academy-heading{font-size:clamp(25px,3.2vw,39px);line-height:1.17;margin:0 0 12px;color:#17243b;letter-spacing:-.04em}
+.academy-subtitle{max-width:750px;color:#65758b;line-height:1.75;font-size:15px;margin:0 0 24px}
+.academy-progress-meta{display:flex;justify-content:space-between;color:#53617b;font-size:13px;margin-bottom:9px;max-width:850px}
+.academy-progress-track{height:9px;border-radius:20px;background:#e7eaf5;overflow:hidden;max-width:850px;margin-bottom:30px}
+.academy-progress-track>span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#8070c7,#c2a5e8);transition:width .3s}
+.academy-layout{display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:22px;align-items:start}
+.academy-syllabus,.academy-lesson,.academy-question,.academy-complete{background:#fff;border:1px solid #e5e8f0;border-radius:19px;box-shadow:0 8px 32px rgba(28,36,74,.035)}
+.academy-syllabus{padding:18px;position:sticky;top:20px}.academy-syllabus h3{font-size:13px;margin:0 0 17px;color:#34425a}
+.academy-step{display:flex;width:100%;align-items:center;text-align:left;gap:11px;border:0;background:transparent;border-radius:12px;padding:11px 9px;color:#63708a;cursor:pointer}
+.academy-step span{display:grid;place-items:center;flex:none;width:27px;height:27px;border-radius:9px;background:#eef0f7;font-size:12px;font-weight:800}
+.academy-step small{font-size:12px;line-height:1.4}.academy-step.active{background:#f1ecfb;color:#4f3b94;font-weight:700}.academy-step.done span{background:#dff5e8;color:#217d50}.academy-step:disabled{opacity:.52;cursor:not-allowed}
+.academy-lesson{padding:clamp(22px,3vw,40px)}.academy-lesson-tag{font-size:11px;font-weight:800;letter-spacing:.13em;color:#8671bf;margin-bottom:14px}.academy-lesson h2{font-size:clamp(21px,2.3vw,30px);line-height:1.3;color:#1d2c45;margin:0 0 22px}.academy-lesson-copy{font-size:15px;line-height:1.95;color:#43536d}.academy-lesson-copy p{margin:0 0 16px}.academy-tip{background:#f7f5fc;border-left:3px solid #a68bd5;border-radius:10px;padding:17px 20px;margin:24px 0;color:#48536b}.academy-tip strong{color:#55438d}.academy-tip p{margin:8px 0 0;line-height:1.7}.academy-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap}
+.academy-complete{text-align:center;padding:45px 25px;max-width:750px}.academy-complete-icon{width:66px;height:66px;border-radius:50%;background:#dff5e8;color:#218456;display:grid;place-items:center;font-size:31px;margin:0 auto 18px}.academy-complete h2{margin:0 0 12px}.academy-complete p{color:#66758b;line-height:1.7}.academy-callout{background:#f4f1fc;padding:13px;border-radius:10px;margin:24px auto;color:#604da0;max-width:430px}
+.academy-exam-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}.academy-exam-summary span{background:#f0ecf9;color:#5e4a97;padding:8px 13px;border-radius:30px;font-size:12px;font-weight:700}.academy-question{padding:25px;margin-bottom:17px;min-width:0}.academy-question legend{display:block;float:left;width:100%;font-size:16px;font-weight:700;line-height:1.6;margin-bottom:17px;color:#24334d}.academy-question legend span{display:block;color:#8d77c4;font-size:11px;letter-spacing:.12em;margin-bottom:8px}.academy-question legend+*{clear:both}.academy-option{display:flex;align-items:center;gap:12px;border:1px solid #e6e8f0;border-radius:12px;padding:13px 15px;margin:10px 0;cursor:pointer;color:#45536a;line-height:1.5}.academy-option:has(input:checked){background:#f4effd;border-color:#a88cdb;color:#463477}.academy-option input{accent-color:#8063b8}.academy-option>span:nth-child(2){font-weight:800;color:#8167b6}.academy-exam-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:25px 0}.academy-exam-footer span{font-size:13px;color:#64748b}.academy-result{margin-top:24px;padding:30px;border-radius:18px;text-align:center;background:#f4f8ff}.academy-result.approved{background:#edf9f2}.academy-result-score{font-size:43px;font-weight:800;color:#6a51aa}.academy-result h2{margin:8px 0}.academy-result p{line-height:1.7}
+@media(max-width:800px){.academy-layout{grid-template-columns:1fr}.academy-syllabus{position:static}.academy-lesson{padding:22px}.academy-question{padding:18px}}
+
+/* HestIA Academy — ACRESCENTAR AO FINAL de public/styles.css. */
+.mt-status.is-locked{background:#f3f4f6!important;color:#4b5563!important;border:1px solid #d1d5db}
+.mt-card:has(.mt-status.is-locked){background:#f8fafc;border-color:#cbd5e1}
+.mt-card:has(.mt-status.is-locked) .mt-card-footer{align-items:center;gap:8px;flex-wrap:wrap}
+.mt-card:has(.mt-status.is-locked) .mt-card-footer small:last-child{font-weight:600;color:#475569}
+.academy-lesson-copy{font-size:15px;line-height:1.8;max-width:78ch}
+.academy-lesson-copy p{margin:0 0 1.15em}
+.mt-cert-card{border:1px solid #dbe3ef;border-radius:14px}
