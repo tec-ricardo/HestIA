@@ -16,7 +16,7 @@ class AdaptadorOperacionalMaturidadeTest {
         jdbc.execute("CREATE TABLE politica_uso_versoes(id BIGINT, empresa_id BIGINT, politica_uso_id BIGINT)");
         jdbc.execute("CREATE TABLE avaliacoes_conformidade(id BIGINT, registro_uso_id BIGINT, politica_uso_id BIGINT, politica_versao_id BIGINT, regra_codigo VARCHAR, regra_versao VARCHAR, motivo_preservado VARCHAR, regra_preservada VARCHAR, limitacoes_preservadas VARCHAR, status VARCHAR, data_avaliacao TIMESTAMP)");
         jdbc.update("INSERT INTO usuarios VALUES(1,1,10),(2,2,20)");jdbc.update("INSERT INTO politica_uso_versoes VALUES(1,1,1),(2,2,2)");
-        service=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade());
+        service=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade(),new FonteEvidenciasSeguranca());
     }
     void inserir(int id,int empresa,String status,boolean fundamentos){
         jdbc.update("INSERT INTO registros_uso_ia VALUES(?,?,TIMESTAMP '2026-01-01 12:00:00')",id,empresa);
