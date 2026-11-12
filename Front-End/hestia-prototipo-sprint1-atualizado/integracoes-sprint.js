@@ -9,7 +9,7 @@ module.exports = function montarIntegracoes(app, api) {
     catch (erro) {
       const status = erro.response?.status || (erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 504 : 503);
       const origem = erro.response?.data;
-      const mensagem = origem?.message || origem?.detail || origem?.erro || (typeof origem === 'string' && origem.trim() ? origem.slice(0, 300) : null) || (erro.code === 'ECONNREFUSED' ? 'Spring Boot inacessível. Confira API_URL e se a porta 8080 está ativa.' : erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 'Tempo limite ao consultar o Spring Boot.' : erro.response ? 'O Spring Boot recusou a operação. Consulte o log do Java.' : 'Falha de comunicação com o Spring Boot. Consulte o terminal do Node.js.');
+      const mensagem = origem?.message || origem?.detail || origem?.erro || (typeof origem === 'string' && origem.trim() ? origem.slice(0, 300) : null) || (erro.code === 'ECONNREFUSED' ? 'Spring Boot inacessível. Confira API_URL e se a porta 8080 está ativa.' : erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? (req.method === 'POST' && req.path === '/api/registros' ? 'Confirmação pendente. Atualize o histórico antes de tentar novamente.' : 'Tempo limite ao consultar o Spring Boot.') : erro.response ? 'O Spring Boot recusou a operação. Consulte o log do Java.' : 'Falha de comunicação com o Spring Boot. Consulte o terminal do Node.js.');
       console.error('[HestIA API]', { metodo: req.method, rota: req.originalUrl, status, codigo: erro.code || null, backendStatus: erro.response?.status || null, mensagem: String(mensagem).slice(0, 500) });
       if (status === 401) return req.session.destroy(() => res.status(401).json({ erro: 'Sessão expirada. Entre novamente.' }));
       return res.status(status).json({ erro: mensagem });
@@ -126,9 +126,16 @@ module.exports = function montarIntegracoes(app, api) {
   router.get('/microtreinamentos/:id', colaborador, executar(async (req, res) => {
     id(req.params.id); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
+  router.post('/api/rag/conversas', executar(async (req, res) => {
+    const titulo = String(req.body?.titulo || '').slice(0, 120);
+    res.status(201).json((await api.post('/api/rag/conversas', { titulo })).data);
+  }));
+  router.get('/api/rag/conversas/:id/historico', executar(async (req, res) => {
+    res.json((await api.get('/api/rag/conversas/' + id(req.params.id) + '/historico')).data);
+  }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
-    const { chave, pergunta, modo, respostaId } = req.body;
-    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'GERAR_NOVA', respostaId: respostaId == null ? null : id(respostaId) }, { timeout: 45000 })).data);
+    const { chave, pergunta, modo, respostaId, conversaId } = req.body;
+    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'GERAR_NOVA', respostaId: respostaId == null ? null : id(respostaId), ...(conversaId == null ? {} : { conversaId: id(conversaId) }) }, { timeout: 45000 })).data);
   }));
   router.get('/api/rag/historico', executar(async (req, res) => res.json((await api.get('/api/rag/historico')).data)));
   router.delete('/api/rag/historico', executar(async (req, res) => {
@@ -148,7 +155,7 @@ module.exports = function montarIntegracoes(app, api) {
     const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs'];
     const dto = { usuarioId: req.session.usuarioId };
     for (const campo of campos) if (Object.hasOwn(req.body, campo)) dto[campo] = req.body[campo];
-    res.status(201).json((await api.post('/registros-uso-ia', dto)).data);
+    res.status(201).json((await api.post('/registros-uso-ia', dto, { timeout: 15000 })).data);
   }));
   router.get('/api/admin/respostas', curadoriaLeitura, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
   router.get('/api/admin/respostas/:id', curadoriaLeitura, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));

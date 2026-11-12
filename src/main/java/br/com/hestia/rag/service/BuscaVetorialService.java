@@ -84,7 +84,7 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-        String vetor = gerarVetor(promptIndexado);
+        String vetor = gerarVetor(promptIndexado + "\n" + respostaIndexada);
 
         int atualizadas = jdbcTemplate.update(
                 """
@@ -197,9 +197,9 @@ public class BuscaVetorialService {
 
         String vetor = gerarVetor(pergunta);
 
-        List<Long> ids = jdbcTemplate.queryForList(
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(
                 """
-                SELECT id
+                SELECT id, 1.0 - (embedding_vector <=> CAST(? AS vector)) AS similaridade
                 FROM respostas_reutilizaveis
                 WHERE empresa_id = ?
                   AND reutilizavel = true
@@ -217,7 +217,7 @@ public class BuscaVetorialService {
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
-                Long.class,
+                vetor,
                 empresaId,
                 java.time.LocalDateTime.now(),
                 usuario.getPerfil().name(),
@@ -227,10 +227,20 @@ public class BuscaVetorialService {
                 limite
         );
 
-        if (ids.isEmpty()) {
+        if (resultados.isEmpty()) {
             if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"SEM_CONTEUDO_AUTORIZADO");
             return List.of();
         }
+
+        List<Long> ids = resultados.stream()
+                .map(linha -> ((Number) linha.get("id")).longValue())
+                .toList();
+
+        Map<Long, Double> similaridades = resultados.stream()
+                .collect(Collectors.toMap(
+                        linha -> ((Number) linha.get("id")).longValue(),
+                        linha -> ((Number) linha.get("similaridade")).doubleValue()
+                ));
 
         Map<Long, RespostaReutilizavel> respostas =
                 repository.findAllById(ids)
@@ -252,6 +262,7 @@ public class BuscaVetorialService {
         return ids.stream()
                 .map(respostas::get)
                 .filter(Objects::nonNull)
+                .peek(r -> r.setSimilaridade(similaridades.get(r.getId())))
                 .toList();
     }
 

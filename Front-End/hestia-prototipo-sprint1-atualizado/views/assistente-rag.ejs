@@ -275,6 +275,8 @@
       }
       function registrarReutilizacao(item) {
         reutilizacoes.push({ pergunta: item.question, data: new Date().toISOString() });
+        atualizarEconomia();
+        notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
         try {
           const atualizacao = { tipo: 'xp-atualizado', instante: Date.now() };
           if ('BroadcastChannel' in window) {
@@ -283,17 +285,37 @@
             canal.close();
           }
           localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
-          atualizarEconomia();
-          notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
-        } catch (_) {
-          reutilizacoes.pop();
-          notify('Resposta copiada, mas não foi possível registrar a reutilização.', true);
-        }
+        } catch (_) { /* Falha de armazenamento não desfaz confirmação no servidor. */ }
       }
-      function confirmarReutilizacaoAutomatica(item) {
-        registrarReutilizacao(item);
-        saveAnswer(item);
-        notify('+15 XP registrados no HestIA Pass pela resposta aprovada reutilizada.');
+      const confirmacoesPendentes = new Map();
+      const chavesConfirmacao = new Map();
+      async function confirmarNoServidor(item) {
+        if (!item.respostaId) throw new Error('Fonte indisponível.');
+        const identificador = item.interacaoId != null ? 'interacao:' + item.interacaoId : 'resposta:' + item.respostaId + ':' + item.question;
+        if (confirmacoesPendentes.has(identificador)) throw new Error('Aguarde a confirmação em andamento.');
+        const chave = chavesConfirmacao.get(identificador) || (item.interacaoId != null ? crypto.randomUUID() + '-' + String(item.interacaoId) : crypto.randomUUID());
+        chavesConfirmacao.set(identificador, chave);
+        const operacao = (async () => {
+          const resposta = await fetch('/api/rag/perguntas', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chave, pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId })
+          });
+          const dados = await resposta.json();
+          if (!resposta.ok || dados.estado !== 'REUTILIZADA' || !dados.resposta) {
+            throw new Error(dados.erro || 'Fonte indisponível para reutilização.');
+          }
+          if (!item.reutilizada) {
+            item.reutilizada = true;
+            item.text = dados.resposta;
+            registrarReutilizacao(item);
+          }
+          try { await copyText(dados.resposta); }
+          catch (_) { notify('Reutilização confirmada, mas não foi possível copiar a resposta.', true); }
+          return dados;
+        })();
+        confirmacoesPendentes.set(identificador, operacao);
+        try { return await operacao; }
+        finally { confirmacoesPendentes.delete(identificador); }
       }
       const bankBody = document.getElementById('ragBankBody');
       const bankCount = document.getElementById('ragBankCount');
@@ -608,8 +630,7 @@ function renderBank() {
           botao.type = 'button';
           botao.addEventListener('click', async () => {
             try {
-              await copyText(item.resposta.text);
-              registrarReutilizacao(item.resposta);
+              await confirmarNoServidor(item.resposta);
             } catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
           });
           bloco.append(botao);
@@ -634,14 +655,44 @@ function renderBank() {
       });
       question.addEventListener('input', mostrarSugestoes);
       historySearch.addEventListener('input', renderHistory);
-      let proximoModo = 'GERAR_NOVA';
-      async function answerFor(input) {
-        const modo = proximoModo; proximoModo = 'GERAR_NOVA';
-        const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo }) });
+      let proximoModo = 'CONSULTAR';
+      function mensagemDoServidor(dados, input, conversaId) {
+        const fonte = dados.fontes && dados.fontes[0];
+        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.',
+          question: input, conversaId, estado: dados.estado,
+          policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada',
+          policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '',
+          source: fonte ? fonte.titulo : null,
+          respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null,
+          reutilizada:dados.estado==='REUTILIZADA', similarity: dados.similaridade,
+          confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+      }
+      async function carregarConversa(conversa) {
+        if (!conversa.servidorId || conversa.historicoCarregado) return;
+        const r = await fetch('/api/rag/conversas/' + conversa.servidorId + '/historico');
+        const dados = await r.json();
+        if (!r.ok) throw new Error(dados.erro || 'Histórico indisponível.');
+        conversa.messages = [];
+        for (const entrada of (Array.isArray(dados) ? dados : dados.content || [])) {
+          conversa.messages.push({ role: 'user', text: entrada.pergunta, conversaId: conversa.servidorId });
+          conversa.messages.push(mensagemDoServidor(entrada, entrada.pergunta, conversa.servidorId));
+        }
+        conversa.historicoCarregado = true;
+      }
+      async function answerFor(input, conversa) {
+        const modo=proximoModo; proximoModo = 'CONSULTAR';
+        if (conversa && !conversa.servidorId) {
+          // A criação usa a rota fetch('/api/rag/conversas') com método POST.
+          const criacao = await fetch('/api/rag/conversas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: conversa.title || input.slice(0,60) }) });
+          const criada = await criacao.json();
+          if (!criacao.ok || !criada.id) throw new Error(criada.erro || 'Não foi possível criar a conversa.');
+          conversa.servidorId = criada.id;
+        }
+        const conversaId = conversa?.servidorId || null;
+        const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo, conversaId }) });
         const dados = await resposta.json();
         if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
-        const fonte = dados.fontes && dados.fontes[0];
-        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+        return mensagemDoServidor(dados, input, conversaId);
       }
       form.addEventListener('submit', e => {
         e.preventDefault();
@@ -677,7 +728,7 @@ function renderBank() {
         (async () => {
           try {
             const [consulta] = await Promise.allSettled([
-              answerFor(input),
+              answerFor(input, current),
               new Promise(resolve => setTimeout(resolve, 2000))
             ]);
             if (consulta.status === 'rejected') throw consulta.reason;
@@ -686,7 +737,7 @@ function renderBank() {
             persist();
             renderChat();
             renderHistory();
-            if (result.reutilizada) confirmarReutilizacaoAutomatica(result);
+            if (result.reutilizada) registrarReutilizacao(result);
             else if (!result.source) notify('Nenhum resultado encontrado.');
           } catch (erro) {
             current.messages.push({ role: 'assistant', text: 'Não foi possível preparar a resposta. Tente novamente.', question: input });
