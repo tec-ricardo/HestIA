@@ -1,0 +1,9 @@
+FROM node:22-alpine
+WORKDIR /app
+ARG VCS_REF=unknown
+LABEL org.opencontainers.image.revision=$VCS_REF
+COPY Front-End/hestia-prototipo-sprint1-atualizado/package*.json ./
+RUN npm ci --omit=dev
+COPY Front-End/hestia-prototipo-sprint1-atualizado/ ./
+EXPOSE 3000
+CMD ["npm", "start"]

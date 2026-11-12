@@ -85,6 +85,15 @@ class RecuperacaoSenhaServiceTest {
         verify(encoder, times(1)).encode("novaSenha123");
     }
 
+    @Test void falhaDeEntregaNaoRevelaContaNaRespostaPublica() {
+        var service=mock(RecuperacaoSenhaService.class);
+        when(service.solicitar("existente@example.test")).thenThrow(new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE));
+        var controller=new br.com.hestia.autenticacao.controller.RecuperacaoSenhaController(service);
+        var conhecida=controller.solicitar(new br.com.hestia.autenticacao.dto.RecuperacaoSenhaDTO("existente@example.test"));
+        var desconhecida=controller.solicitar(new br.com.hestia.autenticacao.dto.RecuperacaoSenhaDTO("inexistente@example.test"));
+        assertEquals(conhecida,desconhecida);
+    }
+
     @SuppressWarnings("unchecked")
     private RecuperacaoSenha capturar(RecuperacaoSenhaRepository repository) {
         var captor = org.mockito.ArgumentCaptor.forClass(RecuperacaoSenha.class);

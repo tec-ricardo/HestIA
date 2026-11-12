@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class RegistroUsoIAService {
 
+    @Autowired private br.com.hestia.conformidade.service.RegistroEvidenciasService registroEvidencias;
+    @Autowired private br.com.hestia.conformidade.service.AvaliacaoAutomaticaService avaliacaoAutomatica;
     private final RegistroUsoIARepository registroRepository;
     private final UsuarioRepository usuarioRepository;
     private final FerramentaIARepository ferramentaRepository;
@@ -118,6 +120,8 @@ public class RegistroUsoIAService {
                     "REGISTRO_USO:" + salvo.getId()
             ));
         }
+        if(registroEvidencias != null) registroEvidencias.registrar(salvo,dto.evidencias());
+        if(avaliacaoAutomatica != null) avaliacaoAutomatica.agendar(salvo);
         return RegistroUsoIAResponseDTO.from(salvo);
     }
 

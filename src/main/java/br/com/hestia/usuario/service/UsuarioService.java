@@ -23,7 +23,18 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final AuditoriaService auditoriaService;
 
+    private final br.com.hestia.autenticacao.repository.SessaoUsuarioRepository sessoes;
+    private final br.com.hestia.autenticacao.contexto.EmpresaAtual empresaAtual;
+
     @Autowired
+    public UsuarioService(UsuarioRepository usuarios, EmpresaRepository empresas, DepartamentoRepository departamentos,
+            PasswordEncoder encoder, AuditoriaService auditoria,
+            br.com.hestia.autenticacao.repository.SessaoUsuarioRepository sessoes,
+            br.com.hestia.autenticacao.contexto.EmpresaAtual empresaAtual) {
+        this.usuarioRepository=usuarios; this.empresaRepository=empresas; this.departamentoRepository=departamentos;
+        this.passwordEncoder=encoder; this.auditoriaService=auditoria; this.sessoes=sessoes; this.empresaAtual=empresaAtual;
+    }
+
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             EmpresaRepository empresaRepository,
@@ -36,6 +47,7 @@ public class UsuarioService {
         this.departamentoRepository = departamentoRepository;
         this.passwordEncoder = passwordEncoder;
         this.auditoriaService = auditoriaService;
+        this.sessoes = null; this.empresaAtual = null;
     }
 
     public UsuarioService(
@@ -102,9 +114,15 @@ public class UsuarioService {
                 );
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public Usuario atualizar(Long id, UsuarioDTO dto) {
 
         Usuario usuario = buscarPorId(id);
+        if (empresaAtual != null) { empresaAtual.validar(usuario.getEmpresa().getId()); empresaAtual.validar(dto.getEmpresaId()); }
+        boolean acessoAlterado = !java.util.Objects.equals(usuario.getPerfil(), dto.getPerfil())
+                || !java.util.Objects.equals(usuario.getEmpresa().getId(), dto.getEmpresaId())
+                || !java.util.Objects.equals(usuario.getDepartamento().getId(), dto.getDepartamentoId())
+                || (dto.getAtivo() != null && !java.util.Objects.equals(usuario.getAtivo(), dto.getAtivo()));
 
         Empresa empresa = empresaRepository.findById(dto.getEmpresaId())
                 .orElseThrow(() ->
@@ -134,6 +152,7 @@ public class UsuarioService {
         }
 
         Usuario salvo = usuarioRepository.save(usuario);
+        if (acessoAlterado && sessoes != null) sessoes.revogarTodas(id, java.time.LocalDateTime.now());
         registrar("PUT", salvo.getId());
         return salvo;
     }

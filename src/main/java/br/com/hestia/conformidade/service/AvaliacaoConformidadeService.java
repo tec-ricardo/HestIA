@@ -72,7 +72,7 @@ public class AvaliacaoConformidadeService {
                 FundamentosConformidade.from(
                         avaliacao.getStatus(), avaliacao.getCriteriosAtendidos()));
         var salva=avaliacaoRepository.save(avaliacao);
-        if(eventosCapacitacao!=null)eventosCapacitacao.publishEvent(new br.com.hestia.trilha.service.MotorTrilhasService.ConformidadeRegistrada(registro.getUsuario().getId(),registro.getUsuario().getEmpresa().getId()));
+        if(eventosCapacitacao!=null)eventosCapacitacao.publishEvent(new br.com.hestia.trilha.service.MotorTrilhasService.ConformidadeRegistrada(registro.getUsuario().getId(),registro.getUsuario().getEmpresa().getId(),salva.getId()));
         return AvaliacaoConformidadeResponseDTO.from(salva);
     }
 

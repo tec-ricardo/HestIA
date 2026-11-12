@@ -24,9 +24,18 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.get('/health', (req,res) => res.json({status:'UP'}));
+if (process.env.NODE_ENV === 'production' && (!process.env.SESSION_SECRET || !process.env.SESSION_DATABASE_URL)) {
+    throw new Error('Configure SESSION_SECRET e SESSION_DATABASE_URL antes de iniciar em produção.');
+}
+if(process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+const sessionStore = process.env.SESSION_DATABASE_URL
+    ? new (require('connect-pg-simple')(session))({conString: process.env.SESSION_DATABASE_URL, createTableIfMissing: true})
+    : undefined;
 /* SCRUM-376 - SESSAO INDIVIDUAL */
 
 app.use(session({
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || "hestia-prototipo-alterar-esta-chave",
     resave: false,
     saveUninitialized: false,
@@ -43,7 +52,7 @@ app.use(session({
 
 app.use(function(req, res, next) {
 
-    if (req.path == "/acesso") {
+    if (["/acesso", "/recuperar-senha", "/redefinir-senha"].includes(req.path)) {
         return next();
     }
 
@@ -75,6 +84,14 @@ app.use((req, res, next) => contextoApi.run({
 
 require("./integracoes-sprint")(app, api);
 require("./simulacao-produtividade").registrarRotasSimulacao(app);
+require("./configuracao-inicial")(app, api);
+require("./ciencia-politica")(app, api);
+require("./catalogo-real")(app, api);
+require("./avaliacoes-automaticas")(app, api);
+require("./relatorios-uso")(app, api);
+require("./relatorios-maturidade")(app, api);
+require("./relatorios-economia")(app, api);
+require("./recuperacao-senha")(app, api);
 
 /* USUARIO */
 

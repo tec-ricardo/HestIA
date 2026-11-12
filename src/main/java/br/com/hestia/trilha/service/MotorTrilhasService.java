@@ -21,10 +21,14 @@ import static br.com.hestia.aprendizagem.AvaliacaoAprendizagemService.id;
 
 @Service @Transactional
 public class MotorTrilhasService {
+    private br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService catalogo = new br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService();
+    @org.springframework.beans.factory.annotation.Autowired
+    public void usarCatalogoPersistido(br.com.hestia.microtreinamento.service.CatalogoTreinamentoService catalogo){this.catalogo=catalogo;}
+
     private final JdbcTemplate jdbc;private final AcessoCapacitacao acesso;private final br.com.hestia.shared.RepositorioIntegracao aprendizagem;
     private final TrilhaRepository trilhas;private final ParticipacaoTrilhaRepository participacoes;private final EntityManager em;
     public MotorTrilhasService(JdbcTemplate jdbc,AcessoCapacitacao acesso,br.com.hestia.shared.RepositorioIntegracao aprendizagem,TrilhaRepository trilhas,ParticipacaoTrilhaRepository participacoes,EntityManager em){this.jdbc=jdbc;this.acesso=acesso;this.aprendizagem=aprendizagem;this.trilhas=trilhas;this.participacoes=participacoes;this.em=em;}
-    public record ConformidadeRegistrada(Long usuarioId,Long empresaId){}
+    public record ConformidadeRegistrada(Long usuarioId,Long empresaId,Long avaliacaoId){public ConformidadeRegistrada(Long usuarioId,Long empresaId){this(usuarioId,empresaId,null);}}
     record Evento(String chave,String origem,TipoErro erro,TemaTreinamento tema,LocalDateTime data){}
     public record Confirmacao(Long avaliacaoId,TipoErro tipoErro,String justificativa){}
     public long confirmar(Usuario autor,Confirmacao d){
@@ -48,10 +52,11 @@ public class MotorTrilhasService {
         acesso.serializar(usuario);em.flush();
         if(jdbc.queryForObject("SELECT count(*) FROM usuarios WHERE id=? AND empresa_id=? AND ativo=true",Long.class,usuario,empresa)==0)return;
         LocalDateTime agora=LocalDateTime.now();List<Evento> eventos=new ArrayList<>();
-        for(var r:jdbc.queryForList("SELECT a.id,r.data_hora,a.status,EXISTS(SELECT 1 FROM avaliacao_criterios_atendidos c WHERE c.avaliacao_id=a.id AND c.criterio='IA_AUTORIZADA') AS ia,EXISTS(SELECT 1 FROM avaliacao_criterios_atendidos c WHERE c.avaliacao_id=a.id AND c.criterio='POLITICA_INTERNA') AS politica FROM avaliacoes_conformidade a JOIN registros_uso_ia r ON r.id=a.registro_uso_id JOIN usuarios u ON u.id=r.usuario_id JOIN politica_uso_versoes v ON v.id=a.politica_versao_id AND v.empresa_id=u.empresa_id AND v.politica_uso_id=a.politica_uso_id WHERE u.empresa_id=? AND u.id=? AND a.status='NAO_CONFORME' AND a.regra_codigo='CONFORMIDADE_CRITERIOS' AND a.regra_versao='1.0' AND r.data_hora>=? AND r.data_hora<=?",empresa,usuario,agora.minusDays(30),agora)){
-            if(Boolean.FALSE.equals(r.get("ia")))eventos.add(eventoAvaliacao(id(r,"id"),TipoErro.FERRAMENTA_NAO_AUTORIZADA,((Timestamp)r.get("data_hora")).toLocalDateTime()));
-            if(Boolean.FALSE.equals(r.get("politica")))eventos.add(eventoAvaliacao(id(r,"id"),TipoErro.VIOLACAO_POLITICA_INTERNA,((Timestamp)r.get("data_hora")).toLocalDateTime()));
+        for(var r:jdbc.queryForList("SELECT a.id,r.data_hora,a.status,a.regra_versao,EXISTS(SELECT 1 FROM avaliacao_criterios_atendidos c WHERE c.avaliacao_id=a.id AND c.criterio='IA_AUTORIZADA') AS ia,EXISTS(SELECT 1 FROM avaliacao_criterios_atendidos c WHERE c.avaliacao_id=a.id AND c.criterio='POLITICA_INTERNA') AS politica FROM avaliacoes_conformidade a JOIN registros_uso_ia r ON r.id=a.registro_uso_id JOIN usuarios u ON u.id=r.usuario_id JOIN politica_uso_versoes v ON v.id=a.politica_versao_id AND v.empresa_id=u.empresa_id AND v.politica_uso_id=a.politica_uso_id WHERE u.empresa_id=? AND u.id=? AND a.status='NAO_CONFORME' AND a.regra_codigo='CONFORMIDADE_CRITERIOS' AND a.regra_versao IN ('1.0','2.0','2.1') AND r.data_hora>=? AND r.data_hora<=?",empresa,usuario,agora.minusDays(30),agora)){
+            if(Boolean.FALSE.equals(r.get("ia"))&&(!"2.1".equals(r.get("regra_versao"))||jdbc.queryForObject("SELECT count(*) FROM fundamentos_criterios_avaliacao f JOIN avaliacoes_conformidade a ON a.registro_uso_id=f.registro_id WHERE a.id=? AND f.criterio='IA_AUTORIZADA' AND f.estado='NAO_ATENDIDO'",Long.class,id(r,"id"))>0))eventos.add(eventoAvaliacao(id(r,"id"),TipoErro.FERRAMENTA_NAO_AUTORIZADA,((Timestamp)r.get("data_hora")).toLocalDateTime()));
+            if(Boolean.FALSE.equals(r.get("politica"))&&!"2.1".equals(r.get("regra_versao")))eventos.add(eventoAvaliacao(id(r,"id"),TipoErro.VIOLACAO_POLITICA_INTERNA,((Timestamp)r.get("data_hora")).toLocalDateTime()));
         }
+        for(var r:jdbc.queryForList("SELECT a.id,r.data_hora FROM avaliacoes_conformidade a JOIN registros_uso_ia r ON r.id=a.registro_uso_id JOIN usuarios u ON u.id=r.usuario_id JOIN fundamentos_criterios_avaliacao f ON f.registro_id=r.id WHERE u.empresa_id=? AND u.id=? AND a.regra_versao='2.1' AND a.status='NAO_CONFORME' AND f.criterio='LGPD' AND f.estado='NAO_ATENDIDO' AND r.data_hora>=? AND r.data_hora<=?",empresa,usuario,agora.minusDays(30),agora))eventos.add(eventoAvaliacao(id(r,"id"),TipoErro.VIOLACAO_LGPD,((Timestamp)r.get("data_hora")).toLocalDateTime()));
         for(var r:jdbc.queryForList("SELECT avaliacao_id,tipo_erro,ocorrido_em FROM trilha_ocorrencias_confirmadas WHERE empresa_id=? AND usuario_id=? AND ocorrido_em>=? AND ocorrido_em<=?",empresa,usuario,agora.minusDays(30),agora))eventos.add(eventoAvaliacao(id(r,"avaliacao_id"),TipoErro.valueOf((String)r.get("tipo_erro")),((Timestamp)r.get("ocorrido_em")).toLocalDateTime()));
         for(var r:jdbc.queryForList("SELECT t.id,t.finalizada_em,a.tema FROM aprendizagem_tentativas t JOIN aprendizagem_ciclos c ON c.id=t.ciclo_id JOIN aprendizagem_catalogo a ON a.id=c.catalogo_id WHERE c.empresa_id=? AND c.usuario_id=? AND t.status='REPROVADA' AND t.finalizada_em<=?",empresa,usuario,agora))eventos.add(new Evento("APRENDIZAGEM:"+r.get("id"),"AVALIACAO_REPROVADA",null,TemaTreinamento.valueOf((String)r.get("tema")),((Timestamp)r.get("finalizada_em")).toLocalDateTime()));
         eventos=new ArrayList<>(eventos.stream().collect(java.util.stream.Collectors.toMap(Evento::chave,x->x,(x,y)->x,LinkedHashMap::new)).values());
@@ -70,7 +75,7 @@ public class MotorTrilhasService {
             Long ciclo;
             if(ativo)ciclo=id(anterior,"id");
             else {
-                var treinamentos=new MicrotreinamentoFicticioService().criarTreinamentos().stream().filter(t->t.isAtivo()&&t.getTema()==tema).toList();List<Map<String,Object>> requisitos=new ArrayList<>();boolean completo=!treinamentos.isEmpty();
+                var treinamentos=catalogo.criarTreinamentos().stream().filter(t->t.isAtivo()&&t.getTema()==tema).toList();List<Map<String,Object>> requisitos=new ArrayList<>();boolean completo=!treinamentos.isEmpty();
                 for(var t:treinamentos){var avaliacoes=jdbc.queryForList("SELECT id,treinamento_id,conteudo_sha256 FROM aprendizagem_catalogo WHERE empresa_id=? AND treinamento_id=? AND conteudo_sha256=? ORDER BY versao DESC",empresa,t.getId(),hash(t.getConteudo()));if(avaliacoes.isEmpty()){completo=false;break;}requisitos.add(avaliacoes.getFirst());}
                 if(!completo){jdbc.update("DELETE FROM trilha_pendencias_catalogo WHERE empresa_id=? AND usuario_id=? AND tema=?",empresa,usuario,tema.name());jdbc.update("INSERT INTO trilha_pendencias_catalogo VALUES(?,?,?,?,?)",empresa,usuario,tema.name(),"Conteúdo ativo ou avaliação publicada compatível ausente",agora);continue;}
                 var trilha=new Trilha(empresa,"Capacitação: "+tema.name(),treinamentos.stream().map(Microtreinamento::getId).toList());trilha.setExigeAprovacao(true);trilhas.saveAndFlush(trilha);var participacao=participacoes.saveAndFlush(new ParticipacaoTrilha(trilha,usuario));

@@ -1,0 +1,5 @@
+module.exports=(app,api)=>{
+ const admin=(req,res,next)=>req.session?.perfil==='administrador'?next():res.sendStatus(403);
+ app.get('/relatorios-economia',admin,async(req,res)=>{if(Object.keys(req.query).length)return res.status(400).send('Este relatório é acumulado, sem filtros de período ou departamento.');try{res.render('relatorios-economia',{perfil:req.session.perfil,email:req.session.email,active:'relatorios-uso',dados:(await api.get('/relatorios-economia')).data});}catch(e){res.status(e.response?.status||503).send('Economia indisponível.');}});
+ app.get('/relatorios-economia/exportar',admin,async(req,res)=>{if(Object.keys(req.query).length)return res.sendStatus(400);try{res.set('Content-Type','text/csv;charset=UTF-8');res.set('Content-Disposition','attachment; filename=economia-acumulada.csv');res.set('Cache-Control','no-store');res.send((await api.get('/relatorios-economia/exportar',{responseType:'text'})).data);}catch(e){res.status(e.response?.status||503).send('Exportação indisponível.');}});
+};

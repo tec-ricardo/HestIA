@@ -17,13 +17,16 @@ import java.util.List;
 
 @Service
 public class RecorrenciaCapacitacaoService {
+    @org.springframework.beans.factory.annotation.Autowired
+    public void usarCatalogoPersistido(CatalogoTreinamentoService catalogo){this.catalogo=catalogo;}
+
 
     private final ConclusaoMicrotreinamentoRepository conclusoes;
     private final UsuarioRepository usuarios;
     private final AcessoRespostaService acesso;
     private final RecorrenciaErroService recorrencia;
 
-    private final MicrotreinamentoFicticioService catalogo =
+    private MicrotreinamentoFicticioService catalogo =
             new MicrotreinamentoFicticioService();
 
     public RecorrenciaCapacitacaoService(
@@ -84,7 +87,10 @@ public class RecorrenciaCapacitacaoService {
             );
         }
 
-        var treinamento = catalogo.criarTreinamentos().stream()
+        var historico = catalogo instanceof CatalogoTreinamentoService persistido
+                ? persistido.historico(conclusao.getMicrotreinamentoId()).stream()
+                : catalogo.criarTreinamentos().stream();
+        var treinamento = historico
                 .filter(item -> item.getId().equals(
                         conclusao.getMicrotreinamentoId()
                 ))
