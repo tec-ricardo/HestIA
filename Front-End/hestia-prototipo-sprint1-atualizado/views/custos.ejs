@@ -1,829 +1,944 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        HestIA - Custos e eficiência
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/styles.css">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HestIA — Custos e eficiência</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+.ce-page{padding:22px 0 50px;color:#172c49}
+.ce-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#172c49,#294a70);border-radius:20px;padding:32px;color:#fff;margin-bottom:22px}
+.ce-hero:after{content:"";position:absolute;width:230px;height:230px;border:40px solid rgba(255,255,255,.045);border-radius:50%;right:-85px;top:-115px;pointer-events:none}
+.ce-kicker{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:#f0aa75;font-weight:800;margin:0 0 12px}
+.ce-hero h2{font-size:clamp(24px,3vw,34px);color:#fff;margin:0 0 10px}
+.ce-hero p{color:#dce7f5;line-height:1.7;max-width:750px;margin:0}
+.ce-notice{display:flex;gap:12px;align-items:flex-start;background:#fff8ed;border:1px solid #f0ddbe;border-left:4px solid #d47739;padding:16px 18px;border-radius:12px;margin-bottom:22px;color:#725029;font-size:13px;line-height:1.6}
+.ce-notice strong{display:block;color:#6a421c;margin-bottom:2px}
+.ce-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:22px}
+.ce-card{background:#fff;border:1px solid #dce5ef;border-radius:16px;padding:22px;box-shadow:0 8px 24px rgba(23,44,73,.035);border-top:4px solid #d47739;min-width:0}
+.ce-card:nth-child(2){border-top-color:#4777bc}.ce-card:nth-child(3){border-top-color:#29966a}.ce-card:nth-child(4){border-top-color:#8162b4}
+.ce-card-label{font-size:13px;color:#65768e;font-weight:750}.ce-card strong{display:block;color:#172c49;font-size:clamp(23px,2.4vw,32px);margin:10px 0 8px;overflow-wrap:anywhere}.ce-card p{color:#718199;font-size:12px;line-height:1.5;margin:0}
+.ce-section{background:#fff;border:1px solid #dce5ef;border-radius:18px;padding:25px;margin-bottom:20px;box-shadow:0 10px 28px rgba(23,44,73,.035);min-width:0}
+.ce-section-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.ce-section-kicker{color:#d47739;font-size:11px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;margin:0 0 7px}
+.ce-section h3{font-size:21px;margin:0 0 7px;color:#172c49}.ce-section-header p:last-child{font-size:13px;color:#718199;line-height:1.6;margin:0;max-width:700px}
+.ce-tag{background:#eef3f9;color:#46617d;font-size:11px;font-weight:800;padding:8px 12px;border-radius:99px;white-space:nowrap}
+.ce-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.ce-charts .ce-section{margin-bottom:20px}.ce-chart{height:320px;position:relative}.ce-chart canvas{max-width:100%;max-height:100%}
+.ce-chart .chart-empty{display:none;text-align:center;padding:40px 12px;color:#718199;font-size:13px}
+.ce-economy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.ce-economy .ce-card{box-shadow:none;background:#f8fafc;border-top:0;border-left:4px solid #d47739}
+.ce-evolution{display:flex;align-items:flex-start;gap:14px;background:#f7f9fc;border:1px dashed #cdd9e8;padding:20px;border-radius:13px;color:#536b87;font-size:13px;line-height:1.7}
+.ce-evolution strong{display:block;color:#172c49;font-size:15px;margin-bottom:4px}.ce-evolution p{margin:0}
+.ce-table-wrap{overflow-x:auto;border:1px solid #e5ebf3;border-radius:12px}.ce-table{width:100%;min-width:760px;border-collapse:collapse}.ce-table th{background:#f4f7fb;text-align:left;font-size:12px;color:#64758d;padding:15px;font-weight:800}.ce-table td{border-top:1px solid #edf1f6;padding:16px 15px;font-size:13px;color:#273d58}.ce-table tbody tr:hover{background:#f8fbff}
+.ce-footnote{color:#718199;font-size:12px;margin:16px 0 0;line-height:1.6}
+@media(max-width:1050px){.ce-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ce-charts{grid-template-columns:1fr}}
+@media(max-width:620px){.ce-kpis,.ce-economy{grid-template-columns:1fr}.ce-hero,.ce-section{padding:20px}.ce-chart{height:270px}}
+</style>
 </head>
-
 <body>
+<div class="app-shell">
+<%- include("menu", { perfil, email, active }) %>
+<main class="main">
+<header class="topbar"><button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button><div><p class="eyebrow">Gestor</p><h1>Custos e eficiência</h1></div></header>
+<div class="ce-page">
+<section class="ce-kpis" aria-label="Indicadores gerais">
+<article class="ce-card"><span class="ce-card-label">Custo total</span><strong id="custoTotal">--</strong><p>Custo total das utilizações de IA.</p></article>
+<article class="ce-card"><span class="ce-card-label">Departamentos</span><strong id="totalDepartamentos">--</strong><p>Departamentos com registros de utilização.</p></article>
+<article class="ce-card"><span class="ce-card-label">Utilizações</span><strong id="totalUtilizacoes">--</strong><p>Registros utilizados na análise.</p></article>
+<article class="ce-card"><span class="ce-card-label">Eficiência</span><strong id="eficienciaGeral">--</strong><p>Média da eficiência dos departamentos.</p></article>
+</section>
+<div class="ce-charts">
+<section class="ce-section"><div class="ce-section-header"><div><p class="ce-section-kicker">Distribuição financeira</p><h3>Custos por departamento</h3><p>Comparação dos custos de utilização de IA entre as áreas da organização.</p></div><span class="ce-tag">Por departamento</span></div><div class="ce-chart"><canvas id="graficoCustos" aria-label="Gráfico de custos por departamento" role="img"></canvas><div class="chart-empty" id="semCustos">Nenhum dado de custo por departamento disponível.</div></div></section>
+<section class="ce-section"><div class="ce-section-header"><div><p class="ce-section-kicker">Desempenho</p><h3>Eficiência por departamento</h3><p>Comparação do indicador de eficiência entre os departamentos da organização.</p></div><span class="ce-tag">Escala de 0 a 100%</span></div><div class="ce-chart"><canvas id="graficoEficiencia" aria-label="Gráfico de eficiência por departamento" role="img"></canvas><div class="chart-empty" id="semEficiencia">Nenhum indicador de eficiência disponível.</div></div></section>
+</div>
+<section class="ce-section"><div class="ce-section-header"><div><p class="ce-section-kicker">Análise de consumo</p><h3>Economia no uso de IA</h3><p>Indicadores para acompanhar o consumo financeiro das ferramentas de IA.</p></div></div><div class="ce-economy"><article class="ce-card"><span class="ce-card-label">Custo médio por utilização</span><strong id="custoMedioUtilizacao">--</strong><p>Valor médio gasto por registro de utilização de IA.</p></article><article class="ce-card"><span class="ce-card-label">Menor custo total</span><strong id="departamentoMenorCusto">--</strong><p id="valorMenorCusto">Departamento com menor custo registrado de IA.</p></article></div></section>
+<section class="ce-section"><div class="ce-section-header"><div><p class="ce-section-kicker">Visão detalhada</p><h3>Comparação de eficiência por departamento</h3><p>Compare utilização, uso adequado, produtividade, custos e eficiência entre as áreas da organização.</p></div><span class="ce-tag">Dados demonstrativos</span></div><div class="ce-table-wrap"><table class="ce-table"><thead><tr><th>Departamento</th><th>Utilizações</th><th>Uso adequado</th><th>Produtividade</th><th>Custo IA</th><th>Eficiência</th></tr></thead><tbody id="tabelaEficiencia"></tbody></table></div><p class="ce-footnote">Dados demonstrativos utilizados para representação do wireframe.</p></section>
+</div>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
 
-    <div class="app-shell">
 
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
-
-
-        <main class="main">
-
-            <!-- TOPO -->
-
-            <header class="topbar">
-
-                <button
-                    class="menu-button"
-                    id="menuButton">
-
-                    ☰
-
-                </button>
-
-
-                <div>
-
-                    <p class="eyebrow">
-                        Gestor
-                    </p>
-
-                    <h1>
-                        Custos e eficiência
-                    </h1>
-
-                </div>
-
-
-                <div class="profile-switch">
-
-                    <span>
-                        <%= email %>
-                    </span>
-
-                    <select disabled>
-
-                        <option selected>
-                            Gestor
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <a
-                    class="topbar-logout"
-                    href="/sair">
-
-                    Sair
-
-                </a>
-
-            </header>
-
-
-            <!-- INDICADORES -->
-
-            <section class="grid four">
-
-                <article class="metric-card">
-
-                    <span>
-                        Custo total
-                    </span>
-
-                    <strong id="custoTotal">
-                        --
-                    </strong>
-
-                    <p>
-                        Custo total das utilizações de IA.
-                    </p>
-
-                </article>
-
-
-                <article class="metric-card">
-
-                    <span>
-                        Departamentos
-                    </span>
-
-                    <strong id="totalDepartamentos">
-                        --
-                    </strong>
-
-                    <p>
-                        Departamentos com registros de utilização.
-                    </p>
-
-                </article>
-
-
-                <article class="metric-card">
-
-                    <span>
-                        Utilizações
-                    </span>
-
-                    <strong id="totalUtilizacoes">
-                        --
-                    </strong>
-
-                    <p>
-                        Registros utilizados na análise.
-                    </p>
-
-                </article>
-
-
-                <article class="metric-card">
-
-                    <span>
-                        Eficiência
-                    </span>
-
-                    <strong id="eficienciaGeral">
-                        --
-                    </strong>
-
-                    <p>
-                        Média da eficiência dos departamentos.
-                    </p>
-
-                </article>
-
-            </section>
-
-
-            <!-- CUSTOS POR DEPARTAMENTO -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-
-                        <h3>
-                            Custos por departamento
-                        </h3>
-
-                        <p>
-                            Comparação dos custos de utilização de IA entre as áreas da organização.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-chart custos-chart">
-
-                    <canvas id="graficoCustos"></canvas>
-
-                    <div
-                        class="chart-empty"
-                        id="semCustos">
-
-                        Nenhum dado de custo por departamento disponível.
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- EFICIENCIA POR DEPARTAMENTO -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-
-                        <h3>
-                            Eficiência por departamento
-                        </h3>
-
-                        <p>
-                            Comparação do indicador de eficiência entre os departamentos da organização.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-chart custos-chart">
-
-                    <canvas id="graficoEficiencia"></canvas>
-
-                    <div
-                        class="chart-empty"
-                        id="semEficiencia">
-
-                        Nenhum indicador de eficiência disponível.
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ECONOMIA NO USO DE IA -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-
-                        <h3>
-                            Economia no uso de IA
-                        </h3>
-
-                        <p>
-                            Indicadores para acompanhar o consumo financeiro das ferramentas de IA.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <section class="grid two">
-
-                    <article class="metric-card">
-
-                        <span>
-                            Custo médio por utilização
-                        </span>
-
-                        <strong id="custoMedioUtilizacao">
-                            --
-                        </strong>
-
-                        <p>
-                            Valor médio gasto por registro de utilização de IA.
-                        </p>
-
-                    </article>
-
-
-                    <article class="metric-card">
-
-                        <span>
-                            Menor custo total
-                        </span>
-
-                        <strong id="departamentoMenorCusto">
-                            --
-                        </strong>
-
-                        <p id="valorMenorCusto">
-                            Departamento com menor custo registrado de IA.
-                        </p>
-
-                    </article>
-
-                </section>
-
-            </section>
-
-
-            <!-- COMPARACAO POR DEPARTAMENTO -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <div>
-
-                        <h3>
-                            Comparação de eficiência por departamento
-                        </h3>
-
-                        <p>
-                            Compare utilização, uso adequado, produtividade,
-                            custos e eficiência entre as áreas da organização.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="table-wrap">
-
-                    <table>
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Departamento
-                                </th>
-
-                                <th>
-                                    Utilizações
-                                </th>
-
-                                <th>
-                                    Uso adequado
-                                </th>
-
-                                <th>
-                                    Produtividade
-                                </th>
-
-                                <th>
-                                    Custo IA
-                                </th>
-
-                                <th>
-                                    Eficiência
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody id="tabelaEficiencia">
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-                <p class="muted">
-                    Dados demonstrativos utilizados para representação do wireframe.
-                </p>
-
-            </section>
-
-        </main>
-
-    </div>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-    <script>
 
         /*
+
             DADOS DEMONSTRATIVOS
 
+
+
             Estes dados são utilizados enquanto os indicadores
+
             reais ainda não são fornecidos pelo backend.
 
+
+
             Futuramente estes valores poderão ser substituídos
+
             pelos dados recebidos pelo servidor.
+
         */
+
+
+
 
 
         /* DADOS DOS DEPARTAMENTOS */
 
+
+
         const dadosDepartamentos = [
 
+
+
             {
+
+
 
                 departamento: "Tecnologia",
 
+
+
                 utilizacoes: 320,
+
+
 
                 usoAdequado: 91,
 
+
+
                 produtividade: 86,
+
+
 
                 custoIA: 4200
 
+
+
             },
 
+
+
             {
+
+
 
                 departamento: "Marketing",
 
+
+
                 utilizacoes: 245,
+
+
 
                 usoAdequado: 84,
 
+
+
                 produtividade: 78,
+
+
 
                 custoIA: 2800
 
+
+
             },
 
+
+
             {
+
+
 
                 departamento: "Financeiro",
 
+
+
                 utilizacoes: 180,
+
+
 
                 usoAdequado: 79,
 
+
+
                 produtividade: 72,
+
+
 
                 custoIA: 1900
 
+
+
             },
+
+
 
             {
 
+
+
                 departamento: "RH",
+
+
 
                 utilizacoes: 120,
 
+
+
                 usoAdequado: 82,
+
+
 
                 produtividade: 69,
 
+
+
                 custoIA: 1100
 
+
+
             }
+
+
 
         ];
 
 
+
+
+
         /*
+
             EFICIENCIA POR DEPARTAMENTO
 
+
+
             Regra adotada no projeto:
+
             média simples entre uso adequado
+
             e produtividade.
+
         */
 
+
+
         dadosDepartamentos.forEach(
+
             function(departamento) {
 
+
+
                 departamento.eficiencia =
+
                     Math.round(
+
                         (
+
                             departamento.usoAdequado +
+
                             departamento.produtividade
+
                         )
+
                         /
+
                         2
+
                     );
 
+
+
             }
+
         );
+
+
+
 
 
         /* CUSTOS */
 
+
+
         const graficoCustos =
+
             document.getElementById("graficoCustos");
 
 
+
+
+
         const departamentosCustos =
+
             dadosDepartamentos.map(
+
                 function(departamento) {
+
+
 
                     return departamento.departamento;
 
+
+
                 }
+
             );
+
+
+
 
 
         const valoresCustos =
+
             dadosDepartamentos.map(
+
                 function(departamento) {
+
+
 
                     return departamento.custoIA;
 
+
+
                 }
+
             );
+
+
+
 
 
         /* CUSTO TOTAL */
 
+
+
         const custoTotal =
+
             dadosDepartamentos.reduce(
+
                 function(total, departamento) {
+
+
 
                     return total + departamento.custoIA;
 
+
+
                 },
+
                 0
+
             );
+
+
+
 
 
         document
+
             .getElementById("custoTotal")
+
             .innerHTML =
+
             custoTotal.toLocaleString(
+
                 "pt-BR",
+
                 {
+
                     style: "currency",
+
                     currency: "BRL"
+
                 }
+
             );
+
+
+
 
 
         /* TOTAL DE DEPARTAMENTOS */
 
+
+
         document
+
             .getElementById("totalDepartamentos")
+
             .innerHTML =
+
             dadosDepartamentos.length;
+
+
+
 
 
         /* TOTAL DE UTILIZACOES */
 
+
+
         const totalUtilizacoes =
+
             dadosDepartamentos.reduce(
+
                 function(total, departamento) {
+
+
 
                     return total + departamento.utilizacoes;
 
+
+
                 },
+
                 0
+
             );
 
 
+
+
+
         document
+
             .getElementById("totalUtilizacoes")
+
             .innerHTML =
+
             totalUtilizacoes;
+
+
+
 
 
         /* EFICIENCIA GERAL */
 
+
+
         const eficienciaGeral =
+
             Math.round(
 
+
+
                 dadosDepartamentos.reduce(
+
                     function(total, departamento) {
+
+
 
                         return total + departamento.eficiencia;
 
+
+
                     },
+
                     0
+
                 )
+
+
 
                 /
 
+
+
                 dadosDepartamentos.length
+
+
 
             );
 
 
+
+
+
         document
+
             .getElementById("eficienciaGeral")
+
             .innerHTML =
+
             eficienciaGeral + "%";
+
+
+
 
 
         /* ECONOMIA - CUSTO MEDIO POR UTILIZACAO */
 
+
+
         const custoMedioUtilizacao =
+
             custoTotal / totalUtilizacoes;
 
 
+
+
+
         document
+
             .getElementById("custoMedioUtilizacao")
+
             .innerHTML =
+
             custoMedioUtilizacao.toLocaleString(
+
                 "pt-BR",
+
                 {
+
                     style: "currency",
+
                     currency: "BRL"
+
                 }
+
             );
+
+
+
 
 
         /* ECONOMIA - DEPARTAMENTO COM MENOR CUSTO */
 
+
+
         const departamentoMenorCusto =
+
             dadosDepartamentos.reduce(
+
                 function(menor, departamento) {
 
+
+
                     if (
+
                         departamento.custoIA <
+
                         menor.custoIA
+
                     ) {
+
+
 
                         return departamento;
 
+
+
                     }
+
+
 
                     return menor;
 
+
+
                 }
+
             );
 
 
+
+
+
         document
+
             .getElementById("departamentoMenorCusto")
+
             .innerHTML =
+
             departamentoMenorCusto.departamento;
 
 
+
+
+
         document
+
             .getElementById("valorMenorCusto")
+
             .innerHTML =
+
             departamentoMenorCusto.custoIA.toLocaleString(
+
                 "pt-BR",
+
                 {
+
                     style: "currency",
+
                     currency: "BRL"
+
                 }
+
             ) +
+
             " de custo total registrado de IA.";
+
+
+
 
 
         /* GRAFICO DE CUSTOS */
 
+
+
         if (
+
             graficoCustos &&
+
             departamentosCustos.length > 0
+
         ) {
 
+
+
             document
+
                 .getElementById("semCustos")
+
                 .style.display = "none";
+
+
+
 
 
             new Chart(graficoCustos, {
 
+
+
                 type: "bar",
+
+
 
                 data: {
 
+
+
                     labels: departamentosCustos,
+
+
 
                     datasets: [{
 
+
+
                         label: "Custos de IA",
+
+
 
                         data: valoresCustos
 
+
+
                     }]
+
+
 
                 },
 
+
+
                 options: {
+
+
 
                     responsive: true,
 
+
+
                     maintainAspectRatio: false
+
+
 
                 }
 
+
+
             });
 
+
+
         }
+
+
+
 
 
         /* GRAFICO DE EFICIENCIA POR DEPARTAMENTO */
 
+
+
         const graficoEficiencia =
+
             document.getElementById("graficoEficiencia");
 
 
+
+
+
         const departamentosEficiencia =
+
             dadosDepartamentos.map(
+
                 function(departamento) {
+
+
 
                     return departamento.departamento;
 
+
+
                 }
+
             );
+
+
+
 
 
         const valoresEficiencia =
+
             dadosDepartamentos.map(
+
                 function(departamento) {
+
+
 
                     return departamento.eficiencia;
 
+
+
                 }
+
             );
 
 
+
+
+
         if (
+
             graficoEficiencia &&
+
             departamentosEficiencia.length > 0
+
         ) {
 
+
+
             document
+
                 .getElementById("semEficiencia")
+
                 .style.display = "none";
+
+
+
 
 
             new Chart(graficoEficiencia, {
 
+
+
                 type: "bar",
+
+
 
                 data: {
 
+
+
                     labels: departamentosEficiencia,
+
+
 
                     datasets: [{
 
+
+
                         label: "Eficiência",
+
+
 
                         data: valoresEficiencia
 
+
+
                     }]
+
+
 
                 },
 
+
+
                 options: {
+
+
 
                     responsive: true,
 
+
+
                     maintainAspectRatio: false,
+
+
 
                     scales: {
 
+
+
                         y: {
+
+
 
                             beginAtZero: true,
 
+
+
                             max: 100
+
+
 
                         }
 
+
+
                     }
+
+
 
                 }
 
+
+
             });
+
+
 
         }
 
 
+
+
+
         /* TABELA DE EFICIENCIA POR DEPARTAMENTO */
 
+
+
         const tabelaEficiencia =
+
             document.getElementById("tabelaEficiencia");
 
 
+
+
+
         dadosDepartamentos.forEach(
+
             function(departamento) {
 
+
+
                 const linha =
+
                     document.createElement("tr");
+
+
+
 
 
                 linha.innerHTML =
 
+
+
                     "<td>" +
+
                         departamento.departamento +
+
                     "</td>" +
 
+
+
                     "<td>" +
+
                         departamento.utilizacoes +
+
                     "</td>" +
 
+
+
                     "<td>" +
+
                         departamento.usoAdequado +
+
                         "%" +
+
                     "</td>" +
 
+
+
                     "<td>" +
+
                         departamento.produtividade +
+
                         "%" +
+
                     "</td>" +
 
+
+
                     "<td>" +
+
                         departamento.custoIA.toLocaleString(
+
                             "pt-BR",
+
                             {
+
                                 style: "currency",
+
                                 currency: "BRL"
+
                             }
+
                         ) +
+
                     "</td>" +
 
+
+
                     "<td>" +
+
                         departamento.eficiencia +
+
                         "%" +
+
                     "</td>";
+
+
+
 
 
                 tabelaEficiencia.appendChild(linha);
 
+
+
             }
+
         );
 
+
+
     </script>
-
-
-    <script src="/app.js"></script>
-
+<script src="/app.js"></script>
 </body>
-
 </html>
