@@ -200,6 +200,61 @@ class AprendizagemSprintIntegrationTest {
         assertThat(motor.ciclos(admin,aluno.getId())).hasSize(1);
         assertThat(motor.pendencias(admin,aluno.getId())).extracting(p->p.get("tema")).doesNotContain("PROTECAO_DE_DADOS");
     }
+    @Autowired org.springframework.jdbc.core.JdbcTemplate jdbcCatalogo;
+    @Autowired br.com.hestia.microtreinamento.service.CatalogoTreinamentoService catalogoPadrao;
+
+    @Test
+    void motorUsaCatalogoPersistidoDaEmpresa() throws Exception {
+        var catalogoReal = new br.com.hestia.microtreinamento.service.CatalogoTreinamentoService(
+                jdbcCatalogo, contexto, false);
+        motor.usarCatalogoPersistido(catalogoReal);
+        a.usarCatalogoPersistido(catalogoReal);
+
+        try {
+            long publicado = 92001L;
+            inserirTreinamento(publicado, empresa.getId(), "PUBLICADO");
+            inserirTreinamento(92002L, empresa.getId(), "RETIRADO");
+            inserirTreinamento(92003L, outro.getEmpresa().getId(), "PUBLICADO");
+
+            var infra = infraestruturaTrilha();
+            ocorrenciaConfirmada(infra, TipoErro.DADOS_SENSIVEIS, LocalDateTime.now().minusHours(1));
+            motor.processar(admin, aluno.getId());
+
+            assertThat(motor.ciclos(admin, aluno.getId())).isEmpty();
+            assertThat(motor.pendencias(admin, aluno.getId()))
+                    .extracting(p -> p.get("tema")).contains("PROTECAO_DE_DADOS");
+
+            a.publicar(admin, new Publicacao(publicado, 1, questoes()));
+            RequestContextHolder.resetRequestAttributes();
+            motor.processar(admin, aluno.getId());
+
+            assertThat(motor.ciclos(admin, aluno.getId())).hasSize(1);
+            assertThat(motor.pendencias(admin, aluno.getId()))
+                    .extracting(p -> p.get("tema")).doesNotContain("PROTECAO_DE_DADOS");
+            assertThat(jdbcCatalogo.queryForList(
+                    "SELECT treinamento_id FROM trilha_aprendizagem_requisitos WHERE treinamento_id IN (92001, 92002, 92003)",
+                    Long.class)).containsExactly(publicado);
+        } finally {
+            motor.usarCatalogoPersistido(catalogoPadrao);
+            a.usarCatalogoPersistido(catalogoPadrao);
+        }
+    }
+
+    private void inserirTreinamento(long id, long empresaId, String estado) throws Exception {
+        String conteudo = "Confira as regras de proteção de dados antes de usar IA.";
+        String hash = java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256")
+                .digest(conteudo.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        jdbcCatalogo.update("""
+                INSERT INTO catalogo_treinamentos
+                (id, empresa_id, titulo, descricao, conteudo, tema, duracao_minutos,
+                 fonte, autorizacao_uso, objetivo, publico, atividade, criterio_aceite,
+                 questionario, conteudo_sha256, estado, criado_por, criado_em)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                """, id, empresaId, "Proteção de dados", "Treinamento de integração", conteudo,
+                "PROTECAO_DE_DADOS", 10, "Teste", "Teste", "Proteção de dados",
+                "Equipe", "Atividade", "Critério", "[]", hash, estado, admin.getId());
+    }
+
     RespostaReutilizavel resposta(){var r=new RespostaReutilizavel();r.setEmpresaId(empresa.getId());r.setUsuarioId(admin.getId());r.setPromptOriginal("Pergunta sobre política");r.setRespostaGerada("Somente ferramentas autorizadas.");r.setPerfisPermitidos(Set.of(PerfilUsuario.ADMIN,PerfilUsuario.FUNCIONARIO));return respostas.saveAndFlush(r);}
     @Test void revisaoBloqueiaExpiradasEHistoricoDeRetirada(){
         var r=resposta();assertThat(acesso.recuperar(aluno,null,r.getId(),null,false,org.springframework.data.domain.Pageable.unpaged())).hasSize(1);
@@ -266,20 +321,20 @@ class AprendizagemSprintIntegrationTest {
         var primeira=resposta();var segunda=resposta();
         rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,primeira.getId()));
         assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,segunda.getId())))
-            .isInstanceOfSatisfying(ResponseStatusException.class,e->assertThat(e.getStatusCode().value()).isEqualTo(409));
+                .isInstanceOfSatisfying(ResponseStatusException.class,e->assertThat(e.getStatusCode().value()).isEqualTo(409));
         assertThat(segunda.getQuantidadeReutilizacoes()).isZero();
     }
     @Test void respostaRetiradaNaoPodeSerConfirmadaDepoisDaConsulta(){
         var fonte=resposta();rag.perguntar(aluno,new InteracaoRagService.Pergunta("ver-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
         revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Conteúdo retirado",null));
         assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("retirada-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
-            .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class);
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
     }
     @Test void confirmacaoNaoAcessaRespostaDeOutraEmpresa(){
         var fonte=resposta();
         assertThatThrownBy(()->rag.perguntar(outro,new InteracaoRagService.Pergunta("outra-empresa-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
-            .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class);
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(outro)).isZero();
     }
     @Test void reenviosConcorrentesEUsuariosDistintosNaoDuplicamNemPerdemContadores() throws Exception {
@@ -311,17 +366,17 @@ class AprendizagemSprintIntegrationTest {
     @Test void endpointLegadoExigeChaveECompartilhaConfirmacaoIdempotente() throws Exception {
         var fonte=resposta();
         var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controllerReuso)
-            .addFilters((jakarta.servlet.Filter)(req,res,chain)->{
-                contexto.definir(new ContextoEmpresa(aluno.getId(),empresa.getId()));
-                chain.doFilter(req,res);
-            }).build();
+                .addFilters((jakarta.servlet.Filter)(req,res,chain)->{
+                    contexto.definir(new ContextoEmpresa(aluno.getId(),empresa.getId()));
+                    chain.doFilter(req,res);
+                }).build();
         String url="/api/respostas-reutilizaveis/"+fonte.getId()+"/reutilizar";
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url).requestAttr("usuarioAutenticado",aluno))
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();
         for(int i=0;i<2;i++)mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url)
-            .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+                        .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         em.flush();assertThat(fonte.getQuantidadeReutilizacoes()).isEqualTo(1);assertThat(movimentosReuso(aluno)).isEqualTo(1);
     }
 

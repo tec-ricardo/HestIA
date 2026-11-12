@@ -75,7 +75,10 @@ public class MotorTrilhasService {
             Long ciclo;
             if(ativo)ciclo=id(anterior,"id");
             else {
-                var treinamentos=catalogo.criarTreinamentos().stream().filter(t->t.isAtivo()&&t.getTema()==tema).toList();List<Map<String,Object>> requisitos=new ArrayList<>();boolean completo=!treinamentos.isEmpty();
+                var publicados = catalogo instanceof br.com.hestia.microtreinamento.service.CatalogoTreinamentoService persistido
+                        ? persistido.criarTreinamentos(empresa)
+                        : catalogo.criarTreinamentos();
+                var treinamentos=publicados.stream().filter(t->t.isAtivo()&&t.getTema()==tema).toList();List<Map<String,Object>> requisitos=new ArrayList<>();boolean completo=!treinamentos.isEmpty();
                 for(var t:treinamentos){var avaliacoes=jdbc.queryForList("SELECT id,treinamento_id,conteudo_sha256 FROM aprendizagem_catalogo WHERE empresa_id=? AND treinamento_id=? AND conteudo_sha256=? ORDER BY versao DESC",empresa,t.getId(),hash(t.getConteudo()));if(avaliacoes.isEmpty()){completo=false;break;}requisitos.add(avaliacoes.getFirst());}
                 if(!completo){jdbc.update("DELETE FROM trilha_pendencias_catalogo WHERE empresa_id=? AND usuario_id=? AND tema=?",empresa,usuario,tema.name());jdbc.update("INSERT INTO trilha_pendencias_catalogo VALUES(?,?,?,?,?)",empresa,usuario,tema.name(),"Conteúdo ativo ou avaliação publicada compatível ausente",agora);continue;}
                 var trilha=new Trilha(empresa,"Capacitação: "+tema.name(),treinamentos.stream().map(Microtreinamento::getId).toList());trilha.setExigeAprovacao(true);trilhas.saveAndFlush(trilha);var participacao=participacoes.saveAndFlush(new ParticipacaoTrilha(trilha,usuario));
