@@ -134,7 +134,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 new Pergunta("consulta-politica-1", PERGUNTA, Modo.CONSULTAR, null)
         );
 
-        assertThat(resultado.estado()).isEqualTo("REUTILIZADA");
+        assertThat(resultado.estado()).isEqualTo("RECUPERADA");
         assertThat(resultado.resposta()).isEqualTo(POLITICA);
         assertThat(resultado.fontes()).singleElement().satisfies(fonte -> {
             assertThat(fonte.id()).isEqualTo(77L);
@@ -153,7 +153,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historico(usuario))
                 .extracting(InteracaoRagService.Resultado::id)
                 .containsExactly(resultado.id());
-        verify(respostas).registrarReutilizacao(77L, 10L);
+        verify(respostas, never()).registrarReutilizacao(anyLong(), anyLong());
     }
 
     @Test

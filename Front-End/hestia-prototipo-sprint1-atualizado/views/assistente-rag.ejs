@@ -307,40 +307,38 @@
 
 
       function registrarReutilizacao(item) {
-
         reutilizacoes.push({ pergunta: item.question, data: new Date().toISOString() });
-
         try {
-
           const atualizacao = { tipo: 'xp-atualizado', instante: Date.now() };
-
           if ('BroadcastChannel' in window) {
             const canal = new BroadcastChannel('hestia-pass');
-            canal.postMessage(atualizacao);
-            canal.close();
+            canal.postMessage(atualizacao); canal.close();
           }
-
           localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
-
-          atualizarEconomia();
-
-          notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
-
-        } catch (_) {
-
-          reutilizacoes.pop();
-
-          notify('Resposta copiada, mas não foi possível registrar a reutilização.', true);
-
-        }
-
+        } catch (_) { /* A notificação entre abas não altera a confirmação no servidor. */ }
+        atualizarEconomia();
+        notify('Reutilização confirmada no servidor. Ganhos de tempo e XP não foram estimados nesta tela.');
       }
 
-
-
-      function confirmarReutilizacaoAutomatica(item) {
-        registrarReutilizacao(item);
-        notify('+15 XP registrados no HestIA Pass pela resposta aprovada reutilizada.');
+      const confirmacoesPendentes = new WeakSet();
+      async function confirmarNoServidor(item) {
+        if (!item.respostaId) throw new Error('Fonte não identificada; consulte novamente.');
+        if (confirmacoesPendentes.has(item)) throw new Error('Aguarde a confirmação em andamento.');
+        item.chaveReutilizacao ||= item.interacaoId ? 'REUSO-' + item.interacaoId + '-' + item.respostaId : crypto.randomUUID();
+        persist(); persistBank();
+        confirmacoesPendentes.add(item);
+        try {
+          const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: item.chaveReutilizacao, pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
+          const dados = await resposta.json();
+          if (!resposta.ok || dados.estado !== 'REUTILIZADA' || !dados.resposta) throw new Error(dados.erro || 'Fonte alterada ou indisponível. Consulte novamente.');
+          const primeiraConfirmacao = !item.reutilizada;
+          item.reutilizada = true; item.text = dados.resposta;
+          persist(); persistBank();
+          if (primeiraConfirmacao) registrarReutilizacao(item);
+          try { await copyText(dados.resposta); }
+          catch (_) { notify('Reutilização confirmada. Não foi possível copiar; selecione o texto manualmente.'); }
+          return dados;
+        } finally { confirmacoesPendentes.delete(item); }
       }
 
       const bankBody = document.getElementById('ragBankBody');
@@ -451,6 +449,9 @@
 
           question: message.question,
           respostaId: message.respostaId,
+          interacaoId: message.interacaoId,
+          chaveReutilizacao: message.chaveReutilizacao,
+          reutilizada: message.reutilizada,
 
           text: message.text,
 
@@ -510,17 +511,13 @@
 
           const use = element('button', 'Usar resposta'); use.type = 'button';
 
+          use.disabled = !item.respostaId || item.reutilizada;
+          if (item.reutilizada) use.textContent = 'Reutilização confirmada';
           use.addEventListener('click', async () => {
-
-            try {
-              if (!item.respostaId) throw Error('Fonte não identificada');
-              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
-              const dados = await resposta.json(); if (!resposta.ok || !dados.resposta) throw Error(dados.erro || 'Fonte indisponível');
-              await copyText(dados.resposta); registrarReutilizacao(item);
-            }
-
+            use.disabled = true;
+            try { await confirmarNoServidor(item); renderBank(); renderChat(); }
             catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
-
+            finally { use.disabled = !!item.reutilizada; }
           });
 
           const remove = element('button', 'Excluir'); remove.type = 'button';
@@ -577,6 +574,9 @@
 
           if (policy.id || policy.section) box.append(element('p', [policy.id, policy.section].filter(Boolean).join(' · '), 'rag-meta'));
 
+          box.append(element('p', message.reutilizada ? 'Reutilização confirmada' : message.natureza === 'GERADA_COM_FONTES' ? 'Resposta gerada com fontes' : 'Consulta: nenhum crédito ou economia registrado', 'rag-meta'));
+          box.append(element('p', message.similarity == null ? 'Similaridade não medida; não representa probabilidade de acerto.' : 'Similaridade calculada: ' + message.similarity + ' (não é probabilidade de acerto)', 'rag-meta'));
+          if (message.fonteCriadaEm) box.append(element('p', 'Fonte cadastrada em: ' + new Date(message.fonteCriadaEm).toLocaleString('pt-BR'), 'rag-meta'));
           const actions = element('div', undefined, 'rag-message-actions');
 
           const copy = element('button', 'Reutilizar resposta', 'rag-secondary');
@@ -584,13 +584,12 @@
           copy.type = 'button';
 
           copy.disabled = !message.respostaId || message.reutilizada;
-          if (message.reutilizada) copy.textContent = 'Resposta reutilizada (+15 XP)';
+          if (message.reutilizada) copy.textContent = 'Reutilização confirmada';
           copy.addEventListener('click', async () => {
-            try {
-              const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: message.question, modo: 'REUTILIZAR', respostaId: message.respostaId }) });
-              const dados = await resposta.json(); if (!resposta.ok) throw new Error(dados.erro || 'Resposta indisponível para reutilização.');
-              await copyText(dados.resposta); registrarReutilizacao(message); saveAnswer({ ...message, text: dados.resposta });
-            } catch (erro) { notify(erro.message, true); }
+            copy.disabled = true;
+            try { const dados = await confirmarNoServidor(message); saveAnswer({ ...message, text: dados.resposta }); renderChat(); }
+            catch (erro) { notify(erro.message, true); }
+            finally { copy.disabled = !message.respostaId || !!message.reutilizada; }
           });
 
           const retry = element('button', 'Gerar nova resposta', 'rag-secondary');
@@ -846,12 +845,12 @@
 
             try {
 
-              await copyText(item.resposta.text);
-
-              registrarReutilizacao(item.resposta);
+              botao.disabled = true;
+              await confirmarNoServidor(item.resposta);
+              renderBank(); renderChat();
 
             } catch (erro) { notify(erro.message || 'Não foi possível reutilizar a resposta.', true); }
-
+            finally { botao.disabled = !!item.resposta.reutilizada; }
           });
 
           bloco.append(botao);
@@ -877,7 +876,7 @@
         const dados = await resposta.json();
         if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
         const fonte = dados.fontes && dados.fontes[0];
-        return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+        return { interacaoId: dados.id, role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', natureza: dados.natureza, fonteCriadaEm: fonte && fonte.criadaEm, similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
       }
 
       form.addEventListener('submit', e => {
@@ -938,8 +937,7 @@
 
             renderHistory();
 
-            if (result.reutilizada) confirmarReutilizacaoAutomatica(result);
-            else if (!result.source) notify('Nenhum resultado encontrado.');
+            if (!result.source) notify('Nenhum resultado encontrado.');
 
           } catch (erro) {
 
@@ -1014,7 +1012,7 @@
         if (conversations.length) return;
         conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
           { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
-          { role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
+          { interacaoId: linha.id, role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, reutilizada: linha.estado === 'REUTILIZADA', natureza: linha.natureza, similarity: linha.similaridade, fonteCriadaEm: linha.fontes[0] && linha.fontes[0].criadaEm, section: linha.fontes[0] && linha.fontes[0].versao ? 'Versão ' + linha.fontes[0].versao : '', policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
         ] }));
         renderHistory();
       }).catch(() => notify('Histórico do servidor indisponível.', true));

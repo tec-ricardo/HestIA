@@ -245,4 +245,81 @@ class AprendizagemSprintIntegrationTest {
         assertThatThrownBy(()->apuracoes.obter(gestor,x)).isInstanceOf(ResponseStatusException.class);
         assertThatThrownBy(()->apuracoes.obter(aluno,x)).isInstanceOf(ResponseStatusException.class);
     }
+
+    private long movimentosReuso(Usuario u){return a.jdbc().queryForObject("SELECT count(*) FROM movimentos_experiencia WHERE usuario_id=? AND acao='REUTILIZACAO_RESPOSTA'",Long.class,u.getId());}
+    @Test void consultaNaoPremiaEConfirmacaoRepetidaContaUmaVez(){
+        var fonte=resposta();fonte.setTokensEntrada(100);fonte.setTokensSaida(20);respostas.saveAndFlush(fonte);
+        var consulta=rag.perguntar(aluno,new InteracaoRagService.Pergunta("consulta-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
+        assertThat(consulta.estado()).isEqualTo("RECUPERADA");assertThat(consulta.natureza()).isEqualTo("CONSULTA");
+        assertThat(consulta.similaridade()).isNull();assertThat(consulta.confianca()).isEqualTo("NAO_CLASSIFICADA");
+        assertThat(consulta.fontes().getFirst().criadaEm()).isNotBlank();assertThat(consulta.fontes().getFirst().origem()).isEqualTo("BASE_CORPORATIVA");
+        assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
+        var pedido=new InteracaoRagService.Pergunta("confirmar-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.REUTILIZAR,fonte.getId());
+        var confirmada=rag.perguntar(aluno,pedido);assertThat(confirmada.estado()).isEqualTo("REUTILIZADA");
+        assertThat(rag.perguntar(aluno,pedido).id()).isEqualTo(confirmada.id());
+        em.flush();assertThat(fonte.getQuantidadeReutilizacoes()).isEqualTo(1);assertThat(fonte.getTokensEconomizados()).isEqualTo(120);
+        assertThat(movimentosReuso(aluno)).isEqualTo(1);verifyNoInteractions(geracao);
+    }
+    @Test void mesmaChaveNaoPodeConfirmarOutraResposta(){
+        var primeira=resposta();var segunda=resposta();
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,primeira.getId()));
+        assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,segunda.getId())))
+            .isInstanceOfSatisfying(ResponseStatusException.class,e->assertThat(e.getStatusCode().value()).isEqualTo(409));
+        assertThat(segunda.getQuantidadeReutilizacoes()).isZero();
+    }
+    @Test void respostaRetiradaNaoPodeSerConfirmadaDepoisDaConsulta(){
+        var fonte=resposta();rag.perguntar(aluno,new InteracaoRagService.Pergunta("ver-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Conteúdo retirado",null));
+        assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("retirada-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
+            .isInstanceOf(ResponseStatusException.class);
+        assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
+    }
+    @Test void confirmacaoNaoAcessaRespostaDeOutraEmpresa(){
+        var fonte=resposta();
+        assertThatThrownBy(()->rag.perguntar(outro,new InteracaoRagService.Pergunta("outra-empresa-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
+            .isInstanceOf(ResponseStatusException.class);
+        assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(outro)).isZero();
+    }
+    @Test void reenviosConcorrentesEUsuariosDistintosNaoDuplicamNemPerdemContadores() throws Exception {
+        var fonte=resposta();fonte.setTokensEntrada(100);fonte.setTokensSaida(20);respostas.saveAndFlush(fonte);
+        long respostaId=fonte.getId(),empresaId=empresa.getId();
+        TestTransaction.flagForCommit();TestTransaction.end();
+        var executor=java.util.concurrent.Executors.newFixedThreadPool(6);
+        var largada=new java.util.concurrent.CountDownLatch(1);
+        try{
+            var futuros=new ArrayList<java.util.concurrent.Future<Long>>();
+            for(int i=0;i<6;i++){Usuario autor=i%2==0?aluno:admin;
+                futuros.add(executor.submit(()->{
+                    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+                    contexto.definir(new ContextoEmpresa(autor.getId(),empresaId));
+                    try{largada.await();return rag.perguntar(autor,new InteracaoRagService.Pergunta("concorrente-544","Escolha confirmada",InteracaoRagService.Modo.REUTILIZAR,respostaId)).id();}
+                    finally{RequestContextHolder.resetRequestAttributes();}
+                }));
+            }
+            largada.countDown();var ids=new HashSet<Long>();
+            for(var futuro:futuros)ids.add(futuro.get(30,java.util.concurrent.TimeUnit.SECONDS));
+            assertThat(ids).hasSize(2);
+            assertThat(a.jdbc().queryForObject("SELECT quantidade_reutilizacoes FROM respostas_reutilizaveis WHERE id=?",Integer.class,respostaId)).isEqualTo(2);
+            assertThat(a.jdbc().queryForObject("SELECT tokens_economizados FROM respostas_reutilizaveis WHERE id=?",Long.class,respostaId)).isEqualTo(240);
+            assertThat(movimentosReuso(aluno)).isEqualTo(1);assertThat(movimentosReuso(admin)).isEqualTo(1);
+        }finally{executor.shutdownNow();}
+    }
+
+    @Autowired br.com.hestia.reutilizavel.controller.RespostaReutilizavelController controllerReuso;
+    @Test void endpointLegadoExigeChaveECompartilhaConfirmacaoIdempotente() throws Exception {
+        var fonte=resposta();
+        var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controllerReuso)
+            .addFilters((jakarta.servlet.Filter)(req,res,chain)->{
+                contexto.definir(new ContextoEmpresa(aluno.getId(),empresa.getId()));
+                chain.doFilter(req,res);
+            }).build();
+        String url="/api/respostas-reutilizaveis/"+fonte.getId()+"/reutilizar";
+        mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url).requestAttr("usuarioAutenticado",aluno))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+        assertThat(fonte.getQuantidadeReutilizacoes()).isZero();
+        for(int i=0;i<2;i++)mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url)
+            .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+        em.flush();assertThat(fonte.getQuantidadeReutilizacoes()).isEqualTo(1);assertThat(movimentosReuso(aluno)).isEqualTo(1);
+    }
 }

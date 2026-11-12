@@ -166,9 +166,9 @@ public class BuscaVetorialService {
 
         String vetor = gerarVetor(pergunta);
 
-        List<Long> ids = jdbcTemplate.queryForList(
+        List<Map<String,Object>> pontuadas = jdbcTemplate.queryForList(
                 """
-                SELECT id
+                SELECT id, 1.0 - (embedding_vector <=> CAST(? AS vector)) AS similaridade
                 FROM respostas_reutilizaveis
                 WHERE empresa_id = ?
                   AND reutilizavel = true
@@ -186,7 +186,7 @@ public class BuscaVetorialService {
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
-                Long.class,
+                vetor,
                 empresaId,
                 java.time.LocalDateTime.now(),
                 usuario.getPerfil().name(),
@@ -196,6 +196,9 @@ public class BuscaVetorialService {
                 limite
         );
 
+        List<Long> ids = pontuadas.stream().map(r -> ((Number) r.get("id")).longValue()).toList();
+        Map<Long,Double> similaridades = pontuadas.stream().collect(Collectors.toMap(
+                r -> ((Number) r.get("id")).longValue(), r -> ((Number) r.get("similaridade")).doubleValue()));
         if (ids.isEmpty()) {
             if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"SEM_CONTEUDO_AUTORIZADO");
             return List.of();
@@ -221,6 +224,7 @@ public class BuscaVetorialService {
         return ids.stream()
                 .map(respostas::get)
                 .filter(Objects::nonNull)
+                .peek(r -> r.setSimilaridade(similaridades.get(r.getId())))
                 .toList();
     }
 
