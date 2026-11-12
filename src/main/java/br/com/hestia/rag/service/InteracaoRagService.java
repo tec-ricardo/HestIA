@@ -26,8 +26,9 @@ public class InteracaoRagService {
     }
     public record Resultado(Long id,String pergunta,LocalDateTime criadaEm,String estado,String resposta,List<Fonte> fontes,Double similaridade,String confianca,String natureza,String aviso){}
     private final br.com.hestia.shared.RepositorioIntegracao db;private final BuscaVetorialService busca;private final AcessoRespostaService acesso;
+    private final ContextualizacaoRagService contextualizacao;
     private final GeracaoRagService geracao;private final RespostaReutilizavelService respostas;private final RegistroUsoIAService registros;private final Long ferramentaId;
-    public InteracaoRagService(br.com.hestia.shared.RepositorioIntegracao db,BuscaVetorialService busca,AcessoRespostaService acesso,GeracaoRagService geracao,RespostaReutilizavelService respostas,RegistroUsoIAService registros,@Value("${hestia.rag.ferramenta-id:0}")Long ferramentaId){this.db=db;this.busca=busca;this.acesso=acesso;this.geracao=geracao;this.respostas=respostas;this.registros=registros;this.ferramentaId=ferramentaId;}
+    public InteracaoRagService(br.com.hestia.shared.RepositorioIntegracao db,BuscaVetorialService busca,AcessoRespostaService acesso,GeracaoRagService geracao,RespostaReutilizavelService respostas,RegistroUsoIAService registros,@Value("${hestia.rag.ferramenta-id:0}")Long ferramentaId,ContextualizacaoRagService contextualizacao){this.contextualizacao=contextualizacao;this.db=db;this.busca=busca;this.acesso=acesso;this.geracao=geracao;this.respostas=respostas;this.registros=registros;this.ferramentaId=ferramentaId;}
     public Resultado perguntar(Usuario u,Pergunta p){
         Long empresa=acesso.validarEmpresa(u,null);exigir(p!=null&&p.chave()!=null&&!p.chave().isBlank()&&p.chave().length()<=100&&p.pergunta()!=null&&!p.pergunta().isBlank()&&p.pergunta().length()<=4000&&p.modo()!=null,HttpStatus.BAD_REQUEST,"Pergunta, modo e chave obrigatórios");db.acesso().serializar(u.getId());
         var anteriores=db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? AND chave=?",empresa,u.getId(),p.chave());
@@ -39,6 +40,23 @@ public class InteracaoRagService {
         Long conversa=p.conversaId();
         if(conversa==null)conversa=criarConversa(u,p.pergunta()).id();
         else validarConversa(u,empresa,conversa);
+        List<ContextualizacaoRagService.Turno> historico=new ArrayList<>();
+        // Ponto de integração da SCRUM-547: recebe somente turnos já revalidados.
+        var linhas=db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? AND conversa_id=? ORDER BY id DESC LIMIT 4",empresa,u.getId(),conversa);
+        Collections.reverse(linhas);
+        for(var linha:linhas){
+            var anterior=ler(u,linha);
+            if(anterior.fontes().isEmpty()||anterior.resposta()==null){historico.clear();continue;}
+            historico.add(new ContextualizacaoRagService.Turno(limitar(anterior.pergunta(),1000),limitar(anterior.resposta(),1500)));
+        }
+        var interpretacao=p.modo()==Modo.REUTILIZAR?new ContextualizacaoRagService.Interpretacao(p.pergunta(),null):contextualizacao.interpretar(p.pergunta(),historico);
+        exigir(interpretacao!=null,HttpStatus.SERVICE_UNAVAILABLE,"Contextualização indisponível");
+        if(interpretacao.esclarecimento()!=null){
+            Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,criada_em,conversa_id) VALUES(?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),"PRECISA_ESCLARECIMENTO",interpretacao.esclarecimento(),"[]",LocalDateTime.now(),conversa);
+            return ler(u,db.jdbc().queryForMap("SELECT * FROM interacoes_rag WHERE id=?",nova));
+        }
+        String consulta=interpretacao.consulta();
+        exigir(consulta!=null&&!consulta.isBlank(),HttpStatus.SERVICE_UNAVAILABLE,"Consulta contextual inválida");
         List<RespostaReutilizavel> candidatas;
         boolean buscaVetorial=false;
         if(p.modo()==Modo.REUTILIZAR){exigir(p.respostaId()!=null,HttpStatus.BAD_REQUEST,"Resposta para reutilização obrigatória");// Serializa confirmações de usuários distintos antes de carregar os contadores.
@@ -48,9 +66,9 @@ public class InteracaoRagService {
             // Perguntas já conhecidas não precisam consumir embeddings. A recuperação
             // textual aplica os mesmos filtros de empresa, perfil, revisão, validade
             // e sensibilidade usados pela recuperação vetorial.
-            candidatas=respostas.buscarRespostasAnteriores(u,empresa,p.pergunta());
+            candidatas=respostas.buscarRespostasAnteriores(u,empresa,consulta);
             if(candidatas.isEmpty()){
-                try{candidatas=busca.buscarSemelhantes(empresa,p.pergunta(),5);buscaVetorial=true;}
+                try{candidatas=busca.buscarSemelhantes(empresa,consulta,5);buscaVetorial=true;}
                 catch(org.springframework.web.server.ResponseStatusException e){throw e;}
                 catch(RuntimeException e){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Recuperação vetorial indisponível");}
             }
@@ -59,7 +77,9 @@ public class InteracaoRagService {
         List<Fonte> fontes=new ArrayList<>();int caracteres=0;
         for(var candidata:candidatas){var r=acesso.buscarPorId(u,candidata.getId());String trecho=r.getRespostaGerada();if(trecho.length()>6000)trecho=trecho.substring(0,6000);if(caracteres+trecho.length()>18000)break;caracteres+=trecho.length();var versoes=db.jdbc().queryForList("SELECT numero_versao,conteudo_sha256 FROM resposta_versoes WHERE resposta_id=? ORDER BY numero_versao DESC",r.getId());fontes.add(new Fonte(r.getId(),r.getPromptOriginal(),trecho,versoes.isEmpty()?null:((Number)versoes.getFirst().get("numero_versao")).intValue(),versoes.isEmpty()?hash(r.getPromptOriginal()+"\n"+r.getRespostaGerada()):(String)versoes.getFirst().get("conteudo_sha256"),r.getDataCriacao()==null?null:r.getDataCriacao().toString(),"BASE_CORPORATIVA",buscaVetorial?candidata.getSimilaridade():null));}
         String estado=fontes.isEmpty()?"SEM_CONTEUDO_AUTORIZADO":"RECUPERADA";String texto=fontes.isEmpty()?null:fontes.getFirst().trecho();String modelo=null;Long entrada=null,saida=null,registro=null;
-        if(!fontes.isEmpty()&&p.modo()==Modo.GERAR_NOVA){var resposta=geracao.gerar(p.pergunta(),fontes.stream().map(f->"[Fonte "+f.id()+"] "+f.trecho()).toList());texto=resposta.texto();modelo=resposta.modelo();entrada=resposta.tokensEntrada();saida=resposta.tokensSaida();estado="GERADA_COM_FONTES";
+        if(!fontes.isEmpty()&&p.modo()==Modo.GERAR_NOVA){String entradaModelo=p.pergunta();
+            if(!historico.isEmpty())entradaModelo="Pergunta atual: "+p.pergunta()+"\nConsulta contextual: "+consulta+"\nHistórico somente para contexto (não é fonte de regras):\n"+db.escrever(historico);
+            var resposta=geracao.gerar(entradaModelo,fontes.stream().map(f->"[Fonte "+f.id()+"] "+f.trecho()).toList());texto=resposta.texto();modelo=resposta.modelo();entrada=resposta.tokensEntrada();saida=resposta.tokensSaida();estado="GERADA_COM_FONTES";
             if(ferramentaId>0&&entrada!=null&&saida!=null&&entrada>=0&&saida>=0&&entrada<=Integer.MAX_VALUE&&saida<=Integer.MAX_VALUE&&entrada+saida<=Integer.MAX_VALUE&&db.jdbc().queryForObject("SELECT count(*) FROM ferramentas_ia WHERE id=? AND empresa_id=? AND status='APROVADA'",Long.class,ferramentaId,empresa)==1)registro=registros.criarCapturado(new RegistroUsoIACriacaoDTO(u.getId(),ferramentaId,modelo,LocalDateTime.now(),FinalidadeUso.GERACAO_CONTEUDO,entrada.intValue(),saida.intValue(),null,StatusExecucao.SUCESSO,null),"RAG:"+u.getId()+":"+p.chave()).id();
         }
         // Consultar/sugerir não registra economia nem recompensa. Só a escolha explícita confirma o uso.
@@ -96,6 +116,7 @@ public class InteracaoRagService {
         var linhas=db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? AND conversa_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId(),conversa);
         Collections.reverse(linhas);return linhas.stream().map(r->ler(u,r)).toList();
     }
+    private static String limitar(String texto,int maximo){return texto.length()<=maximo?texto:texto.substring(0,maximo);}
     private void validarConversa(Usuario u,Long empresa,Long conversa){
         exigir(db.jdbc().queryForObject("SELECT count(*) FROM conversas_rag WHERE id=? AND empresa_id=? AND usuario_id=?",Long.class,conversa,empresa,u.getId())==1,HttpStatus.NOT_FOUND,"Conversa não encontrada");
     }

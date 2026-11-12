@@ -204,13 +204,13 @@ test('mantém os três modos do RAG no BFF e confirma a reutilização no backen
 test('as telas explicam fonte, reutilização, evolução, conquistas e próximo passo', () => {
   const rag = fs.readFileSync(path.join(__dirname, '../views/assistente-rag.ejs'), 'utf8');
   assert.ok(rag.includes("modo: 'REUTILIZAR'"));
-  assert.ok(rag.includes("modo = proximoModo"));
+  assert.ok(rag.includes("modo=proximoModo"));
   assert.ok(rag.includes('Fonte utilizada:'));
   assert.ok(rag.includes('Reutilização confirmada no servidor'));
   assert.ok(rag.includes("new BroadcastChannel('hestia-pass')"));
   assert.ok(!rag.includes('confirmarReutilizacaoAutomatica'));
-  assert.ok(rag.includes("reutilizada: dados.estado === 'REUTILIZADA'"));
-  assert.ok(rag.includes("fetch('/api/rag/historico')"));
+  assert.ok(rag.includes("reutilizada:dados.estado==='REUTILIZADA'"));
+  assert.ok(rag.includes("fetch('/api/rag/conversas')"));
 
   const passe = fs.readFileSync(path.join(__dirname, '../views/passe-hestia.ejs'), 'utf8');
   assert.ok(passe.includes('Nível atual'));

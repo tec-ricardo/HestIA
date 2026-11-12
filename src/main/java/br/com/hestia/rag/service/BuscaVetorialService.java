@@ -24,7 +24,9 @@ public class BuscaVetorialService {
     private br.com.hestia.auditoria.service.DecisaoRecuperacaoService decisoes;
 
     private static final int DIMENSAO = 1536;
-    private static final double SIMILARIDADE_PADRAO = 0.70;
+    @org.springframework.beans.factory.annotation.Value("${hestia.rag.similaridade-minima:0.70}")
+    private double similaridadePadrao = 0.70;
+    public double similaridadePadrao() { return similaridadePadrao; }
 
     private final JdbcTemplate jdbcTemplate;
     private final EmbeddingService embeddingService;
@@ -80,7 +82,7 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-        String vetor = gerarVetor(promptIndexado);
+        String vetor = gerarVetor(promptIndexado + "\n" + respostaIndexada);
 
         int atualizadas = jdbcTemplate.update(
                 """
@@ -128,7 +130,7 @@ public class BuscaVetorialService {
             int limite
     ) {
         return buscarSemelhantes(
-                empresaId, pergunta, limite, SIMILARIDADE_PADRAO
+                empresaId, pergunta, limite, similaridadePadrao
         );
     }
 

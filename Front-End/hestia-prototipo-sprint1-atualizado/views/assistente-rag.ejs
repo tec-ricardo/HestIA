@@ -328,7 +328,7 @@
         persist(); persistBank();
         confirmacoesPendentes.add(item);
         try {
-          const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: item.chaveReutilizacao, pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId }) });
+          const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: item.chaveReutilizacao, pergunta: item.question, modo: 'REUTILIZAR', respostaId: item.respostaId, conversaId: item.conversaId }) });
           const dados = await resposta.json();
           if (!resposta.ok || dados.estado !== 'REUTILIZADA' || !dados.resposta) throw new Error(dados.erro || 'Fonte alterada ou indisponível. Consulte novamente.');
           const primeiraConfirmacao = !item.reutilizada;
@@ -450,6 +450,7 @@
           question: message.question,
           respostaId: message.respostaId,
           interacaoId: message.interacaoId,
+          conversaId: message.conversaId,
           chaveReutilizacao: message.chaveReutilizacao,
           reutilizada: message.reutilizada,
 
@@ -571,6 +572,7 @@
           const policy = policyFor(message);
 
           box.append(element('p', 'Fonte utilizada: ' + policy.name, 'rag-meta'));
+          if ((message.source || '').includes('Demonstração')) box.append(element('p', 'Fonte fictícia de demonstração. Busca calibrada em amostra pequena; similaridade não garante que a fonte responda à pergunta.', 'rag-meta'));
 
           if (policy.id || policy.section) box.append(element('p', [policy.id, policy.section].filter(Boolean).join(' · '), 'rag-meta'));
 
@@ -650,6 +652,7 @@
         const entries = [];
 
         conversations.forEach(c => {
+          if(c.servidorId && !c.carregada && !c.messages.length)entries.push({conversation:c,index:0,text:c.title,createdAt:c.criadaEm});
 
           c.messages.forEach((m, index) => {
 
@@ -687,8 +690,12 @@
 
           button.append(element('span', formatHistoryDate(entry.createdAt), 'rag-history-date'));
 
-          button.addEventListener('click', () => {
-
+          button.addEventListener('click', async () => {
+            if(busy)return;
+            busy=true; send.disabled=true;
+            try { await carregarConversa(entry.conversation); }
+            catch(erro){notify(erro.message,true);return;}
+            finally{busy=false;send.disabled=false;}
             currentId = entry.conversation.id;
 
             notice.hidden = true;
@@ -870,13 +877,29 @@
       historySearch.addEventListener('input', renderHistory);
 
       let proximoModo = 'CONSULTAR';
-      async function answerFor(input) {
-        const modo = proximoModo; proximoModo = 'CONSULTAR';
-        const resposta = await fetch('/api/rag/perguntas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chave: crypto.randomUUID(), pergunta: input, modo }) });
-        const dados = await resposta.json();
-        if (!resposta.ok) throw new Error(dados.erro || 'Recuperação indisponível.');
-        const fonte = dados.fontes && dados.fontes[0];
-        return { interacaoId: dados.id, role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.', question: input, policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada', policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '', source: fonte ? fonte.titulo : null, respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null, reutilizada: dados.estado === 'REUTILIZADA', natureza: dados.natureza, fonteCriadaEm: fonte && fonte.criadaEm, similarity: dados.similaridade, confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
+      function mensagemDoServidor(dados,input,conversaId) {
+        const fonte=dados.fontes&&dados.fontes[0];
+        return { interacaoId:dados.id, conversaId, estado:dados.estado, role:'assistant', text:dados.resposta||'Não há conteúdo autorizado disponível para esta pergunta.', question:input, createdAt:dados.criadaEm,
+          policy:fonte?(fonte.titulo||'Conteúdo autorizado #'+fonte.id):'Nenhuma fonte autorizada',policyId:fonte?String(fonte.id):'',section:fonte&&fonte.versao?'Versão '+fonte.versao:'',source:fonte?fonte.titulo:null,
+          respostaId:fonte&&dados.estado!=='GERADA_COM_FONTES'?fonte.id:null,reutilizada:dados.estado==='REUTILIZADA',natureza:dados.natureza,fonteCriadaEm:fonte&&fonte.criadaEm,similarity:dados.similaridade,confidence:dados.confianca==='NAO_CLASSIFICADA'?null:dados.confianca };
+      }
+      async function carregarConversa(conversa){
+        if(!conversa.servidorId||conversa.carregada)return;
+        const r=await fetch('/api/rag/conversas/'+encodeURIComponent(conversa.servidorId)+'/historico');
+        const linhas=await r.json();if(!r.ok)throw Error(linhas.erro||'Histórico indisponível.');
+        conversa.messages=linhas.flatMap(linha=>[{role:'user',text:linha.pergunta,createdAt:linha.criadaEm},mensagemDoServidor(linha,linha.pergunta,conversa.servidorId)]);
+        conversa.carregada=true;
+      }
+      async function answerFor(input,conversa) {
+        const modo=proximoModo;proximoModo='CONSULTAR';
+        if(!conversa.servidorId){
+          const r=await fetch('/api/rag/conversas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({titulo:conversa.title})});
+          const criada=await r.json();if(!r.ok)throw Error(criada.erro||'Não foi possível iniciar a conversa.');
+          conversa.servidorId=criada.id;conversa.carregada=true;
+        }
+        const resposta=await fetch('/api/rag/perguntas',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chave:crypto.randomUUID(),pergunta:input,modo,conversaId:conversa.servidorId})});
+        const dados=await resposta.json();if(!resposta.ok)throw Error(dados.erro||'Recuperação indisponível.');
+        return mensagemDoServidor(dados,input,conversa.servidorId);
       }
 
       form.addEventListener('submit', e => {
@@ -927,7 +950,7 @@
 
           try {
 
-            const result = await answerFor(input);
+            const result = await answerFor(input,current);
 
             current.messages.push(result);
 
@@ -937,7 +960,7 @@
 
             renderHistory();
 
-            if (!result.source) notify('Nenhum resultado encontrado.');
+            if (!result.source && result.estado!=='PRECISA_ESCLARECIMENTO') notify('Nenhum resultado encontrado.');
 
           } catch (erro) {
 
@@ -997,7 +1020,7 @@
 
         renderChat();
 
-        notify('Histórico apagado.');
+        notify('Histórico ocultado nesta sessão. Os registros do servidor foram preservados.');
 
       });
 
@@ -1008,14 +1031,12 @@
       renderBank();
 
       atualizarEconomia();
-      fetch('/api/rag/historico').then(r => { if (!r.ok) throw Error('Histórico indisponível'); return r.json(); }).then(linhas => {
-        if (conversations.length) return;
-        conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
-          { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
-          { interacaoId: linha.id, role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, reutilizada: linha.estado === 'REUTILIZADA', natureza: linha.natureza, similarity: linha.similaridade, fonteCriadaEm: linha.fontes[0] && linha.fontes[0].criadaEm, section: linha.fontes[0] && linha.fontes[0].versao ? 'Versão ' + linha.fontes[0].versao : '', policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
-        ] }));
+      fetch('/api/rag/conversas').then(r=>{if(!r.ok)throw Error('Histórico indisponível');return r.json();}).then(linhas=>{
+        for(const linha of linhas){
+          if(!conversations.some(c=>c.servidorId===linha.id))conversations.push({id:'servidor-'+linha.id,servidorId:linha.id,title:linha.titulo,criadaEm:linha.criadaEm,carregada:false,messages:[]});
+        }
         renderHistory();
-      }).catch(() => notify('Histórico do servidor indisponível.', true));
+      }).catch(()=>notify('Histórico do servidor indisponível.',true));
 
     })();
 

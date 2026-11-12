@@ -43,7 +43,8 @@ try {
 
     $titulos = @()
     for ($pagina = 0; $pagina -lt 100; $pagina++) {
-        $lote = @(Api 'GET' "/api/admin/respostas?pagina=$pagina&tamanho=100")
+        $retorno = Api 'GET' "/api/admin/respostas?pagina=$pagina&tamanho=100"
+        $lote = @(foreach ($entrada in $retorno) { $entrada })
         $titulos += @($lote | Where-Object { $_.prompt_original -ceq $titulo })
         if ($lote.Count -lt 100) { break }
     }

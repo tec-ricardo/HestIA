@@ -35,7 +35,7 @@ public class BuscaSemelhanteController {
 
         int limite = dto.limite() == null ? 5 : dto.limite();
         double similaridade = dto.similaridadeMinima() == null
-                ? 0.70
+                ? busca.similaridadePadrao()
                 : dto.similaridadeMinima();
 
         return ResponseEntity.ok(

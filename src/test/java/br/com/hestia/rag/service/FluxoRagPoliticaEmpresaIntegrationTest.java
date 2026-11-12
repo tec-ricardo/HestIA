@@ -116,6 +116,8 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
 
         var acessoCapacitacao = mock(AcessoCapacitacao.class);
         var db = new RepositorioIntegracao(jdbc, acessoCapacitacao);
+        var contextualizacao=mock(ContextualizacaoRagService.class);
+        when(contextualizacao.interpretar(anyString(),anyList())).thenAnswer(i->new ContextualizacaoRagService.Interpretacao(i.getArgument(0),null));
         service = new InteracaoRagService(
                 db,
                 busca,
@@ -123,7 +125,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 geracao,
                 respostas = mock(RespostaReutilizavelService.class),
                 mock(RegistroUsoIAService.class),
-                0L
+                0L, contextualizacao
         );
     }
 
