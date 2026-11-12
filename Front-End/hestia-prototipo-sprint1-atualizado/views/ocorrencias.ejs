@@ -358,7 +358,15 @@
         <div class="oc-panel-header">
 
           <div>
-            <h2>Ocorrências registradas</h2>
+            
+<h2>Ocorrências registradas</h2>
+
+<% if (!erro) { %>
+  <p class="oc-muted">
+    <%= totalItens %> tratamento(s) neste filtro.
+  </p>
+<% } %>
+
             <p class="oc-muted">
               Consulte avaliações, responsáveis, departamentos e
               o andamento das ações corretivas.
