@@ -50,11 +50,40 @@ class AdaptadorSinteticoMaturidadeTest {
         preparar();tabelas.put("issues",List.of(row("issue_id","i1","_chave_origem","i1","employee_id","E1","issue_type","Bug","created_at","2026-01-01","closed_at","2026-01-11"),row("issue_id","i2","_chave_origem","i2","employee_id","E2","issue_type","Task","created_at","2026-01-01","closed_at","2026-02-01")));
         var f=fator("produtividade");assertThat(f.nota()).isEqualByComparingTo("50");assertThat(f.amostra()).isEqualTo(1);
     }
+    @Test void produtividadeSemMetaRespeitaFechamentoNoPeriodoETipo(){
+        preparar();
+        tabelas.put("issues", List.of(
+                issue("anterior", "Bug", "2026-04-20", "2026-04-30 23:59:59"),
+                issue("primeiro", "Bug", "2026-04-29", "2026-05-01 00:00:00"),
+                issue("ultimo", "Bug", "2026-05-27 23:59:59", "2026-05-31 23:59:59"),
+                issue("posterior", "Bug", "2026-05-01", "2026-06-01 00:00:00"),
+                issue("outroTipo", "Task", "2026-05-01", "2026-05-20"),
+                issue("aberto", "Bug", "2026-05-01", null),
+                issue("invertido", "Bug", "2026-05-20", "2026-05-19")
+        ));
+        var maio = new AdaptadorSinteticoMaturidade.Escopo("C01", null, hash,
+                LocalDate.of(2026, 5, 1), LocalDate.of(2026, 5, 31), "Bug", null);
+        var produtividade = service.calcular(maio).stream()
+                .filter(f -> f.codigo().equals("produtividade")).findFirst().orElseThrow();
+
+        assertThat(produtividade.amostra()).isEqualTo(2);
+        assertThat(produtividade.populacao()).isEqualTo(3L);
+        assertThat(produtividade.estatisticas().get("medianaDias")).isEqualByComparingTo("3");
+        assertThat(produtividade.nota()).isNull();
+        assertThat(produtividade.elegivelGlobal()).isFalse();
+        assertThat(produtividade.estado()).isEqualTo("CONFIGURACAO_PENDENTE");
+    }
+
+    private Map<String,Object> issue(String id, String tipo, String criada, String fechada) {
+        return row("issue_id", id, "_chave_origem", id, "employee_id", "E1",
+                "project_id", "P1", "issue_type", tipo, "created_at", criada, "closed_at", fechada);
+    }
+
     @Test void revisaoNulaReduzCoberturaEZeroEhConhecido(){
         preparar();tabelas.put("pull_requests",List.of(
-            row("pr_id","p1","_chave_origem","p1","employee_id","E1","created_at","2026-01-01","merged_at","2026-01-02","review_count",1),
-            row("pr_id","p2","_chave_origem","p2","employee_id","E2","created_at","2026-01-01","merged_at","2026-01-02","review_count",0),
-            row("pr_id","p3","_chave_origem","p3","employee_id","E2","created_at","2026-01-01","merged_at","2026-01-02","review_count",null)));
+                row("pr_id","p1","_chave_origem","p1","employee_id","E1","created_at","2026-01-01","merged_at","2026-01-02","review_count",1),
+                row("pr_id","p2","_chave_origem","p2","employee_id","E2","created_at","2026-01-01","merged_at","2026-01-02","review_count",0),
+                row("pr_id","p3","_chave_origem","p3","employee_id","E2","created_at","2026-01-01","merged_at","2026-01-02","review_count",null)));
         var f=fator("colaboracao");assertThat(f.nota()).isEqualByComparingTo("50");assertThat(f.coberturaTecnica()).isBetween(new BigDecimal("0.6666"),new BigDecimal("0.6667"));
     }
     @Test void idsConflitantesInvalidamFatorSemDuplicarObservacoes(){
