@@ -28,16 +28,40 @@ module.exports = function montarIntegracoes(app, api) {
     GUARDIAO: { numero: 3, nome: 'Guardião' },
     EMBAIXADOR: { numero: 4, nome: 'Embaixador' }
   });
-  const nivelNecessarioPorPosicao = indice => indice < 3 ? 1 : indice < 5 ? 2 : 3;
-  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião' })[numero] || 'Guardião';
+  const nivelNecessarioPorId = cursoId => {
+    const numero = Number(cursoId);
+    if (!Number.isInteger(numero) || numero < 1 || numero > 16) throw new Error(`Curso fora da trilha: ${cursoId}`);
+    return Math.ceil(numero / 4);
+  };
+  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião', 4: 'Embaixador' })[numero] || 'Embaixador';
   const consultarNivelPasse = async req => {
     const usuarioId = id(req.session.usuarioId);
     const { data } = await api.get(`/gamificacao/usuarios/${usuarioId}/passe`);
-    return niveisPasse[String(data?.nivel || '').toUpperCase()] || niveisPasse.APRENDIZ;
+    const xp = Number(data?.xpTotal);
+    if (!Number.isFinite(xp) || xp < 0) {
+      const erro = new Error('Não foi possível confirmar o XP do HestIA Pass. Acesso bloqueado por segurança.');
+      erro.response = { status: 503, data: { message: erro.message } };
+      throw erro;
+    }
+    const chaveNivel = String(data?.nivel || '').trim().toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const nivel = niveisPasse[chaveNivel];
+    if (!nivel) {
+      const erro = new Error('Nível do HestIA Pass inválido ou indisponível.');
+      erro.response = { status: 503, data: { message: erro.message } };
+      throw erro;
+    }
+    return { ...nivel, xpAtual: xp };
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
-    const exigido = nivelNecessarioPorPosicao(indice);
-    const bloqueado = nivelAtual.numero < exigido;
+    const exigido = nivelNecessarioPorId(treinamento.id);
+    // O primeiro curso do nível Consciente (5) é liberado ao atingir o nível 2.
+    // Os demais cursos dessa etapa (6 a 8) exigem também 300 XP.
+    // Assim, um usuário Consciente com 150 XP acessa os cursos 1 a 5.
+    const exigeXpComplementar = nivelAtual.numero === 2 &&
+      Number(treinamento.id) >= 6 && Number(treinamento.id) <= 8 &&
+      nivelAtual.xpAtual < 300;
+    const bloqueado = nivelAtual.numero < exigido || exigeXpComplementar;
     return {
       ...treinamento,
       id: String(treinamento.id),
@@ -56,7 +80,7 @@ module.exports = function montarIntegracoes(app, api) {
       api.get('/aprendizagem/conteudos'),
       consultarNivelPasse(req)
     ]);
-    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)), nivelAtual };
+    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)).sort((a,b) => Number(a.id) - Number(b.id)), nivelAtual };
   };
   const exigirCursoLiberado = async (req, cursoId) => {
     const { treinamentos } = await consultarTreinamentosComNivel(req);
@@ -73,6 +97,15 @@ module.exports = function montarIntegracoes(app, api) {
     }
     return treinamento;
   };
+  // Cadastro administrativo das certificações existentes da Academy (sem conceder sem aprovação).
+  router.post('/api/admin/academy/certificacoes/inicializar', admin, executar(async (req, res) => {
+    const { data } = await api.post('/aprendizagem/academy/certificacoes/inicializar');
+    res.json(data);
+  }));
+  // Tela administrativa para executar a inicializacao com a sessao autenticada do HestIA.
+  router.get('/admin/academy/certificacoes', admin, (req, res) => {
+    res.type('html').send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Certificações | HestIA Academy</title><link rel="stylesheet" href="/styles.css"></head><body style="font-family:Arial,sans-serif;padding:32px;max-width:720px;margin:auto"><h1>Certificações HestIA Academy</h1><p>Cadastre ou atualize as quatro certificações usando sua sessão de administrador. Isso não concede certificados sem aprovação.</p><button id="inicializar" type="button" style="padding:12px 18px;cursor:pointer">Inicializar certificações</button><pre id="resultado" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px"></pre><p><a href="/">Voltar à visão geral</a></p><script>document.getElementById('inicializar').addEventListener('click', async function(){const botao=this;botao.disabled=true;const saida=document.getElementById('resultado');saida.textContent='Inicializando...';try{const resposta=await fetch('/api/admin/academy/certificacoes/inicializar',{method:'POST',credentials:'same-origin'});const dados=await resposta.json();saida.textContent=resposta.ok?'Concluído: '+JSON.stringify(dados,null,2):'Erro '+resposta.status+': '+(dados.erro||JSON.stringify(dados));}catch(e){saida.textContent='Erro de conexão: '+e.message;}finally{botao.disabled=false;}});</script></body></html>`);
+  });
   router.get('/api/certificacoes', colaborador, executar(async (req, res) => {
     const usuarioId = id(req.session.usuarioId);
     const { data: situacoes } = await api.post(`/certificacoes/usuarios/${usuarioId}/verificar`);
@@ -119,10 +152,10 @@ module.exports = function montarIntegracoes(app, api) {
     res.json({ ...data, total: data.questoes.length, aprovado: data.status === 'APROVADA', mensagem: data.status === 'APROVADA' ? 'Aprendizagem validada e registrada.' : 'Reveja o feedback. A aprovação exige pelo menos 80%; as tentativas são controladas pelo servidor.' });
   }));
   router.get('/microtreinamentos/:id/avaliacao', colaborador, executar(async (req, res) => {
-    id(req.params.id); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.get('/microtreinamentos/:id', colaborador, executar(async (req, res) => {
-    id(req.params.id); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
     const { chave, pergunta, modo, respostaId } = req.body;

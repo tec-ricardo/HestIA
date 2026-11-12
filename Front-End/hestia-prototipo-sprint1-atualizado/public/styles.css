@@ -6518,3 +6518,583 @@ body { background:var(--bg); color:var(--ink); }
     height: auto !important;
     object-fit: contain;
 }
+/* CAMINHO DE HÉSTIA — ADICIONAR SOMENTE NO FINAL DO styles.css */
+.hestia-path-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;margin:0 0 22px;border-radius:20px;background:linear-gradient(115deg,#142840,#29415e);color:#fff;box-shadow:0 14px 35px #14284024}
+.hestia-path-kicker{font-size:11px;letter-spacing:.2em;color:#eec78a;font-weight:800}
+.hestia-path-entry h2{margin:7px 0;font-size:25px;color:#fff}.hestia-path-entry p{margin:0;color:#d7e1ec;font-size:13px}
+.hestia-path-open{border:1px solid #f4d39b;background:#eec78a;color:#172b42;border-radius:999px;padding:14px 21px;font-weight:800;white-space:nowrap;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.hestia-path-open:hover{transform:translateY(-3px);box-shadow:0 8px 28px #edb95b55}
+.hestia-path-active{overflow:hidden}
+.hestia-path-overlay[hidden]{display:none!important}.hestia-path-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;background:#071323dd;opacity:0;transition:opacity .35s;backdrop-filter:blur(6px)}
+.hestia-path-overlay.is-open{opacity:1}.hestia-path-window{width:min(1060px,100%);max-height:94vh;overflow:auto;border:1px solid #d6bd87;border-radius:23px;background:#11243b;color:#f8ead0;box-shadow:0 32px 95px #0008;transform:translateY(35px) scale(.97);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hestia-path-overlay.is-open .hestia-path-window{transform:translateY(0) scale(1)}
+.hestia-path-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:23px 30px;background:#152b45}.hestia-path-toolbar span{color:#e9bf7d;letter-spacing:.17em;font-size:10px;font-weight:800}.hestia-path-toolbar h2{color:#fff2d9;margin:5px 0 0;font-size:27px}.hestia-path-toolbar button{border:1px solid #9eacc0;background:#ffffff10;border-radius:10px;padding:11px 15px;color:#fff;cursor:pointer}
+.hestia-path-scene{position:relative;overflow:hidden;background:radial-gradient(ellipse at 80% 25%,#52687a 0%,transparent 40%),linear-gradient(#1c3858,#304c64 68%,#5c6f6a);height:min(55vh,560px);min-height:320px}
+.hestia-path-stars{position:absolute;inset:0;opacity:.7;background-image:radial-gradient(#fff4d7 1px,transparent 1px);background-size:49px 49px}
+.hestia-path-mountains{position:absolute;inset:auto -10% -28% -10%;height:63%;background:#526b67;border-radius:50% 50% 0 0;transform:rotate(-5deg)}
+.hestia-path-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 9px #15263d66)}
+.hestia-path-temple{filter:drop-shadow(0 4px 12px #e9c68a77)}
+#hestiaPathMarker{filter:drop-shadow(0 0 12px #ffb447);animation:hestiaFlame 1.9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.hestia-path-scene-label{position:absolute;left:25px;bottom:15px;font-size:12px;color:#fff1cf;text-shadow:0 1px 5px #000}
+.hestia-path-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:19px 24px}.hestia-path-info>div{padding:16px;border:1px solid #425773;background:#1c3651;border-radius:12px}.hestia-path-info span{display:block;font-size:10px;letter-spacing:.09em;color:#c5d3e1;margin-bottom:8px}.hestia-path-info strong{font-size:17px;color:#ffe0a2}.hestia-path-footnote{padding:0 24px 20px;color:#b9c9d8;font-size:12px}
+@keyframes hestiaFlame{50%{filter:drop-shadow(0 0 24px #ffb447)}}
+@media(max-width:700px){.hestia-path-entry,.hestia-path-toolbar{flex-direction:column;align-items:stretch}.hestia-path-info{grid-template-columns:repeat(2,minmax(0,1fr))}.hestia-path-toolbar h2{font-size:22px}.hestia-path-scene{min-height:280px;height:42vh}}
+@media(prefers-reduced-motion:reduce){.hestia-path-overlay,.hestia-path-window,.hestia-path-open,#hestiaPathMarker{animation:none!important;transition:none!important}}
+
+
+/* HESTIA PASS - SECOES RECOLHIDAS */
+
+.pass-extra-details {
+    margin-top: 24px;
+    border: 1px solid #dfe5ec;
+    border-radius: 14px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.pass-extra-details summary {
+    padding: 20px 24px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 700;
+    color: #142033;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pass-extra-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.pass-extra-details summary::after {
+    content: "+";
+    font-size: 24px;
+    color: #3157d5;
+}
+
+.pass-extra-details[open] summary::after {
+    content: "−";
+}
+
+.pass-extra-details summary:hover {
+    background: #f5f7fa;
+}
+
+.pass-extra-details-content {
+    padding: 0 24px 24px;
+}
+
+@media (max-width: 760px) {
+    .pass-extra-details summary {
+        padding: 16px;
+    }
+
+    .pass-extra-details-content {
+        padding: 0 16px 16px;
+    }
+}
+/* CORRECAO HESTIA PASS - ACRESCENTAR AO FINAL DO styles.css */
+.pass-page details.hestia-bottom-details {
+  display: block;
+  margin: 18px 0;
+  border: 1px solid #dfe5ec;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 5px 16px rgba(20,32,51,.04);
+}
+.pass-page details.hestia-bottom-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 22px;
+  cursor: pointer;
+  list-style: none;
+  color: #142033;
+  background: #fff;
+}
+.pass-page details.hestia-bottom-details > summary::-webkit-details-marker { display: none; }
+.pass-page details.hestia-bottom-details > summary::marker { content: ''; }
+.pass-page details.hestia-bottom-details > summary:hover { background: #f5f7fa; }
+.pass-page .hestia-bottom-details-title { font-size: 16px; font-weight: 800; }
+.pass-page .hestia-bottom-details-sub { margin-left: auto; font-size: 12px; color: #6b7280; }
+.pass-page .hestia-bottom-details-arrow { font-size: 22px; color: #3157d5; transition: transform .2s; }
+.pass-page details.hestia-bottom-details[open] .hestia-bottom-details-arrow { transform: rotate(180deg); }
+.pass-page details.hestia-bottom-details[open] > summary { border-bottom: 1px solid #dfe5ec; }
+.pass-page details.hestia-bottom-details > .pass-section { margin: 0; padding: 20px 22px; }
+@media (max-width: 760px) {
+  .pass-page details.hestia-bottom-details > summary { padding: 16px; flex-wrap: wrap; }
+  .pass-page .hestia-bottom-details-sub { margin-left: 0; }
+  .pass-page details.hestia-bottom-details > .pass-section { padding: 16px; }
+}
+
+/* CAMINHO DE HESTIA - TAMANHO E ESPACAMENTO */
+
+.pass-page .hestia-path-entry {
+    padding: 18px 22px;
+    margin-top: 28px;
+    margin-bottom: 28px;
+    border-radius: 12px;
+}
+
+.pass-page .hestia-path-entry h2 {
+    font-size: 20px;
+    margin: 5px 0 8px;
+}
+
+.pass-page .hestia-path-entry p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.pass-page .hestia-path-entry button {
+    padding: 9px 15px;
+    font-size: 12px;
+}
+
+.pass-page .hestia-path-entry + .pass-next-level {
+    margin-top: 28px;
+}
+
+/* ALINHAR NIVEL ATUAL COM OS INDICADORES */
+
+.pass-page .pass-hero-compact {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.pass-page .pass-stats-compact {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* GARANTIR O MESMO ALINHAMENTO */
+.pass-page .pass-hero-compact,
+.pass-page .pass-stats-compact {
+    grid-column: 1 / -1;
+}
+/* CAMINHO DE HÉSTIA — ADICIONAR SOMENTE NO FINAL DO styles.css */
+.hestia-path-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;margin:0 0 22px;border-radius:20px;background:linear-gradient(115deg,#142840,#29415e);color:#fff;box-shadow:0 14px 35px #14284024}
+.hestia-path-kicker{font-size:11px;letter-spacing:.2em;color:#eec78a;font-weight:800}
+.hestia-path-entry h2{margin:7px 0;font-size:25px;color:#fff}.hestia-path-entry p{margin:0;color:#d7e1ec;font-size:13px}
+.hestia-path-open{border:1px solid #f4d39b;background:#eec78a;color:#172b42;border-radius:999px;padding:14px 21px;font-weight:800;white-space:nowrap;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.hestia-path-open:hover{transform:translateY(-3px);box-shadow:0 8px 28px #edb95b55}
+.hestia-path-active{overflow:hidden}
+.hestia-path-overlay[hidden]{display:none!important}.hestia-path-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:22px;background:#071323dd;opacity:0;transition:opacity .35s;backdrop-filter:blur(6px)}
+.hestia-path-overlay.is-open{opacity:1}.hestia-path-window{width:min(1060px,100%);max-height:94vh;overflow:auto;border:1px solid #d6bd87;border-radius:23px;background:#11243b;color:#f8ead0;box-shadow:0 32px 95px #0008;transform:translateY(35px) scale(.97);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hestia-path-overlay.is-open .hestia-path-window{transform:translateY(0) scale(1)}
+.hestia-path-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:23px 30px;background:#152b45}.hestia-path-toolbar span{color:#e9bf7d;letter-spacing:.17em;font-size:10px;font-weight:800}.hestia-path-toolbar h2{color:#fff2d9;margin:5px 0 0;font-size:27px}.hestia-path-toolbar button{border:1px solid #9eacc0;background:#ffffff10;border-radius:10px;padding:11px 15px;color:#fff;cursor:pointer}
+.hestia-path-scene{position:relative;overflow:hidden;background:radial-gradient(ellipse at 80% 25%,#52687a 0%,transparent 40%),linear-gradient(#1c3858,#304c64 68%,#5c6f6a);height:min(55vh,560px);min-height:320px}
+.hestia-path-stars{position:absolute;inset:0;opacity:.7;background-image:radial-gradient(#fff4d7 1px,transparent 1px);background-size:49px 49px}
+.hestia-path-mountains{position:absolute;inset:auto -10% -28% -10%;height:63%;background:#526b67;border-radius:50% 50% 0 0;transform:rotate(-5deg)}
+.hestia-path-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 9px #15263d66)}
+.hestia-path-temple{filter:drop-shadow(0 4px 12px #e9c68a77)}
+#hestiaPathMarker{filter:drop-shadow(0 0 12px #ffb447);animation:hestiaFlame 1.9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.hestia-path-scene-label{position:absolute;left:25px;bottom:15px;font-size:12px;color:#fff1cf;text-shadow:0 1px 5px #000}
+.hestia-path-info{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:19px 24px}.hestia-path-info>div{padding:16px;border:1px solid #425773;background:#1c3651;border-radius:12px}.hestia-path-info span{display:block;font-size:10px;letter-spacing:.09em;color:#c5d3e1;margin-bottom:8px}.hestia-path-info strong{font-size:17px;color:#ffe0a2}.hestia-path-footnote{padding:0 24px 20px;color:#b9c9d8;font-size:12px}
+@keyframes hestiaFlame{50%{filter:drop-shadow(0 0 24px #ffb447)}}
+@media(max-width:700px){.hestia-path-entry,.hestia-path-toolbar{flex-direction:column;align-items:stretch}.hestia-path-info{grid-template-columns:repeat(2,minmax(0,1fr))}.hestia-path-toolbar h2{font-size:22px}.hestia-path-scene{min-height:280px;height:42vh}}
+@media(prefers-reduced-motion:reduce){.hestia-path-overlay,.hestia-path-window,.hestia-path-open,#hestiaPathMarker{animation:none!important;transition:none!important}}
+/* CORRECAO HESTIA PASS - ACRESCENTAR AO FINAL DO styles.css */
+.pass-page details.hestia-bottom-details {
+  display: block;
+  margin: 18px 0;
+  border: 1px solid #dfe5ec;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 5px 16px rgba(20,32,51,.04);
+}
+.pass-page details.hestia-bottom-details > summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 22px;
+  cursor: pointer;
+  list-style: none;
+  color: #142033;
+  background: #fff;
+}
+.pass-page details.hestia-bottom-details > summary::-webkit-details-marker { display: none; }
+.pass-page details.hestia-bottom-details > summary::marker { content: ''; }
+.pass-page details.hestia-bottom-details > summary:hover { background: #f5f7fa; }
+.pass-page .hestia-bottom-details-title { font-size: 16px; font-weight: 800; }
+.pass-page .hestia-bottom-details-sub { margin-left: auto; font-size: 12px; color: #6b7280; }
+.pass-page .hestia-bottom-details-arrow { font-size: 22px; color: #3157d5; transition: transform .2s; }
+.pass-page details.hestia-bottom-details[open] .hestia-bottom-details-arrow { transform: rotate(180deg); }
+.pass-page details.hestia-bottom-details[open] > summary { border-bottom: 1px solid #dfe5ec; }
+.pass-page details.hestia-bottom-details > .pass-section { margin: 0; padding: 20px 22px; }
+@media (max-width: 760px) {
+  .pass-page details.hestia-bottom-details > summary { padding: 16px; flex-wrap: wrap; }
+  .pass-page .hestia-bottom-details-sub { margin-left: 0; }
+  .pass-page details.hestia-bottom-details > .pass-section { padding: 16px; }
+}
+/* MAPA HESTIA - FOTO ORIGINAL PASTEL. ACRESCENTAR AO FINAL DO styles.css */
+.hestia-path-overlay .hestia-path-window{background:#f7e9d9;border:3px solid #ead0ae;border-radius:26px;overflow:hidden;box-shadow:0 24px 80px #17223388}
+.hestia-path-overlay .hestia-path-toolbar{background:#74869a;padding:20px 28px}
+.hestia-path-overlay .hestia-path-toolbar h2{color:#fff0dc;font:700 28px Georgia,serif}
+.hestia-path-overlay .hestia-path-toolbar span{color:#fff0dc}
+.hestia-path-overlay .hestia-path-toolbar button{color:#fff0dc;border-color:#ecd7b9}
+.hestia-path-overlay .hestia-photo-scene{position:relative;width:100%;height:auto;min-height:0;aspect-ratio:1615/612;overflow:hidden;background:#c6d8e8}
+.hestia-path-overlay .hestia-photo-background{display:block;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.hestia-path-overlay .hestia-photo-position{position:absolute;z-index:4;transform:translate(-50%,-50%);transition:left .9s ease,top .9s ease;pointer-events:none}
+.hestia-path-overlay .hestia-photo-dot{display:block;width:15px;height:15px;border-radius:50%;background:#fff9e9;border:3px solid #dc8e36;box-shadow:0 0 0 6px #fff5dfaa,0 0 18px 7px #f8bb68;animation:hestiaPhotoPulse 2.2s ease-in-out infinite}
+.hestia-path-overlay .hestia-photo-tooltip{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);white-space:nowrap;border-radius:8px;background:#fff2dfed;border:1px solid #d3ad83;padding:4px 9px;font:700 12px Georgia,serif;color:#6c4229;box-shadow:0 3px 9px #49301d44}
+@keyframes hestiaPhotoPulse{50%{box-shadow:0 0 0 10px #fff5df55,0 0 22px 10px #f8bb6877}}
+.hestia-path-overlay .hestia-path-info{background:#f6e7d6;padding:16px;gap:12px}
+.hestia-path-overlay .hestia-path-info>div{background:#ffeedf;border:2px solid #d8b99b;border-radius:17px;min-width:0}
+.hestia-path-overlay .hestia-path-info span{color:#665043;font:13px Georgia,serif;letter-spacing:0}
+.hestia-path-overlay .hestia-path-info strong{color:#694331;font:700 20px Georgia,serif}
+@media(max-width:700px){.hestia-path-overlay .hestia-photo-scene{min-height:230px}.hestia-path-overlay .hestia-photo-background{object-fit:fill}.hestia-path-overlay .hestia-photo-tooltip{font-size:10px}.hestia-path-overlay .hestia-path-info strong{font-size:15px}}
+/* MAPA HESTIA - FOTO ORIGINAL PASTEL. ACRESCENTAR AO FINAL DO styles.css */
+.hestia-path-overlay .hestia-path-window{background:#f7e9d9;border:3px solid #ead0ae;border-radius:26px;overflow:hidden;box-shadow:0 24px 80px #17223388}
+.hestia-path-overlay .hestia-path-toolbar{background:#74869a;padding:20px 28px}
+.hestia-path-overlay .hestia-path-toolbar h2{color:#fff0dc;font:700 28px Georgia,serif}
+.hestia-path-overlay .hestia-path-toolbar span{color:#fff0dc}
+.hestia-path-overlay .hestia-path-toolbar button{color:#fff0dc;border-color:#ecd7b9}
+.hestia-path-overlay .hestia-photo-scene{position:relative;width:100%;height:auto;min-height:0;aspect-ratio:1615/612;overflow:hidden;background:#c6d8e8}
+.hestia-path-overlay .hestia-photo-background{display:block;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.hestia-path-overlay .hestia-photo-position{position:absolute;z-index:4;transform:translate(-50%,-50%);transition:left .9s ease,top .9s ease;pointer-events:none}
+.hestia-path-overlay .hestia-photo-dot{display:block;width:15px;height:15px;border-radius:50%;background:#fff9e9;border:3px solid #dc8e36;box-shadow:0 0 0 6px #fff5dfaa,0 0 18px 7px #f8bb68;animation:hestiaPhotoPulse 2.2s ease-in-out infinite}
+.hestia-path-overlay .hestia-photo-tooltip{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);white-space:nowrap;border-radius:8px;background:#fff2dfed;border:1px solid #d3ad83;padding:4px 9px;font:700 12px Georgia,serif;color:#6c4229;box-shadow:0 3px 9px #49301d44}
+@keyframes hestiaPhotoPulse{50%{box-shadow:0 0 0 10px #fff5df55,0 0 22px 10px #f8bb6877}}
+.hestia-path-overlay .hestia-path-info{background:#f6e7d6;padding:16px;gap:12px}
+.hestia-path-overlay .hestia-path-info>div{background:#ffeedf;border:2px solid #d8b99b;border-radius:17px;min-width:0}
+.hestia-path-overlay .hestia-path-info span{color:#665043;font:13px Georgia,serif;letter-spacing:0}
+.hestia-path-overlay .hestia-path-info strong{color:#694331;font:700 20px Georgia,serif}
+@media(max-width:700px){.hestia-path-overlay .hestia-photo-scene{min-height:230px}.hestia-path-overlay .hestia-photo-background{object-fit:fill}.hestia-path-overlay .hestia-photo-tooltip{font-size:10px}.hestia-path-overlay .hestia-path-info strong{font-size:15px}}
+
+/* Estrada dinamica: mesma porcentagem do KPI JORNADA */
+.hestia-path-overlay .hestia-progress-road{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}
+.hestia-path-overlay #hestiaRoadBase{fill:none;stroke:#e2c59d;stroke-width:11;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.hestia-path-overlay #hestiaRoadGlow{fill:none;stroke:#ffd15a;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #ffad31) drop-shadow(0 0 9px #ffc34b);transition:stroke-dashoffset .9s ease}
+.hestia-path-overlay .hestia-kpi-progress{height:9px;margin-top:9px;background:#dfcfc1;border-radius:20px;overflow:hidden}
+.hestia-path-overlay #hestiaKpiProgressFill{height:100%;width:0;background:linear-gradient(90deg,#f9a73a,#ffce66);border-radius:20px;transition:width .9s ease}
+/* MAPA HESTIA - FOTO ORIGINAL PASTEL. ACRESCENTAR AO FINAL DO styles.css */
+.hestia-path-overlay .hestia-path-window{background:#f7e9d9;border:3px solid #ead0ae;border-radius:26px;overflow:hidden;box-shadow:0 24px 80px #17223388}
+.hestia-path-overlay .hestia-path-toolbar{background:#74869a;padding:20px 28px}
+.hestia-path-overlay .hestia-path-toolbar h2{color:#fff0dc;font:700 28px Georgia,serif}
+.hestia-path-overlay .hestia-path-toolbar span{color:#fff0dc}
+.hestia-path-overlay .hestia-path-toolbar button{color:#fff0dc;border-color:#ecd7b9}
+.hestia-path-overlay .hestia-photo-scene{position:relative;width:100%;height:auto;min-height:0;aspect-ratio:1615/612;overflow:hidden;background:#c6d8e8}
+.hestia-path-overlay .hestia-photo-background{display:block;width:100%;height:100%;object-fit:fill;user-select:none;pointer-events:none}
+.hestia-path-overlay .hestia-photo-position{position:absolute;z-index:4;transform:translate(-50%,-50%);transition:left .9s ease,top .9s ease;pointer-events:none}
+.hestia-path-overlay .hestia-photo-dot{display:block;width:15px;height:15px;border-radius:50%;background:#fff9e9;border:3px solid #dc8e36;box-shadow:0 0 0 6px #fff5dfaa,0 0 18px 7px #f8bb68;animation:hestiaPhotoPulse 2.2s ease-in-out infinite}
+.hestia-path-overlay .hestia-photo-tooltip{position:absolute;bottom:25px;left:50%;transform:translateX(-50%);white-space:nowrap;border-radius:8px;background:#fff2dfed;border:1px solid #d3ad83;padding:4px 9px;font:700 12px Georgia,serif;color:#6c4229;box-shadow:0 3px 9px #49301d44}
+@keyframes hestiaPhotoPulse{50%{box-shadow:0 0 0 10px #fff5df55,0 0 22px 10px #f8bb6877}}
+.hestia-path-overlay .hestia-path-info{background:#f6e7d6;padding:16px;gap:12px}
+.hestia-path-overlay .hestia-path-info>div{background:#ffeedf;border:2px solid #d8b99b;border-radius:17px;min-width:0}
+.hestia-path-overlay .hestia-path-info span{color:#665043;font:13px Georgia,serif;letter-spacing:0}
+.hestia-path-overlay .hestia-path-info strong{color:#694331;font:700 20px Georgia,serif}
+@media(max-width:700px){.hestia-path-overlay .hestia-photo-scene{min-height:230px}.hestia-path-overlay .hestia-photo-background{object-fit:fill}.hestia-path-overlay .hestia-photo-tooltip{font-size:10px}.hestia-path-overlay .hestia-path-info strong{font-size:15px}}
+
+/* Estrada dinamica: mesma porcentagem do KPI JORNADA */
+.hestia-path-overlay .hestia-progress-road{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}
+.hestia-path-overlay #hestiaRoadBase{fill:none;stroke:#e2c59d;stroke-width:11;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.hestia-path-overlay #hestiaRoadGlow{fill:none;stroke:#ffd15a;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #ffad31) drop-shadow(0 0 9px #ffc34b);transition:stroke-dashoffset .9s ease}
+.hestia-path-overlay .hestia-kpi-progress{height:9px;margin-top:9px;background:#dfcfc1;border-radius:20px;overflow:hidden}
+.hestia-path-overlay #hestiaKpiProgressFill{height:100%;width:0;background:linear-gradient(90deg,#f9a73a,#ffce66);border-radius:20px;transition:width .9s ease}
+
+/* CORRECAO FINAL: mapa limpo, estrada e KPIs apenas uma vez */
+.hestia-path-overlay .hestia-photo-scene{aspect-ratio:1774 / 887;min-height:0!important}
+.hestia-path-overlay .hestia-photo-background{object-fit:fill}
+.hestia-path-overlay .hestia-progress-road{z-index:2}
+.hestia-path-overlay #hestiaRoadGlow{stroke:#ffd36b;stroke-width:13;opacity:.9;filter:drop-shadow(0 0 6px #ffb93d) drop-shadow(0 0 11px #ffb93d)}
+.hestia-path-overlay .hestia-map-levels{position:absolute;inset:0;z-index:3;pointer-events:none}
+.hestia-path-overlay .hestia-map-level{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;flex-direction:column;color:#513625;font-family:Georgia,serif;filter:drop-shadow(0 2px 3px #54352255)}
+.hestia-path-overlay .hestia-map-level b{width:35px;height:35px;border:2px solid #cda87d;background:#fff0d8;border-radius:50%;display:grid;place-items:center;font-size:22px}
+.hestia-path-overlay .hestia-map-level small{background:#ffecd3;border:2px solid #d5ae84;border-radius:8px;padding:4px 10px;font-size:13px;font-weight:bold;white-space:nowrap}
+.hestia-path-overlay .hestia-photo-position{z-index:5}
+@media(max-width:700px){.hestia-path-overlay .hestia-photo-scene{min-height:0!important}.hestia-path-overlay .hestia-map-level b{width:23px;height:23px;font-size:14px}.hestia-path-overlay .hestia-map-level small{font-size:9px;padding:2px 4px}}
+/* ==========================================
+   HESTIA PASS - BRILHO FORTE DA ESTRADA
+   ACRESCENTAR AO FINAL DO styles.css
+   ========================================== */
+
+/* Camada da estrada iluminada */
+.hestia-path-overlay .hestia-path-svg path[stroke="#ffd35c"],
+.hestia-path-overlay .hestia-path-svg path[stroke="#ffcc55"] {
+    stroke: #ffb900 !important;
+    stroke-width: 12px !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    filter:
+        drop-shadow(0 0 3px #8c4100)
+        drop-shadow(0 0 7px #ff7900)
+        drop-shadow(0 0 13px #ffb300)
+        drop-shadow(0 0 20px #ffd95e);
+}
+
+/* =========================================
+   HESTIA PASS - MINHA JORNADA CHAMPAGNE
+   ========================================= */
+
+.pass-page .hestia-path-entry {
+    background: linear-gradient(
+        120deg,
+        #f4d6a4 0%,
+        #f8e4c3 55%,
+        #fff0d9 100%
+    ) !important;
+
+    border: 1px solid #ddb47c;
+    border-radius: 18px;
+    padding: 24px 28px;
+    box-shadow: 0 6px 18px rgba(129, 79, 33, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.pass-page .hestia-journey-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.pass-page .hestia-path-kicker {
+    color: #925923 !important;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.pass-page .hestia-path-entry h2 {
+    color: #56391f !important;
+    font-size: 23px;
+    margin: 7px 0;
+}
+
+.pass-page .hestia-path-entry p {
+    color: #765335 !important;
+    font-size: 13px;
+    margin-bottom: 13px;
+}
+
+.pass-page .hestia-journey-progress {
+    width: 100%;
+    max-width: 540px;
+    height: 11px;
+    background: #d9b88f;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.pass-page .hestia-journey-progress-fill {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #a85e20,
+        #d78a32,
+        #f5bb59
+    );
+    border-radius: 20px;
+    transition: width 0.6s ease;
+}
+
+.pass-page .hestia-journey-percent {
+    display: block;
+    margin-top: 7px;
+    color: #79532f;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pass-page .hestia-path-open {
+    background: #fff4e4 !important;
+    color: #805022 !important;
+    border: 1px solid #d4a66e !important;
+    border-radius: 30px;
+    padding: 12px 22px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.pass-page .hestia-path-open:hover {
+    background: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(130, 78, 26, 0.18);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 700px) {
+    .pass-page .hestia-path-entry {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+    }
+
+    .pass-page .hestia-path-open {
+        width: 100%;
+    }
+}
+
+/* =========================================
+   HESTIA PASS - MINHA JORNADA COMPACTA
+   ========================================= */
+
+.pass-page .hestia-path-entry {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 24px !important;
+
+    padding: 18px 24px !important;
+    min-height: 0 !important;
+    height: auto !important;
+}
+
+.pass-page .hestia-journey-content {
+    flex: 1 !important;
+    max-width: none !important;
+    min-width: 0;
+}
+
+.pass-page .hestia-path-entry h2 {
+    margin: 4px 0 !important;
+    font-size: 21px !important;
+}
+
+.pass-page .hestia-path-entry p {
+    margin: 4px 0 10px !important;
+}
+
+.pass-page .hestia-journey-progress {
+    max-width: 100% !important;
+    height: 9px !important;
+}
+
+.pass-page .hestia-journey-percent {
+    margin-top: 5px !important;
+}
+
+.pass-page .hestia-path-open {
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+}
+
+@media (max-width: 700px) {
+    .pass-page .hestia-path-entry {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .pass-page .hestia-path-open {
+        width: 100% !important;
+    }
+}
+/* HESTIA PASS - CHAMA E GLOBO NO RECONHECIMENTO MAXIMO */
+/* ACRESCENTAR AO FINAL DE public/styles.css */
+
+.pass-page .pass-recognition-flame {
+    width: 62px;
+    height: 62px;
+    min-width: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff0df;
+    border: 1px solid #e9c7a3;
+}
+
+.pass-page .pass-recognition-flame svg {
+    width: 44px;
+    height: 44px;
+    display: block;
+}
+/* SCRUM-564: COLE SOMENTE AO FINAL DO public/styles.css */
+.mt-page .mt-discovery{background:linear-gradient(120deg,#18314e,#26496a);border-radius:18px;padding:24px;margin:20px 0 24px;color:#fff;box-shadow:0 10px 26px #19345118}
+.mt-page .mt-discovery-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}
+.mt-page .mt-discovery-head h3{font-size:22px;margin:6px 0;color:#fff}
+.mt-page .mt-discovery-head p{color:#d5e1ee;margin:0;font-size:13px}
+.mt-page .mt-discovery-eyebrow{color:#f7ca82;letter-spacing:1.3px;font-size:11px;font-weight:800}
+.mt-page .mt-discovery-icon{font-size:38px;color:#f7ca82}
+.mt-page .mt-discovery-controls{display:grid;grid-template-columns:minmax(220px,2fr) minmax(130px,1fr) minmax(140px,1fr);gap:12px}
+.mt-page .mt-discovery-controls label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#e5edf6}
+.mt-page .mt-discovery-controls input,.mt-page .mt-discovery-controls select{width:100%;height:43px;box-sizing:border-box;background:#fff;color:#1b3047;border:1px solid #c8d4e1;border-radius:10px;padding:0 13px;font:inherit;outline-offset:2px}
+.mt-page .mt-discovery-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:#e4edf7}
+.mt-page #mt-clear-search{border:0;background:none;color:#ffe0aa;text-decoration:underline;cursor:pointer;font:inherit}
+.mt-page .mt-recommendation{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff8ec;color:#46351f;border:1px solid #e8c792;border-radius:13px;padding:16px 18px;margin-top:18px}
+.mt-page .mt-recommendation>div{display:flex;flex-direction:column;gap:5px}
+.mt-page .mt-recommendation-tag{font-size:11px;font-weight:800;color:#a56a25}
+.mt-page .mt-recommendation strong{font-size:16px}
+.mt-page .mt-recommendation small{color:#755f45}
+.mt-page .mt-recommendation-link{background:#b86f29;color:white;text-decoration:none;padding:11px 15px;border-radius:10px;white-space:nowrap;font-size:12px;font-weight:800}
+.mt-page .mt-filters{display:flex;flex-wrap:wrap;gap:8px}
+.mt-page .mt-filter{padding:9px 13px;border-radius:999px;border:1px solid #d6dfeb;background:#fff;color:#29425e;cursor:pointer;font-weight:600}
+.mt-page .mt-filter.active{background:#26496a;color:#fff;border-color:#26496a}
+.mt-page .mt-card-upgraded{display:flex;flex-direction:column;gap:11px;border:1px solid #dce4ed;border-radius:15px;padding:20px;box-shadow:0 5px 16px #1d355012;transition:transform .2s,box-shadow .2s}
+.mt-page .mt-card-upgraded:hover{transform:translateY(-3px);box-shadow:0 12px 25px #1d355020}
+.mt-page .mt-card-upgraded h3{font-size:16px;line-height:1.4;margin:0;color:#152b45}
+.mt-page .mt-card-upgraded p{line-height:1.6;margin:0;color:#62748b;flex:1}
+.mt-page .mt-card-upgraded .mt-card-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.mt-page .mt-card-upgraded .mt-tag,.mt-page .mt-status{border-radius:999px;background:#eef4fa;padding:6px 9px;font-size:11px;color:#36536e}
+.mt-page .mt-status.is-done{background:#e5f6ec;color:#167349}
+.mt-page .mt-status.is-running{background:#fff0d8;color:#9c631b}
+.mt-page .mt-status.is-locked{background:#f1f2f5;color:#758094}
+.mt-page .mt-card-recommended{align-self:flex-start;color:#aa6a1f;background:#fff2dc;padding:5px 9px;border-radius:7px;font-size:11px;font-weight:700}
+.mt-page .mt-card-upgraded .mt-meta{font-size:12px;color:#62748b}
+.mt-page .mt-card-upgraded .mt-progress{height:8px;border-radius:999px;background:#e4eaf1;overflow:hidden}
+.mt-page .mt-card-upgraded .mt-progress span{display:block;height:100%;background:linear-gradient(90deg,#c77b32,#f0b95b);border-radius:999px}
+.mt-page .mt-card-upgraded .mt-card-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+.mt-page .mt-card-upgraded .mt-btn-primary{background:#3158d7;color:#fff;padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:700}
+.mt-page .mt-empty-upgraded{padding:28px;grid-column:1/-1;text-align:center}
+@media(max-width:800px){.mt-page .mt-discovery-controls{grid-template-columns:1fr}.mt-page .mt-recommendation{flex-direction:column;align-items:flex-start}.mt-page .mt-toolbar{flex-wrap:wrap}}    
+/* HestIA Academy: acrescentar APENAS ao final de public/styles.css */
+#mt-course,#mt-exam{background:transparent;border:0;box-shadow:none;padding:0;color:#17273f}
+.academy-eyebrow{font-size:11px;letter-spacing:.16em;font-weight:800;color:#7361b5;margin-bottom:12px}
+.academy-heading{font-size:clamp(25px,3.2vw,39px);line-height:1.17;margin:0 0 12px;color:#17243b;letter-spacing:-.04em}
+.academy-subtitle{max-width:750px;color:#65758b;line-height:1.75;font-size:15px;margin:0 0 24px}
+.academy-progress-meta{display:flex;justify-content:space-between;color:#53617b;font-size:13px;margin-bottom:9px;max-width:850px}
+.academy-progress-track{height:9px;border-radius:20px;background:#e7eaf5;overflow:hidden;max-width:850px;margin-bottom:30px}
+.academy-progress-track>span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#8070c7,#c2a5e8);transition:width .3s}
+.academy-layout{display:grid;grid-template-columns:minmax(200px,260px) minmax(0,1fr);gap:22px;align-items:start}
+.academy-syllabus,.academy-lesson,.academy-question,.academy-complete{background:#fff;border:1px solid #e5e8f0;border-radius:19px;box-shadow:0 8px 32px rgba(28,36,74,.035)}
+.academy-syllabus{padding:18px;position:sticky;top:20px}.academy-syllabus h3{font-size:13px;margin:0 0 17px;color:#34425a}
+.academy-step{display:flex;width:100%;align-items:center;text-align:left;gap:11px;border:0;background:transparent;border-radius:12px;padding:11px 9px;color:#63708a;cursor:pointer}
+.academy-step span{display:grid;place-items:center;flex:none;width:27px;height:27px;border-radius:9px;background:#eef0f7;font-size:12px;font-weight:800}
+.academy-step small{font-size:12px;line-height:1.4}.academy-step.active{background:#f1ecfb;color:#4f3b94;font-weight:700}.academy-step.done span{background:#dff5e8;color:#217d50}.academy-step:disabled{opacity:.52;cursor:not-allowed}
+.academy-lesson{padding:clamp(22px,3vw,40px)}.academy-lesson-tag{font-size:11px;font-weight:800;letter-spacing:.13em;color:#8671bf;margin-bottom:14px}.academy-lesson h2{font-size:clamp(21px,2.3vw,30px);line-height:1.3;color:#1d2c45;margin:0 0 22px}.academy-lesson-copy{font-size:15px;line-height:1.95;color:#43536d}.academy-lesson-copy p{margin:0 0 16px}.academy-tip{background:#f7f5fc;border-left:3px solid #a68bd5;border-radius:10px;padding:17px 20px;margin:24px 0;color:#48536b}.academy-tip strong{color:#55438d}.academy-tip p{margin:8px 0 0;line-height:1.7}.academy-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap}
+.academy-complete{text-align:center;padding:45px 25px;max-width:750px}.academy-complete-icon{width:66px;height:66px;border-radius:50%;background:#dff5e8;color:#218456;display:grid;place-items:center;font-size:31px;margin:0 auto 18px}.academy-complete h2{margin:0 0 12px}.academy-complete p{color:#66758b;line-height:1.7}.academy-callout{background:#f4f1fc;padding:13px;border-radius:10px;margin:24px auto;color:#604da0;max-width:430px}
+.academy-exam-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}.academy-exam-summary span{background:#f0ecf9;color:#5e4a97;padding:8px 13px;border-radius:30px;font-size:12px;font-weight:700}.academy-question{padding:25px;margin-bottom:17px;min-width:0}.academy-question legend{display:block;float:left;width:100%;font-size:16px;font-weight:700;line-height:1.6;margin-bottom:17px;color:#24334d}.academy-question legend span{display:block;color:#8d77c4;font-size:11px;letter-spacing:.12em;margin-bottom:8px}.academy-question legend+*{clear:both}.academy-option{display:flex;align-items:center;gap:12px;border:1px solid #e6e8f0;border-radius:12px;padding:13px 15px;margin:10px 0;cursor:pointer;color:#45536a;line-height:1.5}.academy-option:has(input:checked){background:#f4effd;border-color:#a88cdb;color:#463477}.academy-option input{accent-color:#8063b8}.academy-option>span:nth-child(2){font-weight:800;color:#8167b6}.academy-exam-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:25px 0}.academy-exam-footer span{font-size:13px;color:#64748b}.academy-result{margin-top:24px;padding:30px;border-radius:18px;text-align:center;background:#f4f8ff}.academy-result.approved{background:#edf9f2}.academy-result-score{font-size:43px;font-weight:800;color:#6a51aa}.academy-result h2{margin:8px 0}.academy-result p{line-height:1.7}
+@media(max-width:800px){.academy-layout{grid-template-columns:1fr}.academy-syllabus{position:static}.academy-lesson{padding:22px}.academy-question{padding:18px}}
+
+/* HestIA Academy — ACRESCENTAR AO FINAL de public/styles.css. */
+.mt-status.is-locked{background:#f3f4f6!important;color:#4b5563!important;border:1px solid #d1d5db}
+.mt-card:has(.mt-status.is-locked){background:#f8fafc;border-color:#cbd5e1}
+.mt-card:has(.mt-status.is-locked) .mt-card-footer{align-items:center;gap:8px;flex-wrap:wrap}
+.mt-card:has(.mt-status.is-locked) .mt-card-footer small:last-child{font-weight:600;color:#475569}
+.academy-lesson-copy{font-size:15px;line-height:1.8;max-width:78ch}
+.academy-lesson-copy p{margin:0 0 1.15em}
+.mt-cert-card{border:1px solid #dbe3ef;border-radius:14px}
+
+/* HestIA Academy — certificações: acrescentar ao FINAL de styles.css */
+.mt-cert-section{margin-top:44px}
+.mt-cert-section .mt-toolbar h2{font-size:25px;letter-spacing:-.5px}
+.mt-cert-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:22px}
+.mt-cert-card.mt-academy-card{padding:24px;border:1px solid #dce4ef;border-radius:18px;background:#fff;box-shadow:0 8px 26px rgba(22,44,77,.045);gap:10px;min-height:290px}
+.mt-academy-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mt-academy-emblem{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#eef2ff;color:#3c53b5;font-size:25px}
+.mt-academy-badge{font-size:11px;font-weight:700;padding:7px 11px;border-radius:99px;background:#f1f5f9;color:#526178}
+.mt-academy-eyebrow{font-size:10px!important;font-weight:800!important;letter-spacing:1.3px;color:#7c8da8!important;margin-top:5px!important}
+.mt-cert-card.mt-academy-card h3{font-size:24px;letter-spacing:-.5px;margin:0;color:#14243e}
+.mt-academy-description{font-size:13px!important;line-height:1.55;color:#64748b!important;min-height:38px}
+.mt-academy-progress-label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#344563;margin-top:auto}
+.mt-academy-progress-label strong{font-weight:750}
+.mt-academy-progress{height:8px;background:#e9edf5;border-radius:100px;overflow:hidden}
+.mt-academy-progress>span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#6478df,#4c5ec5);transition:width .25s ease}
+.mt-academy-footnote{font-size:12px!important;color:#7b879b!important;margin-top:4px!important}
+.mt-academy-action{margin-top:7px;align-self:flex-start!important;border-radius:9px!important;padding:11px 16px!important;font-weight:700}
+.mt-cert-card.mt-academy-earned{border-color:#c8d9c9;background:linear-gradient(145deg,#fff,#f5faf5)}
+.mt-academy-earned .mt-academy-emblem{background:#e1f1e4;color:#28764a}
+.mt-academy-earned .mt-academy-badge{background:#e2f3e6;color:#247447}
+.mt-academy-earned .mt-academy-progress>span{background:linear-gradient(90deg,#3c9d6c,#6dbb83)}
+@media(max-width:900px){.mt-cert-grid{grid-template-columns:1fr}}

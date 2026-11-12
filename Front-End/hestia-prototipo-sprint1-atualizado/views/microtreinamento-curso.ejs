@@ -122,48 +122,33 @@ function carregarCurso() {
 }
 
 function mostrarAula(numero) {
-    let tela = document.getElementById("mt-course");
-    let curso = cursoAtual;
-
-    if (numero >= curso.licoes.length) {
-        tela.innerHTML = '<h2>Conteudo concluido!</h2><p>Voce ja pode fazer a avaliacao.</p>' +
-            '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + curso.id + '/avaliacao">Fazer avaliacao</a>';
+    const tela = document.getElementById("mt-course");
+    const curso = cursoAtual;
+    const total = curso.licoes.length;
+    const porcento = Math.round(Math.min(numero, total) * 100 / Math.max(total, 1));
+    const topo = '<div class="academy-eyebrow">HESTIA ACADEMY · APRENDIZAGEM GUIADA</div>' +
+        '<h1 class="academy-heading">' + limparTexto(curso.titulo) + '</h1>' +
+        '<p class="academy-subtitle">' + limparTexto(curso.descricao || "Aprenda com exemplos e pratique os conceitos.") + '</p>' +
+        '<div class="academy-progress-meta"><span>' + Math.min(numero, total) + ' de ' + total + ' etapas</span><strong>' + porcento + '%</strong></div>' +
+        '<div class="academy-progress-track"><span style="width:' + porcento + '%"></span></div>';
+    if (numero >= total) {
+        tela.innerHTML = topo + '<div class="academy-complete"><div class="academy-complete-icon">✓</div><h2>Conteúdo concluído!</h2><p>Você terminou as aulas. Agora é hora de demonstrar seu aprendizado na avaliação de cinco questões.</p><div class="academy-callout">Aprovação com 80% de acertos · até 3 tentativas por ciclo</div><a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + curso.id + '/avaliacao">Iniciar avaliação</a></div>';
         return;
     }
-
-    let aula = curso.licoes[numero];
-    let html = '<p class="mt-step">Aula ' + (numero + 1) + ' de ' + curso.licoes.length + '</p>';
-    html += '<h2 class="mt-lesson-title">' + limparTexto(aula.titulo) + '</h2>';
-    html += '<div class="mt-lesson-text" style="white-space:pre-line;line-height:1.85">' + limparTexto(aula.texto) + '</div>';
-    html += '<div class="mt-actions">';
-    if (numero > 0) html += '<button class="mt-btn" id="voltarAula">Anterior</button>';
-    html += '<button class="mt-btn mt-btn-primary" id="proximaAula">Concluir aula</button></div>';
-    tela.innerHTML = html;
-
-    if (numero > 0) {
-        document.getElementById("voltarAula").addEventListener("click", function() {
-            mostrarAula(numero - 1);
-        });
-    }
-
-    document.getElementById("proximaAula").addEventListener("click", function() {
-        let botao = document.getElementById("proximaAula");
-        botao.disabled = true;
-
-        if (numero < curso.etapa) {
-            mostrarAula(numero + 1);
-            return;
-        }
-
-        buscarDados("/api/microtreinamentos/" + curso.id + "/progresso", "POST", { etapa: numero + 1 })
-            .then(function() {
-                curso.etapa = numero + 1;
-                if (curso.etapa >= curso.totalEtapas) avisarAtualizacaoDoPasse();
-                mostrarAula(numero + 1);
-            }).catch(function(erro) {
-                alert(erro.message);
-                botao.disabled = false;
-            });
+    const aula = curso.licoes[numero];
+    const linhas = String(aula.texto || '').split(/\n+/).filter(Boolean);
+    const conteudo = linhas.map(x => '<p>' + limparTexto(x) + '</p>').join('');
+    const passos = curso.licoes.map((l, i) => '<button type="button" class="academy-step ' + (i === numero ? 'active ' : '') + (i < curso.etapa ? 'done' : '') + '" data-step="' + i + '" ' + (i > curso.etapa ? 'disabled' : '') + '><span>' + (i < curso.etapa ? '✓' : i + 1) + '</span><small>' + limparTexto(l.titulo) + '</small></button>').join('');
+    tela.innerHTML = topo + '<div class="academy-layout"><nav class="academy-syllabus" aria-label="Etapas do curso"><h3>Trilha de aprendizagem</h3>' + passos + '</nav><article class="academy-lesson"><div class="academy-lesson-tag">AULA ' + (numero + 1) + ' DE ' + total + '</div><h2>' + limparTexto(aula.titulo) + '</h2><div class="academy-lesson-copy">' + conteudo + '</div><div class="academy-tip"><strong>Para refletir</strong><p>Como você aplicaria esta orientação em uma situação real de trabalho? Considere riscos, evidências e responsáveis.</p></div><div class="academy-actions">' + (numero > 0 ? '<button type="button" class="mt-btn" id="voltarAula">← Aula anterior</button>' : '<span></span>') + '<button type="button" class="mt-btn mt-btn-primary" id="proximaAula">' + (numero + 1 === total ? 'Concluir conteúdo ✓' : 'Concluir e continuar →') + '</button></div></article></div>';
+    tela.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => mostrarAula(Number(btn.dataset.step))));
+    const anterior = document.getElementById('voltarAula');
+    if (anterior) anterior.addEventListener('click', () => mostrarAula(numero - 1));
+    document.getElementById('proximaAula').addEventListener('click', function() {
+        const botao = this; botao.disabled = true;
+        if (numero < curso.etapa) { mostrarAula(numero + 1); return; }
+        buscarDados('/api/microtreinamentos/' + curso.id + '/progresso', 'POST', { etapa: numero + 1 })
+            .then(() => { curso.etapa = numero + 1; if (curso.etapa >= curso.totalEtapas) avisarAtualizacaoDoPasse(); mostrarAula(numero + 1); })
+            .catch(erro => { alert(erro.message); botao.disabled = false; });
     });
 }
 
