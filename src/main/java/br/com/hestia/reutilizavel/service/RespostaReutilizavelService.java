@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import br.com.hestia.usuario.model.Usuario;
 import org.springframework.data.domain.PageRequest;
 import java.util.List;
@@ -210,16 +209,6 @@ public class RespostaReutilizavelService {
                         )
                         .sum();
 
-        BigDecimal custoEstimadoEvitado =
-                respostas.stream()
-                        .map(
-                                RespostaReutilizavel::getCustoEstimadoEvitado
-                        )
-                        .reduce(
-                                BigDecimal.ZERO,
-                                BigDecimal::add
-                        );
-
         long chamadasRealizadas =
                 registroUsoIARepository
                         .countByUsuarioEmpresaId(
@@ -241,14 +230,14 @@ public class RespostaReutilizavelService {
                 empresaId,
                 chamadasEvitadas,
                 tokensEconomizados,
-                custoEstimadoEvitado,
+                null,
                 percentualReutilizacao
         );
     }
 
     @Transactional(readOnly = true)
     public IndicadoresQualidadeDTO consultarQualidade(Long empresaId) {
-              validarEmpresa(empresaId);
+        validarEmpresa(empresaId);
 
         if (empresaId == null || empresaId <= 0) {
             throw new IllegalArgumentException(
