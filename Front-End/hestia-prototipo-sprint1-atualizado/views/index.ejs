@@ -9,7 +9,7 @@
 <body>
 <div class="app-shell overview-app">
   <%- include("menu", { perfil, email, active }) %>
-  <main class="main overview-page">
+  <main class="main overview-page hestia-manager-refresh">
     <header class="topbar overview-topbar">
       <button class="menu-button" id="menuButton">☰</button>
       <div><p class="eyebrow">Plataforma corporativa</p><h1>Visão geral</h1></div>
@@ -61,13 +61,14 @@
         <% } %>
       </section>
     <% } else { %>
-      <section class="dashboard-summary overview-summary" aria-label="Indicadores organizacionais">
+      <div class="hm-section-intro" aria-label="Resumo gerencial"><div><span class="hm-kicker">PAINEL GERENCIAL</span><h2>Indicadores da organização</h2><p>Uma visão consolidada dos cadastros, da maturidade e da atividade registrada.</p></div><span class="hm-live-note"><span aria-hidden="true">●</span> Dados da plataforma</span></div>
+      <section class="dashboard-summary overview-summary hm-manager-metrics" aria-label="Indicadores organizacionais">
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Empresas</span><span class="overview-kpi-icon" aria-hidden="true">▦</span></div><strong><%= indicadores.empresas %></strong><p>Cadastros acessíveis</p></article>
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Departamentos</span><span class="overview-kpi-icon" aria-hidden="true">▤</span></div><strong><%= indicadores.departamentos %></strong><p>Estruturas cadastradas</p></article>
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Usuários</span><span class="overview-kpi-icon" aria-hidden="true">♙</span></div><strong><%= indicadores.usuarios %></strong><p>Contas cadastradas</p></article>
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Ferramentas</span><span class="overview-kpi-icon" aria-hidden="true">✦</span></div><strong><%= indicadores.ferramentas %></strong><p>Ferramentas de IA cadastradas</p></article>
       </section>
-      <section class="grid two overview-detail-grid">
+      <section class="grid two overview-detail-grid hm-manager-panels">
         <article class="panel overview-feature-panel overview-maturity-panel">
           <div class="panel-head"><div><p class="overview-section-label">MATURIDADE EM IA</p><h3>AI Maturity Score</h3><p>Apuração parcial com a base sintética da QSoft.</p></div><span class="overview-panel-icon" aria-hidden="true">✦</span></div>
           <div class="overview-maturity-value"><h2><%= resumo.maturidadeParcial === null ? 'Não disponível' : resumo.maturidadeParcial.toFixed(2) + ' / 100' %></h2></div>

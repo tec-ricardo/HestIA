@@ -158,9 +158,14 @@ module.exports = function montarIntegracoes(app, api) {
     await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
-    const { chave, pergunta, modo, respostaId } = req.body;
-    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'CONSULTAR', respostaId: respostaId == null ? null : id(respostaId) }, { timeout: 45000 })).data);
+    const { chave, pergunta, modo, respostaId, conversaId } = req.body;
+    const payload={ chave, pergunta, modo: modo || 'CONSULTAR', respostaId: respostaId == null ? null : id(respostaId) };
+    if(conversaId!=null)payload.conversaId=id(conversaId);
+    res.json((await api.post('/api/rag/perguntas',payload,{timeout:45000})).data);
   }));
+  router.post('/api/rag/conversas', executar(async(req,res)=>res.status(201).json((await api.post('/api/rag/conversas',{titulo:req.body.titulo})).data)));
+  router.get('/api/rag/conversas', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas')).data)));
+  router.get('/api/rag/conversas/:id/historico', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas/'+id(req.params.id)+'/historico')).data)));
   router.get('/api/rag/historico', executar(async (req, res) => res.json((await api.get('/api/rag/historico')).data)));
   router.get('/api/registros/contexto', executar(async (req, res) => res.json((await api.get('/registros-uso-ia/contexto')).data)));
   router.get('/utilizacoes/registros', executar(async (req, res) => {

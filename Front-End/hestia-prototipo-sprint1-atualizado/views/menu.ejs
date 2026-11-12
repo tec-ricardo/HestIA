@@ -24,229 +24,129 @@
         <!-- COLABORADOR -->
         <% if (perfil == "colaborador") { %>
 
-            <a
-                class="nav-link <%= active == 'utilizacoes' ? 'active' : '' %>"
-                href="/utilizacoes">
-                Utilizações de IA
-            </a>
+            <a class="nav-link <%= active == 'utilizacoes' ? 'active' : '' %>" href="/utilizacoes">Utilizações de IA</a>
 
             <!-- ASSISTENTE RAG -->
-            <a
-                class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>"
-                href="/assistente-rag">
-                Assistente RAG
-            </a>
+            <a class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>" href="/assistente-rag">Assistente RAG</a>
 
             <!-- HESTIA PASS -->
-            <a
-                class="nav-link <%= active == 'passe-hestia' ? 'active' : '' %>"
-                href="/passe-hestia">
-                HestIA Pass
-            </a>
+            <a class="nav-link <%= active == 'passe-hestia' ? 'active' : '' %>" href="/passe-hestia">HestIA Pass</a>
 
             <!-- RANKING -->
-            <a
-                class="nav-link <%= active == 'ranking' ? 'active' : '' %>"
-                href="/ranking">
-                Ranking
-            </a>
+            <a class="nav-link <%= active == 'ranking' ? 'active' : '' %>" href="/ranking">Ranking</a>
 
             <!-- MICROTREINAMENTOS -->
-            <a
-                class="nav-link <%= active == 'microtreinamentos' ? 'active' : '' %>"
-                href="/microtreinamentos">
-                Microtreinamentos
-            </a>
+            <a class="nav-link <%= active == 'microtreinamentos' ? 'active' : '' %>" href="/microtreinamentos">Microtreinamentos</a>
 
-            <a
-                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
-                href="/creditos">
-                AI Credits
-            </a>
-
-            <a
-                class="nav-link <%= active == 'competencias' ? 'active' : '' %>"
-                href="/competencias">
-                Competências
-            </a>
-
-            <a
-                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
-                href="/governanca">
-                Governança
-            </a>
+            <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
+            <a class="nav-link <%= active == 'competencias' ? 'active' : '' %>" href="/competencias">Competências</a>
+            <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
 
         <% } %>
 
         <!-- GESTOR -->
         <% if (perfil == "gestor") { %>
 
-            <a
-                class="nav-link <%= active == 'curadoria' ? 'active' : '' %>"
-                href="/curadoria">
-                Curadoria de Respostas
-            </a>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
 
-            <a
-                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>"
-                href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">
-                AI Maturity Score
-            </a>
+            <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
 
-            <a
-                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
-                href="/creditos">
-                AI Credits
-            </a>
+            <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
 
-            <a
-                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
-                href="/governanca">
-                Governança
-            </a>
+            <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
 
-            <a
-                class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>"
-                href="/mapa-risco">
-                Mapa de Risco
-            </a>
+            <!-- GESTÃO DE OCORRÊNCIAS -->
+            <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
 
-            <a
-                class="nav-link <%= active == 'custos' ? 'active' : '' %>"
-                href="/custos">
-                Custos e eficiência
-            </a>
+            <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
+
+            <a class="nav-link <%= active == 'custos' ? 'active' : '' %>" href="/custos">Custos e eficiência</a>
 
         <% } %>
 
         <!-- ADMINISTRADOR -->
         <% if (perfil == "administrador") { %>
 
-            <a
-                class="nav-link <%= active == 'curadoria' ? 'active' : '' %>"
-                href="/curadoria">
-                Curadoria de Respostas
-            </a>
+            <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
 
-            <a
-                class="nav-link <%= active == 'maturidade' ? 'active' : '' %>"
-                href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">
-                AI Maturity Score
-            </a>
+            <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
 
-            <a
-                class="nav-link <%= active == 'creditos' ? 'active' : '' %>"
-                href="/creditos">
-                AI Credits
-            </a>
+            <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
 
-            <a
-                class="nav-link <%= active == 'competencias' ? 'active' : '' %>"
-                href="/competencias">
-                Competências
-            </a>
+            <a class="nav-link <%= active == 'competencias' ? 'active' : '' %>" href="/competencias">Competências</a>
 
-            <a
-                class="nav-link <%= active == 'governanca' ? 'active' : '' %>"
-                href="/governanca">
-                Governança
-            </a>
+            <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
 
-            <a
-                class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>"
-                href="/mapa-risco">
-                Mapa de Risco
-            </a>
+            <!-- GESTÃO DE OCORRÊNCIAS -->
+            <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
 
-            <a
-                class="nav-link <%= active == 'administracao' ? 'active' : '' %>"
-                href="/administracao">
-                Administração
-            </a>
+            <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
 
-            <a
-                class="nav-link"
-                href="/administracao/respostas">
-                Revisão de respostas
-            </a>
+            <a class="nav-link <%= active == 'administracao' ? 'active' : '' %>" href="/administracao">Administração</a>
 
-            <a
-                class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>"
-                href="/configuracoes">
-                Configurações
-            </a>
+            <a class="nav-link" href="/administracao/respostas">Revisão de respostas</a>
+
+            <a class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>" href="/configuracoes">Configurações</a>
 
         <% } %>
 
     </nav>
 
-    
-<!-- RODAPÉ -->
-<div class="sidebar-footer">
-    <div class="hestia-profile">
-        <button type="button"
-                class="hestia-profile-button"
-                id="hestiaProfileButton"
-                aria-expanded="false"
-                aria-controls="hestiaProfileMenu">
+    <!-- RODAPÉ -->
+    <div class="sidebar-footer">
+        <div class="hestia-profile">
+            <button type="button"
+                    class="hestia-profile-button"
+                    id="hestiaProfileButton"
+                    aria-expanded="false"
+                    aria-controls="hestiaProfileMenu">
 
-            <span class="hestia-profile-avatar">
-                <%= (email || 'U').charAt(0).toUpperCase() %>
-            </span>
+                <span class="hestia-profile-avatar">
+                    <%= (typeof email !== 'undefined' && email ? String(email) : 'U').charAt(0).toUpperCase() %>
+                </span>
 
-            <span class="hestia-profile-label">
-                Meu perfil
-            </span>
+                <span class="hestia-profile-label">Meu perfil</span>
+                <span class="hestia-profile-arrow">⌃</span>
+            </button>
 
-            <span class="hestia-profile-arrow">⌃</span>
-        </button>
+            <div class="hestia-profile-menu" id="hestiaProfileMenu" hidden>
+                <span class="hestia-profile-caption">Conta conectada</span>
 
-        <div class="hestia-profile-menu"
-             id="hestiaProfileMenu"
-             hidden>
-            <span class="hestia-profile-caption">
-                Conta conectada
-            </span>
+                <span class="hestia-profile-email">
+                    <%= typeof email !== 'undefined' && email ? email : 'E-mail não disponível' %>
+                </span>
 
-            <span class="hestia-profile-email">
-                <%= email %>
-            </span>
-
-            <a href="/sair" class="hestia-profile-logout">
-                Sair e voltar ao login
-            </a>
+                <a href="/sair" class="hestia-profile-logout">Sair e voltar ao login</a>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-(function () {
-    const button = document.getElementById('hestiaProfileButton');
-    const menu = document.getElementById('hestiaProfileMenu');
+    <script>
+    (function () {
+        const button = document.getElementById('hestiaProfileButton');
+        const menu = document.getElementById('hestiaProfileMenu');
+        if (!button || !menu) return;
 
-    if (!button || !menu) return;
+        button.addEventListener('click', function (event) {
+            event.stopPropagation();
+            menu.hidden = !menu.hidden;
+            button.setAttribute('aria-expanded', String(!menu.hidden));
+        });
 
-    button.addEventListener('click', function (event) {
-        event.stopPropagation();
-        menu.hidden = !menu.hidden;
-        button.setAttribute('aria-expanded', String(!menu.hidden));
-    });
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.hestia-profile')) {
+                menu.hidden = true;
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
 
-    document.addEventListener('click', function (event) {
-        if (!event.target.closest('.hestia-profile')) {
-            menu.hidden = true;
-            button.setAttribute('aria-expanded', 'false');
-        }
-    });
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            menu.hidden = true;
-            button.setAttribute('aria-expanded', 'false');
-        }
-    });
-})();
-</script>
-
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                menu.hidden = true;
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+    })();
+    </script>
 
 </aside>
