@@ -201,14 +201,19 @@ class AprendizagemSprintIntegrationTest {
         assertThat(motor.pendencias(admin,aluno.getId())).extracting(p->p.get("tema")).doesNotContain("PROTECAO_DE_DADOS");
     }
     @Autowired org.springframework.jdbc.core.JdbcTemplate jdbcCatalogo;
+    @Autowired br.com.hestia.microtreinamento.service.ConclusaoMicrotreinamentoService conclusoesCatalogo;
+    @Autowired br.com.hestia.microtreinamento.service.RecorrenciaCapacitacaoService recorrenciaCatalogo;
+    @Autowired br.com.hestia.microtreinamento.service.ConsultaEfetividadeCapacitacaoService efetividadeCatalogo;
     @Autowired br.com.hestia.microtreinamento.service.CatalogoTreinamentoService catalogoPadrao;
 
     @Test
-    void motorUsaCatalogoPersistidoDaEmpresa() throws Exception {
+    void integraConclusaoTrilhaEEfetividadeComCatalogoPersistido() throws Exception {
         var catalogoReal = new br.com.hestia.microtreinamento.service.CatalogoTreinamentoService(
                 jdbcCatalogo, contexto, false);
         motor.usarCatalogoPersistido(catalogoReal);
         a.usarCatalogoPersistido(catalogoReal);
+        conclusoesCatalogo.usarCatalogoPersistido(catalogoReal);
+        recorrenciaCatalogo.usarCatalogoPersistido(catalogoReal);
 
         try {
             long publicado = 92001L;
@@ -224,7 +229,8 @@ class AprendizagemSprintIntegrationTest {
             assertThat(motor.pendencias(admin, aluno.getId()))
                     .extracting(p -> p.get("tema")).contains("PROTECAO_DE_DADOS");
 
-            a.publicar(admin, new Publicacao(publicado, 1, questoes()));
+            long avaliacao = a.publicar(admin, new Publicacao(publicado, 1, questoes()));
+            var requisicao = RequestContextHolder.currentRequestAttributes();
             RequestContextHolder.resetRequestAttributes();
             motor.processar(admin, aluno.getId());
 
@@ -234,9 +240,36 @@ class AprendizagemSprintIntegrationTest {
             assertThat(jdbcCatalogo.queryForList(
                     "SELECT treinamento_id FROM trilha_aprendizagem_requisitos WHERE treinamento_id IN (92001, 92002, 92003)",
                     Long.class)).containsExactly(publicado);
+
+            RequestContextHolder.setRequestAttributes(requisicao);
+            leituras.concluir(aluno, publicado, UUID.randomUUID().toString());
+            var tentativa = a.abrir(aluno, avaliacao);
+            assertThat(a.enviar(aluno, tentativa.id(), envio(5)).status()).isEqualTo("APROVADA");
+            var participacao = ((Number) motor.ciclos(admin, aluno.getId()).getFirst()
+                    .get("participacao_id")).longValue();
+            assertThat(trilhas.consultar(aluno, participacao).status()).isEqualTo("CONCLUIDA");
+            em.flush();
+
+            Long conclusao = jdbcCatalogo.queryForObject(
+                    "SELECT id FROM conclusoes_microtreinamento WHERE usuario_id=? AND microtreinamento_id=?",
+                    Long.class, aluno.getId(), publicado);
+            jdbcCatalogo.update("UPDATE conclusoes_microtreinamento SET data_conclusao=? WHERE id=?",
+                    LocalDateTime.now().minusMinutes(1), conclusao);
+            em.clear();
+            jdbcCatalogo.update("UPDATE catalogo_treinamentos SET estado='RETIRADO', retirado_em=CURRENT_TIMESTAMP WHERE id=?",
+                    publicado);
+
+            RequestContextHolder.resetRequestAttributes();
+            var resultado = efetividadeCatalogo.consultar(aluno, conclusao, TipoErro.DADOS_SENSIVEIS);
+            assertThat(resultado.indicador().acompanhamento().microtreinamentoId()).isEqualTo(publicado);
+            assertThat(resultado.trilhas()).extracting(t -> t.get("status")).containsExactly("CONCLUIDA");
+            assertThatThrownBy(() -> efetividadeCatalogo.consultar(outro, conclusao, TipoErro.DADOS_SENSIVEIS))
+                    .isInstanceOf(ResponseStatusException.class);
         } finally {
             motor.usarCatalogoPersistido(catalogoPadrao);
             a.usarCatalogoPersistido(catalogoPadrao);
+            conclusoesCatalogo.usarCatalogoPersistido(catalogoPadrao);
+            recorrenciaCatalogo.usarCatalogoPersistido(catalogoPadrao);
         }
     }
 
