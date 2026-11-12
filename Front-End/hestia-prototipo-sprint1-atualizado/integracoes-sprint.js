@@ -43,15 +43,25 @@ module.exports = function montarIntegracoes(app, api) {
       erro.response = { status: 503, data: { message: erro.message } };
       throw erro;
     }
-    const nivel = xp >= 2500 ? niveisPasse.EMBAIXADOR
-      : xp >= 750 ? niveisPasse.GUARDIAO
-      : xp >= 300 ? niveisPasse.CONSCIENTE
-      : niveisPasse.APRENDIZ;
+    const chaveNivel = String(data?.nivel || '').trim().toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const nivel = niveisPasse[chaveNivel];
+    if (!nivel) {
+      const erro = new Error('Nível do HestIA Pass inválido ou indisponível.');
+      erro.response = { status: 503, data: { message: erro.message } };
+      throw erro;
+    }
     return { ...nivel, xpAtual: xp };
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
     const exigido = nivelNecessarioPorId(treinamento.id);
-    const bloqueado = nivelAtual.numero < exigido;
+    // O primeiro curso do nível Consciente (5) é liberado ao atingir o nível 2.
+    // Os demais cursos dessa etapa (6 a 8) exigem também 300 XP.
+    // Assim, um usuário Consciente com 150 XP acessa os cursos 1 a 5.
+    const exigeXpComplementar = nivelAtual.numero === 2 &&
+      Number(treinamento.id) >= 6 && Number(treinamento.id) <= 8 &&
+      nivelAtual.xpAtual < 300;
+    const bloqueado = nivelAtual.numero < exigido || exigeXpComplementar;
     return {
       ...treinamento,
       id: String(treinamento.id),

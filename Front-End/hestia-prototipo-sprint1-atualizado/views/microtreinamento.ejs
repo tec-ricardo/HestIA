@@ -1,62 +1,124 @@
 <!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HestIA Academy | HestIA</title><link rel="stylesheet" href="/styles.css"></head><body><div class="app-shell"><%- include("menu", {active: active, perfil: perfil}) %><main class="main-content"><section class="mt-page"><div class="mt-heading"><div><span class="mt-kicker">PLATAFORMA DE APRENDIZAGEM</span><h1>HestIA Academy</h1><p>Sua jornada de aprendizado em Inteligência Artificial.</p><p>Explore trilhas de conhecimento, desenvolva novas habilidades e desbloqueie conteúdos conforme sua evolução.</p></div></div><div id="mt-dashboard"><div class="mt-stats"><div class="mt-stat"><span>Cursos disponíveis</span><strong id="mt-total">—</strong></div><div class="mt-stat"><span>Concluídos</span><strong id="mt-done">—</strong></div><div class="mt-stat"><span>Em andamento</span><strong id="mt-running">—</strong></div></div><div class="mt-toolbar"><h2>Seus treinamentos</h2><div class="mt-filters"><button class="mt-filter active" data-filter="todos">Todos</button><button class="mt-filter" data-filter="recomendados">Recomendados</button><button class="mt-filter" data-filter="andamento">Em andamento</button><button class="mt-filter" data-filter="concluidos">Concluídos</button></div></div><div id="mt-list" class="mt-grid" aria-live="polite"><div class="mt-empty">Carregando cursos...</div></div></div>
 
+
+
 <!-- SCRUM-486: certificações vinculadas aos cursos existentes -->
+
 <section id="mt-certificacoes" class="mt-cert-section" aria-labelledby="mt-cert-title">
+
   <details class="mt-cert-accordion">
+
     <summary class="mt-cert-toggle">
+
       <span class="mt-cert-toggle-icon" aria-hidden="true">🏅</span>
+
       <span class="mt-cert-toggle-copy">
+
         <strong id="mt-cert-title">Minhas certificações</strong>
+
         <small>Veja seus certificados e acompanhe o progresso dos quatro níveis.</small>
+
       </span>
+
       <span class="mt-cert-chevron" aria-hidden="true">⌄</span>
+
     </summary>
+
     <div class="mt-cert-content">
+
       <div class="mt-cert-grid" id="mt-cert-list" aria-live="polite">
+
         <div class="mt-empty">Carregando certificações...</div>
+
       </div>
+
     </div>
+
   </details>
+
 </section>
+
+
 
 <style>
 
+
+
 .mt-cert-section{margin-top:28px}.mt-cert-section h2{margin:0 0 6px}.mt-cert-section p{margin:0 0 14px;color:#64748b}
+
+
 
 .mt-cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 
+
+
 .mt-cert-card{background:#fff;border:1px solid #dbe3ef;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px}
+
+
 
 .mt-cert-card h3{font-size:16px;margin:0;color:#10233e}.mt-cert-card p{font-size:13px;margin:0;color:#64748b}
 
+
+
 .mt-cert-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.mt-cert-status{font-size:12px;font-weight:700;color:#3456cf}
 
+
+
 .mt-cert-card .mt-btn{align-self:flex-start}.mt-cert-note{display:block;margin-top:12px;color:#64748b}
+
+
 
 .mt-cert-card button:disabled{opacity:.55;cursor:not-allowed}
 
 
+
+
+
 /* HestIA Academy: seção retrátil de certificações, ao final dos cursos */
+
 .mt-cert-accordion{background:#fff;border:1px solid #dbe3ef;border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(16,35,62,.045)}
+
 .mt-cert-toggle{display:flex;align-items:center;gap:15px;padding:22px 24px;cursor:pointer;list-style:none;user-select:none}
+
 .mt-cert-toggle::-webkit-details-marker{display:none}
+
 .mt-cert-toggle:focus-visible{outline:3px solid #3456cf;outline-offset:-3px}
+
 .mt-cert-toggle-icon{display:grid;place-items:center;flex-shrink:0;width:46px;height:46px;border-radius:12px;background:#eef3ff;font-size:23px}
+
 .mt-cert-toggle-copy{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+
 .mt-cert-toggle-copy strong{font-size:20px;color:#10233e}
+
 .mt-cert-toggle-copy small{font-size:13px;color:#64748b;line-height:1.5}
+
 .mt-cert-chevron{font-size:30px;line-height:1;color:#3456cf;transition:transform .2s ease}
+
 .mt-cert-accordion[open] .mt-cert-chevron{transform:rotate(180deg)}
+
 .mt-cert-content{padding:0 24px 24px;border-top:1px solid #edf1f6}
+
 .mt-cert-content .mt-cert-grid{padding-top:22px}
+
 @media(max-width:600px){.mt-cert-toggle{padding:17px;gap:11px}.mt-cert-toggle-copy strong{font-size:17px}.mt-cert-content{padding:0 15px 18px}}
+
 </style>
+
+
 
 </section></main></div><script>
 
 
 
+
+
+
+
 // Microtreinamentos HestIA
+
+
+
+
 
 
 
@@ -68,11 +130,27 @@
 
 
 
+
+
+
+
+
+
+
+
 let cursos = [];
 
 
 
+
+
+
+
 let cursoAtual = null;
+
+
+
+
 
 
 
@@ -84,7 +162,19 @@ let filtroAtual = "todos";
 
 
 
+
+
+
+
+
+
+
+
 function buscarDados(url, metodo, dados) {
+
+
+
+
 
 
 
@@ -92,11 +182,23 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
         method: metodo,
 
 
 
+
+
+
+
         headers: { "Content-Type": "application/json" }
+
+
+
+
 
 
 
@@ -108,7 +210,19 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
+
+
+
+
     if (dados != null) {
+
+
+
+
 
 
 
@@ -116,7 +230,19 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -128,7 +254,15 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
         return resposta.json().then(function(resultado) {
+
+
+
+
 
 
 
@@ -136,7 +270,15 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
                 throw new Error(resultado.erro || "Erro na requisicao.");
+
+
+
+
 
 
 
@@ -144,7 +286,15 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
             return resultado;
+
+
+
+
 
 
 
@@ -152,11 +302,27 @@ function buscarDados(url, metodo, dados) {
 
 
 
+
+
+
+
     });
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -168,7 +334,15 @@ function limparTexto(texto) {
 
 
 
+
+
+
+
     let elemento = document.createElement("div");
+
+
+
+
 
 
 
@@ -176,11 +350,27 @@ function limparTexto(texto) {
 
 
 
+
+
+
+
     return elemento.innerHTML;
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -192,7 +382,15 @@ function porcentagem(curso) {
 
 
 
+
+
+
+
     if (curso.concluido) {
+
+
+
+
 
 
 
@@ -200,7 +398,15 @@ function porcentagem(curso) {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -208,7 +414,19 @@ function porcentagem(curso) {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -220,7 +438,15 @@ function carregarCursos() {
 
 
 
+
+
+
+
     let lista = document.getElementById("mt-list");
+
+
+
+
 
 
 
@@ -232,19 +458,43 @@ function carregarCursos() {
 
 
 
+
+
+
+
+
+
+
+
     buscarDados("/api/microtreinamentos", "GET", null).then(function(resultado) {
+
+
+
+
 
 
 
         cursos = resultado.treinamentos;
 
+
+
         window.hestiaNivelAtual = resultado.nivelAtual;
+
+
+
+
 
 
 
         mostrarCursos();
 
+
+
         mostrarCertificacoes();
+
+
+
+
 
 
 
@@ -252,11 +502,23 @@ function carregarCursos() {
 
 
 
+
+
+
+
         lista.textContent = erro.message;
+
+
 
         let certLista = document.getElementById("mt-cert-list");
 
+
+
         if (certLista) certLista.textContent = "Não foi possível carregar as certificações.";
+
+
+
+
 
 
 
@@ -264,7 +526,19 @@ function carregarCursos() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -276,7 +550,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
     let lista = document.getElementById("mt-list");
+
+
+
+
 
 
 
@@ -284,11 +566,23 @@ function mostrarCursos() {
 
 
 
+
+
+
+
     let andamento = 0;
 
 
 
+
+
+
+
     let disponiveis = 0;
+
+
+
+
 
 
 
@@ -300,7 +594,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
     for (let i = 0; i < cursos.length; i++) {
+
+
+
+
 
 
 
@@ -312,11 +618,27 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
         if (curso.concluido) concluidos++;
 
 
 
+
+
+
+
         if (curso.etapa > 0 && !curso.concluido) andamento++;
+
+
+
+
 
 
 
@@ -328,7 +650,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
         let mostrar = true;
+
+
+
+
 
 
 
@@ -336,11 +670,23 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         if (filtroAtual == "andamento" && (curso.etapa == 0 || curso.concluido)) mostrar = false;
 
 
 
+
+
+
+
         if (filtroAtual == "concluidos" && !curso.concluido) mostrar = false;
+
+
+
+
 
 
 
@@ -352,7 +698,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
         let estado = "Disponivel";
+
+
+
+
 
 
 
@@ -360,7 +718,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         else if (curso.concluido) estado = "Concluido";
+
+
+
+
 
 
 
@@ -372,7 +738,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
         html += '<div class="mt-card">';
+
+
+
+
 
 
 
@@ -380,7 +758,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         html += '<span class="mt-tag">' + estado + '</span></div>';
+
+
+
+
 
 
 
@@ -388,7 +774,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         html += '<p>' + limparTexto(curso.descricao) + '</p>';
+
+
+
+
 
 
 
@@ -396,7 +790,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         html += '<div class="mt-progress"><span style="width:' + porcentagem(curso) + '%"></span></div>';
+
+
+
+
 
 
 
@@ -408,7 +810,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
+
+
+
+
         if (curso.bloqueado) {
+
+
+
+
 
 
 
@@ -416,7 +830,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         } else {
+
+
+
+
 
 
 
@@ -424,7 +846,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -432,7 +862,19 @@ function mostrarCursos() {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -444,7 +886,15 @@ function mostrarCursos() {
 
 
 
+
+
+
+
     document.getElementById("mt-done").textContent = concluidos;
+
+
+
+
 
 
 
@@ -452,11 +902,27 @@ function mostrarCursos() {
 
 
 
+
+
+
+
     lista.innerHTML = html || '<div class="mt-empty">Nenhum curso encontrado.</div>';
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -468,11 +934,27 @@ function carregarCurso() {
 
 
 
+
+
+
+
     let tela = document.getElementById("mt-course");
 
 
 
+
+
+
+
     let id = tela.getAttribute("data-course");
+
+
+
+
+
+
+
+
 
 
 
@@ -484,7 +966,15 @@ function carregarCurso() {
 
 
 
+
+
+
+
         cursoAtual = resultado.treinamento;
+
+
+
+
 
 
 
@@ -492,7 +982,15 @@ function carregarCurso() {
 
 
 
+
+
+
+
     }).catch(function(erro) {
+
+
+
+
 
 
 
@@ -500,11 +998,27 @@ function carregarCurso() {
 
 
 
+
+
+
+
     });
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -516,7 +1030,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     let tela = document.getElementById("mt-course");
+
+
+
+
 
 
 
@@ -528,7 +1050,19 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
+
+
+
+
     if (numero >= curso.licoes.length) {
+
+
+
+
 
 
 
@@ -536,7 +1070,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
             '<a class="mt-btn mt-btn-primary" href="/microtreinamentos/' + curso.id + '/avaliacao">Fazer avaliacao</a>';
+
+
+
+
 
 
 
@@ -544,7 +1086,19 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -556,7 +1110,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     let html = '<p class="mt-step">Aula ' + (numero + 1) + ' de ' + curso.licoes.length + '</p>';
+
+
+
+
 
 
 
@@ -564,7 +1126,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     html += '<div class="mt-lesson-text" style="white-space:pre-line;line-height:1.85">' + limparTexto(aula.texto) + '</div>';
+
+
+
+
 
 
 
@@ -572,7 +1142,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     if (numero > 0) html += '<button class="mt-btn" id="voltarAula">Anterior</button>';
+
+
+
+
 
 
 
@@ -580,7 +1158,19 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
     tela.innerHTML = html;
+
+
+
+
+
+
+
+
 
 
 
@@ -592,7 +1182,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
         document.getElementById("voltarAula").addEventListener("click", function() {
+
+
+
+
 
 
 
@@ -600,11 +1198,27 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
         });
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -616,7 +1230,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
         let botao = document.getElementById("proximaAula");
+
+
+
+
 
 
 
@@ -628,7 +1250,19 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
+
+
+
+
         if (numero < curso.etapa) {
+
+
+
+
 
 
 
@@ -636,11 +1270,27 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
             return;
 
 
 
+
+
+
+
         }
+
+
+
+
+
+
+
+
 
 
 
@@ -652,7 +1302,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
             .then(function() {
+
+
+
+
 
 
 
@@ -660,7 +1318,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
                 mostrarAula(numero + 1);
+
+
+
+
 
 
 
@@ -668,7 +1334,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
                 alert(erro.message);
+
+
+
+
 
 
 
@@ -676,7 +1350,15 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
             });
+
+
+
+
 
 
 
@@ -684,7 +1366,19 @@ function mostrarAula(numero) {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -696,7 +1390,15 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
     let tela = document.getElementById("mt-exam");
+
+
+
+
 
 
 
@@ -708,7 +1410,19 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
+
+
+
+
     buscarDados("/api/microtreinamentos/" + id + "?avaliacao=1", "GET", null).then(function(resultado) {
+
+
+
+
 
 
 
@@ -716,7 +1430,15 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
         if (cursoAtual.etapa < cursoAtual.totalEtapas) {
+
+
+
+
 
 
 
@@ -724,7 +1446,15 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
             return;
+
+
+
+
 
 
 
@@ -732,7 +1462,15 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
         mostrarAvaliacao();
+
+
+
+
 
 
 
@@ -740,7 +1478,15 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
         tela.textContent = erro.message;
+
+
+
+
 
 
 
@@ -748,7 +1494,19 @@ function carregarAvaliacao() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -760,15 +1518,35 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
     let tela = document.getElementById("mt-exam");
+
+
+
+
 
 
 
     let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
 
+
+
     html += '<p>Responda todas as perguntas. Nota minima: 80%.</p>';
 
+
+
     html += '<form id="formAvaliacao">';
+
+
+
+
+
+
+
+
 
 
 
@@ -780,7 +1558,15 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
         let questao = cursoAtual.questoes[i];
+
+
+
+
 
 
 
@@ -788,7 +1574,15 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
         for (let j = 0; j < questao.opcoes.length; j++) {
+
+
+
+
 
 
 
@@ -796,7 +1590,15 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -804,7 +1606,19 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -816,7 +1630,15 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
     tela.innerHTML = html;
+
+
+
+
 
 
 
@@ -824,7 +1646,19 @@ function mostrarAvaliacao() {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -836,7 +1670,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
     evento.preventDefault();
+
+
+
+
 
 
 
@@ -844,7 +1686,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
     let formulario = document.getElementById("formAvaliacao");
+
+
+
+
 
 
 
@@ -856,7 +1706,19 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
+
+
+
+
     for (let i = 0; i < cursoAtual.questoes.length; i++) {
+
+
+
+
 
 
 
@@ -864,7 +1726,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
         if (selecionada == null) {
+
+
+
+
 
 
 
@@ -872,7 +1742,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
             return;
+
+
+
+
 
 
 
@@ -880,11 +1758,27 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
         respostas.push(parseInt(selecionada.value));
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -896,7 +1790,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
         .then(function(dados) {
+
+
+
+
 
 
 
@@ -904,7 +1806,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
             if (dados.aprovado) {
+
+
+
+
 
 
 
@@ -912,7 +1822,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
             }
+
+
+
+
 
 
 
@@ -920,7 +1838,15 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
             resultado.textContent = erro.message;
+
+
+
+
 
 
 
@@ -928,7 +1854,21 @@ function enviarAvaliacao(evento) {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -940,271 +1880,572 @@ function enviarAvaliacao(evento) {
 
 // SCRUM-486 integrada às concessões persistidas das SCRUM-484/485.
 
+
+
 async function mostrarCertificacoes() {
+
+
 
     const lista = document.getElementById("mt-cert-list");
 
+
+
     if (!lista) return;
+
+
 
     try {
 
+
+
         const resultado = await buscarDados("/api/certificacoes", "GET", null);
+
+
 
         const progresso = Array.isArray(resultado.progresso) ? resultado.progresso : [];
 
+
+
         const concedidos = Array.isArray(resultado.certificacoes) ? resultado.certificacoes : [];
+
+
+
+        // Compatibilidade com certificacoes anteriores a HestIA Academy.
+        const temAcademy = [...progresso, ...concedidos].some(item =>
+            /^HESTIA_ACADEMY_N[1-4]$/.test(String(item.codigo || ""))
+        );
+        if (!temAcademy && (progresso.length || concedidos.length)) {
+            lista.replaceChildren();
+            const registros = progresso.length ? progresso : concedidos;
+            for (const item of registros) {
+                const certificado = concedidos.find(c =>
+                    (item.definicaoId != null && c.definicaoId === item.definicaoId) ||
+                    (c.nome === item.nome && c.nivel === item.nivel)
+                );
+                const total = Number(item.totalRequisitos || 0);
+                const atendidos = Number(item.requisitosAtendidos || 0);
+                const pendentes = Number(item.requisitosPendentes ?? Math.max(0, total - atendidos));
+                const card = document.createElement("article");
+                card.className = "mt-cert-card";
+                const titulo = document.createElement("h3");
+                titulo.textContent = item.nome || "Certificação";
+                const descricao = document.createElement("p");
+                descricao.textContent = item.nivel || "";
+                const progressoTexto = document.createElement("p");
+                progressoTexto.textContent = certificado ? "Certificação conquistada" : atendidos + " de " + total + " requisitos atendidos";
+                const rodape = document.createElement("p");
+                rodape.textContent = certificado ? "Certificado disponível" : pendentes + " requisitos obrigatórios pendentes";
+                card.append(titulo, descricao, progressoTexto, rodape);
+                lista.append(card);
+            }
+            return;
+        }
 
         const niveis = ["Aprendiz", "Consciente", "Guardião", "Embaixador"];
 
+
+
         lista.replaceChildren();
+
+
 
         for (let i = 1; i <= 4; i++) {
 
+
+
             const codigo = "HESTIA_ACADEMY_N" + i;
+
+
 
             const situacao = progresso.find(item => item.codigo === codigo);
 
+
+
             const certificado = concedidos.find(item => item.codigo === codigo);
+
+
 
             const concedida = Boolean(certificado || (situacao && situacao.concedida));
 
+
+
             const total = situacao ? situacao.totalRequisitos : 4;
+
+
 
             const atendidos = concedida ? total : (situacao ? situacao.requisitosAtendidos : 0);
 
+
+
             const percentual = total ? Math.max(0, Math.min(100, Math.round(atendidos / total * 100))) : 0;
+
+
 
             const card = document.createElement("article");
 
+
+
             card.className = "mt-cert-card mt-academy-card" + (concedida ? " mt-academy-earned" : "");
+
+
 
             const topo = document.createElement("div");
 
+
+
             topo.className = "mt-academy-top";
+
+
 
             const emblema = document.createElement("span");
 
+
+
             emblema.className = "mt-academy-emblem";
+
+
 
             emblema.textContent = ["✦", "◆", "★", "✧"][i - 1];
 
+
+
             const selo = document.createElement("span");
+
+
 
             selo.className = "mt-academy-badge";
 
+
+
             selo.textContent = concedida ? "✓ Conquistado" : (situacao ? "Em progresso" : "Aguardando configuração");
+
+
 
             topo.append(emblema, selo);
 
+
+
             const subtitulo = document.createElement("p");
+
+
 
             subtitulo.className = "mt-academy-eyebrow";
 
+
+
             subtitulo.textContent = "HESTIA ACADEMY · NÍVEL " + i;
+
+
 
             const titulo = document.createElement("h3");
 
+
+
             titulo.textContent = niveis[i - 1];
+
+
 
             const descricao = document.createElement("p");
 
+
+
             descricao.className = "mt-academy-description";
+
+
 
             descricao.textContent = concedida ? "Certificação conquistada com suas avaliações aprovadas." : "Aprove as quatro avaliações deste nível para conquistar sua certificação.";
 
+
+
             const progressoLinha = document.createElement("div");
+
+
 
             progressoLinha.className = "mt-academy-progress-label";
 
+
+
             const quantidade = document.createElement("strong");
+
+
 
             quantidade.textContent = atendidos + " de " + total + " avaliações";
 
+
+
             const porcentagem = document.createElement("span");
+
+
 
             porcentagem.textContent = percentual + "%";
 
+
+
             progressoLinha.append(quantidade, porcentagem);
+
+
 
             const barra = document.createElement("div");
 
+
+
             barra.className = "mt-academy-progress";
+
+
 
             const preenchimento = document.createElement("span");
 
+
+
             preenchimento.style.width = percentual + "%";
+
+
 
             barra.append(preenchimento);
 
+
+
             card.append(topo, subtitulo, titulo, descricao, progressoLinha, barra);
+
+
 
             if (certificado) {
 
+
+
                 const botao = document.createElement("button");
+
+
 
                 botao.type = "button";
 
+
+
                 botao.className = "mt-btn mt-btn-primary mt-academy-action";
+
+
 
                 botao.textContent = "Ver certificado";
 
+
+
                 botao.addEventListener("click", () => abrirCertificado(certificado));
+
+
 
                 card.append(botao);
 
+
+
             } else {
+
+
 
                 const rodape = document.createElement("p");
 
+
+
                 rodape.className = "mt-academy-footnote";
+
+
 
                 rodape.textContent = situacao ? "Faltam " + Math.max(0, total - atendidos) + " avaliações aprovadas." : "Aguardando publicação pelo administrador.";
 
+
+
                 card.append(rodape);
+
+
 
             }
 
+
+
             lista.append(card);
+
+
 
         }
 
+
+
     } catch (erro) {
+
+
 
         lista.textContent = erro.message;
 
+
+
     }
 
+
+
 }
+
+
 
 function abrirCertificado(certificado) {
 
+
+
     if (!certificado || !certificado.id) return;
+
+
 
     const janela = window.open("", "_blank");
 
+
+
     if (!janela) { alert("Permita pop-ups para visualizar o certificado."); return; }
+
+
 
     const dataOriginal = certificado.concedidaEm;
 
+
+
     const data = dataOriginal ? new Date(dataOriginal) : null;
+
+
 
     const dataValida = data && !Number.isNaN(data.getTime());
 
+
+
     const dataFormatada = dataValida
+
+
 
         ? new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "America/Sao_Paulo" }).format(data)
 
+
+
         : "Data não informada";
+
+
 
     const nomeNivel = String(certificado.nivel || "Certificação");
 
+
+
     const nomeCertificacao = String(certificado.nome || "HestIA Academy");
+
+
 
     const numeroRegistro = String(certificado.id);
 
+
+
     janela.document.open();
+
+
 
     janela.document.write(`<!DOCTYPE html>
 
+
+
 <html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+
 
 <title>Certificado | HestIA Academy</title>
 
+
+
 <style>
+
+
 
 *{box-sizing:border-box}body{margin:0;padding:36px 18px;background:#eef2f7;color:#1b3044;font-family:Arial,Helvetica,sans-serif}
 
+
+
 .certificado{width:min(1120px,100%);min-height:720px;margin:auto;background:#fff;position:relative;overflow:hidden;border:1px solid #d6dfeb;box-shadow:0 16px 45px rgba(25,49,78,.12);padding:18px}
+
+
 
 .moldura{min-height:680px;border:2px solid #537da9;position:relative;padding:40px 58px 32px;text-align:center;display:flex;flex-direction:column;align-items:center}
 
+
+
 .moldura:before{content:"";position:absolute;inset:7px;border:1px solid #c8d7e7;pointer-events:none}
+
+
 
 .moldura:after{content:"";position:absolute;inset:17px;border:1px solid #e6edf5;pointer-events:none}
 
+
+
 .decoracao{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+
+
 
 .decoracao:before,.decoracao:after{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:#f4f7fb;transform:rotate(30deg)}
 
+
+
 .decoracao:before{top:-190px;left:-130px}.decoracao:after{bottom:-220px;right:-100px}
+
+
 
 .conteudo{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;flex:1}
 
+
+
 .logo{width:210px;max-height:100px;object-fit:contain;margin:5px auto 20px}
+
+
 
 .marca{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:#527498;font-weight:bold;margin:0 0 22px}
 
+
+
 .titulo{font-size:18px;letter-spacing:5px;font-weight:normal;text-transform:uppercase;color:#516b86;margin:0 0 18px}
+
+
 
 .linha{width:76px;height:3px;background:#c89b57;margin:0 auto 23px}
 
+
+
 .intro{font-size:17px;color:#526477;line-height:1.65;max-width:740px;margin:0 auto 12px}
+
+
 
 .nome{font-size:clamp(30px,4vw,47px);font-weight:700;line-height:1.2;color:#18324c;margin:8px 0 16px}
 
+
+
 .reconhecimento{font-size:17px;line-height:1.7;color:#526477;max-width:760px;margin:0 0 15px}
+
+
 
 .nivel{font-size:clamp(23px,3vw,37px);font-weight:700;letter-spacing:1px;color:#244a74;text-transform:uppercase;margin:3px 0 14px}
 
+
+
 .descricao{font-size:15px;line-height:1.6;max-width:720px;color:#526477;margin:0 auto 22px}
+
+
 
 .selo{border:2px solid #c89b57;color:#946c30;width:94px;height:94px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#fffdf8;margin:4px auto 20px;box-shadow:0 0 0 5px #fff,0 0 0 6px #e6d6b8}
 
+
+
 .selo strong{font-size:28px;line-height:1}.selo span{font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:5px}
+
+
 
 .rodape{width:100%;margin-top:auto;padding-top:18px;display:flex;justify-content:space-between;gap:24px;text-align:left;align-items:end;border-top:1px solid #dbe4ed}
 
+
+
 .rodape small{display:block;text-transform:uppercase;letter-spacing:1.3px;font-size:10px;color:#73859a;margin-bottom:6px}
+
+
 
 .rodape strong{font-size:14px;color:#213c58}.rodape .registro{text-align:right}
 
+
+
 .acoes{text-align:center;margin:24px auto 0}.acoes button{background:#28527d;color:#fff;border:0;border-radius:7px;padding:13px 26px;font-weight:bold;font-size:14px;cursor:pointer}
+
+
 
 @page{size:A4 landscape;margin:8mm}
 
+
+
 @media print{body{padding:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.certificado{width:100%;min-height:0;height:190mm;border:0;box-shadow:none;padding:0}.moldura{height:100%;min-height:0;padding:22px 42px 18px}.logo{max-height:72px;width:165px;margin-bottom:12px}.marca{margin-bottom:12px}.titulo{margin-bottom:12px}.linha{margin-bottom:14px}.intro{font-size:14px}.nome{font-size:33px;margin:6px 0 10px}.reconhecimento{font-size:14px;margin-bottom:10px}.nivel{font-size:26px;margin-bottom:10px}.descricao{font-size:12px;margin-bottom:12px}.selo{width:74px;height:74px;margin-bottom:12px}.selo strong{font-size:22px}.rodape{padding-top:10px}.acoes{display:none}}
+
+
 
 @media(max-width:650px){body{padding:10px}.certificado{padding:8px}.moldura{padding:25px 18px}.rodape{flex-direction:column;text-align:center;align-items:center}.rodape .registro{text-align:center}}
 
+
+
 </style></head><body>
+
+
 
 <div class="certificado"><div class="moldura"><div class="decoracao"></div><div class="conteudo">
 
+
+
 <img class="logo" src="/logo_hestia.png" alt="Logo original HestIA">
+
+
 
 <p class="marca">HestIA Academy</p><h1 class="titulo">Certificado de conclusão</h1><div class="linha"></div>
 
+
+
 <p class="intro">A HestIA Academy certifica que o titular desta conta concluiu com êxito os requisitos de aprendizagem e foi aprovado nas avaliações exigidas para a certificação</p>
+
+
 
 <h2 class="nome" id="cert-nome"></h2>
 
+
+
 <p class="reconhecimento">Em reconhecimento ao conhecimento demonstrado e ao compromisso com o uso produtivo, seguro e responsável da Inteligência Artificial.</p>
+
+
 
 <h3 class="nivel" id="cert-nivel"></h3>
 
+
+
 <p class="descricao">Certificação concedida pela plataforma HestIA, conforme os critérios de avaliação e as evidências de aprovação registrados no sistema.</p>
+
+
 
 <div class="selo" aria-label="Certificação concedida"><strong>✓</strong><span>Aprovado</span></div>
 
+
+
 <div class="rodape"><div><small>Data de emissão</small><strong id="cert-data"></strong></div><div class="registro"><small>Registro da certificação</small><strong id="cert-registro"></strong></div></div>
+
+
 
 </div></div></div>
 
+
+
 <div class="acoes"><button type="button" onclick="window.print()">Imprimir / Salvar como PDF</button></div>
+
+
 
 </body></html>`);
 
+
+
     janela.document.close();
+
+
 
     janela.document.getElementById("cert-nome").textContent = nomeCertificacao;
 
+
+
     janela.document.getElementById("cert-nivel").textContent = "Nível " + nomeNivel;
+
+
 
     janela.document.getElementById("cert-data").textContent = dataFormatada;
 
+
+
     janela.document.getElementById("cert-registro").textContent = "#" + numeroRegistro + " · Versão " + certificado.versao;
 
+
+
 }
+
+
+
+
 
 
 
@@ -1212,7 +2453,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
     let filtros = document.querySelectorAll("[data-filter]");
+
+
+
+
 
 
 
@@ -1220,7 +2469,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
         filtros[i].addEventListener("click", function() {
+
+
+
+
 
 
 
@@ -1228,7 +2485,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
             for (let j = 0; j < filtros.length; j++) filtros[j].classList.remove("active");
+
+
+
+
 
 
 
@@ -1236,7 +2501,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
             mostrarCursos();
+
+
+
+
 
 
 
@@ -1244,7 +2517,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1252,7 +2533,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
     if ("BroadcastChannel" in window) {
+
+
+
+
 
 
 
@@ -1260,7 +2549,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
         canalPasse.addEventListener("message", carregarCursos);
+
+
+
+
 
 
 
@@ -1268,7 +2565,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
     window.addEventListener("storage", function(evento) {
+
+
+
+
 
 
 
@@ -1276,7 +2581,15 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -1284,11 +2597,23 @@ if (document.getElementById("mt-list") != null) {
 
 
 
+
+
+
+
 }
 
 
 
+
+
+
+
 if (document.getElementById("mt-course") != null) carregarCurso();
+
+
+
+
 
 
 
@@ -1300,8 +2625,20 @@ if (document.getElementById("mt-exam") != null) carregarAvaliacao();
 
 
 
+
+
+
+
+
+
+
+
 </script>
 
+
+
 <script src="/microtreinamentos-busca.js" defer></script>
+
+
 
 </body></html>

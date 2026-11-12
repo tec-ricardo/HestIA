@@ -175,7 +175,7 @@ function carregarAvaliacao() {
 function mostrarAvaliacao() {
     const tela = document.getElementById('mt-exam');
     let html = '<div class="academy-eyebrow">HESTIA ACADEMY · AVALIAÇÃO</div><h1 class="academy-heading">' + limparTexto(cursoAtual.titulo) + '</h1>' +
-        '<p class="academy-subtitle">Avalie sua capacidade de tomar decisões seguras em situações reais.</p><div class="academy-exam-summary"><span>5 questões</span><span>Nota mínima: 80%</span><span>3 tentativas por ciclo</span></div><form id="formAvaliacao">';
+        '<p class="academy-subtitle">Avalie sua capacidade de tomar decisões seguras em situações reais.</p><div class="academy-exam-summary"><span>5 questões</span><span>Nota minima: 80%</span><span>3 tentativas por ciclo</span></div><form id="formAvaliacao">';
     for (let i = 0; i < cursoAtual.questoes.length; i++) {
         const q = cursoAtual.questoes[i];
         html += '<fieldset class="academy-question"><legend><span>QUESTÃO ' + String(i + 1).padStart(2, '0') + '</span>' + limparTexto(q.pergunta) + '</legend>';
