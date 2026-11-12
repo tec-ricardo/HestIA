@@ -52,6 +52,9 @@ app.use(function(req, res, next) {
     }
 
     if (!req.session.apiToken && req.path !== "/sair") {
+        // Somente a Visão Geral pode ser aberta com uma conta demonstrativa.
+        const demo = /@(adm|gestor|colaborador)$/.test(String(req.session.email || ""));
+        if (demo && req.path === "/" && req.method === "GET") return next();
         if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
         return res.redirect("/acesso?expirada=1");
     }
@@ -110,6 +113,21 @@ app.post("/acesso", async (req, res, next) => {
 /* VISAO GERAL */
 
 app.get("/", async (req, res) => {
+    // Contas demonstrativas não têm token: renderizar sem chamar a API protegida.
+    if (!req.session.apiToken) {
+        return res.set("Cache-Control", "no-store").render("index", {
+            perfil: req.session.perfil,
+            email: req.session.email,
+            active: "dashboard",
+            indicadores: { empresas: 0, departamentos: 0, usuarios: 0, politicas: 0, ferramentas: 0 },
+            resumo: {
+                creditos: null, posicao: null, participantes: 0, xp: null,
+                nivel: null, percentualProgresso: null, xpProximoNivel: null,
+                totalRegistros: 0, registrosComSucesso: 0, tokensRegistrados: 0,
+                atividadeRecente: [], maturidadeParcial: null, coberturaMaturidade: null
+            }
+        });
+    }
     const usuarioId = Number(req.session.usuarioId);
     const colaborador = req.session.perfil === "colaborador";
 

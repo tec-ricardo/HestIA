@@ -180,17 +180,73 @@
 
     </nav>
 
-    <!-- RODAPÉ -->
-    <div class="sidebar-footer">
+    
+<!-- RODAPÉ -->
+<div class="sidebar-footer">
+    <div class="hestia-profile">
+        <button type="button"
+                class="hestia-profile-button"
+                id="hestiaProfileButton"
+                aria-expanded="false"
+                aria-controls="hestiaProfileMenu">
 
-        <span>
-            Uso produtivo, responsável e eficiente de IA
-        </span>
+            <span class="hestia-profile-avatar">
+                <%= (email || 'U').charAt(0).toUpperCase() %>
+            </span>
 
-        <a class="logout-link" href="/sair">
-            Sair
-        </a>
+            <span class="hestia-profile-label">
+                Meu perfil
+            </span>
 
+            <span class="hestia-profile-arrow">⌃</span>
+        </button>
+
+        <div class="hestia-profile-menu"
+             id="hestiaProfileMenu"
+             hidden>
+            <span class="hestia-profile-caption">
+                Conta conectada
+            </span>
+
+            <span class="hestia-profile-email">
+                <%= email %>
+            </span>
+
+            <a href="/sair" class="hestia-profile-logout">
+                Sair e voltar ao login
+            </a>
+        </div>
     </div>
+</div>
+
+<script>
+(function () {
+    const button = document.getElementById('hestiaProfileButton');
+    const menu = document.getElementById('hestiaProfileMenu');
+
+    if (!button || !menu) return;
+
+    button.addEventListener('click', function (event) {
+        event.stopPropagation();
+        menu.hidden = !menu.hidden;
+        button.setAttribute('aria-expanded', String(!menu.hidden));
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.hestia-profile')) {
+            menu.hidden = true;
+            button.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            menu.hidden = true;
+            button.setAttribute('aria-expanded', 'false');
+        }
+    });
+})();
+</script>
+
 
 </aside>
