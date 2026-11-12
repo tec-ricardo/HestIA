@@ -1,3 +1,4 @@
+
 <aside class="sidebar" id="sidebar">
 
     <!-- LOGO HESTIA -->
@@ -47,10 +48,18 @@
         <% if (perfil == "gestor") { %>
 
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
+
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
+
             <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
+
+            <!-- GESTÃO DE OCORRÊNCIAS -->
+            <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
+
             <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
+
             <a class="nav-link <%= active == 'custos' ? 'active' : '' %>" href="/custos">Custos e eficiência</a>
 
         <% } %>
@@ -59,13 +68,24 @@
         <% if (perfil == "administrador") { %>
 
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
+
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
+
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
+
             <a class="nav-link <%= active == 'competencias' ? 'active' : '' %>" href="/competencias">Competências</a>
+
             <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
+
+            <!-- GESTÃO DE OCORRÊNCIAS -->
+            <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
+
             <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
+
             <a class="nav-link <%= active == 'administracao' ? 'active' : '' %>" href="/administracao">Administração</a>
+
             <a class="nav-link" href="/administracao/respostas">Revisão de respostas</a>
+
             <a class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>" href="/configuracoes">Configurações</a>
 
         <% } %>

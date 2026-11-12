@@ -7532,3 +7532,143 @@ a[href="/sair"] {
 a.hestia-profile-logout[href="/sair"] {
     display: inline-flex !important;
 }
+
+
+/* Manter o botão de sair dentro de Meu perfil */
+.hestia-profile-menu .hestia-profile-logout {
+    display: inline-flex !important;
+}
+
+/* Ocultar e-mail e sair dos cabeçalhos */
+.topbar .profile-switch,
+.topbar .topbar-logout {
+    display: none !important;
+}
+
+
+/* ==================================================
+   HESTIA - GESTÃO DE OCORRÊNCIAS
+   Melhorias visuais sem alterar funcionalidades
+   ================================================== */
+
+/* Identidade visual */
+:root {
+    --oc-navy: #172c49;
+    --oc-navy-light: #26466e;
+    --oc-orange: #d47739;
+    --oc-background: #f0f4f9;
+    --oc-border: #dce5ef;
+    --oc-muted: #61758f;
+}
+
+/* Área principal */
+body:has(a[href="/ocorrencias"].active) .main-content {
+    background: var(--oc-background);
+}
+
+/* Cabeçalho */
+body:has(a[href="/ocorrencias"].active) .topbar h1 {
+    color: var(--oc-navy);
+    font-weight: 800;
+    letter-spacing: -0.6px;
+}
+
+/* Cartões principais */
+body:has(a[href="/ocorrencias"].active) .card,
+body:has(a[href="/ocorrencias"].active) .panel {
+    background: #ffffff;
+    border: 1px solid var(--oc-border);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(23, 44, 73, 0.045);
+}
+
+/* Títulos */
+body:has(a[href="/ocorrencias"].active) .card h2,
+body:has(a[href="/ocorrencias"].active) .panel h2 {
+    color: var(--oc-navy);
+    font-weight: 800;
+    letter-spacing: -0.4px;
+}
+
+/* Tabela */
+body:has(a[href="/ocorrencias"].active) table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+body:has(a[href="/ocorrencias"].active) thead {
+    background: #f4f7fb;
+}
+
+body:has(a[href="/ocorrencias"].active) th {
+    padding: 17px 15px;
+    color: #405875;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: left;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+body:has(a[href="/ocorrencias"].active) td {
+    padding: 18px 15px;
+    color: var(--oc-navy);
+    border-bottom: 1px solid #edf1f6;
+    vertical-align: middle;
+}
+
+body:has(a[href="/ocorrencias"].active) tbody tr {
+    transition: background 0.2s ease;
+}
+
+body:has(a[href="/ocorrencias"].active) tbody tr:hover {
+    background: #f4f8fd;
+}
+
+body:has(a[href="/ocorrencias"].active) tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Link Ver detalhes */
+body:has(a[href="/ocorrencias"].active) table a {
+    color: #2455a5;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+body:has(a[href="/ocorrencias"].active) table a:hover {
+    color: var(--oc-orange);
+    text-decoration: underline;
+}
+
+/* Filtro de status */
+body:has(a[href="/ocorrencias"].active) select {
+    background: #ffffff;
+    color: var(--oc-navy);
+    border: 1px solid var(--oc-border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-weight: 600;
+    outline: none;
+}
+
+body:has(a[href="/ocorrencias"].active) select:focus {
+    border-color: var(--oc-orange);
+    box-shadow: 0 0 0 3px rgba(212, 119, 57, 0.12);
+}
+
+/* Adaptação para telas menores */
+@media (max-width: 768px) {
+    body:has(a[href="/ocorrencias"].active) .card,
+    body:has(a[href="/ocorrencias"].active) .panel {
+        border-radius: 12px;
+    }
+
+    body:has(a[href="/ocorrencias"].active) th,
+    body:has(a[href="/ocorrencias"].active) td {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+}
