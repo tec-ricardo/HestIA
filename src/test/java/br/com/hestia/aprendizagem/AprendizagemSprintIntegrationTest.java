@@ -203,13 +203,13 @@ class AprendizagemSprintIntegrationTest {
     RespostaReutilizavel resposta(){var r=new RespostaReutilizavel();r.setEmpresaId(empresa.getId());r.setUsuarioId(admin.getId());r.setPromptOriginal("Pergunta sobre política");r.setRespostaGerada("Somente ferramentas autorizadas.");r.setPerfisPermitidos(Set.of(PerfilUsuario.ADMIN,PerfilUsuario.FUNCIONARIO));return respostas.saveAndFlush(r);}
     @Test void revisaoBloqueiaExpiradasEHistoricoDeRetirada(){
         var r=resposta();assertThat(acesso.recuperar(aluno,null,r.getId(),null,false,org.springframework.data.domain.Pageable.unpaged())).hasSize(1);
-        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.BLOQUEADA,"Revisão de validade",null));
+        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.BLOQUEADA,"Revisão de validade",null, null));
         assertThat(acesso.recuperar(aluno,null,r.getId(),null,false,org.springframework.data.domain.Pageable.unpaged())).isEmpty();
-        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.APROVADA,"Conteúdo verificado",LocalDateTime.now().plusDays(1)));
+        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.APROVADA,"Conteúdo verificado",LocalDateTime.now().plusDays(1), null));
         r.setExpiraEm(LocalDateTime.now().minusSeconds(1));respostas.saveAndFlush(r);assertThat(r.isElegivel()).isFalse();
         assertThat(acesso.recuperar(aluno,null,r.getId(),null,false,org.springframework.data.domain.Pageable.unpaged())).isEmpty();
-        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada definitiva",null));
-        assertThatThrownBy(()->revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.APROVADA,"Tentar reabrir",null))).isInstanceOf(ResponseStatusException.class);
+        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada definitiva",null, null));
+        assertThatThrownBy(()->revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.APROVADA,"Tentar reabrir",null, null))).isInstanceOf(ResponseStatusException.class);
         assertThatThrownBy(()->revisoes.detalhe(outro,r.getId())).isInstanceOf(ResponseStatusException.class);
     }
     @Test void ragNuncaEnviaContextoSemAutorizacaoERevalidaHistorico(){
@@ -218,7 +218,7 @@ class AprendizagemSprintIntegrationTest {
         var p=new InteracaoRagService.Pergunta("gerar-1","Qual ferramenta usar?",InteracaoRagService.Modo.GERAR_NOVA,null);
         assertThat(rag.perguntar(aluno,p).fontes()).hasSize(1);rag.perguntar(aluno,p);
         verify(geracao,times(1)).gerar(eq(p.pergunta()),argThat(t->t.size()==1&&t.getFirst().contains("Somente ferramentas autorizadas.")));
-        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Fim da validade",null));
+        revisoes.revisar(admin,r.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Fim da validade",null, null));
         assertThat(rag.historico(aluno).getFirst().resposta()).isNull();
         assertThat(rag.historico(outro)).isEmpty();
     }
@@ -254,7 +254,7 @@ class AprendizagemSprintIntegrationTest {
         var consulta=rag.perguntar(aluno,new InteracaoRagService.Pergunta("consulta-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
         assertThat(consulta.estado()).isEqualTo("RECUPERADA");assertThat(consulta.natureza()).isEqualTo("CONSULTA");
         assertThat(consulta.similaridade()).isNull();assertThat(consulta.confianca()).isEqualTo("NAO_CLASSIFICADA");
-        assertThat(consulta.fontes().getFirst().criadaEm()).isNotBlank();assertThat(consulta.fontes().getFirst().origem()).isEqualTo("BASE_CORPORATIVA");
+        assertThat(consulta.fontes().getFirst().id()).isEqualTo(fonte.getId());
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
         var pedido=new InteracaoRagService.Pergunta("confirmar-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.REUTILIZAR,fonte.getId());
         var confirmada=rag.perguntar(aluno,pedido);assertThat(confirmada.estado()).isEqualTo("REUTILIZADA");
@@ -266,20 +266,20 @@ class AprendizagemSprintIntegrationTest {
         var primeira=resposta();var segunda=resposta();
         rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,primeira.getId()));
         assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("mesma-chave-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,segunda.getId())))
-            .isInstanceOfSatisfying(ResponseStatusException.class,e->assertThat(e.getStatusCode().value()).isEqualTo(409));
+                .isInstanceOfSatisfying(ResponseStatusException.class,e->assertThat(e.getStatusCode().value()).isEqualTo(409));
         assertThat(segunda.getQuantidadeReutilizacoes()).isZero();
     }
     @Test void respostaRetiradaNaoPodeSerConfirmadaDepoisDaConsulta(){
         var fonte=resposta();rag.perguntar(aluno,new InteracaoRagService.Pergunta("ver-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
-        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Conteúdo retirado",null));
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Conteúdo retirado",null, null));
         assertThatThrownBy(()->rag.perguntar(aluno,new InteracaoRagService.Pergunta("retirada-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
-            .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class);
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
     }
     @Test void confirmacaoNaoAcessaRespostaDeOutraEmpresa(){
         var fonte=resposta();
         assertThatThrownBy(()->rag.perguntar(outro,new InteracaoRagService.Pergunta("outra-empresa-544","Escolha",InteracaoRagService.Modo.REUTILIZAR,fonte.getId())))
-            .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class);
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(outro)).isZero();
     }
     @Test void reenviosConcorrentesEUsuariosDistintosNaoDuplicamNemPerdemContadores() throws Exception {
@@ -311,17 +311,17 @@ class AprendizagemSprintIntegrationTest {
     @Test void endpointLegadoExigeChaveECompartilhaConfirmacaoIdempotente() throws Exception {
         var fonte=resposta();
         var mvc=org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup(controllerReuso)
-            .addFilters((jakarta.servlet.Filter)(req,res,chain)->{
-                contexto.definir(new ContextoEmpresa(aluno.getId(),empresa.getId()));
-                chain.doFilter(req,res);
-            }).build();
+                .addFilters((jakarta.servlet.Filter)(req,res,chain)->{
+                    contexto.definir(new ContextoEmpresa(aluno.getId(),empresa.getId()));
+                    chain.doFilter(req,res);
+                }).build();
         String url="/api/respostas-reutilizaveis/"+fonte.getId()+"/reutilizar";
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url).requestAttr("usuarioAutenticado",aluno))
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isBadRequest());
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();
         for(int i=0;i<2;i++)mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch(url)
-            .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+                        .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         em.flush();assertThat(fonte.getQuantidadeReutilizacoes()).isEqualTo(1);assertThat(movimentosReuso(aluno)).isEqualTo(1);
     }
 
@@ -350,7 +350,7 @@ class AprendizagemSprintIntegrationTest {
         var fonte=resposta();var conversa=rag.criarConversa(aluno,"Política");
         when(busca.buscarSemelhantes(eq(empresa.getId()),anyString(),eq(5))).thenReturn(List.of(fonte));
         rag.perguntar(aluno,new InteracaoRagService.Pergunta("antes-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
-        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada",null));
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada",null, null));
         when(contextualizacao.interpretar(eq("E isso?"),anyList())).thenReturn(new ContextualizacaoRagService.Interpretacao(null,"Pode detalhar a pergunta?"));
         assertThat(rag.perguntar(aluno,new InteracaoRagService.Pergunta("depois-546","E isso?",InteracaoRagService.Modo.CONSULTAR,null,conversa.id())).estado()).isEqualTo("PRECISA_ESCLARECIMENTO");
         verify(contextualizacao).interpretar(eq("E isso?"),argThat(List::isEmpty));verifyNoInteractions(geracao);
@@ -366,7 +366,7 @@ class AprendizagemSprintIntegrationTest {
         var fonte=resposta();var conversa=rag.criarConversa(aluno,"Revogação real");
         rag.perguntar(aluno,new InteracaoRagService.Pergunta("revogacao-http-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
         TestTransaction.flagForCommit();TestTransaction.end();
-        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada de validação",null));
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada de validação",null, null));
         var historico=rag.historicoConversa(aluno,conversa.id());
         assertThat(historico).hasSize(1);assertThat(historico.getFirst().estado()).isEqualTo("FONTES_INDISPONIVEIS");
         assertThat(historico.getFirst().resposta()).isNull();assertThat(historico.getFirst().fontes()).isEmpty();

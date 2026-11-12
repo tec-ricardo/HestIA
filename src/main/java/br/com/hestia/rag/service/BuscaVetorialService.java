@@ -24,9 +24,11 @@ public class BuscaVetorialService {
     private br.com.hestia.auditoria.service.DecisaoRecuperacaoService decisoes;
 
     private static final int DIMENSAO = 1536;
-    @org.springframework.beans.factory.annotation.Value("${hestia.rag.similaridade-minima:0.70}")
-    private double similaridadePadrao = 0.70;
-    public double similaridadePadrao() { return similaridadePadrao; }
+    private static final double SIMILARIDADE_PADRAO = 0.70;
+
+    public double similaridadePadrao() {
+        return SIMILARIDADE_PADRAO;
+    }
 
     private final JdbcTemplate jdbcTemplate;
     private final EmbeddingService embeddingService;
@@ -82,7 +84,7 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-        String vetor = gerarVetor(promptIndexado + "\n" + respostaIndexada);
+        String vetor = gerarVetor(promptIndexado);
 
         int atualizadas = jdbcTemplate.update(
                 """
@@ -130,7 +132,7 @@ public class BuscaVetorialService {
             int limite
     ) {
         return buscarSemelhantes(
-                empresaId, pergunta, limite, similaridadePadrao
+                empresaId, pergunta, limite, SIMILARIDADE_PADRAO
         );
     }
 
@@ -166,11 +168,38 @@ public class BuscaVetorialService {
             );
         }
 
+        // Não chamar a OpenAI se não existe nenhum vetor autorizado para pesquisar.
+        // Sem fontes, o serviço deve retornar lista vazia, não erro 503.
+        Long quantidade = jdbcTemplate.queryForObject(
+                """
+                SELECT count(*) FROM respostas_reutilizaveis r
+                WHERE r.empresa_id = ?
+                  AND r.reutilizavel = true
+                  AND r.status_qualidade = 'APROVADA'
+                  AND (r.expira_em IS NULL OR r.expira_em > ?)
+                  AND r.possui_dados_sensiveis = false
+                  AND r.embedding_vector IS NOT NULL
+                  AND EXISTS (
+                      SELECT 1 FROM resposta_perfis p
+                      WHERE p.resposta_id = r.id AND p.perfil = ?
+                  )
+                """,
+                Long.class,
+                empresaId,
+                java.time.LocalDateTime.now(),
+                usuario.getPerfil().name()
+        );
+        if (quantidade == null || quantidade == 0) {
+            if (decisoes != null) decisoes.registrar(usuario, null,
+                    "RECUPERACAO_VETORIAL", true, "SEM_CONTEUDO_AUTORIZADO");
+            return List.of();
+        }
+
         String vetor = gerarVetor(pergunta);
 
-        List<Map<String,Object>> pontuadas = jdbcTemplate.queryForList(
+        List<Long> ids = jdbcTemplate.queryForList(
                 """
-                SELECT id, 1.0 - (embedding_vector <=> CAST(? AS vector)) AS similaridade
+                SELECT id
                 FROM respostas_reutilizaveis
                 WHERE empresa_id = ?
                   AND reutilizavel = true
@@ -188,7 +217,7 @@ public class BuscaVetorialService {
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
-                vetor,
+                Long.class,
                 empresaId,
                 java.time.LocalDateTime.now(),
                 usuario.getPerfil().name(),
@@ -198,9 +227,6 @@ public class BuscaVetorialService {
                 limite
         );
 
-        List<Long> ids = pontuadas.stream().map(r -> ((Number) r.get("id")).longValue()).toList();
-        Map<Long,Double> similaridades = pontuadas.stream().collect(Collectors.toMap(
-                r -> ((Number) r.get("id")).longValue(), r -> ((Number) r.get("similaridade")).doubleValue()));
         if (ids.isEmpty()) {
             if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"SEM_CONTEUDO_AUTORIZADO");
             return List.of();
@@ -226,7 +252,6 @@ public class BuscaVetorialService {
         return ids.stream()
                 .map(respostas::get)
                 .filter(Objects::nonNull)
-                .peek(r -> r.setSimilaridade(similaridades.get(r.getId())))
                 .toList();
     }
 
