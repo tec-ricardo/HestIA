@@ -42,14 +42,21 @@
     const progress = clamp(xp / max, 0, 1);
     const current = [...levels].reverse().find(level => xp >= level.xp) || levels[0];
 
-    // O marcador usa a MESMA geometria e a MESMA porcentagem da linha.
-    const road = $('#hestiaRoadGlow');
-    if (!road) return;
-    const length = road.getTotalLength();
-    const point = road.getPointAtLength(length * progress);
-    // SVG viewBox = 1774 x 887; porcentagens se adaptam ao tamanho da janela.
-    position.style.left = `${point.x / 1774 * 100}%`;
-    position.style.top = `${point.y / 887 * 100}%`;
+    // Pontos medidos sobre a foto: 0, 300, 750, 2500 XP.
+    // Coordenadas percentuais relativas ao cenário, não à tela.
+    const anchors = [
+      { xp: 0, x: 16.5, y: 81 },
+      { xp: 300, x: 37, y: 65 },
+      { xp: 750, x: 60, y: 54 },
+      { xp: 2500, x: 86, y: 34 }
+    ];
+    let from = anchors[0], to = anchors[anchors.length - 1];
+    for (let i = 0; i < anchors.length - 1; i++) {
+      if (xp <= anchors[i + 1].xp) { from = anchors[i]; to = anchors[i + 1]; break; }
+    }
+    const t = clamp((xp - from.xp) / Math.max(1, to.xp - from.xp), 0, 1);
+    position.style.left = `${from.x + (to.x - from.x) * t}%`;
+    position.style.top = `${from.y + (to.y - from.y) * t}%`;
     const message = `Você está aqui: ${xp.toLocaleString('pt-BR')} XP`;
     position.setAttribute('aria-label', message);
     const tooltip = $('#hestiaPhotoPositionText');
@@ -60,10 +67,6 @@
     $('#hestiaPathRemaining').textContent = xp >= max ? 'Templo alcançado!' : `${(max - xp).toLocaleString('pt-BR')} XP`;
     $('#hestiaPathPercent').textContent = `${Math.round(progress * 100)}%`;
     overlay.style.setProperty('--hestia-progress', `${Math.round(progress * 100)}%`);
-    road.style.strokeDasharray = `${length} ${length}`;
-    road.style.strokeDashoffset = `${length * (1 - progress)}`;
-    const kpiFill = $('#hestiaKpiProgressFill');
-    if (kpiFill) kpiFill.style.width = `${progress * 100}%`;
   }
   function open() {
     const overlay = $('#hestiaPathOverlay');

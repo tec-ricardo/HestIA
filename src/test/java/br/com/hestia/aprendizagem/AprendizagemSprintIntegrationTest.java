@@ -63,7 +63,12 @@ class AprendizagemSprintIntegrationTest {
     @AfterEach void limpar(){RequestContextHolder.resetRequestAttributes();}
     Usuario usuario(Empresa e,Departamento d,PerfilUsuario p){var u=new Usuario();u.setNome("Teste");u.setEmail(UUID.randomUUID()+"@example.test");u.setSenha("hash");u.setCargo("Teste");u.setEmpresa(e);u.setDepartamento(d);u.setPerfil(p);em.persist(u);return u;}
     List<Questao> questoes(){return java.util.stream.IntStream.rangeClosed(1,5).mapToObj(i->new Questao("q"+i,"Situação "+i,new LinkedHashMap<>(Map.of("A","Conduta autorizada","B","Conduta incorreta","C","Outra conduta")),"A","Confira o conteúdo e os critérios de uso responsável.")).toList();}
-    long publicar(){return a.publicar(admin,new Publicacao(1L,1,questoes()));}
+    long publicar(){
+        long id=a.publicar(admin,new Publicacao(1L,1,questoes()));
+        a.publicar(admin,new Publicacao(8L,1,questoes()));
+        a.publicar(admin,new Publicacao(11L,1,questoes()));
+        return id;
+    }
     Envio envio(int acertos){return new Envio(java.util.stream.IntStream.rangeClosed(1,5).mapToObj(i->new Resposta("q"+i,i<=acertos?"A":"B")).toList());}
     Tentativa abrir(long id){leituras.concluir(aluno,1L,UUID.randomUUID().toString());return a.abrir(aluno,id);}
     @Test void corrigeNoServidorPreservaVersaoEReenvioNaoDuplica(){
@@ -118,6 +123,15 @@ class AprendizagemSprintIntegrationTest {
         Long participacao=((Number)motor.ciclos(aluno,aluno.getId()).getFirst().get("participacao_id")).longValue();
         assertThat(trilhas.consultar(aluno,participacao).status()).isNotEqualTo("CONCLUIDA");
         var segunda=a.abrir(aluno,catalogo);a.enviar(aluno,segunda.id(),envio(5));
+        // A trilha de Protecao de Dados inclui os cursos 1, 8 e 11.
+        // A aprovacao no curso 1, isoladamente, nao conclui a trilha.
+        for (long treinamentoId : List.of(8L, 11L)) {
+            leituras.concluir(aluno, treinamentoId, UUID.randomUUID().toString());
+            long catalogoComplementar = ((Number) a.catalogos(aluno, treinamentoId)
+                    .getFirst().get("id")).longValue();
+            var tentativaComplementar = a.abrir(aluno, catalogoComplementar);
+            a.enviar(aluno, tentativaComplementar.id(), envio(5));
+        }
         assertThat(trilhas.consultar(aluno,participacao).status()).isEqualTo("CONCLUIDA");
         Long conclusao=((Number)a.jdbc().queryForMap("SELECT id FROM conclusoes_microtreinamento WHERE usuario_id=? AND microtreinamento_id=?",aluno.getId(),1L).get("id")).longValue();
         var prova=vinculos.consultar(aluno,conclusao).getFirst();
@@ -140,7 +154,14 @@ class AprendizagemSprintIntegrationTest {
         a.inserir("INSERT INTO trilha_ocorrencias_confirmadas(empresa_id,usuario_id,avaliacao_id,tipo_erro,ocorrido_em,confirmado_por,confirmado_em,justificativa) VALUES(?,?,?,?,?,?,?,?)",empresa.getId(),aluno.getId(),avaliacao,tipo.name(),data,admin.getId(),LocalDateTime.now(),"Evidência confirmada");
         return avaliacao;
     }
-    void publicarAvaliacao(long treinamento){a.publicar(admin,new Publicacao(treinamento,1,questoes()));}
+    void publicarAvaliacao(long treinamento){
+        var tema=a.conteudo(treinamento).getTema();
+        for(var t:new br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService().criarTreinamentos()){
+            if(t.isAtivo()&&t.getTema()==tema){
+                a.publicar(admin,new Publicacao(t.getId(),1,questoes()));
+            }
+        }
+    }
     @Test void recorrenciaAcionaUmaTrilhaEReprocessamentoNaoDuplica(){
         publicarAvaliacao(5L);var infra=infraestruturaTrilha();var agora=LocalDateTime.now();
         ocorrenciaConfirmada(infra,TipoErro.AUSENCIA_VALIDACAO_HUMANA,agora.minusDays(3));

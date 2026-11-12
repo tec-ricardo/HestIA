@@ -3,7 +3,8 @@ package br.com.hestia.gamificacao.model;
 import java.util.Arrays;
 
 public enum NivelExperiencia {
-    APRENDIZ(0), CONSCIENTE(100), GUARDIAO(300), EMBAIXADOR(700);
+    APRENDIZ(0), CONSCIENTE(300), GUARDIAO(750), EMBAIXADOR(2500);
+
     private final int xpMinimo;
     NivelExperiencia(int xpMinimo) { this.xpMinimo = xpMinimo; }
     public int getXpMinimo() { return xpMinimo; }
