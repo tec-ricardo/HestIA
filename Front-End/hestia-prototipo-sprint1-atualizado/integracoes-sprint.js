@@ -54,6 +54,7 @@ module.exports = function montarIntegracoes(app, api) {
     return { ...nivel, xpAtual: xp };
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
+    if (treinamento.catalogoPersistido === true) return {...treinamento, id:String(treinamento.id), bloqueado:false, nivel:'Catálogo da organização', motivo:'Conteúdo publicado pela organização.', recomendado:false, xpAtual:null, medalhaAtual:nivelAtual.nome};
     const exigido = nivelNecessarioPorId(treinamento.id);
     // O primeiro curso do nível Consciente (5) é liberado ao atingir o nível 2.
     // Os demais cursos dessa etapa (6 a 8) exigem também 300 XP.
@@ -175,10 +176,18 @@ module.exports = function montarIntegracoes(app, api) {
   }));
   router.get('/api/registros', executar(async (req, res) => res.json((await api.get('/registros-uso-ia', { params: { usuarioId: req.session.usuarioId } })).data)));
   router.post('/api/registros', executar(async (req, res) => {
-    const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs'];
+    const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs','evidencias'];
     const dto = { usuarioId: req.session.usuarioId };
     for (const campo of campos) if (Object.hasOwn(req.body, campo)) dto[campo] = req.body[campo];
-    res.status(201).json((await api.post('/registros-uso-ia', dto)).data);
+    try {
+      const { data } = await api.post('/registros-uso-ia', dto, { timeout: 30000 });
+      res.status(201).json(data);
+    } catch (erro) {
+      if (['ECONNABORTED', 'ETIMEDOUT', 'ECONNRESET'].includes(erro.code)) {
+        return res.status(504).json({ erro: 'Não foi possível confirmar o salvamento a tempo. O registro pode ter sido salvo. Atualize o histórico antes de tentar novamente para evitar duplicação.' });
+      }
+      throw erro;
+    }
   }));
   router.get('/api/admin/respostas', admin, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
   router.get('/api/admin/respostas/:id', admin, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));

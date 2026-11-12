@@ -19,9 +19,9 @@ public class AutenticacaoWebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(interceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/error");
+                .excludePathPatterns("/actuator/health", "/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/error");
         registry.addInterceptor(auditoriaInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/error");
+                .excludePathPatterns("/actuator/health", "/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/error");
     }
 }
