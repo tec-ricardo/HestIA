@@ -968,7 +968,8 @@ app.get("/reutilizacoes/buscar", async (req, res) => {
 app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
     try {
         const response = await api.patch(
-            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`
+            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`,
+            undefined, { headers: { "Idempotency-Key": req.get("Idempotency-Key") || "" } }
         );
         return res.json(response.data);
     } catch (error) {

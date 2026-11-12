@@ -1105,13 +1105,21 @@
     listaRespostas.addEventListener("click", async event => {
         const button = event.target.closest(".reutilizar-resposta");
         if (!button) return;
+        if (button.disabled) return;
         button.disabled = true;
-        const response = await fetch(`/reutilizacoes/${button.dataset.id}/reutilizar`, { method: "POST" });
-        const resultado = await response.json();
-        mensagemReutilizacao.textContent = response.ok
-            ? "Resposta reutilizada e experiência registrada no HestIA Pass."
-            : (resultado.erro || "Não foi possível registrar a reutilização.");
-        button.disabled = false;
+        button.dataset.chaveConfirmacao ||= crypto.randomUUID();
+        try {
+            const response = await fetch(`/reutilizacoes/${button.dataset.id}/reutilizar`, {
+                method: "POST", headers: { "Idempotency-Key": button.dataset.chaveConfirmacao }
+            });
+            const resultado = await response.json();
+            if (!response.ok) throw new Error(resultado.erro || "Não foi possível registrar a reutilização.");
+            mensagemReutilizacao.textContent = "Reutilização confirmada no servidor. Consulte os créditos no HestIA Pass.";
+            button.textContent = "Reutilização confirmada";
+        } catch (erro) {
+            mensagemReutilizacao.textContent = erro.message || "Falha de conexão. Tente novamente.";
+            button.disabled = false;
+        }
     });
 </script>
 
