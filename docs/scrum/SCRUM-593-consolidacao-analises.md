@@ -14,6 +14,14 @@ Data da conferência: 11/11/2026. Bases sintéticas; os resultados não represen
 - Machine Learning: executar `python experimento_ml.py --saida resultados`. O script usa a base ao lado do arquivo e preserva a divisão, métricas, previsões e versões em `experimento.json`.
 - Análise Preditiva: abrir o notebook com o CSV ao lado e executar todas as células em Python 3.13 com pandas, NumPy, matplotlib, scikit-learn e statsmodels.
 
-## Pendência de aceite
+## Conferência com as exigências da Entrega 3
 
-O Jira indica a SCRUM-591 pronta para entrega, mas o item consultado não contém a rubrica nem anexo. A reprodução técnica não substitui o cruzamento com as exigências docentes vigentes. Não foi identificado, com as fontes disponíveis, se a entrega final exige análises adicionais.
+Referência: [levantamento da SCRUM-591](SCRUM-591-conferencia-entrega-final.md), baseado no estudo de caso v2 e nos materiais do Canvas. O levantamento não inclui as rubricas individuais confirmadas de cada disciplina.
+
+| Disciplina | O que a reprodução comprova | Lacuna para a entrega final |
+| --- | --- | --- |
+| Estatística Multivariada | Regressão e interpretação reproduzíveis na base sintética. | O relatório renderizado não comprova um dashboard integrado nem a interpretação exibida na aplicação. |
+| Machine Learning | Modelos e avaliação de desempenho reproduzidos; o modelo selecionado não superou a referência no teste. | A execução do script não comprova que o modelo ou suas recomendações estejam integrados à jornada do HestIA. |
+| Análise Preditiva | Validação temporal, métricas e previsão de 14 dias reproduzidas. | O notebook não comprova que a previsão esteja disponível no dashboard nem como apoia uma decisão. |
+
+A consolidação registra as três análises existentes e dimensiona a diferença entre seus resultados e as evidências exigidas na versão final. A integração e a homologação das telas precisam ser verificadas no escopo da SCRUM-585; caso faltem funcionalidades ou análises obrigatórias, registrar e estimar o trabalho separadamente. As rubricas individuais permanecem pendentes de conferência. Este documento não comprova o aceite acadêmico da Entrega 3.
