@@ -27,6 +27,7 @@ class BuscaSemelhanteControllerTest {
     @BeforeEach
     void preparar() {
         busca = mock(BuscaVetorialService.class);
+        when(busca.similaridadePadrao()).thenReturn(0.70);
 
         var acesso = new AcessoRespostaService(
                 mock(RespostaReutilizavelRepository.class)
@@ -135,5 +136,14 @@ class BuscaSemelhanteControllerTest {
                 .andExpect(status().isForbidden());
 
         verifyNoInteractions(busca);
+    }
+
+    @Test void respeitaLimiarConfiguradoNoAmbiente() throws Exception {
+        when(busca.similaridadePadrao()).thenReturn(0.40);
+        when(busca.buscarSemelhantes(7L,"Pergunta",5,0.40)).thenReturn(List.of());
+        mvc.perform(post("/api/respostas-reutilizaveis/buscar-semelhantes").requestAttr("usuarioAutenticado",usuario)
+            .contentType(MediaType.APPLICATION_JSON).content("{\"pergunta\":\"Pergunta\"}"))
+            .andExpect(status().isOk());
+        verify(busca).buscarSemelhantes(7L,"Pergunta",5,0.40);
     }
 }

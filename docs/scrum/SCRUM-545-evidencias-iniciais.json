@@ -1,0 +1,136 @@
+{
+  "executadoEm": "2026-11-12T13:40:51.935Z",
+  "corpus": "demo-v1.1-545",
+  "natureza": "DIDATICO",
+  "empresaId": 1,
+  "fonteId": 2,
+  "casos": [
+    {
+      "id": "ferramentas",
+      "pergunta": "Quais ferramentas de inteligência artificial posso usar no trabalho?",
+      "esperada": true,
+      "similaridade": 0.39919630466102773,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": false,
+      "ids": []
+    },
+    {
+      "id": "dados",
+      "pergunta": "Posso enviar dados pessoais de clientes para uma ferramenta de IA?",
+      "esperada": true,
+      "similaridade": 0.49408164222445095,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": false,
+      "ids": []
+    },
+    {
+      "id": "credenciais",
+      "pergunta": "É permitido colocar senhas e chaves de API em um prompt?",
+      "esperada": true,
+      "similaridade": 0.31630343928119553,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": false,
+      "ids": []
+    },
+    {
+      "id": "validacao",
+      "pergunta": "Preciso conferir fatos e números antes de usar a resposta da IA?",
+      "esperada": true,
+      "similaridade": 0.483704217441992,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": false,
+      "ids": []
+    },
+    {
+      "id": "revogacao",
+      "pergunta": "Posso continuar usando uma política que foi retirada?",
+      "esperada": true,
+      "similaridade": 0.34749410635828104,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": false,
+      "ids": []
+    },
+    {
+      "id": "culinaria",
+      "pergunta": "Como preparar um bolo de cenoura com cobertura de chocolate?",
+      "esperada": false,
+      "similaridade": 0.10631577340098852,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    },
+    {
+      "id": "ferias",
+      "pergunta": "Quantos dias de férias remuneradas tenho direito na empresa?",
+      "esperada": false,
+      "similaridade": 0.12495467125056836,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    },
+    {
+      "id": "astronomia",
+      "pergunta": "Qual é a distância entre a Terra e o planeta Júpiter?",
+      "esperada": false,
+      "similaridade": 0.12380552869112593,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    }
+  ],
+  "limiares": [
+    {
+      "limiar": 0.5,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.55,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.6,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.65,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.7,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.75,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    },
+    {
+      "limiar": 0.8,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    }
+  ],
+  "consultaSemContagem": true,
+  "confirmacaoUnica": true,
+  "observacao": "Amostra didática pequena: não demonstra qualidade em documentos ou perguntas fora deste corpus."
+}

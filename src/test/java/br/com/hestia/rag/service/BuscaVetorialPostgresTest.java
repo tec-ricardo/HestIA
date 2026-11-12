@@ -280,6 +280,7 @@ class BuscaVetorialPostgresTest {
         );
 
         service.indexarResposta(1L, allowed);
+        verify(embeddings).gerarEmbedding("Pergunta de teste\nConteúdo de teste");
 
         assertThat(jdbc.queryForObject(
                 """
@@ -314,7 +315,7 @@ class BuscaVetorialPostgresTest {
                 id
         );
 
-        when(embeddings.gerarEmbedding("Pergunta de teste"))
+        when(embeddings.gerarEmbedding(org.mockito.ArgumentMatchers.startsWith("Pergunta de teste\n")))
                 .thenAnswer(invocation -> {
                     jdbc.update(
                             """

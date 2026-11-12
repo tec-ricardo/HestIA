@@ -50,9 +50,11 @@ class AprendizagemSprintIntegrationTest {
     @Autowired InteracaoRagService rag;@Autowired EmpresaAtual contexto;@Autowired RegistroUsoIAService registros;
     @Autowired br.com.hestia.indicadores.maturidade.ApuracaoMaturidadeService apuracoes;
     @Autowired br.com.hestia.microtreinamento.service.VinculosTrilhaConclusaoPort vinculos;
+    @MockitoBean ContextualizacaoRagService contextualizacao;
     @MockitoBean BuscaVetorialService busca;@MockitoBean GeracaoRagService geracao;
     Usuario admin,aluno,outro,gestor;Empresa empresa;
     @BeforeEach void preparar(){
+        when(contextualizacao.interpretar(anyString(),anyList())).thenAnswer(i->new ContextualizacaoRagService.Interpretacao(i.getArgument(0),null));
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
         empresa=new Empresa(null,"Teste",UUID.randomUUID().toString().replace("-","").substring(0,14),null,null);em.persist(empresa);
         var outra=new Empresa(null,"Outra",UUID.randomUUID().toString().replace("-","").substring(0,14),null,null);em.persist(outra);
@@ -321,5 +323,52 @@ class AprendizagemSprintIntegrationTest {
             .header("Idempotency-Key","legado-544").requestAttr("usuarioAutenticado",aluno))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         em.flush();assertThat(fonte.getQuantidadeReutilizacoes()).isEqualTo(1);assertThat(movimentosReuso(aluno)).isEqualTo(1);
+    }
+
+    @Test void continuacaoReformulaBuscaEEnviaHistoricoComFontesAtuaisAoModelo(){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Proteção de dados");
+        when(busca.buscarSemelhantes(eq(empresa.getId()),anyString(),eq(5))).thenReturn(List.of(fonte));
+        when(geracao.gerar(anyString(),anyList())).thenReturn(new GeracaoRagService.Gerada("Não envie dados pessoais.","teste",10L,5L));
+        String primeira="Posso enviar dados pessoais para IA?",atual="E se forem anonimizados?",consulta="Posso enviar dados anonimizados para uma ferramenta de IA?";
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("contexto-1",primeira,InteracaoRagService.Modo.GERAR_NOVA,null,conversa.id()));
+        when(contextualizacao.interpretar(eq(atual),anyList())).thenReturn(new ContextualizacaoRagService.Interpretacao(consulta,null));
+        var resultado=rag.perguntar(aluno,new InteracaoRagService.Pergunta("contexto-2",atual,InteracaoRagService.Modo.GERAR_NOVA,null,conversa.id()));
+        assertThat(resultado.pergunta()).isEqualTo(atual);assertThat(resultado.estado()).isEqualTo("GERADA_COM_FONTES");
+        verify(busca).buscarSemelhantes(empresa.getId(),consulta,5);
+        verify(contextualizacao).interpretar(eq(atual),argThat(h->h.size()==1&&h.getFirst().pergunta().equals(primeira)&&h.getFirst().resposta().contains("Não envie")));
+        verify(geracao).gerar(argThat(q->q.contains(primeira)&&q.contains(atual)&&q.contains(consulta)&&q.contains("não é fonte de regras")),argThat(f->f.size()==1&&f.getFirst().contains("Somente ferramentas autorizadas")));
+        assertThat(rag.historicoConversa(aluno,conversa.id())).hasSize(2);
+    }
+    @Test void ambiguidadePersistePedidoDeEsclarecimentoSemBuscaGeracaoOuCredito(){
+        var conversa=rag.criarConversa(aluno,"Sem assunto");
+        when(contextualizacao.interpretar(eq("E isso?"),anyList())).thenReturn(new ContextualizacaoRagService.Interpretacao(null,"A qual dado você se refere?"));
+        var p=new InteracaoRagService.Pergunta("ambiguo-546","E isso?",InteracaoRagService.Modo.GERAR_NOVA,null,conversa.id());
+        var r=rag.perguntar(aluno,p);assertThat(r.estado()).isEqualTo("PRECISA_ESCLARECIMENTO");assertThat(r.resposta()).contains("qual dado");assertThat(r.fontes()).isEmpty();
+        assertThat(rag.perguntar(aluno,p).id()).isEqualTo(r.id());assertThat(movimentosReuso(aluno)).isZero();verifyNoInteractions(busca,geracao);
+    }
+    @Test void fonteRevogadaNaoVaiParaInterpretacaoDaContinuacao(){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Política");
+        when(busca.buscarSemelhantes(eq(empresa.getId()),anyString(),eq(5))).thenReturn(List.of(fonte));
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("antes-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada",null));
+        when(contextualizacao.interpretar(eq("E isso?"),anyList())).thenReturn(new ContextualizacaoRagService.Interpretacao(null,"Pode detalhar a pergunta?"));
+        assertThat(rag.perguntar(aluno,new InteracaoRagService.Pergunta("depois-546","E isso?",InteracaoRagService.Modo.CONSULTAR,null,conversa.id())).estado()).isEqualTo("PRECISA_ESCLARECIMENTO");
+        verify(contextualizacao).interpretar(eq("E isso?"),argThat(List::isEmpty));verifyNoInteractions(geracao);
+    }
+    @Test void novaConversaNaoHerdaHistoricoDaAnterior(){
+        var fonte=resposta();var uma=rag.criarConversa(aluno,"Uma");var outra=rag.criarConversa(aluno,"Outra");
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("privada-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,uma.id()));
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("nova-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,outra.id()));
+        verify(contextualizacao,times(2)).interpretar(eq(fonte.getPromptOriginal()),argThat(List::isEmpty));
+    }
+
+    @Test void historicoRevalidaFontesRevogadasSemMarcarTransacaoComoFalha(){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Revogação real");
+        rag.perguntar(aluno,new InteracaoRagService.Pergunta("revogacao-http-546",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        TestTransaction.flagForCommit();TestTransaction.end();
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Retirada de validação",null));
+        var historico=rag.historicoConversa(aluno,conversa.id());
+        assertThat(historico).hasSize(1);assertThat(historico.getFirst().estado()).isEqualTo("FONTES_INDISPONIVEIS");
+        assertThat(historico.getFirst().resposta()).isNull();assertThat(historico.getFirst().fontes()).isEmpty();
     }
 }
