@@ -12,7 +12,12 @@ public class CatalogoTreinamentoService extends MicrotreinamentoFicticioService 
  public boolean demonstracao(){return demonstracao;}
  @Override public List<Microtreinamento> criarTreinamentos(){
   if(demonstracao)return super.criarTreinamentos();
-  return jdbc.query("SELECT id,titulo,descricao,conteudo,tema,duracao_minutos FROM catalogo_treinamentos WHERE empresa_id=? AND estado='PUBLICADO' ORDER BY id",(rs,n)->new Microtreinamento(rs.getLong("id"),rs.getString("titulo"),rs.getString("descricao"),rs.getString("conteudo"),TemaTreinamento.valueOf(rs.getString("tema")),rs.getInt("duracao_minutos"),true),empresa.obterId());
+  return criarTreinamentos(empresa.obterId());
+ }
+ public List<Microtreinamento> criarTreinamentos(Long empresaId){
+  java.util.Objects.requireNonNull(empresaId, "Empresa obrigatória");
+  if(demonstracao)return super.criarTreinamentos();
+  return jdbc.query("SELECT id,titulo,descricao,conteudo,tema,duracao_minutos FROM catalogo_treinamentos WHERE empresa_id=? AND estado='PUBLICADO' ORDER BY id",(rs,n)->new Microtreinamento(rs.getLong("id"),rs.getString("titulo"),rs.getString("descricao"),rs.getString("conteudo"),TemaTreinamento.valueOf(rs.getString("tema")),rs.getInt("duracao_minutos"),true),empresaId);
  }
  // Somente consultas históricas autorizadas usam versões retiradas; não reabrem novos cursos.
  public java.util.Optional<Microtreinamento> historico(Long id){
