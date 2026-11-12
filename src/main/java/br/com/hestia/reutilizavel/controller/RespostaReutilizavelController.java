@@ -27,15 +27,18 @@ public class RespostaReutilizavelController {
     private final RespostaReutilizavelService service;
     private final AcessoRespostaService acesso;
     private final ManutencaoConteudoService manutencao;
+    private final br.com.hestia.rag.service.InteracaoRagService interacoes;
 
     public RespostaReutilizavelController(
             RespostaReutilizavelService service,
             AcessoRespostaService acesso,
-            ManutencaoConteudoService manutencao
+            ManutencaoConteudoService manutencao,
+            br.com.hestia.rag.service.InteracaoRagService interacoes
     ) {
         this.service = service;
         this.acesso = acesso;
         this.manutencao = manutencao;
+        this.interacoes = interacoes;
     }
 
     @PutMapping("/{id}/perfis")
@@ -141,14 +144,18 @@ public class RespostaReutilizavelController {
     @PatchMapping("/{id}/reutilizar")
     public ResponseEntity<RespostaReutilizavel> registrarReutilizacao(
             @RequestAttribute("usuarioAutenticado") Usuario usuario,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @RequestHeader("Idempotency-Key") String chave
     ) {
-        return ResponseEntity.ok(
-                service.registrarReutilizacao(
-                        acesso.buscarPorId(usuario, id).getId(),
-                        usuario.getId()
-                )
-        );
+        br.com.hestia.aprendizagem.AcessoCapacitacao.exigir(chave!=null&&!chave.isBlank()&&chave.length()<=100,
+                HttpStatus.BAD_REQUEST,"Chave de confirmação obrigatória (até 100 caracteres)");
+        var resultado = interacoes.perguntar(usuario, new br.com.hestia.rag.service.InteracaoRagService.Pergunta(
+                "REUSO:"+br.com.hestia.aprendizagem.AcessoCapacitacao.hash(chave),
+                "Reutilização confirmada da resposta #"+id,
+                br.com.hestia.rag.service.InteracaoRagService.Modo.REUTILIZAR,id));
+        br.com.hestia.aprendizagem.AcessoCapacitacao.exigir("REUTILIZADA".equals(resultado.estado()),
+                HttpStatus.CONFLICT,"Fonte alterada ou indisponível; consulte novamente antes de confirmar");
+        return ResponseEntity.ok(acesso.buscarPorId(usuario,id));
     }
 
     @GetMapping("/empresa/{empresaId}/economia")

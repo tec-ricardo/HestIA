@@ -52,6 +52,9 @@ app.use(function(req, res, next) {
     }
 
     if (!req.session.apiToken && req.path !== "/sair") {
+        // Somente a Visão Geral pode ser aberta com uma conta demonstrativa.
+        const demo = /@(adm|gestor|colaborador)$/.test(String(req.session.email || ""));
+        if (demo && req.path === "/" && req.method === "GET") return next();
         if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
         return res.redirect("/acesso?expirada=1");
     }
@@ -110,6 +113,21 @@ app.post("/acesso", async (req, res, next) => {
 /* VISAO GERAL */
 
 app.get("/", async (req, res) => {
+    // Contas demonstrativas não têm token: renderizar sem chamar a API protegida.
+    if (!req.session.apiToken) {
+        return res.set("Cache-Control", "no-store").render("index", {
+            perfil: req.session.perfil,
+            email: req.session.email,
+            active: "dashboard",
+            indicadores: { empresas: 0, departamentos: 0, usuarios: 0, politicas: 0, ferramentas: 0 },
+            resumo: {
+                creditos: null, posicao: null, participantes: 0, xp: null,
+                nivel: null, percentualProgresso: null, xpProximoNivel: null,
+                totalRegistros: 0, registrosComSucesso: 0, tokensRegistrados: 0,
+                atividadeRecente: [], maturidadeParcial: null, coberturaMaturidade: null
+            }
+        });
+    }
     const usuarioId = Number(req.session.usuarioId);
     const colaborador = req.session.perfil === "colaborador";
 
@@ -151,9 +169,9 @@ app.get("/", async (req, res) => {
         posicao: creditos?.posicao || null,
         participantes: Number(creditos?.participantes || 0),
         xp: passe ? Number(passe.xpTotal || 0) : null,
-        nivel: passe ? (nomesNiveis[passe.nivel] || passe.nivel) : null,
-        percentualProgresso: passe ? Number(passe.percentualProgresso || 0) : null,
-        xpProximoNivel: passe?.xpProximoNivel ?? null,
+        nivel: passe ? (passe.xpTotal >= 2500 ? "Embaixador" : passe.xpTotal >= 750 ? "Guardião" : passe.xpTotal >= 300 ? "Consciente" : "Aprendiz") : null,
+        percentualProgresso: passe ? Math.min(100, Math.round(Number(passe.xpTotal || 0) / 2500 * 100)) : null,
+        xpProximoNivel: passe ? (Number(passe.xpTotal || 0) < 300 ? 300 : Number(passe.xpTotal || 0) < 750 ? 750 : Number(passe.xpTotal || 0) < 2500 ? 2500 : null) : null,
         totalRegistros: registros.length,
         registrosComSucesso: registros.filter(item => item.statusExecucao === "SUCESSO").length,
         tokensRegistrados: registros.reduce((total, item) => total + Number(item.tokensTotal || 0), 0),
@@ -968,7 +986,8 @@ app.get("/reutilizacoes/buscar", async (req, res) => {
 app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
     try {
         const response = await api.patch(
-            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`
+            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`,
+            undefined, { headers: { "Idempotency-Key": req.get("Idempotency-Key") || "" } }
         );
         return res.json(response.data);
     } catch (error) {
@@ -1641,11 +1660,11 @@ app.get(
 
         const passeMock = {
 
-    nivelAtual: 2,
+    nivelAtual: 1,
 
-    nomeNivel: "Consciente",
+    nomeNivel: "Aprendiz",
 
-    xpAtual: 235,
+    xpAtual: 0,
 
     xpProximoNivel: 300,
 
@@ -1821,7 +1840,7 @@ app.get(
             : null;
         const passe = passeApi
             ? adaptarPasseHestIA(passeApi, passeMock)
-            : passeMock;
+            : adaptarPasseHestIA({ xpTotal: 0, missoes: [] }, passeMock);
 
 
         res.set("Cache-Control", "no-store").render("passe-hestia", {
@@ -1855,7 +1874,7 @@ app.get("/api/passe-hestia/status", async (req, res) => {
             .set("Cache-Control", "no-store")
             .json({
                 xpTotal: Number(response.data?.xpTotal || 0),
-                nivel: response.data?.nivel || null
+                nivel: Number(response.data?.xpTotal || 0) >= 2500 ? "EMBAIXADOR" : Number(response.data?.xpTotal || 0) >= 750 ? "GUARDIAO" : Number(response.data?.xpTotal || 0) >= 300 ? "CONSCIENTE" : "APRENDIZ"
             });
     } catch (error) {
         console.error(`Falha ao atualizar o HestIA Pass: ${mensagemDaApi(error)}`);
@@ -1905,15 +1924,17 @@ app.get("/ranking", async (req, res) => {
         totalParticipantes: Number(creditos.participantes || 0),
         usuario: {
             nome: passe.nome,
-            nivel: nomesNiveis[passe.nivel] || passe.nivel,
+            nivel: Number(passe.xpTotal || 0) >= 2500 ? "Embaixador" : Number(passe.xpTotal || 0) >= 750 ? "Guardião" : Number(passe.xpTotal || 0) >= 300 ? "Consciente" : "Aprendiz",
             xp: Number(passe.xpTotal || 0)
         },
         classificacao: (creditos.ranking || []).map(item => ({
             posicao: item.posicao,
             nome: item.nome,
             iniciais: iniciais(item.nome),
-            nivel: nomesNiveis[item.nivel] || item.nivel,
-            xp: Number(item.creditos || 0),
+            nivel: item.xpTotal != null && Number.isFinite(Number(item.xpTotal))
+                ? (Number(item.xpTotal) >= 2500 ? "Embaixador" : Number(item.xpTotal) >= 750 ? "Guardião" : Number(item.xpTotal) >= 300 ? "Consciente" : "Aprendiz")
+                : (nomesNiveis[item.nivel] || item.nivel),
+            xp: Number(item.xpTotal ?? item.creditos ?? 0),
             usuarioAtual: Boolean(item.usuarioAtual)
         }))
     };
@@ -2822,24 +2843,25 @@ function adaptarPasseHestIA(passeApi, fallback) {
         GUARDIAO: { nivel: 3, nome: "Guardião" },
         EMBAIXADOR: { nivel: 4, nome: "Embaixador" }
     };
-    const nivelApi = nomesNiveis[String(passeApi.nivel || "").toUpperCase()];
-    const nivelAtual = nivelApi ? nivelApi.nivel : fallback.nivelAtual;
-    const xpAtual = Number(passeApi.xpTotal || 0);
-    const xpProximoNivel = passeApi.xpProximoNivel || fallback.xpProximoNivel;
+    const xpAtual = Math.max(0, Number(passeApi.xpTotal) || 0);
     const missoes = Array.isArray(passeApi.missoes) ? passeApi.missoes : [];
     const ordemNiveis = [
         { codigo: "APRENDIZ", nivel: 1, nome: "Aprendiz", xpNecessario: 0 },
-        { codigo: "CONSCIENTE", nivel: 2, nome: "Consciente", xpNecessario: 100 },
-        { codigo: "GUARDIAO", nivel: 3, nome: "Guardião", xpNecessario: 300 },
-        { codigo: "EMBAIXADOR", nivel: 4, nome: "Embaixador", xpNecessario: 700 }
+        { codigo: "CONSCIENTE", nivel: 2, nome: "Consciente", xpNecessario: 300 },
+        { codigo: "GUARDIAO", nivel: 3, nome: "Guardião", xpNecessario: 750 },
+        { codigo: "EMBAIXADOR", nivel: 4, nome: "Embaixador", xpNecessario: 2500 }
     ];
-    const indiceAtual = ordemNiveis.findIndex(nivel => nivel.codigo === String(passeApi.nivel || "").toUpperCase());
-    const proximo = indiceAtual >= 0 ? ordemNiveis[indiceAtual + 1] : null;
+    // Recalcula o nivel pelo XP total para nao usar um nivel antigo salvo no backend.
+    const indiceAtual = ordemNiveis.reduce((indice, nivel, i) => xpAtual >= nivel.xpNecessario ? i : indice, 0);
+    const nivelAtual = ordemNiveis[indiceAtual].nivel;
+    const nivelApi = nomesNiveis[ordemNiveis[indiceAtual].codigo];
+    const proximo = ordemNiveis[indiceAtual + 1] || null;
+    const xpProximoNivel = proximo ? proximo.xpNecessario : xpAtual;
 
     return {
         ...fallback,
         nivelAtual,
-        nomeNivel: nivelApi ? nivelApi.nome : fallback.nomeNivel,
+        nomeNivel: nivelApi.nome,
         xpAtual,
         xpProximoNivel,
         taxaConformidade: null,

@@ -245,11 +245,13 @@ class RecuperacaoPerguntasSemelhantesTest {
         var permitida = resposta(1L, Set.of(PerfilUsuario.FUNCIONARIO));
         var restrita = resposta(2L, Set.of(PerfilUsuario.FUNCIONARIO));
 
+        var interacoes = mock(br.com.hestia.rag.service.InteracaoRagService.class);
+        org.mockito.Mockito.when(interacoes.perguntar(org.mockito.ArgumentMatchers.any(),org.mockito.ArgumentMatchers.any())).thenThrow(new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND));
         var controller =
                 new br.com.hestia.reutilizavel.controller.RespostaReutilizavelController(
                         service(),
                         new AcessoRespostaService(repository),
-                        mock(ManutencaoConteudoService.class)
+                        mock(ManutencaoConteudoService.class), interacoes
                 );
 
         var mvc = org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -284,6 +286,7 @@ class RecuperacaoPerguntasSemelhantesTest {
         mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                         .patch("/api/respostas-reutilizaveis/"
                                 + restrita.getId() + "/reutilizar")
+                        .header("Idempotency-Key","confirmacao-544")
                         .requestAttr("usuarioAutenticado", funcionario))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers
                         .status().isNotFound());

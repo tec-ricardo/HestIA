@@ -99,7 +99,7 @@ test("login real, sessão BFF, consulta, expiração e logout funcionam por HTTP
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "email=gestor%40example.test&senha=senha-de-teste", redirect: "manual" });
         assert.equal(login.status, 302);
-        assert.equal(login.headers.get("location"), "/maturidade");
+        assert.equal(login.headers.get("location"), "/");
         const cookie = login.headers.get("set-cookie").split(";")[0];
         const pagina = await fetch(base + "/maturidade/confiabilidade", { headers: { Cookie: cookie }});
         assert.equal(pagina.status, 200);

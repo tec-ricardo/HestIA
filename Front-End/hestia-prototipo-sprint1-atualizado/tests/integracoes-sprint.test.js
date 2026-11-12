@@ -208,7 +208,7 @@ test('as telas explicam fonte, reutilização, evolução, conquistas e próximo
   assert.ok(rag.includes('Fonte utilizada:'));
   assert.ok(rag.includes('Reutilização confirmada no servidor'));
   assert.ok(rag.includes("new BroadcastChannel('hestia-pass')"));
-  assert.ok(rag.includes('+15 XP registrados no HestIA Pass'));
+  assert.ok(!rag.includes('confirmarReutilizacaoAutomatica'));
   assert.ok(rag.includes("reutilizada: dados.estado === 'REUTILIZADA'"));
   assert.ok(rag.includes("fetch('/api/rag/historico')"));
 

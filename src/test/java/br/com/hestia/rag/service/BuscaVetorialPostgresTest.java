@@ -216,6 +216,14 @@ class BuscaVetorialPostgresTest {
     }
 
     @Test
+    void similaridadeRetornadaECalculadaPeloBancoSemSerProbabilidade(){
+        row(1,PerfilUsuario.FUNCIONARIO,false,true,1,0);
+        var encontradas=service.buscarSemelhantes(1L,"pergunta",1);
+        assertThat(encontradas).hasSize(1);
+        assertThat(encontradas.getFirst().getSimilaridade()).isCloseTo(1.0,org.assertj.core.data.Offset.offset(0.000001));
+    }
+
+    @Test
     void filtersBeforeLimitEvenWhenForbiddenRowsAreCloser() {
         row(1, PerfilUsuario.GESTOR, false, true, 1, 0);
         row(2, PerfilUsuario.FUNCIONARIO, false, true, 1, 0);

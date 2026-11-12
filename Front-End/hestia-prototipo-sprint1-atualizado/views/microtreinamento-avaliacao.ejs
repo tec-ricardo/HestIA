@@ -173,49 +173,65 @@ function carregarAvaliacao() {
 }
 
 function mostrarAvaliacao() {
-    let tela = document.getElementById("mt-exam");
-    let html = '<h2>Avaliacao: ' + limparTexto(cursoAtual.titulo) + '</h2>';
-    html += '<p>Responda todas as perguntas. Nota minima: 80%.</p>';
-    html += '<form id="formAvaliacao">';
-
+    const tela = document.getElementById('mt-exam');
+    let html = '<div class="academy-eyebrow">HESTIA ACADEMY · AVALIAÇÃO</div><h1 class="academy-heading">' + limparTexto(cursoAtual.titulo) + '</h1>' +
+        '<p class="academy-subtitle">Avalie sua capacidade de tomar decisões seguras em situações reais.</p><div class="academy-exam-summary"><span>5 questões</span><span>Nota minima: 80%</span><span>3 tentativas por ciclo</span></div><form id="formAvaliacao">';
     for (let i = 0; i < cursoAtual.questoes.length; i++) {
-        let questao = cursoAtual.questoes[i];
-        html += '<div class="mt-question"><strong>' + (i + 1) + '. ' + limparTexto(questao.pergunta) + '</strong>';
-        for (let j = 0; j < questao.opcoes.length; j++) {
-            html += '<label class="mt-choice"><input type="radio" name="questao' + i + '" value="' + j + '"> ' + limparTexto(questao.opcoes[j]) + '</label>';
+        const q = cursoAtual.questoes[i];
+        html += '<fieldset class="academy-question"><legend><span>QUESTÃO ' + String(i + 1).padStart(2, '0') + '</span>' + limparTexto(q.pergunta) + '</legend>';
+        for (let j = 0; j < q.opcoes.length; j++) {
+            html += '<label class="academy-option"><input type="radio" name="questao' + i + '" value="' + j + '" required><span>' + String.fromCharCode(65 + j) + '</span><span>' + limparTexto(q.opcoes[j]) + '</span></label>';
         }
-        html += '</div>';
+        html += '</fieldset>';
     }
-
-    html += '<div id="resultadoAvaliacao"></div><button class="mt-btn mt-btn-primary" type="submit">Enviar prova</button></form>';
+    html += '<div id="resultadoAvaliacao" role="status" aria-live="polite"></div><div class="academy-exam-footer"><span id="academy-answered">0 de ' + cursoAtual.questoes.length + ' respondidas</span><button class="mt-btn mt-btn-primary" type="submit">Finalizar avaliação →</button></div></form>';
     tela.innerHTML = html;
-    document.getElementById("formAvaliacao").addEventListener("submit", enviarAvaliacao);
+    const form = document.getElementById('formAvaliacao');
+    form.addEventListener('change', () => { const n = form.querySelectorAll('input[type="radio"]:checked').length; document.getElementById('academy-answered').textContent = n + ' de ' + cursoAtual.questoes.length + ' respondidas'; });
+    form.addEventListener('submit', enviarAvaliacao);
+}
+
+// Atualiza o HestIA Pass apos a avaliacao, sem interromper a nota caso a consulta falhe.
+function avisarAtualizacaoDoPasse() {
+    fetch('/api/passe-hestia/status', { method: 'GET', credentials: 'same-origin', cache: 'no-store' })
+        .then(function(resposta) { if (!resposta.ok) throw new Error('Status indisponivel'); return resposta.json(); })
+        .then(function(dados) {
+            window.dispatchEvent(new CustomEvent('hestia:passe-atualizado', { detail: dados }));
+        })
+        .catch(function() { /* A avaliacao ja foi registrada; o passe sera atualizado na proxima consulta. */ });
 }
 
 function enviarAvaliacao(evento) {
     evento.preventDefault();
-    let respostas = [];
-    let formulario = document.getElementById("formAvaliacao");
-    let resultado = document.getElementById("resultadoAvaliacao");
-
+    const form = document.getElementById('formAvaliacao');
+    const resultado = document.getElementById('resultadoAvaliacao');
+    const respostas = [];
     for (let i = 0; i < cursoAtual.questoes.length; i++) {
-        let selecionada = formulario.querySelector('input[name="questao' + i + '"]:checked');
-        if (selecionada == null) {
-            resultado.textContent = "Responda todas as perguntas.";
-            return;
-        }
-        respostas.push(parseInt(selecionada.value));
+        const escolhida = form.querySelector('input[name="questao' + i + '"]:checked');
+        if (!escolhida) { resultado.textContent = 'Responda todas as questões antes de enviar.'; return; }
+        respostas.push(Number(escolhida.value));
     }
-
-    buscarDados("/api/microtreinamentos/" + cursoAtual.id + "/avaliacao", "POST", { respostas: respostas })
-        .then(function(dados) {
-            resultado.innerHTML = '<div class="mt-alert">Nota: ' + dados.nota + '%. ' + limparTexto(dados.mensagem) + '</div>';
+    const botao = form.querySelector('button[type="submit"]'); botao.disabled = true;
+    buscarDados('/api/microtreinamentos/' + cursoAtual.id + '/avaliacao', 'POST', { respostas })
+        .then(dados => {
+            resultado.innerHTML = '<div class="academy-result ' + (dados.aprovado ? 'approved' : 'retry') + '"><div class="academy-result-score">' + limparTexto(String(dados.nota)) + '%</div><h2>' + (dados.aprovado ? 'Você foi aprovado!' : 'Continue aprendendo') + '</h2><p>' + limparTexto(dados.mensagem || '') + '</p><a class="mt-btn mt-btn-primary" href="/microtreinamentos">Voltar aos treinamentos</a></div>';
             if (dados.aprovado) {
-                resultado.innerHTML += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos">Voltar aos cursos</a>';
+                avisarAtualizacaoDoPasse();
+                fetch('/api/certificacoes', { method: 'GET', cache: 'no-store' })
+                  .catch(() => { /* A verificação também ocorre ao voltar à Academy. */ });
             }
-        }).catch(function(erro) {
-            resultado.textContent = erro.message;
-        });
+            form.querySelectorAll('input').forEach(input => input.disabled = true);
+            // A avaliação já foi enviada e gravada no backend. Não enviar novamente.
+            botao.type = 'button';
+            botao.disabled = false;
+            botao.textContent = 'Voltar aos treinamentos →';
+            botao.onclick = function () { window.location.assign('/microtreinamentos'); };
+            if (dados.aprovado) {
+                // Atualiza a lista a partir do banco; nunca marca como concluído só no navegador.
+                buscarDados('/api/microtreinamentos', 'GET', null)
+                    .catch(function (erro) { console.warn('Atualização do progresso:', erro.message); });
+            }
+        }).catch(erro => { resultado.textContent = erro.message; botao.disabled = false; });
 }
 
 if (document.getElementById("mt-list") != null) {
