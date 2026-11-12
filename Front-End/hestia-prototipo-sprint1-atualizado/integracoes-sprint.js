@@ -87,6 +87,15 @@ module.exports = function montarIntegracoes(app, api) {
     }
     return treinamento;
   };
+  // Cadastro administrativo das certificações existentes da Academy (sem conceder sem aprovação).
+  router.post('/api/admin/academy/certificacoes/inicializar', admin, executar(async (req, res) => {
+    const { data } = await api.post('/aprendizagem/academy/certificacoes/inicializar');
+    res.json(data);
+  }));
+  // Tela administrativa para executar a inicializacao com a sessao autenticada do HestIA.
+  router.get('/admin/academy/certificacoes', admin, (req, res) => {
+    res.type('html').send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Certificações | HestIA Academy</title><link rel="stylesheet" href="/styles.css"></head><body style="font-family:Arial,sans-serif;padding:32px;max-width:720px;margin:auto"><h1>Certificações HestIA Academy</h1><p>Cadastre ou atualize as quatro certificações usando sua sessão de administrador. Isso não concede certificados sem aprovação.</p><button id="inicializar" type="button" style="padding:12px 18px;cursor:pointer">Inicializar certificações</button><pre id="resultado" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px"></pre><p><a href="/">Voltar à visão geral</a></p><script>document.getElementById('inicializar').addEventListener('click', async function(){const botao=this;botao.disabled=true;const saida=document.getElementById('resultado');saida.textContent='Inicializando...';try{const resposta=await fetch('/api/admin/academy/certificacoes/inicializar',{method:'POST',credentials:'same-origin'});const dados=await resposta.json();saida.textContent=resposta.ok?'Concluído: '+JSON.stringify(dados,null,2):'Erro '+resposta.status+': '+(dados.erro||JSON.stringify(dados));}catch(e){saida.textContent='Erro de conexão: '+e.message;}finally{botao.disabled=false;}});</script></body></html>`);
+  });
   router.get('/api/certificacoes', colaborador, executar(async (req, res) => {
     const usuarioId = id(req.session.usuarioId);
     const { data: situacoes } = await api.post(`/certificacoes/usuarios/${usuarioId}/verificar`);

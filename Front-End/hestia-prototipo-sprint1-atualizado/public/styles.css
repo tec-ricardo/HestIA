@@ -7075,3 +7075,26 @@ body { background:var(--bg); color:var(--ink); }
 .academy-lesson-copy{font-size:15px;line-height:1.8;max-width:78ch}
 .academy-lesson-copy p{margin:0 0 1.15em}
 .mt-cert-card{border:1px solid #dbe3ef;border-radius:14px}
+
+/* HestIA Academy — certificações: acrescentar ao FINAL de styles.css */
+.mt-cert-section{margin-top:44px}
+.mt-cert-section .mt-toolbar h2{font-size:25px;letter-spacing:-.5px}
+.mt-cert-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:22px}
+.mt-cert-card.mt-academy-card{padding:24px;border:1px solid #dce4ef;border-radius:18px;background:#fff;box-shadow:0 8px 26px rgba(22,44,77,.045);gap:10px;min-height:290px}
+.mt-academy-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mt-academy-emblem{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#eef2ff;color:#3c53b5;font-size:25px}
+.mt-academy-badge{font-size:11px;font-weight:700;padding:7px 11px;border-radius:99px;background:#f1f5f9;color:#526178}
+.mt-academy-eyebrow{font-size:10px!important;font-weight:800!important;letter-spacing:1.3px;color:#7c8da8!important;margin-top:5px!important}
+.mt-cert-card.mt-academy-card h3{font-size:24px;letter-spacing:-.5px;margin:0;color:#14243e}
+.mt-academy-description{font-size:13px!important;line-height:1.55;color:#64748b!important;min-height:38px}
+.mt-academy-progress-label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#344563;margin-top:auto}
+.mt-academy-progress-label strong{font-weight:750}
+.mt-academy-progress{height:8px;background:#e9edf5;border-radius:100px;overflow:hidden}
+.mt-academy-progress>span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#6478df,#4c5ec5);transition:width .25s ease}
+.mt-academy-footnote{font-size:12px!important;color:#7b879b!important;margin-top:4px!important}
+.mt-academy-action{margin-top:7px;align-self:flex-start!important;border-radius:9px!important;padding:11px 16px!important;font-weight:700}
+.mt-cert-card.mt-academy-earned{border-color:#c8d9c9;background:linear-gradient(145deg,#fff,#f5faf5)}
+.mt-academy-earned .mt-academy-emblem{background:#e1f1e4;color:#28764a}
+.mt-academy-earned .mt-academy-badge{background:#e2f3e6;color:#247447}
+.mt-academy-earned .mt-academy-progress>span{background:linear-gradient(90deg,#3c9d6c,#6dbb83)}
+@media(max-width:900px){.mt-cert-grid{grid-template-columns:1fr}}
