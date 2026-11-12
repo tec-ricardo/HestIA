@@ -104,8 +104,13 @@ public class ConclusaoMicrotreinamentoService {
             return existente.get();
         }
 
+        var publicados = catalogo instanceof CatalogoTreinamentoService persistido
+                && !persistido.demonstracao()
+                ? persistido.criarTreinamentos(usuario.getEmpresa().getId())
+                : catalogo.criarTreinamentos();
+
         boolean treinamentoValido =
-                catalogo.criarTreinamentos().stream()
+                publicados.stream()
                         .anyMatch(treinamento ->
                                 microtreinamentoId.equals(
                                         treinamento.getId()
