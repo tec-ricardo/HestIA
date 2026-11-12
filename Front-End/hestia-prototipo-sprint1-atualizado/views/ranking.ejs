@@ -9,8 +9,8 @@
 <body>
 <div class="app-shell">
     <%- include("menu", { active, perfil, email }) %>
-    <main class="main-content ranking-page">
-        <header class="page-header">
+    <main class="main-content ranking-page hm-ranking-refresh hr-ranking-v2">
+        <header class="page-header hr-heading">
             <div>
                 <h1>Ranking HestIA</h1>
                 <p>Evolução dos colaboradores pelo XP validado no HestIA Pass.</p>
@@ -20,13 +20,15 @@
         <% if (erro || !ranking) { %>
             <section class="ranking-section"><p class="error-message"><%= erro %></p></section>
         <% } else { %>
-            <section class="ranking-personal-card">
+            <% const usuarioNaClassificacao = Array.isArray(ranking.classificacao) ? ranking.classificacao.find(item => item.usuarioAtual) : null; %>
+            <% const posicaoAtual = usuarioNaClassificacao?.posicao ?? ranking.posicaoUsuario; %>
+            <section class="ranking-personal-card hm-ranking-spotlight hr-hero">
                 <div class="ranking-personal-position">
                     <span>Sua posição</span>
-                    <strong><%= ranking.posicaoUsuario ? ranking.posicaoUsuario + 'º' : '—' %></strong>
+                    <strong><%= posicaoAtual != null && Number.isFinite(Number(posicaoAtual)) ? Number(posicaoAtual) + 'º' : '—' %></strong>
                 </div>
                 <div class="ranking-personal-info">
-                    <span class="ranking-small-label">Seu desempenho</span>
+                    <span class="ranking-small-label">SEU DESEMPENHO NO HESTIA</span>
                     <h2><%= ranking.usuario.nome %></h2>
                     <div class="ranking-personal-details">
                         <div><span>Nível</span><strong><%= ranking.usuario.nivel %></strong></div>
@@ -46,19 +48,35 @@
             <section class="ranking-section">
                 <div class="ranking-section-header">
                     <div><h2>Classificação da empresa</h2><p>Somente participantes com ações pontuadas aparecem aqui.</p></div>
-                    <span class="ranking-total"><%= ranking.totalParticipantes %> participante<%= ranking.totalParticipantes === 1 ? '' : 's' %></span>
+                    <span class="ranking-total"><%= ranking.totalParticipantes %> participante<%= Number(ranking.totalParticipantes) === 1 ? '' : 's' %></span>
                 </div>
 
                 <% if (!ranking.classificacao.length) { %>
                     <p class="muted">Ainda não há participantes com XP validado.</p>
                 <% } else { %>
-                    <div class="ranking-table-wrapper">
+                    <% const destaques = ranking.classificacao.filter(item => item.posicao <= 3); %>
+                    <% if (destaques.length) { %>
+                    <div class="hr-feature-heading"><div><span class="hr-eyebrow">DESTAQUES</span><h3><%= destaques.length === 1 ? 'Líder da classificação' : 'Os melhores colocados' %></h3></div><span class="hr-feature-count"><%= destaques.length %> <%= destaques.length === 1 ? 'destaque' : 'destaques' %></span></div>
+                    <div class="hm-podium <%= destaques.length === 1 ? 'hr-single-leader' : 'hr-multi-leaders' %>" aria-label="Destaques do ranking">
+                        <% destaques.forEach(item => { %>
+                        <article class="hm-podium-card hm-podium-<%= item.posicao %> <%= item.usuarioAtual ? 'hm-podium-me' : '' %>">
+                            <span class="hm-podium-rank"><%= item.posicao + 'º' %></span>
+                            <div class="hm-podium-avatar"><%= item.iniciais %></div>
+                            <strong><%= item.nome %></strong>
+                            <span class="hm-podium-level"><%= item.nivel %></span>
+                            <b><%= item.xp %> XP</b>
+                            <% if (item.usuarioAtual) { %><small>Você</small><% } %>
+                        </article>
+                        <% }) %>
+                    </div>
+                    <% } %>
+                    <div class="ranking-table-wrapper hm-ranking-table-wrap">
                         <table class="ranking-table">
                             <thead><tr><th>Posição</th><th>Colaborador</th><th>Nível</th><th>XP</th></tr></thead>
                             <tbody>
                             <% ranking.classificacao.forEach(item => { %>
                                 <tr class="<%= item.usuarioAtual ? 'ranking-current-user' : '' %>">
-                                    <td><div class="ranking-position"><%= item.posicao === 1 ? '★' : item.posicao + 'º' %></div></td>
+                                    <td><div class="ranking-position"><%= item.posicao + 'º' %></div></td>
                                     <td><div class="ranking-user"><div class="ranking-avatar"><%= item.iniciais %></div><div><strong><%= item.nome %></strong><% if (item.usuarioAtual) { %><span>Você</span><% } %></div></div></td>
                                     <td><span class="ranking-level"><%= item.nivel %></span></td>
                                     <td><strong class="ranking-xp"><%= item.xp %> XP</strong></td>
@@ -71,25 +89,28 @@
             </section>
 
             <%
+                // Marcos alinhados aos níveis atuais do HestIA Pass.
+                // O XP do usuário continua vindo da API pelo objeto ranking.
                 const marcos = [
-                    { nome: 'Primeiros passos', requisito: 10, simbolo: '★' },
-                    { nome: 'Colaborador consciente', requisito: 100, simbolo: '◆' },
-                    { nome: 'Evolução responsável', requisito: 300, simbolo: '✦' },
-                    { nome: 'Embaixador de IA', requisito: 700, simbolo: '♛' }
+                    { nome: 'Aprendiz', requisito: 0, simbolo: '★' },
+                    { nome: 'Consciente', requisito: 300, simbolo: '◆' },
+                    { nome: 'Guardião', requisito: 750, simbolo: '✦' },
+                    { nome: 'Embaixador', requisito: 2500, simbolo: '♛' }
                 ];
-                const conquistadas = marcos.filter(m => ranking.usuario.xp >= m.requisito).length;
+                const xpAtual = Number(ranking.usuario.xp) || 0;
+                const conquistadas = marcos.filter(m => xpAtual >= m.requisito).length;
             %>
-            <section class="ranking-achievements" aria-labelledby="tituloConquistas">
-                <div class="ranking-achievements-head">
+            <details class="ranking-achievements hr-milestones hr-collapsible" aria-labelledby="tituloConquistas">
+                <summary class="ranking-achievements-head hr-milestones-summary">
                     <div><h2 id="tituloConquistas">Marcos da jornada</h2><p>Reconhecimentos calculados pelo XP real do HestIA Pass.</p></div>
-                    <span class="ranking-achievements-count"><%= conquistadas %> de <%= marcos.length %> alcançados</span>
-                </div>
+                    <span class="hr-summary-right"><span class="ranking-achievements-count"><%= conquistadas %> de <%= marcos.length %> alcançados</span><span class="hr-chevron" aria-hidden="true">⌄</span></span>
+                </summary>
                 <div class="ranking-achievements-grid">
-                    <% marcos.forEach(marco => { const alcançado = ranking.usuario.xp >= marco.requisito; const progresso = Math.min(100, Math.round(ranking.usuario.xp / marco.requisito * 100)); %>
-                        <article class="ranking-achievement <%= alcançado ? '' : 'is-locked' %>">
-                            <div class="ranking-achievement-icon" aria-hidden="true"><%= alcançado ? marco.simbolo : '🔒' %></div>
+                    <% marcos.forEach(marco => { const alcançado = xpAtual >= marco.requisito; const progresso = marco.requisito === 0 ? 100 : Math.min(100, Math.round(xpAtual / marco.requisito * 100)); %>
+                        <article class="ranking-achievement <%= alcançado ? '' : 'is-locked' %> <%= marco.nome === 'Embaixador' ? 'hr-gold-marco' : '' %>">
+                            <div class="ranking-achievement-icon" aria-hidden="true"><%= marco.simbolo %></div>
                             <h3><%= marco.nome %></h3>
-                            <p>Alcance <%= marco.requisito %> XP no HestIA Pass.</p>
+                            <p><%= marco.requisito === 0 ? "Nível inicial do HestIA Pass." : `Alcance ${marco.requisito} XP no HestIA Pass.` %></p>
                             <% if (alcançado) { %><span class="ranking-achievement-status">✓ Alcançado</span><% } else { %>
                                 <div class="ranking-achievement-track"><div class="ranking-achievement-fill" style="width:<%= progresso %>%"></div></div>
                                 <span class="ranking-achievement-status"><%= ranking.usuario.xp %> / <%= marco.requisito %> XP</span>
@@ -97,7 +118,7 @@
                         </article>
                     <% }) %>
                 </div>
-            </section>
+            </details>
         <% } %>
     </main>
 </div>
