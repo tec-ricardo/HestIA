@@ -34,9 +34,23 @@ public class ApuracaoMaturidadeService {
         try{
             var ra=json.readTree((String)a.get("conteudo")).get("resultado");var rb=json.readTree((String)b.get("conteudo")).get("resultado");
             LocalDate ai=LocalDate.parse(ra.get("inicio").asText()),af=LocalDate.parse(ra.get("fim").asText()),bi=LocalDate.parse(rb.get("inicio").asText()),bf=LocalDate.parse(rb.get("fim").asText());
-            boolean compativel=Objects.equals(a.get("departamento_id"),b.get("departamento_id"))&&bi.isAfter(af)&&java.time.temporal.ChronoUnit.DAYS.between(ai,af)==java.time.temporal.ChronoUnit.DAYS.between(bi,bf);
+            boolean compativel=Objects.equals(a.get("departamento_id"),b.get("departamento_id"))&&!af.isBefore(ai)&&!bf.isBefore(bi)&&bi.isAfter(af)&&java.time.temporal.ChronoUnit.DAYS.between(ai,af)==java.time.temporal.ChronoUnit.DAYS.between(bi,bf);
             for(String campo:List.of("versaoPesos","versaoCalculo","versaoParametros","parametros","naturezaDados","empresaOrigem","departamentoOrigem"))compativel&=Objects.equals(ra.get(campo),rb.get(campo));
-            saida.put("comparavel",compativel);saida.put("motivo",compativel?"Escopo, versões, parâmetros e duração compatíveis":"Períodos sobrepostos, duração, escopo, natureza ou regras incompatíveis");
+            var fusoAnterior = ra.path("fusoOrigem");
+            var fusoAtual = rb.path("fusoOrigem");
+            boolean fusoCompativel = fusoAnterior.isTextual()
+                    && !fusoAnterior.textValue().isBlank()
+                    && fusoAnterior.equals(fusoAtual);
+            compativel &= fusoCompativel;
+
+            String motivo = "Escopo, versões, parâmetros, duração e convenção temporal compatíveis";
+            if (!fusoCompativel) {
+                motivo = "Convenções temporais de origem ausentes ou incompatíveis";
+            } else if (!compativel) {
+                motivo = "Períodos sobrepostos, duração, escopo, natureza ou regras incompatíveis";
+            }
+            saida.put("comparavel", compativel);
+            saida.put("motivo", motivo);
             BigDecimal delta=null;var ga=ra.get("scoreGlobal");var gb=rb.get("scoreGlobal");if(compativel&&!ga.isNull()&&!gb.isNull())delta=gb.decimalValue().subtract(ga.decimalValue());saida.put("variacaoGlobal",delta);
             var fatores=new LinkedHashMap<String,BigDecimal>();if(compativel)for(var fa:ra.get("fatores"))for(var fb:rb.get("fatores"))if(fa.get("codigo").equals(fb.get("codigo"))&&fa.get("elegivelGlobal").asBoolean()&&fb.get("elegivelGlobal").asBoolean()&&!fa.get("nota").isNull()&&!fb.get("nota").isNull())fatores.put(fa.get("codigo").asText(),fb.get("nota").decimalValue().subtract(fa.get("nota").decimalValue()));saida.put("variacaoFatoresElegiveis",fatores);return saida;
         }catch(com.fasterxml.jackson.core.JsonProcessingException e){throw new IllegalStateException(e);}
