@@ -7098,3 +7098,172 @@ body { background:var(--bg); color:var(--ink); }
 .mt-academy-earned .mt-academy-badge{background:#e2f3e6;color:#247447}
 .mt-academy-earned .mt-academy-progress>span{background:linear-gradient(90deg,#3c9d6c,#6dbb83)}
 @media(max-width:900px){.mt-cert-grid{grid-template-columns:1fr}}
+
+/* ==========================================================
+   HESTIA — VISAO GERAL (COLABORADOR, GESTOR, ADMINISTRADOR)
+   ADICIONAR SOMENTE AO FINAL DO styles.css
+   ========================================================== */
+.overview-page{--ov-navy:#14263e;--ov-orange:#d67b32;--ov-border:#e4eaf1;--ov-muted:#64748b;padding-top:30px;background:linear-gradient(145deg,#f4f7fb 0%,#f8fafc 100%);min-height:100vh}
+.overview-topbar{margin-bottom:25px}
+.overview-topbar h1{font-size:27px;letter-spacing:-.035em;color:var(--ov-navy)}
+.overview-topbar .eyebrow{color:#c27139;font-weight:750;letter-spacing:.12em}
+.overview-topbar .topbar-logout{border-radius:11px;padding:10px 17px;transition:background .2s,border-color .2s}
+.overview-topbar .topbar-logout:hover{border-color:#e9b58d;background:#fff8f2}
+.overview-hero{position:relative;overflow:hidden;min-height:182px;padding:30px 36px;margin-bottom:22px;border-radius:20px;border:1px solid #e7e8e8;background:linear-gradient(110deg,#fff 0%,#fff 56%,#fff4e8 100%);box-shadow:0 8px 30px rgba(20,38,62,.035)}
+.overview-hero-copy{position:relative;z-index:1;max-width:78%}
+.overview-hero .eyebrow{font-size:11px;font-weight:800;color:#b8662d;letter-spacing:.15em}
+.overview-hero h2{font-size:clamp(23px,2.3vw,32px);line-height:1.18;letter-spacing:-.04em;margin:11px 0 12px;color:#13243d}
+.overview-hero p:last-child{font-size:13px;color:#69778a;margin-bottom:0}
+.overview-hero-art{position:absolute;right:4%;top:50%;width:180px;height:180px;transform:translateY(-50%);display:grid;place-items:center}
+.overview-orbit{position:absolute;border-radius:50%;border:1px solid rgba(216,124,50,.23)}
+.overview-orbit-a{width:135px;height:135px}.overview-orbit-b{width:180px;height:180px}
+.overview-hero-symbol{width:85px;height:85px;display:grid;place-items:center;border-radius:25px;background:linear-gradient(135deg,#ffe6c7,#f6c18d);color:#b76527;font-size:44px;box-shadow:0 15px 30px rgba(199,115,46,.12)}
+.overview-summary{gap:15px;margin-bottom:18px}
+.overview-kpi{position:relative;overflow:hidden;padding:20px 21px 19px;border:1px solid var(--ov-border);border-radius:16px;min-height:142px;box-shadow:0 4px 18px rgba(20,38,62,.025);transition:transform .2s,box-shadow .2s,border-color .2s}
+.overview-kpi:hover{transform:translateY(-3px);border-color:#f0c49f;box-shadow:0 12px 28px rgba(20,38,62,.075)}
+.overview-kpi-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.overview-kpi-top>span:first-child{margin:0;color:#b96b33;font-size:11px;font-weight:800;letter-spacing:.08em}
+.overview-kpi-icon{display:grid!important;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:11px;background:#fff1e4;color:#b96b33!important;font-size:18px!important;margin:0!important}
+.overview-kpi strong{font-size:30px;letter-spacing:-.05em;color:var(--ov-navy);margin:0 0 6px;line-height:1.1}
+.overview-kpi p{font-size:12px;color:var(--ov-muted);line-height:1.5}
+.overview-kpi-pass{background:linear-gradient(145deg,#fff,#fffaf4)}
+.overview-detail-grid{gap:16px;margin-bottom:18px;align-items:stretch}
+.overview-feature-panel,.overview-activity-panel{border-radius:18px;border:1px solid var(--ov-border);padding:25px;box-shadow:0 5px 22px rgba(20,38,62,.025)}
+.overview-feature-panel{min-height:295px;display:flex;flex-direction:column}
+.overview-feature-panel .panel-head,.overview-activity-panel .panel-head{align-items:flex-start;gap:14px;margin-bottom:23px}
+.overview-section-label{font-size:10px!important;font-weight:800!important;color:#c17840!important;letter-spacing:.12em;margin:0 0 7px!important;text-transform:uppercase}
+.overview-feature-panel .panel-head h3,.overview-activity-panel .panel-head h3{font-size:18px;letter-spacing:-.025em;color:var(--ov-navy);margin:0 0 7px}
+.overview-feature-panel .panel-head p:not(.overview-section-label),.overview-activity-panel .panel-head p:not(.overview-section-label){margin:0;font-size:12px;color:var(--ov-muted);line-height:1.55}
+.overview-panel-icon{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;background:#f4f7fb;color:#b96b33;border:1px solid #e9edf3;border-radius:12px;font-size:22px}
+.overview-level-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.overview-small-label{font-size:12px;color:var(--ov-muted)}
+.overview-level-row h2{font-size:27px;letter-spacing:-.035em;margin:4px 0 0;color:var(--ov-navy)}
+.overview-xp-bubble{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:88px;min-height:70px;padding:9px;border-radius:14px;background:#fff4e8;color:#a95f2d}
+.overview-xp-bubble strong{font-size:22px;line-height:1.2}.overview-xp-bubble small{font-size:10px;margin-top:3px}
+.overview-progress-meta{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--ov-muted);margin-bottom:9px}
+.overview-progress-meta strong{color:#b76b31}
+.overview-progress-track{height:11px!important;background:#edf1f6;border-radius:99px;overflow:hidden;margin:0 0 10px}
+.overview-progress-track .personal-xp-progress-value{height:100%;background:linear-gradient(90deg,#e8a264,#cb7433);border-radius:99px;transition:width .35s ease}
+.overview-progress-note{font-size:12px;color:var(--ov-muted);margin:0 0 16px}
+.overview-card-link{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;margin-top:auto!important;padding:9px 0;color:#b96b33!important;font-size:12px;font-weight:800;text-decoration:none;transition:gap .2s}
+.overview-card-link:hover{gap:13px;text-decoration:underline}
+.overview-usage-list{gap:9px;margin-bottom:15px}
+.overview-usage-list span{display:flex;align-items:center;gap:6px;background:#f6f8fb;border:1px solid #eef1f5;border-radius:10px;padding:13px 15px;color:#5d6b7f;font-size:12px;line-height:1.5}
+.overview-usage-list strong{font-size:14px;color:var(--ov-navy)}
+.overview-activity-panel{margin-bottom:20px}
+.overview-activity-panel .panel-head{margin-bottom:19px}
+.overview-table-wrap{border:1px solid #e8edf3;border-radius:12px;overflow-x:auto}
+.overview-table-wrap table{width:100%;border-collapse:collapse;min-width:650px}
+.overview-table-wrap th{background:#f6f8fb;color:#68788d;font-size:11px;font-weight:800;letter-spacing:.025em;padding:14px 16px;white-space:nowrap}
+.overview-table-wrap td{padding:14px 16px;font-size:12px;color:#263950;border-bottom:1px solid #edf1f6}
+.overview-table-wrap tbody tr:last-child td{border-bottom:0}
+.overview-table-wrap tbody tr:hover{background:#fffbf7}
+.overview-status{display:inline-flex;align-items:center;border-radius:99px;padding:5px 10px;font-size:10px;font-weight:800;letter-spacing:.025em;white-space:nowrap}
+.overview-status-ok{background:#e6f6ed;color:#20764a}
+.overview-status-error{background:#fff0ef;color:#bd4540}
+.overview-status-other{background:#edf1f6;color:#596a7e}
+.overview-maturity-value{background:linear-gradient(120deg,#f8fafc,#fff8f0);border:1px solid #edf0f4;border-radius:14px;padding:22px;margin-bottom:14px}
+.overview-maturity-value h2{font-size:clamp(23px,2.5vw,32px);letter-spacing:-.04em;color:var(--ov-navy);margin:0}
+.overview-maturity-note{font-size:12px;color:var(--ov-muted);line-height:1.6;margin:0 0 18px}
+@media(max-width:1100px){.overview-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-hero-copy{max-width:80%}}
+@media(max-width:760px){.overview-page{padding:20px 16px 35px}.overview-hero{padding:25px 22px;min-height:160px}.overview-hero-copy{max-width:100%}.overview-hero-art{opacity:.14;right:-30px}.overview-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.overview-kpi{padding:15px;min-height:125px}.overview-kpi strong{font-size:25px}.overview-kpi-icon{width:30px;height:30px;font-size:16px!important}.overview-detail-grid{grid-template-columns:1fr}.overview-feature-panel,.overview-activity-panel{padding:19px;min-height:auto}.overview-topbar{gap:10px}.overview-topbar h1{font-size:23px}}
+@media(max-width:420px){.overview-summary{grid-template-columns:1fr}.overview-hero h2{font-size:23px}.overview-kpi{min-height:110px}.overview-level-row h2{font-size:23px}}
+
+/* Perfil no rodapé do menu HestIA */
+
+.sidebar-footer .hestia-profile {
+    position: relative;
+    width: 100%;
+}
+
+.hestia-profile-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: #142b49;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+}
+
+.hestia-profile-button:hover {
+    background: #ffffff;
+}
+
+.hestia-profile-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e87831;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.hestia-profile-label {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.hestia-profile-arrow {
+    font-size: 18px;
+}
+
+.hestia-profile-menu {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    width: 260px;
+    max-width: calc(100vw - 32px);
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e0e7ef;
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(15, 35, 65, 0.15);
+    z-index: 1000;
+}
+
+.hestia-profile-menu[hidden] {
+    display: none !important;
+}
+
+.hestia-profile-caption {
+    display: block;
+    color: #738399;
+    font-size: 11px;
+    margin-bottom: 6px;
+}
+
+.hestia-profile-email {
+    display: block;
+    color: #142b49;
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    margin-bottom: 14px;
+}
+
+.hestia-profile-logout {
+    display: block;
+    padding: 11px;
+    border-radius: 9px;
+    background: #f1f5f9;
+    color: #142b49;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.hestia-profile-logout:hover {
+    background: #ffe9dd;
+    color: #b95019;
+}

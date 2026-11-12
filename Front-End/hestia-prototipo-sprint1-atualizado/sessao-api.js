@@ -10,7 +10,7 @@ async function loginApi(req, res, api) {
         req.session.email = email;
         req.session.perfil = { adm: 'administrador', gestor: 'gestor', colaborador: 'colaborador' }[email.split('@').pop()];
         await executarSessao(req.session, 'save');
-        res.redirect('/maturidade');
+        res.redirect('/');
         return true;
     }
     res.set('Cache-Control', 'no-store');
@@ -35,7 +35,7 @@ async function loginApi(req, res, api) {
         req.session.empresaId = contexto.empresaId;
         req.session.departamentoId = contexto.departamentoId;
         await executarSessao(req.session, 'save');
-        res.redirect('/maturidade');
+        res.redirect('/');
     } catch (erro) {
         delete req.session.apiToken;
         delete req.session.perfil;
