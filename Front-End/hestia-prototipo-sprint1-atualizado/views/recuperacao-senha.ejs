@@ -1,1 +1,52 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recuperação de acesso — HestIA</title><link rel="stylesheet" href="/styles.css"></head><body><main class="main"><section class="panel"><h1><%= redefinir?'Definir nova senha':'Recuperar acesso' %></h1><% if(erro){ %><p role="alert"><%= erro %></p><% } %><% if(ok){ %><p role="status"><%= redefinir?'Senha alterada. Entre novamente.':'Se a conta estiver cadastrada, você receberá as instruções de recuperação.' %></p><% }else{ %><form method="post"><input type="hidden" name="csrf" value="<%= csrf %>"><% if(redefinir){ %><label>Nova senha<input type="password" name="senha" minlength="8" maxlength="100" autocomplete="new-password" required></label><% }else{ %><label>E-mail<input type="email" name="email" autocomplete="email" required></label><% } %><button class="primary" type="submit">Continuar</button></form><% } %><a href="/acesso">Voltar ao acesso</a></section></main></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= redefinir ? 'Redefinir senha' : 'Recuperar acesso' %> | HestIA</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="login-body hestia-recovery-body">
+  <div class="login-background-circle circle-one" aria-hidden="true"></div>
+  <div class="login-background-circle circle-two" aria-hidden="true"></div>
+  <main class="login-shell">
+    <section class="login-card hestia-recovery-card">
+      <div class="brand login-brand">
+    <img src="/logo_hestia.png" alt="Logo HestIA"
+         style="width:48px;height:48px;object-fit:contain;">
+
+    <div>
+        <strong>HestIA</strong>
+        <span>Governança de IA</span>
+    </div>
+</div>
+      <p class="eyebrow">SEGURANÇA DA CONTA</p>
+      <h1><%= redefinir ? 'Crie uma nova senha' : 'Recuperar acesso' %></h1>
+      <p class="hestia-recovery-subtitle"><%= redefinir ? 'Escolha uma senha segura para voltar à plataforma.' : 'Informe seu e-mail cadastrado para receber as instruções.' %></p>
+      <% if (erro) { %><div class="login-error" role="alert"><%= erro %></div><% } %>
+      <% if (ok) { %>
+        <div class="hestia-recovery-success" role="status">
+          <strong><%= redefinir ? 'Senha redefinida!' : 'Solicitação recebida' %></strong>
+          <p><%= redefinir ? 'Sua senha foi atualizada. Você já pode entrar.' : 'Se a conta estiver cadastrada, você receberá as instruções de recuperação.' %></p>
+        </div>
+        <a class="hestia-auth-back hestia-auth-back-button" href="/acesso">Voltar ao acesso</a>
+      <% } else { %>
+        <form class="login-form hestia-recovery-form" method="post" action="<%= redefinir ? '/redefinir-senha' : '/recuperar-senha' %>">
+          <input type="hidden" name="csrf" value="<%= csrf %>">
+          <% if (redefinir) { %>
+            <label for="nova-senha">Nova senha
+              <input id="nova-senha" type="password" name="senha" autocomplete="new-password" minlength="8" maxlength="100" required placeholder="No mínimo 8 caracteres">
+            </label>
+          <% } else { %>
+            <label for="email-recuperacao">E-mail
+              <input id="email-recuperacao" type="email" name="email" autocomplete="email" required placeholder="seu.email@empresa.com">
+            </label>
+          <% } %>
+          <button class="primary" type="submit"><%= redefinir ? 'Redefinir senha' : 'Enviar instruções' %></button>
+        </form>
+        <a class="hestia-auth-back" href="/acesso">Voltar ao acesso</a>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>
