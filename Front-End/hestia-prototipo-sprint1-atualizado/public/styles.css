@@ -7267,3 +7267,268 @@ body { background:var(--bg); color:var(--ink); }
     background: #ffe9dd;
     color: #b95019;
 }
+/* ============================================================
+   HESTIA - MELHORIAS VISUAIS: PAINEL GERENCIAL, RANKING, RISCO
+   ADICIONAR SOMENTE AO FINAL DO styles.css ORIGINAL
+   Sem alterar API, rotas, calculos, formularios ou scripts.
+   ============================================================ */
+
+/* Painel gerencial - apenas os componentes do perfil gerencial */
+.hestia-manager-refresh .hm-section-intro{display:flex;justify-content:space-between;align-items:center;gap:18px;margin:4px 0 18px;padding:0 2px}
+.hestia-manager-refresh .hm-kicker{font-size:11px;letter-spacing:.13em;font-weight:800;color:#3157d5}
+.hestia-manager-refresh .hm-section-intro h2{font-size:23px;letter-spacing:-.035em;margin:5px 0 4px;color:#14263e}
+.hestia-manager-refresh .hm-section-intro p{margin:0;color:#64748b;font-size:13px;line-height:1.55}
+.hestia-manager-refresh .hm-live-note{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid #dce6f3;background:#fff;color:#475569;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:700}
+.hestia-manager-refresh .hm-live-note span{color:#16a34a;font-size:10px}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi{position:relative;overflow:hidden;border:1px solid #e2e9f2;border-radius:17px;background:linear-gradient(155deg,#fff 62%,#f3f7ff 100%);box-shadow:0 6px 20px rgba(21,40,72,.045);transition:transform .2s,box-shadow .2s}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:#4566d8}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi:nth-child(2):before{background:#0d9488}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi:nth-child(3):before{background:#d97706}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi:nth-child(4):before{background:#8b5cf6}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi:hover{transform:translateY(-3px);box-shadow:0 15px 32px rgba(21,40,72,.11)}
+.hestia-manager-refresh .hm-manager-metrics .overview-kpi strong{font-size:clamp(27px,3vw,36px);letter-spacing:-.045em}
+.hestia-manager-refresh .hm-manager-panels .overview-feature-panel{border-radius:18px;border-color:#e2e9f2;box-shadow:0 7px 25px rgba(21,40,72,.05)}
+.hestia-manager-refresh .hm-manager-panels .overview-maturity-panel{background:linear-gradient(160deg,#fff 60%,#eef3ff)}
+.hestia-manager-refresh .hm-manager-panels .overview-maturity-value h2{letter-spacing:-.045em}
+
+/* Ranking - destaque de participantes reais, sem modificar classificacao */
+.hm-ranking-refresh{background:linear-gradient(155deg,#f4f7fc,#f8fafc);min-height:100vh}
+.hm-ranking-refresh .page-header h1{letter-spacing:-.04em}
+.hm-ranking-refresh .hm-ranking-spotlight{border-radius:20px;box-shadow:0 14px 35px rgba(20,38,62,.11);overflow:hidden}
+.hm-ranking-refresh .ranking-info-card,.hm-ranking-refresh .ranking-section,.hm-ranking-refresh .ranking-achievements{border-radius:17px}
+.hm-podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:20px 0 24px;align-items:stretch}
+.hm-podium-card{min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:22px 12px 18px;border:1px solid #e1e8f2;border-radius:17px;background:linear-gradient(160deg,#fff,#f4f7fc);box-shadow:0 8px 24px rgba(20,38,62,.05)}
+.hm-podium-card.hm-podium-1{border-color:#e9cb79;background:linear-gradient(160deg,#fff9e9,#fff,#fff7dd);box-shadow:0 12px 30px rgba(151,106,21,.12)}
+.hm-podium-card.hm-podium-2{border-color:#cbd5e1;background:linear-gradient(160deg,#f8fafc,#fff)}
+.hm-podium-card.hm-podium-3{border-color:#e7c5ae;background:linear-gradient(160deg,#fff7f0,#fff)}
+.hm-podium-rank{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#e7ecf5;color:#344b70;font-size:14px;font-weight:900}
+.hm-podium-1 .hm-podium-rank{background:#f6d778;color:#754a08}
+.hm-podium-3 .hm-podium-rank{background:#f3dcc9;color:#88502b}
+.hm-podium-avatar{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#243e64;color:#fff;font-size:17px;font-weight:800;letter-spacing:.03em}
+.hm-podium-card>strong{font-size:14px;line-height:1.35;color:#1e293b;overflow-wrap:anywhere}
+.hm-podium-level{font-size:12px;color:#64748b}
+.hm-podium-card>b{font-size:18px;color:#2648a6}
+.hm-podium-card>small{font-weight:800;color:#0f766e;background:#ccfbf1;border-radius:999px;padding:4px 9px}
+.hm-podium-me{outline:2px solid #79b8a8;outline-offset:2px}
+.hm-ranking-table-wrap{border-radius:12px;overflow-x:auto;border:1px solid #e6ebf2}
+.hm-ranking-refresh .ranking-table tbody tr:hover{background:#f1f6ff}
+.hm-ranking-refresh .ranking-achievement{transition:transform .2s,box-shadow .2s}
+.hm-ranking-refresh .ranking-achievement:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,38,62,.08)}
+
+/* Mapa de risco - respeita os niveis que ja vem do servidor */
+.hm-risk-refresh{background:linear-gradient(155deg,#f4f7fc,#f8fafc);min-height:100vh}
+.hm-risk-refresh .hm-risk-hero{position:relative;overflow:hidden;border-radius:19px;background:linear-gradient(115deg,#172a46,#254674);color:#fff;border:0;box-shadow:0 15px 32px rgba(20,38,62,.12)}
+.hm-risk-refresh .hm-risk-hero:after{content:"";position:absolute;width:220px;height:220px;right:-60px;top:-90px;border:35px solid rgba(255,255,255,.065);border-radius:50%;pointer-events:none}
+.hm-risk-refresh .hm-risk-hero .eyebrow{color:#a9c7ff}
+.hm-risk-refresh .hm-risk-hero h2{color:#fff;position:relative;z-index:1}
+.hm-risk-refresh .hm-risk-hero p:last-child{color:#d7e3f5;position:relative;z-index:1}
+.hm-risk-refresh .hm-risk-summary .dashboard-summary-card{border-radius:16px;border-color:#e1e8f2;box-shadow:0 7px 24px rgba(20,38,62,.045);position:relative;overflow:hidden}
+.hm-risk-refresh .hm-risk-summary .dashboard-summary-card:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:#4566d8}
+.hm-risk-refresh .hm-risk-summary .dashboard-summary-card:nth-child(2):before{background:#22a06b}
+.hm-risk-refresh .hm-risk-summary .dashboard-summary-card:nth-child(3):before{background:#e7a12d}
+.hm-risk-refresh .hm-risk-summary .dashboard-summary-card:nth-child(4):before{background:#dc5252}
+.hm-risk-refresh .hm-risk-panel{border-radius:18px;border-color:#e1e8f2;box-shadow:0 8px 25px rgba(20,38,62,.045);margin-bottom:18px}
+.hm-risk-refresh .risk-legend{flex-wrap:wrap;gap:12px;border-bottom-color:#e9edf4}
+.hm-risk-refresh .risk-legend-item{background:#f7f9fc;border:1px solid #e6ebf2;padding:8px 12px;border-radius:999px}
+.hm-risk-summary-line{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px}
+.hm-risk-summary-line span{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:9px;background:#f2f6fb;color:#526176;font-size:12px}
+.hm-risk-summary-line strong{color:#152c4c;font-size:15px}
+.hm-risk-refresh .hm-risk-grid{gap:15px}
+.hm-risk-refresh .hm-risk-tile{border-radius:15px;border-width:1px 1px 1px 5px;box-shadow:0 5px 15px rgba(20,38,62,.035);transition:transform .2s,box-shadow .2s}
+.hm-risk-refresh .hm-risk-tile:hover{transform:translateY(-3px);box-shadow:0 13px 28px rgba(20,38,62,.10)}
+.hm-risk-refresh .hm-risk-tile.risk-low{border-left-color:#22a06b}
+.hm-risk-refresh .hm-risk-tile.risk-medium{border-left-color:#e7a12d}
+.hm-risk-refresh .hm-risk-tile.risk-high{border-left-color:#dc5252}
+.hm-risk-refresh .risk-cell-head strong{overflow-wrap:anywhere}
+.hm-risk-refresh .risk-cell-head span{white-space:nowrap}
+.hm-risk-refresh .table-wrap{border:1px solid #e6ebf2;border-radius:12px;overflow:auto}
+.hm-risk-refresh .table-wrap tbody tr:hover{background:#f7faff}
+@media(max-width:900px){.hm-podium{grid-template-columns:repeat(2,minmax(0,1fr))}.hestia-manager-refresh .hm-section-intro{align-items:flex-start;flex-direction:column}}
+@media(max-width:620px){.hm-podium{grid-template-columns:1fr}.hm-risk-refresh .hm-risk-grid{grid-template-columns:1fr}.hm-risk-refresh .hm-risk-hero{padding:24px 20px}.hm-risk-refresh .risk-cell-head{align-items:flex-start;flex-direction:column}.hm-risk-refresh .hm-risk-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.hm-podium-card,.hm-risk-tile,.hm-manager-metrics .overview-kpi{transition:none!important}}
+/* HESTIA | Ranking V2 - acrescentar no FINAL de styles.css. Nao apaga regras existentes. */
+.hr-ranking-v2{--hr-ink:#19314b;--hr-navy:#193653;--hr-orange:#e97832;--hr-cream:#fff6e9;--hr-line:#e8e3db;--hr-muted:#66788b;background:#f8f7f4!important;color:var(--hr-ink)}
+.hr-ranking-v2 .hr-heading{margin-bottom:22px}
+.hr-ranking-v2 .hr-heading h1{font-size:clamp(27px,3vw,38px);font-weight:850;letter-spacing:-.045em;color:var(--hr-ink)}
+.hr-ranking-v2 .hr-heading p{color:var(--hr-muted);margin-top:5px}
+.hr-ranking-v2 .hr-hero{background:linear-gradient(115deg,#193653 0%,#24465e 74%,#2b5060 100%)!important;border:0!important;border-radius:20px!important;box-shadow:0 15px 32px rgba(25,54,83,.12)!important;padding:26px 32px!important;display:flex;align-items:center;gap:28px;min-height:165px}
+.hr-ranking-v2 .ranking-personal-position{background:rgba(255,255,255,.09)!important;border:1px solid rgba(255,255,255,.15);border-radius:14px;min-width:150px;padding:19px!important;text-align:center}
+.hr-ranking-v2 .ranking-personal-position strong{font-size:43px!important;line-height:1.2;color:#fff!important}
+.hr-ranking-v2 .ranking-personal-position span,.hr-ranking-v2 .ranking-personal-info .ranking-small-label{color:#eac9a9!important;font-size:11px!important;letter-spacing:.09em;font-weight:800;text-transform:uppercase}
+.hr-ranking-v2 .ranking-personal-info h2{color:#fff!important;font-size:25px!important;letter-spacing:-.02em;margin:9px 0 14px}
+.hr-ranking-v2 .ranking-personal-details{gap:32px}
+.hr-ranking-v2 .ranking-personal-details span{color:#c5d2da!important}
+.hr-ranking-v2 .ranking-personal-details strong{color:#fff!important;font-size:16px}
+.hr-ranking-v2 .ranking-info-card{border:1px solid #f0ddc7!important;background:#fff8ef!important;border-radius:14px!important;margin-top:18px;box-shadow:none!important}
+.hr-ranking-v2 .ranking-info-card strong{color:#9d5425!important}
+.hr-ranking-v2 .ranking-info-card p{color:#7c6b60!important}
+.hr-ranking-v2 .ranking-info-icon{background:#ffe4c6!important;color:#be622a!important}
+.hr-ranking-v2 .ranking-section,.hr-ranking-v2 .ranking-achievements{background:#fff!important;border:1px solid var(--hr-line)!important;box-shadow:0 6px 25px rgba(31,48,59,.035)!important;border-radius:19px!important;padding:25px!important;margin-top:20px}
+.hr-ranking-v2 .ranking-section-header h2,.hr-ranking-v2 .ranking-achievements h2{color:var(--hr-ink)!important;font-size:21px;letter-spacing:-.025em}
+.hr-ranking-v2 .ranking-section-header p,.hr-ranking-v2 .ranking-achievements-head p{color:var(--hr-muted)}
+.hr-ranking-v2 .ranking-total,.hr-ranking-v2 .ranking-achievements-count{background:#fff0e3!important;color:#a45221!important;border-radius:999px;padding:7px 12px;font-weight:800}
+.hr-ranking-v2 .hr-feature-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:22px 0 13px}
+.hr-ranking-v2 .hr-feature-heading h3{font-size:16px;color:var(--hr-ink);margin:3px 0 0}
+.hr-ranking-v2 .hr-eyebrow{font-size:10px;letter-spacing:.12em;color:var(--hr-orange);font-weight:900}
+.hr-ranking-v2 .hr-feature-count{font-size:12px;color:var(--hr-muted)}
+.hr-ranking-v2 .hm-podium{margin:0 0 22px!important;gap:12px}
+.hr-ranking-v2 .hm-podium-card{border:1px solid #f0d7bd!important;border-radius:15px!important;background:linear-gradient(115deg,#fff8ee,#fffdf8)!important;box-shadow:none!important;outline:0!important;min-width:0}
+.hr-ranking-v2 .hr-single-leader{display:block!important}
+.hr-ranking-v2 .hr-single-leader .hm-podium-card{display:grid!important;grid-template-columns:52px 52px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;text-align:left!important;column-gap:16px;row-gap:4px;padding:18px 22px!important}
+.hr-ranking-v2 .hr-single-leader .hm-podium-rank{grid-row:1/3;grid-column:1}
+.hr-ranking-v2 .hr-single-leader .hm-podium-avatar{grid-row:1/3;grid-column:2}
+.hr-ranking-v2 .hr-single-leader .hm-podium-card>strong{grid-row:1;grid-column:3;font-size:16px}
+.hr-ranking-v2 .hr-single-leader .hm-podium-level{grid-row:2;grid-column:3}
+.hr-ranking-v2 .hr-single-leader .hm-podium-card>b{grid-row:1;grid-column:4;font-size:21px}
+.hr-ranking-v2 .hr-single-leader .hm-podium-card>small{grid-row:2;grid-column:4;justify-self:end}
+.hr-ranking-v2 .hm-podium-rank{background:#f9d9a6!important;color:#8d4d1c!important;font-size:16px!important;width:44px;height:44px}
+.hr-ranking-v2 .hm-podium-avatar{background:#254760!important;border-radius:13px}
+.hr-ranking-v2 .hm-podium-card>b{color:#bd622c!important}
+.hr-ranking-v2 .hm-podium-card>small{background:#fff0df!important;color:#9a5429!important}
+.hr-ranking-v2 .hm-ranking-table-wrap{border:1px solid var(--hr-line)!important;border-radius:13px!important}
+.hr-ranking-v2 .ranking-table thead{background:#f8f7f4!important}
+.hr-ranking-v2 .ranking-table th{color:#6b7886!important;font-size:11px;letter-spacing:.055em}
+.hr-ranking-v2 .ranking-table td{border-color:#eeeae4!important}
+.hr-ranking-v2 .ranking-table .ranking-current-user{background:#fff8ef!important}
+.hr-ranking-v2 .ranking-position{color:#a65729!important;background:#ffe9d4!important;font-weight:900!important}
+.hr-ranking-v2 .ranking-avatar{background:#f2e6d9!important;color:#254760!important}
+.hr-ranking-v2 .ranking-xp{color:#bd622c!important}
+.hr-ranking-v2 .ranking-level{color:#254760!important;background:#eaf1f1!important}
+.hr-ranking-v2 .ranking-achievements-grid{gap:12px}
+.hr-ranking-v2 .ranking-achievement{background:#fcfaf7!important;border:1px solid #eee4d7!important;border-radius:13px!important;box-shadow:none!important}
+.hr-ranking-v2 .ranking-achievement-icon{background:#fce7d0!important;color:#b65c2b!important}
+.hr-ranking-v2 .ranking-achievement h3{color:#253e51!important}
+.hr-ranking-v2 .ranking-achievement-status{color:#a65b2d!important}
+.hr-ranking-v2 .ranking-achievement-fill{background:#e97832!important}
+@media(max-width:750px){.hr-ranking-v2 .hr-hero{flex-direction:column;align-items:stretch;padding:20px!important;gap:16px}.hr-ranking-v2 .ranking-personal-position{min-width:0}.hr-ranking-v2 .hr-single-leader .hm-podium-card{grid-template-columns:42px 48px minmax(0,1fr);padding:15px!important;column-gap:10px}.hr-ranking-v2 .hr-single-leader .hm-podium-card>b{grid-row:3;grid-column:3}.hr-ranking-v2 .hr-single-leader .hm-podium-card>small{grid-row:3;grid-column:2;justify-self:start}.hr-ranking-v2 .hr-multi-leaders{grid-template-columns:1fr!important}.hr-ranking-v2 .ranking-section,.hr-ranking-v2 .ranking-achievements{padding:17px!important}}
+/* HestIA Ranking V3 — adicionar somente ao FINAL do styles.css */
+.hr-ranking-v2 { background:#f5f7fa !important; --hr-line:#e2e8f0; }
+.hr-ranking-v2 .hr-hero { min-height:0 !important; padding:16px 24px !important; gap:20px !important; border-radius:16px !important; box-shadow:none !important; }
+.hr-ranking-v2 .ranking-personal-position { min-width:110px !important; padding:12px 16px !important; }
+.hr-ranking-v2 .ranking-personal-position strong { font-size:32px !important; }
+.hr-ranking-v2 .ranking-personal-info h2 { font-size:21px !important; margin:4px 0 8px !important; }
+.hr-ranking-v2 .ranking-personal-details { gap:22px !important; }
+.hr-ranking-v2 .ranking-personal-details strong { font-size:14px !important; }
+.hr-ranking-v2 .ranking-info-card { background:#fff !important; border-color:#e2e8f0 !important; }
+.hr-ranking-v2 .ranking-info-card strong { color:#193653 !important; }
+.hr-ranking-v2 .ranking-info-card p { color:#63758b !important; }
+.hr-ranking-v2 .ranking-info-icon { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .ranking-section,.hr-ranking-v2 .ranking-achievements { background:#fff !important; border-color:#e2e8f0 !important; }
+.hr-ranking-v2 .ranking-total,.hr-ranking-v2 .ranking-achievements-count { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .hm-podium-card { background:#fff !important; border-color:#dfe6ee !important; }
+.hr-ranking-v2 .hm-podium-rank { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .hm-podium-card>b,.hr-ranking-v2 .ranking-xp { color:#193653 !important; }
+.hr-ranking-v2 .hm-podium-card>small { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .ranking-table thead { background:#f5f7fa !important; }
+.hr-ranking-v2 .ranking-table .ranking-current-user { background:#f0f5fb !important; }
+.hr-ranking-v2 .ranking-position,.hr-ranking-v2 .ranking-avatar { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .ranking-achievement { background:#f8fafc !important; border-color:#e2e8f0 !important; }
+.hr-ranking-v2 .ranking-achievement-icon { background:#eaf1f8 !important; color:#193653 !important; }
+.hr-ranking-v2 .hr-collapsible { padding:0 !important; overflow:hidden; }
+.hr-ranking-v2 .hr-milestones-summary { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:21px 25px; cursor:pointer; list-style:none; }
+.hr-ranking-v2 .hr-milestones-summary::-webkit-details-marker { display:none; }
+.hr-ranking-v2 .hr-milestones-summary:focus-visible { outline:3px solid #b2cbe5; outline-offset:-3px; }
+.hr-ranking-v2 .hr-summary-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.hr-ranking-v2 .hr-chevron { font-size:23px; color:#193653; display:inline-block; transition:transform .2s ease; }
+.hr-ranking-v2 .hr-collapsible[open] .hr-chevron { transform:rotate(180deg); }
+.hr-ranking-v2 .hr-collapsible .ranking-achievements-grid { padding:0 25px 25px; }
+@media(max-width:750px){.hr-ranking-v2 .hr-hero{padding:16px !important;}.hr-ranking-v2 .hr-milestones-summary{padding:16px;align-items:flex-start;flex-wrap:wrap;}.hr-ranking-v2 .hr-collapsible .ranking-achievements-grid{padding:0 16px 16px;}}
+/* HestIA Ranking — detalhes dourados discretos. ACRESCENTAR ao final de styles.css */
+/* Mantém o fundo geral cinza claro e os cartões brancos. */
+.hr-ranking-v2 .ranking-info-icon { background:#fff4d9 !important; color:#a97717 !important; border:1px solid #eed59a !important; }
+.hr-ranking-v2 .ranking-achievements-count { background:#fff4d9 !important; color:#8a6010 !important; border:1px solid #eed59a !important; }
+.hr-ranking-v2 .ranking-achievement.hr-gold-marco { background:#fff !important; border:1px solid #e9cc83 !important; border-top:3px solid #c49a38 !important; }
+.hr-ranking-v2 .ranking-achievement.hr-gold-marco .ranking-achievement-icon { background:#fff3d5 !important; color:#a67517 !important; }
+.hr-ranking-v2 .ranking-achievement.hr-gold-marco h3 { color:#84601a !important; }
+/* Marcos não alcançados continuam visíveis, sem cadeado, com o próprio símbolo. */
+.hr-ranking-v2 .ranking-achievement.is-locked .ranking-achievement-icon { opacity:1 !important; filter:none !important; }
+.hr-ranking-v2 .ranking-achievement.hr-gold-marco.is-locked { opacity:1 !important; }
+/* HestIA — destaque dourado para o 1º colocado */
+.hr-ranking-v2 .hm-podium-card.hm-podium-1 {
+    background: linear-gradient(135deg, #fffdf5, #fff7dc) !important;
+    border: 2px solid #d4af37 !important;
+    box-shadow: 0 5px 18px rgba(184, 134, 11, 0.13) !important;
+}
+
+.hr-ranking-v2 .hm-podium-1 .hm-podium-rank {
+    color: #a87912 !important;
+}
+
+.hr-ranking-v2 .hm-podium-1 .hm-podium-avatar {
+    background: linear-gradient(135deg, #d4af37, #f1d47b) !important;
+    color: #4b370c !important;
+    border: 2px solid #c49a2c !important;
+}
+
+.hr-ranking-v2 .hm-podium-1 > b {
+    color: #a87912 !important;
+}
+/* HestIA — espaçamento das aulas dos microtreinamentos */
+
+/* Espaço entre as aulas */
+.micro-course-sidebar .lesson-item,
+.micro-course-sidebar .lesson-step {
+    margin-bottom: 10px;
+}
+
+/* Espaço interno dos botões */
+.micro-course-sidebar .lesson-item,
+.micro-course-sidebar .lesson-step {
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+/* Evita que os textos fiquem apertados */
+.micro-course-sidebar .lesson-item span,
+.micro-course-sidebar .lesson-step span {
+    line-height: 1.5;
+}
+/* HestIA Academy — espaçamento entre aulas */
+.mt-page .academy-syllabus .academy-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0 0 10px 0 !important;
+    padding: 12px 13px !important;
+    border-radius: 10px !important;
+    box-sizing: border-box;
+    min-height: 48px;
+    text-align: left;
+}
+
+.mt-page .academy-syllabus .academy-step:last-child {
+    margin-bottom: 0 !important;
+}
+
+.mt-page .academy-syllabus .academy-step small {
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.mt-page .academy-syllabus .academy-step > span {
+    flex-shrink: 0;
+}
+/* HestIA - Ocultar e-mail e botão Sair de todos os perfis */
+
+.topbar-logout,
+.hestia-profile-logout,
+a[href="/sair"] {
+    display: none !important;
+}
+/* Ocultar email e sair do cabeçalho */
+.topbar .profile-switch,
+.topbar .topbar-logout {
+    display: none !important;
+}
+
+/* Ocultar cartão Conta conectada do menu lateral */
+.hestia-profile > :not(.hestia-profile-button):not(.hestia-profile-logout) {
+    /* Não alterar sem confirmar a estrutura do menu */
+}
+
+/* Manter o botão Sair dentro do Meu perfil */
+.hestia-profile-logout,
+a.hestia-profile-logout[href="/sair"] {
+    display: inline-flex !important;
+}

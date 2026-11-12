@@ -30,7 +30,7 @@
         }) %>
 
 
-        <main class="main">
+        <main class="main hm-risk-refresh">
 
             <!-- TOPO -->
 
@@ -80,7 +80,7 @@
 
             <!-- APRESENTACAO -->
 
-            <section class="hero-card">
+            <section class="hero-card hm-risk-hero">
 
                 <p class="eyebrow">
                     Monitoramento
@@ -101,7 +101,7 @@
 
             <!-- INDICADORES -->
 
-            <section class="dashboard-summary">
+            <section class="dashboard-summary hm-risk-summary">
 
                 <article class="dashboard-summary-card">
 
@@ -175,7 +175,7 @@
 
             <!-- MAPA DE CALOR -->
 
-            <section class="panel">
+            <section class="panel hm-risk-panel">
 
                 <div class="panel-head">
 
@@ -226,12 +226,17 @@
                 </div>
 
 
-                <div class="risk-map">
+                <div class="hm-risk-summary-line" aria-label="Resumo dos níveis de risco">
+                    <span><strong><%= resumoRisco.baixo %></strong> baixo</span>
+                    <span><strong><%= resumoRisco.medio %></strong> médio</span>
+                    <span><strong><%= resumoRisco.alto %></strong> alto</span>
+                </div>
+                <div class="risk-map hm-risk-grid">
 
                     <% mapaRisco.forEach(function(item) { %>
 
                         <article
-                            class="risk-cell risk-<%= item.classe %>">
+                            class="risk-cell risk-<%= item.classe %> hm-risk-tile">
 
                             <div class="risk-cell-head">
 
