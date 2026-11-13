@@ -176,7 +176,7 @@ class BuscaVetorialPostgresTest {
 
     @Test
     void migratesAllVersionsAndCreatesVectorIndexAndStaging() {
-        assertThat(flyway.info().applied()).hasSize(28);
+        assertThat(flyway.info().applied()).hasSize(29);
         assertThat(flyway.validateWithResult().validationSuccessful).isTrue();
         assertThat(flyway.migrate().migrationsExecuted).isZero();
 

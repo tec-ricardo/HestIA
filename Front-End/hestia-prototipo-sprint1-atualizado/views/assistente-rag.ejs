@@ -485,7 +485,19 @@ function renderBank() {
             mostrarSugestoes();
           form.requestSubmit ? form.requestSubmit() : send.click();
           });
-          actions.append(copy, retry); box.append(actions);
+
+          actions.append(copy, retry);
+          if(message.conversaId){
+            const limites=element('button','Ver limites da conversa','rag-secondary');limites.type='button';
+            limites.addEventListener('click',async()=>{
+              limites.disabled=true;
+              try{const r=await fetch('/api/rag/conversas/'+encodeURIComponent(message.conversaId)+'/contexto');const c=await r.json();if(!r.ok)throw Error(c.erro||'Limites indisponíveis.');
+                notify('Histórico selecionado: '+c.caracteresSelecionados+' de '+c.maxCaracteres+' caracteres; '+c.turnosCompletos+' mensagens completas, '+c.turnosTruncados+' trechos reduzidos, '+c.turnosResumidos+' resumidas e '+c.turnosOmitidos+' omitidas. O resumo é parcial e não substitui a política vigente.');
+              }catch(erro){notify(erro.message,true);}finally{limites.disabled=false;}
+            });actions.append(limites);
+          }
+          box.append(actions);
+
         }
         chat.append(box);
         chat.scrollTop = chat.scrollHeight;
@@ -542,10 +554,10 @@ function renderBank() {
             if (!confirm('Excluir esta pergunta e a resposta correspondente do histórico?')) return;
             // Só excluir visualmente depois de confirmação do banco.
             // Conversas locais ainda não têm ID de interação: apagar histórico inteiro é a opção segura.
-            const idServidor = String(entry.conversation.id).match(/^servidor-(\d+)$/);
-            if (!idServidor) { notify('Para excluir uma interação recém-criada, recarregue a página para sincronizar o ID do servidor.', true); return; }
+            const interacaoId = entry.conversation.messages[entry.index].interacaoId || entry.conversation.messages[entry.index + 1]?.interacaoId;
+            if (!interacaoId) { notify('Para excluir uma interação recém-criada, recarregue a página para sincronizar o ID do servidor.', true); return; }
             try {
-              const r = await fetch('/api/rag/historico/' + idServidor[1], { method: 'DELETE', credentials: 'same-origin' });
+              const r = await fetch('/api/rag/historico/' + encodeURIComponent(interacaoId), { method: 'DELETE', credentials: 'same-origin' });
               if (!r.ok) throw Error('Erro HTTP ' + r.status);
             } catch (erro) { notify('Não foi possível excluir do banco: ' + erro.message, true); return; }
             const c = conversations.find(item => item.id === entry.conversation.id);
@@ -659,8 +671,8 @@ function renderBank() {
       function mensagemDoServidor(dados, input, conversaId) {
         const fonte = dados.fontes && dados.fontes[0];
         return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.',
-          question: input, conversaId, estado: dados.estado,
-          policy: fonte ? 'Conteúdo autorizado #' + fonte.id : 'Nenhuma fonte autorizada',
+          question: input, conversaId, interacaoId: dados.id, createdAt: dados.criadaEm, estado: dados.estado,
+          policy: fonte ? 'Conteúdo autorizado #' + fonte.id : dados.estado === 'GERADA_SEM_FONTES' ? 'Resposta geral sem fontes autorizadas' : 'Nenhuma fonte autorizada',
           policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '',
           source: fonte ? fonte.titulo : null,
           respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null,
@@ -733,11 +745,14 @@ function renderBank() {
             ]);
             if (consulta.status === 'rejected') throw consulta.reason;
             const result = consulta.value;
+            const perguntaAtual = current.messages[current.messages.length - 1];
+            if (perguntaAtual?.role === 'user') perguntaAtual.interacaoId = result.interacaoId;
             current.messages.push(result);
             persist();
             renderChat();
             renderHistory();
             if (result.reutilizada) registrarReutilizacao(result);
+            else if (result.estado === 'GERADA_SEM_FONTES') notify('Resposta geral sem fontes autorizadas; não constitui política da organização.');
             else if (!result.source) notify('Nenhum resultado encontrado.');
           } catch (erro) {
             current.messages.push({ role: 'assistant', text: 'Não foi possível preparar a resposta. Tente novamente.', question: input });
@@ -791,10 +806,16 @@ function renderBank() {
       atualizarEconomia();
       fetch('/api/rag/historico').then(r => { if (!r.ok) throw Error('Histórico indisponível'); return r.json(); }).then(linhas => {
         if (conversations.length) return;
-        conversations = linhas.map(linha => ({ id: 'servidor-' + linha.id, title: linha.pergunta.slice(0,60), messages: [
-          { role: 'user', text: linha.pergunta, createdAt: linha.criadaEm },
-          { role: 'assistant', text: linha.resposta || 'Fonte indisponível para seu acesso atual.', question: linha.pergunta, createdAt: linha.criadaEm, policy: linha.fontes.length ? 'Conteúdo autorizado #' + linha.fontes[0].id : 'Nenhuma fonte autorizada', policyId: linha.fontes.length ? String(linha.fontes[0].id) : '', source: linha.fontes.length ? linha.fontes[0].titulo : null, respostaId: linha.fontes.length && linha.estado !== 'GERADA_COM_FONTES' ? linha.fontes[0].id : null }
-        ] }));
+        const grupos = new Map();
+        for (const linha of [...linhas].reverse()) {
+          const idConversa = linha.conversaId;
+          const chave = idConversa != null ? 'conversa-' + idConversa : 'interacao-' + linha.id;
+          if (!grupos.has(chave)) grupos.set(chave, {id:chave, servidorId:idConversa, historicoCarregado:true, title:linha.pergunta.slice(0,60), messages:[]});
+          const conversa = grupos.get(chave);
+          conversa.messages.push({role:'user',text:linha.pergunta,createdAt:linha.criadaEm,interacaoId:linha.id,conversaId:idConversa});
+          conversa.messages.push(mensagemDoServidor(linha,linha.pergunta,idConversa));
+        }
+        conversations = [...grupos.values()];
         renderHistory();
       }).catch(() => notify('Histórico do servidor indisponível.', true));
     })();

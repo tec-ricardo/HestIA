@@ -12,7 +12,7 @@ public class AdaptadorOperacionalMaturidade {
     public AdaptadorOperacionalMaturidade(JdbcTemplate jdbc,CalculadorasMaturidade calculo){this.jdbc=jdbc;this.calculo=calculo;}
     public List<FatorCalculado> calcular(Long empresa,Long departamento,LocalDate inicio,LocalDate fim){
         List<FatorCalculado> fatores=new ArrayList<>();
-        for(String codigo:List.of("aiLiteracy","governanca","produtividade","finOps","seguranca","colaboracao"))
+        for(String codigo:List.of("produtividade","finOps","seguranca","colaboracao"))
             fatores.add(calculo.pendente(codigo,"SEM_DADOS","Fonte operacional compatível ainda não disponibilizada para esta fórmula","OPERACIONAL"));
         String escopo=" u.empresa_id = ? AND (CAST(? AS BIGINT) IS NULL OR u.departamento_id = ?) ";
         Object[] parametros={empresa,departamento,departamento,Timestamp.valueOf(inicio.atStartOfDay()),Timestamp.valueOf(fim.plusDays(1).atStartOfDay())};
@@ -39,8 +39,33 @@ public class AdaptadorOperacionalMaturidade {
                 +"JOIN avaliacoes_conformidade a ON a.registro_uso_id=r.id LEFT JOIN politica_uso_versoes v ON v.id=a.politica_versao_id "
                 +"WHERE "+escopo+periodoAvaliado+" AND "+preservado,Long.class,parametrosAvaliacoes);
         fatores.add(calculo.usoResponsavel(c,n,revisao,legadas,registros==null?0:registros,avaliados==null?0:avaliados));
+        fatores.add(governanca(parametros));
         fatores.add(competencias(parametros));
+        var tentativas = new EvidenciasAiLiteracyRepository(jdbc).buscar(empresa, departamento, inicio, fim)
+                .stream().map(t -> new SelecaoAiLiteracy.Tentativa(
+                        t.tentativaId(), t.usuarioId(), t.avaliacaoId(), t.versaoAvaliacao(),
+                        t.nota(), t.status(), t.finalizadaEm(), true)).toList();
+        var selecao = SelecaoAiLiteracy.selecionar(tentativas, inicio, fim);
+        fatores.add(calculo.literacyOperacional(selecao));
         return fatores;
+    }
+
+    private FatorCalculado governanca(Object[] parametros) {
+        var totais = jdbc.queryForMap("""
+                SELECT COUNT(*) AS usos, COUNT(h.status) AS classificados,
+                       COUNT(CASE WHEN h.status = 'APROVADA' THEN 1 END) AS aprovados
+                FROM registros_uso_ia r
+                JOIN usuarios u ON u.id = r.usuario_id
+                LEFT JOIN autorizacoes_ferramentas_ia h ON h.empresa_id = u.empresa_id
+                    AND h.ferramenta_id = r.ferramenta_id AND h.inicio_vigencia <= r.data_hora
+                    AND (h.fim_vigencia IS NULL OR h.fim_vigencia > r.data_hora)
+                WHERE u.empresa_id = ? AND (CAST(? AS BIGINT) IS NULL OR u.departamento_id = ?)
+                  AND r.data_hora >= ? AND r.data_hora < ?
+                """, parametros);
+        return calculo.governancaOperacional(
+                ((Number) totais.get("usos")).longValue(),
+                ((Number) totais.get("classificados")).longValue(),
+                ((Number) totais.get("aprovados")).longValue());
     }
 
     private FatorCalculado competencias(Object[] parametros) {

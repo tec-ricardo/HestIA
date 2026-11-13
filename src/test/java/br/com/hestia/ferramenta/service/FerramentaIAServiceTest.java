@@ -21,7 +21,8 @@ class FerramentaIAServiceTest {
         EmpresaRepository empresaRepository = mock(EmpresaRepository.class);
 
         FerramentaIAService service =
-                new FerramentaIAService(repository, empresaRepository);
+                new FerramentaIAService(repository, empresaRepository,
+                        org.mockito.Mockito.mock(org.springframework.jdbc.core.JdbcTemplate.class));
 
         when(repository.findByNivelRisco(NivelRiscoIA.ALTO))
                 .thenReturn(List.of());

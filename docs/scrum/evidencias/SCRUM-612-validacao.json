@@ -1,0 +1,108 @@
+{
+  "data": "2026-11-12T20:20:25.036Z",
+  "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+  "checks": [
+    {
+      "nome": "saude-api-inclui-banco-e-alertas",
+      "aprovado": true
+    },
+    {
+      "nome": "catalogo-sem-fallback-ficticio",
+      "aprovado": true
+    },
+    {
+      "nome": "curadoria-restrita-ao-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "rascunho-nao-entra-na-listagem",
+      "aprovado": true
+    },
+    {
+      "nome": "publicacao-usa-catalogo-persistido-e-uma-prova",
+      "aprovado": true
+    },
+    {
+      "nome": "colaborador-nao-forja-conferencia-conclusiva",
+      "aprovado": true
+    },
+    {
+      "nome": "registro-dispara-avaliacao-conforme-com-evidencias",
+      "aprovado": true
+    },
+    {
+      "nome": "retentativa-nao-duplica-avaliacao-ou-recompensa",
+      "aprovado": true
+    },
+    {
+      "nome": "violacao-comprovada-cria-tratamento",
+      "aprovado": true
+    },
+    {
+      "nome": "trilha-usa-o-curso-publicado-do-tema",
+      "aprovado": true
+    },
+    {
+      "nome": "aprendizagem-corrigida-no-servidor",
+      "aprovado": true
+    },
+    {
+      "nome": "historico-longo-com-resumo-dentro-do-orcamento",
+      "aprovado": true
+    },
+    {
+      "nome": "limites-da-conversa-isolados-por-autor",
+      "aprovado": true
+    },
+    {
+      "nome": "fonte-revogada-nao-volta-em-resumo",
+      "aprovado": true
+    },
+    {
+      "nome": "retirada-preserva-avaliacao-e-historico",
+      "aprovado": true
+    }
+  ],
+  "cursoId": 1000,
+  "registros": [
+    5,
+    6
+  ],
+  "conversaId": 1,
+  "limites": {
+    "estrategia": "EXTRATIVO-1",
+    "unidade": "CARACTERES_JSON_UTF16",
+    "maxCaracteres": 6000,
+    "turnosCompletos": 4,
+    "turnosOmitidos": 9,
+    "turnosTruncados": 0,
+    "turnosResumidos": 5,
+    "caracteresSelecionados": 2058
+  },
+  "prontidao": {
+    "saudavel": 200,
+    "alertasIndisponiveis": 503,
+    "restabelecido": 200
+  },
+  "java": {
+    "total": 360,
+    "aprovados": 358,
+    "ignoradosExternos": 2,
+    "falhas": 0,
+    "erros": 0
+  },
+  "frontend": {
+    "aprovados": 50
+  },
+  "restauracao": {
+    "aprovada": true,
+    "sha256": "4F6047F1CBF5D5E1BDBD394B18DA4526EF82E8216391B1E25AC0D0575530A6BB",
+    "contagens": {
+      "catalogo": 1,
+      "ciencias": 0,
+      "migracoes": 28,
+      "registros": 5,
+      "usuarios": 3
+    }
+  }
+}
