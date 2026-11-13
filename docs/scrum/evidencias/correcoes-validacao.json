@@ -1,0 +1,144 @@
+{
+  "branch": "correções",
+  "base": "f643d08740eb40e223c8e43a0d3d83d7b3847995",
+  "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+  "java": {
+    "total": 363,
+    "aprovados": 361,
+    "ignoradosExternos": 2,
+    "falhas": 0,
+    "erros": 0
+  },
+  "frontend": {
+    "aprovados": 52,
+    "falhas": 0
+  },
+  "api": {
+    "data": "2026-11-13T01:38:18.114Z",
+    "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+    "checks": [
+      {
+        "nome": "saude-api-inclui-banco-e-alertas",
+        "aprovado": true
+      },
+      {
+        "nome": "catalogo-sem-fallback-ficticio",
+        "aprovado": true
+      },
+      {
+        "nome": "curadoria-restrita-ao-admin",
+        "aprovado": true
+      },
+      {
+        "nome": "rascunho-nao-entra-na-listagem",
+        "aprovado": true
+      },
+      {
+        "nome": "publicacao-usa-catalogo-persistido-e-uma-prova",
+        "aprovado": true
+      },
+      {
+        "nome": "colaborador-nao-forja-conferencia-conclusiva",
+        "aprovado": true
+      },
+      {
+        "nome": "registro-dispara-avaliacao-conforme-com-evidencias",
+        "aprovado": true
+      },
+      {
+        "nome": "retentativa-nao-duplica-avaliacao-ou-recompensa",
+        "aprovado": true
+      },
+      {
+        "nome": "violacao-comprovada-cria-tratamento",
+        "aprovado": true
+      },
+      {
+        "nome": "trilha-usa-o-curso-publicado-do-tema",
+        "aprovado": true
+      },
+      {
+        "nome": "aprendizagem-corrigida-no-servidor",
+        "aprovado": true
+      },
+      {
+        "nome": "historico-longo-com-resumo-dentro-do-orcamento",
+        "aprovado": true
+      },
+      {
+        "nome": "limites-da-conversa-isolados-por-autor",
+        "aprovado": true
+      },
+      {
+        "nome": "fonte-revogada-nao-volta-em-resumo",
+        "aprovado": true
+      },
+      {
+        "nome": "retirada-preserva-avaliacao-e-historico",
+        "aprovado": true
+      }
+    ],
+    "cursoId": 1000,
+    "registros": [
+      5,
+      6
+    ],
+    "conversaId": 1,
+    "limites": {
+      "maxCaracteres": 6000,
+      "turnosCompletos": 4,
+      "turnosOmitidos": 9,
+      "turnosTruncados": 0,
+      "turnosResumidos": 5,
+      "caracteresSelecionados": 2058,
+      "estrategia": "EXTRATIVO-1",
+      "unidade": "CARACTERES_JSON_UTF16"
+    }
+  },
+  "bff": {
+    "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+    "checks": [
+      {
+        "nome": "prontidao-frontend",
+        "aprovado": true
+      },
+      {
+        "nome": "template-rag-renderiza",
+        "aprovado": true
+      },
+      {
+        "nome": "historico-com-conversa",
+        "aprovado": true
+      },
+      {
+        "nome": "limites-via-bff",
+        "aprovado": true
+      },
+      {
+        "nome": "contexto-restrito-ao-autor",
+        "aprovado": true
+      },
+      {
+        "nome": "curadoria-leitura-gestor",
+        "aprovado": true
+      },
+      {
+        "nome": "curadoria-restrita-colaborador",
+        "aprovado": true
+      },
+      {
+        "nome": "exclusao-nao-alcanca-outro-autor",
+        "aprovado": true
+      },
+      {
+        "nome": "exclusao-da-interacao-correta",
+        "aprovado": true
+      }
+    ]
+  },
+  "imagens": [
+    "hestia-backend:correcoes-validacao",
+    "hestia-frontend:correcoes-validacao"
+  ],
+  "publicacaoCloudRealizada": false
+}

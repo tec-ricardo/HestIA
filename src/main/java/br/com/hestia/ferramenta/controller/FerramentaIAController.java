@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.hestia.ferramenta.model.StatusFerramentaIA;
+import br.com.hestia.usuario.model.Usuario;
+import org.springframework.web.bind.annotation.RequestAttribute;
+
 import java.util.List;
 
 @RestController
@@ -46,6 +50,16 @@ public class FerramentaIAController {
     public FerramentaIAResponseDTO buscar(@PathVariable Long id) {
         return FerramentaIAResponseDTO.from(ferramentaService.buscar(id));
     }
+
+    @PostMapping("/{id}/autorizacoes")
+    public ResponseEntity<Void> registrarAutorizacao(
+            @RequestAttribute("usuarioAutenticado") Usuario autor,
+            @PathVariable Long id, @RequestBody DecisaoAutorizacao decisao) {
+        ferramentaService.registrarAutorizacao(autor, id, decisao.status(), decisao.motivo());
+        return ResponseEntity.noContent().build();
+    }
+
+    public record DecisaoAutorizacao(StatusFerramentaIA status, String motivo) {}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
