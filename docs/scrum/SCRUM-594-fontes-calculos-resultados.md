@@ -36,10 +36,20 @@ A API retornou 25 PRs válidos, zero aprovações formais elegíveis, nota 0, co
 
 A política utilizada é fictícia. Os oito casos sustentam a calibração da demo nesse corpus e provedor. A configuração padrão fora do perfil demo permanece em 0,70. Para reproduzir o ensaio, use o corpus e o roteiro da SCRUM-545 e reindexe a fonte existente no banco demo antes de repetir as perguntas.
 
-## Evidências pendentes para a versão final
+## Maturidade operacional e comparação entre períodos
 
-| Área | Evidência a incorporar |
-| --- | --- |
-| Maturidade e risco | Resultado dos oito fatores, cobertura e confiança no mesmo escopo e período; critérios homologados de classificação de risco e validação do ranking departamental. |
-| Comparação entre períodos | Validação com fontes integradas, versões compatíveis e períodos equivalentes. |
-| Análises no produto | Evidência das telas e da jornada da versão final, quando exigida pelas rubricas da Entrega 3. |
+No teste de integração da SCRUM-578, 30 pessoas do mesmo departamento e período forneceram evidências para quatro fatores elegíveis: Governança (100), AI Literacy (100), Uso Responsável (80) e Competências (100). O score parcial ponderado foi 94,55, com cobertura de 55% dos pesos. O score global ficou indisponível. FinOps, Produtividade, Segurança e Colaboração ficaram sem contribuição operacional nesse cenário. A coleta GitHub demo permanece separada. [PR #151](https://github.com/tec-ricardo/HestIA/pull/151)
+
+A comparação entre apurações exige períodos válidos, sem sobreposição e de mesma duração, além de escopo, origem, parâmetros, versões e convenção temporal compatíveis. Convenção ausente ou divergente bloqueia o cálculo das variações. A cobertura pode variar entre períodos, e a variação global exige score global nas duas apurações. [PR #142](https://github.com/tec-ricardo/HestIA/pull/142)
+
+```powershell
+.\mvnw.cmd "-Dtest=AdaptadorOperacionalMaturidadeTest#compoeQuatroFatoresOperacionaisNoMesmoEscopo,ApuracaoMaturidadeServiceTest" test
+```
+
+## Risco departamental
+
+O índice é 100 menos a aderência ponderada de Governança (30%), Uso Responsável (30%) e Segurança (40%). A faixa é baixa abaixo de 25, média de 25 a menos de 50 e alta a partir de 50. Evidência insuficiente pode gerar faixa indicativa ou ausência de classificação, conforme os fatores disponíveis. O teste de investigação usa dados simulados e verifica índice 12, faixa baixa e evidências suficientes dos três fatores. [Regra de risco](RISCO-DEPARTAMENTAL-1.0.md) · [Ranking](https://github.com/tec-ricardo/HestIA/pull/130) · [Investigação](https://github.com/tec-ricardo/HestIA/pull/152)
+
+## Limites da versão avaliada
+
+A demonstração de Produtividade usa simulação identificada. A nota operacional depende de fonte e meta aprovadas. FinOps depende de fonte, moeda e orçamento aprovados. A homologação de Segurança depende de evidências dos controles na versão e no ambiente avaliados. A reprodução das análises acadêmicas está registrada na SCRUM-593. A evidência das telas e da jornada da Entrega 3 segue as rubricas aplicáveis.
