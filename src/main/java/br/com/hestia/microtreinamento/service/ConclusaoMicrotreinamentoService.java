@@ -21,6 +21,9 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ConclusaoMicrotreinamentoService {
+    @org.springframework.beans.factory.annotation.Autowired
+    public void usarCatalogoPersistido(CatalogoTreinamentoService catalogo){this.catalogo=catalogo;}
+
 
     private final ConclusaoMicrotreinamentoRepository repository;
     private final HistoricoMicrotreinamentoService historicoService;
@@ -28,7 +31,7 @@ public class ConclusaoMicrotreinamentoService {
     private final AuditoriaService auditoriaService;
     private final GamificacaoService gamificacaoService;
 
-    private final MicrotreinamentoFicticioService catalogo =
+    private MicrotreinamentoFicticioService catalogo =
             new MicrotreinamentoFicticioService();
 
     @Autowired
@@ -101,8 +104,13 @@ public class ConclusaoMicrotreinamentoService {
             return existente.get();
         }
 
+        var publicados = catalogo instanceof CatalogoTreinamentoService persistido
+                && !persistido.demonstracao()
+                ? persistido.criarTreinamentos(usuario.getEmpresa().getId())
+                : catalogo.criarTreinamentos();
+
         boolean treinamentoValido =
-                catalogo.criarTreinamentos().stream()
+                publicados.stream()
                         .anyMatch(treinamento ->
                                 microtreinamentoId.equals(
                                         treinamento.getId()

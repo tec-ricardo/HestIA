@@ -8,14 +8,17 @@ module.exports = function montarIntegracoes(app, api) {
   const executar = fn => async (req, res) => {
     try { await fn(req, res); }
     catch (erro) {
-      const status = erro.response?.status || 503;
-      const mensagem = erro.response?.data?.message || erro.response?.data?.detail || 'Serviço indisponível. Nenhum resultado demonstrativo foi usado.';
+      const status = erro.response?.status || (erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 504 : 503);
+      const origem = erro.response?.data;
+      const mensagem = origem?.message || origem?.detail || origem?.erro || (typeof origem === 'string' && origem.trim() ? origem.slice(0, 300) : null) || (erro.code === 'ECONNREFUSED' ? 'Spring Boot inacessível. Confira API_URL e se a porta 8080 está ativa.' : erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? (req.method === 'POST' && req.path === '/api/registros' ? 'Confirmação pendente. Atualize o histórico antes de tentar novamente.' : 'Tempo limite ao consultar o Spring Boot.') : erro.response ? 'O Spring Boot recusou a operação. Consulte o log do Java.' : 'Falha de comunicação com o Spring Boot. Consulte o terminal do Node.js.');
+      console.error('[HestIA API]', { metodo: req.method, rota: req.originalUrl, status, codigo: erro.code || null, backendStatus: erro.response?.status || null, mensagem: String(mensagem).slice(0, 500) });
       if (status === 401) return req.session.destroy(() => res.status(401).json({ erro: 'Sessão expirada. Entre novamente.' }));
       return res.status(status).json({ erro: mensagem });
     }
   };
   const colaborador = (req, res, next) => req.session.perfil === 'colaborador' ? next() : res.status(403).json({ erro: 'Acesso exclusivo do colaborador.' });
   const admin = (req, res, next) => req.session.perfil === 'administrador' ? next() : res.status(403).json({ erro: 'Acesso exclusivo de administrador.' });
+  const curadoriaLeitura = (req,res,next) => ['administrador','gestor'].includes(req.session.perfil) ? next() : res.status(403).json({erro:'Acesso exclusivo de gestor ou administrador.'});
   const id = valor => {
     if (!/^\d+$/.test(String(valor)) || !Number.isSafeInteger(Number(valor)) || Number(valor) <= 0) {
       const erro = new Error('Identificador inválido'); erro.response = { status: 400, data: { message: erro.message } }; throw erro;
@@ -54,6 +57,7 @@ module.exports = function montarIntegracoes(app, api) {
     return { ...nivel, xpAtual: xp };
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
+    if (treinamento.catalogoPersistido === true) return {...treinamento, id:String(treinamento.id), bloqueado:false, nivel:'Catálogo da organização', motivo:'Conteúdo publicado pela organização.', recomendado:false, xpAtual:null, medalhaAtual:nivelAtual.nome};
     const exigido = nivelNecessarioPorId(treinamento.id);
     // O primeiro curso do nível Consciente (5) é liberado ao atingir o nível 2.
     // Os demais cursos dessa etapa (6 a 8) exigem também 300 XP.
@@ -165,8 +169,15 @@ module.exports = function montarIntegracoes(app, api) {
   }));
   router.post('/api/rag/conversas', executar(async(req,res)=>res.status(201).json((await api.post('/api/rag/conversas',{titulo:req.body.titulo})).data)));
   router.get('/api/rag/conversas', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas')).data)));
+  router.get('/api/rag/conversas/:id/contexto', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas/'+id(req.params.id)+'/contexto')).data)));
   router.get('/api/rag/conversas/:id/historico', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas/'+id(req.params.id)+'/historico')).data)));
   router.get('/api/rag/historico', executar(async (req, res) => res.json((await api.get('/api/rag/historico')).data)));
+  router.delete('/api/rag/historico', executar(async (req, res) => {
+    await api.delete('/api/rag/historico'); res.status(204).end();
+  }));
+  router.delete('/api/rag/historico/:id', executar(async (req, res) => {
+    await api.delete(`/api/rag/historico/${id(req.params.id)}`); res.status(204).end();
+  }));
   router.get('/api/registros/contexto', executar(async (req, res) => res.json((await api.get('/registros-uso-ia/contexto')).data)));
   router.get('/utilizacoes/registros', executar(async (req, res) => {
     const contexto = (await api.get('/registros-uso-ia/contexto')).data;
@@ -175,14 +186,22 @@ module.exports = function montarIntegracoes(app, api) {
   }));
   router.get('/api/registros', executar(async (req, res) => res.json((await api.get('/registros-uso-ia', { params: { usuarioId: req.session.usuarioId } })).data)));
   router.post('/api/registros', executar(async (req, res) => {
-    const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs'];
+    const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs','evidencias'];
     const dto = { usuarioId: req.session.usuarioId };
     for (const campo of campos) if (Object.hasOwn(req.body, campo)) dto[campo] = req.body[campo];
-    res.status(201).json((await api.post('/registros-uso-ia', dto)).data);
+    try {
+      const { data } = await api.post('/registros-uso-ia', dto, { timeout: 30000 });
+      res.status(201).json(data);
+    } catch (erro) {
+      if (['ECONNABORTED', 'ETIMEDOUT', 'ECONNRESET'].includes(erro.code)) {
+        return res.status(504).json({ erro: 'Não foi possível confirmar o salvamento a tempo. O registro pode ter sido salvo. Atualize o histórico antes de tentar novamente para evitar duplicação.' });
+      }
+      throw erro;
+    }
   }));
-  router.get('/api/admin/respostas', admin, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
-  router.get('/api/admin/respostas/:id', admin, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));
-  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null })).data)));
+  router.get('/api/admin/respostas', curadoriaLeitura, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
+  router.get('/api/admin/respostas/:id', curadoriaLeitura, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));
+  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null, dadosSensiveisVerificados: req.body.dadosSensiveisVerificados === true })).data)));
   router.get('/administracao/respostas', admin, executar(async (req, res) => {
     const lista = (await api.get('/api/admin/respostas')).data;
     const detalhe = req.query.id ? (await api.get(`/api/admin/respostas/${id(req.query.id)}`)).data : null;

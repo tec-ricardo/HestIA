@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
 
 @Service @Transactional
 public class TrilhaService {
+    private br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService catalogo = new br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService();
+    @org.springframework.beans.factory.annotation.Autowired
+    public void usarCatalogoPersistido(br.com.hestia.microtreinamento.service.CatalogoTreinamentoService catalogo){this.catalogo=catalogo;}
+
     @org.springframework.transaction.event.TransactionalEventListener(phase=org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT)
     @org.springframework.core.annotation.Order(200)
     public void sincronizarAprendizagem(br.com.hestia.aprendizagem.ContratoAvaliacao.Atualizada evento){usuarios.findById(evento.usuarioId()).filter(u->u.getEmpresa()!=null&&evento.empresaId().equals(u.getEmpresa().getId())&&Boolean.TRUE.equals(u.getAtivo())).ifPresent(u->historico(u,u.getId()));}
@@ -41,7 +45,7 @@ public class TrilhaService {
         if(titulo==null||titulo.isBlank()||titulo.length()>255||etapas==null||etapas.isEmpty()||etapas.size()>100
                 ||etapas.stream().anyMatch(Objects::isNull)||new HashSet<>(etapas).size()!=etapas.size())
             throw erro(HttpStatus.BAD_REQUEST,"Título e etapas distintas são obrigatórios");
-        var ativos=new MicrotreinamentoFicticioService().criarTreinamentos().stream().filter(t->t.isAtivo()).map(t->t.getId()).toList();
+        var ativos=catalogo.criarTreinamentos().stream().filter(t->t.isAtivo()).map(t->t.getId()).toList();
         if(!ativos.containsAll(etapas)) throw erro(HttpStatus.BAD_REQUEST,"Microtreinamento não existe no catálogo ativo");
         return definicao(trilhas.save(new Trilha(empresa,titulo.trim(),etapas)));
     }

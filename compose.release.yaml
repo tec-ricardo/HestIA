@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: hestia
+      POSTGRES_USER: hestia
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Configure DB_PASSWORD}
+    volumes:
+      - release-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hestia -d hestia"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  alert-service:
+    build:
+      context: ./alert-service
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3001
+    restart: unless-stopped
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        VCS_REF: ${HESTIA_VCS_REF:?Informe o commit da release}
+    image: hestia-backend:${HESTIA_VCS_REF}
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/hestia
+      DB_USERNAME: hestia
+      DB_PASSWORD: ${DB_PASSWORD}
+      ALERT_SERVICE_URL: http://alert-service:3001
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Configure a chave de IA no ambiente protegido}
+      HESTIA_RAG_MODELO: ${HESTIA_RAG_MODELO:?Configure o modelo de geração}
+      HESTIA_RAG_PERMITIR_RESPOSTA_GERAL: ${HESTIA_RAG_PERMITIR_RESPOSTA_GERAL:-false}
+      ALERT_HEALTH_ENABLED: "true"
+      MANAGEMENT_HEALTH_MAIL_ENABLED: "false"
+      RAG_CONTEXT_MAX_CHARS: ${RAG_CONTEXT_MAX_CHARS:-6000}
+      RAG_CONTEXT_RECENT_TURNS: ${RAG_CONTEXT_RECENT_TURNS:-4}
+      RAG_CONTEXT_MAX_INTERACTIONS: ${RAG_CONTEXT_MAX_INTERACTIONS:-100}
+      RAG_CONTEXT_SUMMARY_CHARS: ${RAG_CONTEXT_SUMMARY_CHARS:-1200}
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      RECOVERY_FROM: ${RECOVERY_FROM:-}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:?Informe a URL HTTPS pública}
+    healthcheck:
+      test: ["CMD","bash","-c","exec 3<>/dev/tcp/127.0.0.1/8080; printf 'GET /actuator/health HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3; grep -q '\"status\":\"UP\"' <&3"]
+      interval: 10s
+      timeout: 5s
+      start_period: 90s
+      retries: 12
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VCS_REF: ${HESTIA_VCS_REF}
+    image: hestia-frontend:${HESTIA_VCS_REF}
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      API_URL: http://backend:8080
+      SESSION_SECRET: ${SESSION_SECRET:?Configure SESSION_SECRET}
+      SESSION_DATABASE_URL: ${SESSION_DATABASE_URL:?Configure URL PostgreSQL de sessão}
+      TRUST_PROXY: "1"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  release-db:

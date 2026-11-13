@@ -17,6 +17,8 @@ import static br.com.hestia.aprendizagem.ContratoAvaliacao.*;
 /** Publica avaliações iniciais compatíveis com a versão atual do conteúdo, sem apagar histórico. */
 @Service
 public class AvaliacoesIniciaisHestiaService {
+    @org.springframework.beans.factory.annotation.Value("${hestia.catalogo.demonstracao:false}")
+    private boolean demonstracao;
     private static final Logger log = LoggerFactory.getLogger(AvaliacoesIniciaisHestiaService.class);
     private final AvaliacaoAprendizagemService a;
     private final TransactionTemplate transacao;
@@ -28,12 +30,14 @@ public class AvaliacoesIniciaisHestiaService {
 
     /** Publica os 16 questionários em transações separadas para preservar os já publicados. */
     public void garantir(Usuario usuario) {
+        if(!demonstracao)return;
         for (long cursoId = 1; cursoId <= 16; cursoId++) {
             garantirCurso(usuario, cursoId);
         }
     }
 
     public void garantirCurso(Usuario usuario, Long cursoId) {
+        if(!demonstracao)return;
         try {
             transacao.executeWithoutResult(status -> publicarSeAusente(usuario, cursoId));
         } catch (RuntimeException erro) {

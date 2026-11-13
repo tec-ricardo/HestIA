@@ -17,7 +17,11 @@ public class RecuperacaoSenhaController {
 
     @PostMapping
     public ResponseEntity<RecuperacaoSenhaResponseDTO> solicitar(@Valid @RequestBody RecuperacaoSenhaDTO dto) {
-        service.solicitar(dto.email());
+        try { service.solicitar(dto.email()); }
+        catch(org.springframework.web.server.ResponseStatusException e) {
+            if(e.getStatusCode().value()!=503)throw e;
+            org.slf4j.LoggerFactory.getLogger(getClass()).warn("Canal de recuperação indisponível; solicitação não entregue");
+        }
         return ResponseEntity.ok(new RecuperacaoSenhaResponseDTO(
                 "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação."));
     }
