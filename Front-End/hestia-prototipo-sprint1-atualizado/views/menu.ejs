@@ -1,125 +1,71 @@
-
 <aside class="sidebar" id="sidebar">
 
     <!-- LOGO HESTIA -->
     <div class="brand">
         <div class="brand-mark brand-mark-hestia">
-            <img
-                src="/logo_hestia.png"
-                alt="Logo HestIA"
-                class="logo-hestia"
-            >
+            <img src="/logo_hestia.png" alt="Logo HestIA" class="logo-hestia">
         </div>
     </div>
 
     <!-- MENU -->
     <nav class="nav">
-<% if(["administrador","gestor"].includes(perfil)){ %><a class="nav-link" href="/relatorios-uso">Relatório de usos</a><% } %>
-<a class="nav-link" href="/avaliacoes-automaticas">Avaliações automáticas</a>
-<a class="nav-link" href="/ciencia-politica">Ciência das políticas</a>
-<% if (perfil === "administrador") { %><a class="nav-link" href="/configuracao-inicial">Configuração inicial</a><a class="nav-link" href="/catalogo-real">Catálogo de treinamentos</a><% } %>
-
-        <a
-            class="nav-link <%= active == 'dashboard' ? 'active' : '' %>"
-            href="/">
-            Visão geral
-        </a>
+        <a class="nav-link <%= active == 'dashboard' ? 'active' : '' %>" href="/">Visão geral</a>
 
         <!-- COLABORADOR -->
         <% if (perfil == "colaborador") { %>
-
             <a class="nav-link <%= active == 'utilizacoes' ? 'active' : '' %>" href="/utilizacoes">Utilizações de IA</a>
-
             <!-- ASSISTENTE RAG -->
             <a class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>" href="/assistente-rag">Assistente RAG</a>
-
             <!-- HESTIA PASS -->
             <a class="nav-link <%= active == 'passe-hestia' ? 'active' : '' %>" href="/passe-hestia">HestIA Pass</a>
-
             <!-- RANKING -->
             <a class="nav-link <%= active == 'ranking' ? 'active' : '' %>" href="/ranking">Ranking</a>
-
             <!-- MICROTREINAMENTOS -->
             <a class="nav-link <%= active == 'microtreinamentos' ? 'active' : '' %>" href="/microtreinamentos">Microtreinamentos</a>
-
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
             <a class="nav-link <%= active == 'competencias' ? 'active' : '' %>" href="/competencias">Competências</a>
             <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
-
         <% } %>
 
         <!-- GESTOR -->
         <% if (perfil == "gestor") { %>
-
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
-
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
-
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
-
             <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
-
             <!-- GESTÃO DE OCORRÊNCIAS -->
             <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
-
             <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
-
             <a class="nav-link <%= active == 'custos' ? 'active' : '' %>" href="/custos">Custos e eficiência</a>
-
         <% } %>
 
         <!-- ADMINISTRADOR -->
         <% if (perfil == "administrador") { %>
-
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
-
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="/maturidade/resultados?inicio=2025-06-01&amp;fim=2026-08-10&amp;fonte=SINTETICA&amp;snapshot=11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3">AI Maturity Score</a>
-
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
-
             <a class="nav-link <%= active == 'competencias' ? 'active' : '' %>" href="/competencias">Competências</a>
-
             <a class="nav-link <%= active == 'governanca' ? 'active' : '' %>" href="/governanca">Governança</a>
-
             <!-- GESTÃO DE OCORRÊNCIAS -->
             <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
-
             <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
-
             <a class="nav-link <%= active == 'administracao' ? 'active' : '' %>" href="/administracao">Administração</a>
-
             <a class="nav-link" href="/administracao/respostas">Revisão de respostas</a>
-
             <a class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>" href="/configuracoes">Configurações</a>
-
         <% } %>
-
     </nav>
 
     <!-- RODAPÉ -->
     <div class="sidebar-footer">
         <div class="hestia-profile">
-            <button type="button"
-                    class="hestia-profile-button"
-                    id="hestiaProfileButton"
-                    aria-expanded="false"
-                    aria-controls="hestiaProfileMenu">
-
-                <span class="hestia-profile-avatar">
-                    <%= (typeof email !== 'undefined' && email ? String(email) : 'U').charAt(0).toUpperCase() %>
-                </span>
-
+            <button type="button" class="hestia-profile-button" id="hestiaProfileButton" aria-expanded="false" aria-controls="hestiaProfileMenu">
+                <span class="hestia-profile-avatar"><%= (typeof email !== 'undefined' && email ? String(email) : 'U').charAt(0).toUpperCase() %></span>
                 <span class="hestia-profile-label">Meu perfil</span>
                 <span class="hestia-profile-arrow">⌃</span>
             </button>
-
             <div class="hestia-profile-menu" id="hestiaProfileMenu" hidden>
                 <span class="hestia-profile-caption">Conta conectada</span>
-
-                <span class="hestia-profile-email">
-                    <%= typeof email !== 'undefined' && email ? email : 'E-mail não disponível' %>
-                </span>
-
+                <span class="hestia-profile-email"><%= typeof email !== 'undefined' && email ? email : 'E-mail não disponível' %></span>
                 <a href="/sair" class="hestia-profile-logout">Sair e voltar ao login</a>
             </div>
         </div>
@@ -152,5 +98,4 @@
         });
     })();
     </script>
-
 </aside>
