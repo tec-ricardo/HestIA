@@ -1,359 +1,77 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        HestIA - Mapa de Risco
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/styles.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HestIA - Mapa de Risco</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
-
-    <div class="app-shell">
-
-        <%- include("menu", {
-            perfil: perfil,
-            email: email,
-            active: active
-        }) %>
-
-
-        <main class="main hm-risk-refresh">
-
-            <!-- TOPO -->
-
-            <header class="topbar">
-
-                <button
-                    class="menu-button"
-                    id="menuButton">
-
-                    ☰
-
-                </button>
-
-
-                <div>
-
-                    <p class="eyebrow">
-                        Governança
-                    </p>
-
-                    <h1>
-                        Mapa de Risco
-                    </h1>
-
-                </div>
-
-
-                <div class="profile-switch">
-
-                    <span>
-                        <%= email %>
-                    </span>
-
-                </div>
-
-
-                <a
-                    class="topbar-logout"
-                    href="/sair">
-
-                    Sair
-
-                </a>
-
-            </header>
-
-
-            <!-- APRESENTACAO -->
-
-            <section class="hero-card hm-risk-hero">
-
-                <p class="eyebrow">
-                    Monitoramento
-                </p>
-
-                <h2>
-                    Risco no uso de Inteligência Artificial
-                </h2>
-
-                <p>
-                    Visualize os departamentos e identifique áreas
-                    que apresentam maior atenção relacionada ao uso
-                    e à conformidade de Inteligência Artificial.
-                </p>
-
-            </section>
-
-
-            <!-- INDICADORES -->
-
-            <section class="dashboard-summary hm-risk-summary">
-
-                <article class="dashboard-summary-card">
-
-                    <span>
-                        Departamentos
-                    </span>
-
-                    <strong>
-                        <%= mapaRisco.length %>
-                    </strong>
-
-                    <p>
-                        Áreas monitoradas
-                    </p>
-
-                </article>
-
-
-                <article class="dashboard-summary-card">
-
-                    <span>
-                        Risco baixo
-                    </span>
-
-                    <strong>
-                        <%= resumoRisco.baixo %>
-                    </strong>
-
-                    <p>
-                        Departamentos
-                    </p>
-
-                </article>
-
-
-                <article class="dashboard-summary-card">
-
-                    <span>
-                        Risco médio
-                    </span>
-
-                    <strong>
-                        <%= resumoRisco.medio %>
-                    </strong>
-
-                    <p>
-                        Departamentos
-                    </p>
-
-                </article>
-
-
-                <article class="dashboard-summary-card">
-
-                    <span>
-                        Risco alto
-                    </span>
-
-                    <strong>
-                        <%= resumoRisco.alto %>
-                    </strong>
-
-                    <p>
-                        Departamentos
-                    </p>
-
-                </article>
-
-            </section>
-
-
-            <!-- MAPA DE CALOR -->
-
-            <section class="panel hm-risk-panel">
-
-                <div class="panel-head">
-
-                    <div>
-
-                        <h3>
-                            Mapa de risco por departamento
-                        </h3>
-
-                        <p class="risk-description">
-                            Visão consolidada do nível de atenção
-                            relacionado ao uso de IA.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="risk-legend">
-
-                    <span class="risk-legend-item">
-
-                        <i class="risk-dot risk-dot-low"></i>
-
-                        Baixo
-
-                    </span>
-
-
-                    <span class="risk-legend-item">
-
-                        <i class="risk-dot risk-dot-medium"></i>
-
-                        Médio
-
-                    </span>
-
-
-                    <span class="risk-legend-item">
-
-                        <i class="risk-dot risk-dot-high"></i>
-
-                        Alto
-
-                    </span>
-
-                </div>
-
-
-                <div class="hm-risk-summary-line" aria-label="Resumo dos níveis de risco">
-                    <span><strong><%= resumoRisco.baixo %></strong> baixo</span>
-                    <span><strong><%= resumoRisco.medio %></strong> médio</span>
-                    <span><strong><%= resumoRisco.alto %></strong> alto</span>
-                </div>
-                <div class="risk-map hm-risk-grid">
-
-                    <% mapaRisco.forEach(function(item) { %>
-
-                        <article
-                            class="risk-cell risk-<%= item.classe %> hm-risk-tile">
-
-                            <div class="risk-cell-head">
-
-                                <strong>
-                                    <%= item.departamento %>
-                                </strong>
-
-                                <span>
-                                    <%= item.nivel %>
-                                </span>
-
-                            </div>
-
-
-                            <p>
-                                <%= item.descricao %>
-                            </p>
-
-                        </article>
-
-                    <% }) %>
-
-                </div>
-
-            </section>
-
-
-            <!-- DETALHAMENTO -->
-
-            <section class="panel">
-
-                <div class="panel-head">
-
-                    <h3>
-                        Detalhamento por departamento
-                    </h3>
-
-                </div>
-
-
-                <div class="table-wrap">
-
-                    <table>
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Departamento
-                                </th>
-
-                                <th>
-                                    Nível de risco
-                                </th>
-
-                                <th>
-                                    Situação
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            <% mapaRisco.forEach(function(item) { %>
-
+<div class="app-shell">
+    <%- include("menu", { perfil, email, active }) %>
+    <main class="main hm-risk-refresh">
+        <header class="topbar">
+            <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
+            <div><p class="eyebrow">Governança</p><h1>Mapa de Risco</h1></div>
+            <div class="profile-switch"><span><%= email %></span></div>
+            <a class="topbar-logout" href="/sair">Sair</a>
+        </header>
+        <section class="panel hm-risk-panel">
+            <div class="panel-head"><h3>Apuração departamental</h3></div>
+            <form method="get" action="/mapa-risco">
+                <label for="inicio">Início</label>
+                <input id="inicio" name="inicio" type="date" value="<%= inicio %>" required>
+                <label for="fim">Fim</label>
+                <input id="fim" name="fim" type="date" value="<%= fim %>" required>
+                <button type="submit">Consultar</button>
+            </form>
+            <% if (erro) { %>
+                <p role="alert"><%= erro %></p>
+            <% } else if (resultado) { %>
+                <p>Fonte operacional. O índice de risco é descritivo.</p>
+                <% if (!resultado.departamentos.length) { %>
+                    <p>Sem dados: nenhum departamento no escopo consultado.</p>
+                <% } else { %>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th scope="col">Departamento</th>
+                                <% if (perfil === "administrador") { %><th scope="col">Posição</th><% } %>
+                                <th scope="col">Score global</th>
+                                <th scope="col">Cobertura dos pesos</th>
+                                <th scope="col">Dimensões pendentes</th>
+                                <th scope="col">Risco</th>
+                            </tr></thead>
+                            <tbody>
+                            <% for (const item of resultado.departamentos) { %>
                                 <tr>
-
+                                    <td><%= item.departamento %></td>
+                                    <% if (perfil === "administrador") { %><td><%= item.posicao ?? "Sem posição" %></td><% } %>
+                                    <td><%= item.apuracao.scoreGlobal == null ? "Sem dados para score global" : formatar(item.apuracao.scoreGlobal) %></td>
+                                    <td><%= item.apuracao.coberturaPesos == null ? "Sem dados" : formatar(item.apuracao.coberturaPesos * 100) + "%" %></td>
+                                    <td><%= (item.apuracao.dimensoesAusentes || []).join(", ") || "Nenhuma" %></td>
                                     <td>
-                                        <%= item.departamento %>
+                                        <% if (item.risco?.estado === "CLASSIFICADO") { %>
+                                            <%= item.risco.classificacao %> (<%= formatar(item.risco.indice) %>)
+                                        <% } else if (item.risco?.estado === "FRAGIL") { %>
+                                            Indicativo: <%= item.risco.classificacaoIndicativa %> (<%= formatar(item.risco.indice) %>)
+                                            <small>Amostra ou cobertura insuficiente</small>
+                                        <% } else { %>
+                                            Sem classificação
+                                        <% } %>
                                     </td>
-
-                                    <td>
-
-                                        <span
-                                            class="risk-badge risk-badge-<%= item.classe %>">
-
-                                            <%= item.nivel %>
-
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-                                        <%= item.descricao %>
-                                    </td>
-
                                 </tr>
-
-                            <% }) %>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </section>
-
-
-            <!-- AVISO -->
-
-            <p class="dashboard-demo">
-                Dados demonstrativos do MVP. A classificação visual
-                de risco não representa um cálculo definitivo do backend.
-            </p>
-
-        </main>
-
-    </div>
-
-
-    <script src="/app.js"></script>
-
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <p>Selecione o período para consultar os resultados operacionais.</p>
+            <% } %>
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
 </body>
-
 </html>
