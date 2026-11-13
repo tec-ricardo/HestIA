@@ -134,4 +134,27 @@ public class CalculadorasMaturidade {
                 "Coorte de usuários ativos do escopo; corte pela finalização da tentativa no período");
     }
 
+    public FatorCalculado governancaOperacional(long usos, long classificados, long aprovados) {
+        contagens(usos, classificados, aprovados);
+        if (aprovados > classificados || classificados > usos) {
+            throw new IllegalArgumentException("Contagens de autorização inconsistentes");
+        }
+        return fator("governanca", percentual(aprovados, classificados), BigDecimal.ONE,
+                razao(classificados, usos), classificados, usos,
+                BigDecimal.valueOf(aprovados), BigDecimal.valueOf(classificados),
+                "100 * usos aprovados / usos classificados",
+                "registros_uso_ia / autorizacoes_ferramentas_ia", true, Map.of(),
+                "Usos sem autorização comprovada na data reduzem a cobertura");
+    }
+
+
+    public FatorCalculado literacyOperacional(SelecaoAiLiteracy.Selecao selecao) {
+        var base = literacy(selecao.notasPorPessoa(), selecao.avaliacoesCandidatas());
+        return fator("aiLiteracy", base.nota(), base.coberturaTecnica(), base.coberturaClassificacao(),
+                base.amostra(), base.populacao(), null, null, base.formula(),
+                "aprendizagem_tentativas / aprendizagem_catalogo / catalogo_treinamentos", true,
+                Map.of("avaliacoesCandidatas", BigDecimal.valueOf(selecao.avaliacoesCandidatas()),
+                        "avaliacoesValidas", BigDecimal.valueOf(selecao.tentativas().size())),
+                "Última tentativa válida por pessoa e versão; regra " + selecao.versao());
+    }
 }

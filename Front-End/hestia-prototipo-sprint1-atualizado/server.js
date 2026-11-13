@@ -32,6 +32,10 @@ if(process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
 const sessionStore = process.env.SESSION_DATABASE_URL
     ? new (require('connect-pg-simple')(session))({conString: process.env.SESSION_DATABASE_URL, createTableIfMissing: true})
     : undefined;
+app.get('/ready',async(req,res)=>{
+    const resultado=await require('./prontidao').verificarProntidao(api,sessionStore);
+    res.set('Cache-Control','no-store').status(resultado.status==='UP'?200:503).json(resultado);
+});
 /* SCRUM-376 - SESSAO INDIVIDUAL */
 
 app.use(session({
@@ -1349,299 +1353,46 @@ app.get(
 
 /* MAPA DE RISCO */
 
-function calcularRiscoDepartamental(fatores) {
-
-    if (
-        fatores == null ||
-        typeof fatores.conformidade != "number" ||
-        typeof fatores.nivelRiscoFerramenta != "number" ||
-        typeof fatores.tratamentoDadosPessoais != "number" ||
-        typeof fatores.statusFerramenta != "number"
-    ) {
-
-        return null;
-
-    }
-
-    return (
-        fatores.conformidade * 0.35 +
-        fatores.nivelRiscoFerramenta * 0.30 +
-        fatores.tratamentoDadosPessoais * 0.20 +
-        fatores.statusFerramenta * 0.15
-    );
-
-}
-
-
-function classificarNivelRisco(pontuacao) {
-
-    if (
-        pontuacao == null ||
-        typeof pontuacao != "number"
-    ) {
-
-        return {
-            nivel: "Não avaliado",
-            classe: "not-evaluated",
-            descricao:
-                "Não existem dados suficientes para avaliar o risco."
-        };
-
-    }
-
-
-    if (pontuacao <= 25) {
-
-        return {
-            nivel: "Baixo",
-            classe: "low",
-            descricao:
-                "Uso de IA com menor nível de atenção."
-        };
-
-    }
-
-
-    if (pontuacao <= 50) {
-
-        return {
-            nivel: "Médio",
-            classe: "medium",
-            descricao:
-                "Uso de IA que requer acompanhamento."
-        };
-
-    }
-
-
-    if (pontuacao <= 75) {
-
-        return {
-            nivel: "Alto",
-            classe: "high",
-            descricao:
-                "Uso de IA que requer maior atenção."
-        };
-
-    }
-
-
-    return {
-        nivel: "Crítico",
-        classe: "critical",
-        descricao:
-            "Uso de IA que requer prioridade de análise e tratamento."
-    };
-
-}
-
-
-function calcularNivelRiscoDepartamento(item) {
-
-    let pontuacao = null;
-
-
-    if (typeof item.pontuacao == "number") {
-
-        pontuacao =
-            item.pontuacao;
-
-    } else if (item.fatores) {
-
-        pontuacao =
-            calcularRiscoDepartamental(
-                item.fatores
-            );
-
-    }
-
-
-    if (pontuacao == null) {
-
-        return item;
-
-    }
-
-
-    const classificacao =
-        classificarNivelRisco(
-            pontuacao
-        );
-
-
-    return {
-        ...item,
-
-        pontuacao:
-            Math.round(
-                pontuacao * 100
-            ) / 100,
-
-        nivel:
-        classificacao.nivel,
-
-        classe:
-        classificacao.classe,
-
-        descricao:
-        classificacao.descricao
-    };
-
-}
-
-
-app.get(
-    "/mapa-risco",
-    async (req, res) => {
-
-        if (
-            req.session.perfil != "gestor" &&
-            req.session.perfil != "administrador"
-        ) {
-
-            return res.redirect("/");
-
-        }
-
-
-        const mapaRiscoMock = [
-
-            {
-
-                departamento:
-                    "Tecnologia",
-
-                nivel: "Baixo",
-
-                classe: "low",
-
-                descricao:
-                    "Uso de IA com menor nível de atenção."
-
-            },
-
-            {
-
-                departamento:
-                    "Marketing",
-
-                nivel: "Médio",
-
-                classe: "medium",
-
-                descricao:
-                    "Uso de IA que requer acompanhamento."
-
-            },
-
-            {
-
-                departamento:
-                    "Financeiro",
-
-                nivel: "Alto",
-
-                classe: "high",
-
-                descricao:
-                    "Uso de IA que requer maior atenção."
-
-            },
-
-            {
-
-                departamento:
-                    "RH",
-
-                nivel: "Médio",
-
-                classe: "medium",
-
-                descricao:
-                    "Uso de IA que requer acompanhamento."
-
+app.get("/mapa-risco", async (req, res) => {
+    const perfil = req.session.perfil;
+    if (perfil !== "gestor" && perfil !== "administrador") return res.redirect("/");
+
+    const inicio = typeof req.query.inicio === "string" ? req.query.inicio : "";
+    const fim = typeof req.query.fim === "string" ? req.query.fim : "";
+    const formatar = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format;
+    let resultado = null;
+    let erro = null;
+    let status = 200;
+
+    if (Object.hasOwn(req.query, "inicio") || Object.hasOwn(req.query, "fim")) {
+        const dataIso = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dataIso.test(inicio) || !dataIso.test(fim) || inicio > fim) {
+            status = 400;
+            erro = "Informe um período válido.";
+        } else {
+            try {
+                const resposta = await api.get("/indicadores/maturidade/ranking-departamental", {
+                    params: { inicio, fim }
+                });
+                if (resposta.data?.fonte !== "OPERACIONAL" || !Array.isArray(resposta.data.departamentos)) {
+                    throw new Error("Resposta de ranking inválida");
+                }
+                resultado = resposta.data;
+            } catch (falha) {
+                const http = falha.response?.status;
+                status = [400, 401, 403].includes(http) ? http : 503;
+                erro = status === 400 ? "Confira o período informado." :
+                    status === 401 ? "Sua sessão expirou. Entre novamente." :
+                    status === 403 ? "Seu perfil não permite consultar este escopo." :
+                    "A consulta operacional está indisponível.";
             }
-
-        ];
-
-
-        const mapaRiscoRecebido =
-            await consultarListaComFallback(
-                "/indicadores/mapa-risco",
-                mapaRiscoMock
-            );
-
-
-        const mapaRisco =
-            mapaRiscoRecebido.map(
-                calcularNivelRiscoDepartamento
-            );
-
-
-        const resumoRisco = {
-
-            baixo:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "low";
-
-                }
-            ).length,
-
-            medio:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "medium";
-
-                }
-            ).length,
-
-            alto:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "high";
-
-                }
-            ).length,
-
-            critico:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "critical";
-
-                }
-            ).length
-
-        };
-
-
-        res.render("mapa-risco", {
-
-            perfil: req.session.perfil,
-
-            email: req.session.email,
-
-            active: "mapa-risco",
-
-            mapaRisco:
-            mapaRisco,
-
-            resumoRisco:
-            resumoRisco
-
-        });
-
+        }
     }
-);
 
+    return res.set("Cache-Control", "no-store").status(status).render("mapa-risco", {
+        perfil, email: req.session.email, active: "mapa-risco", inicio, fim, resultado, erro, formatar
+    });
+});
 
 /* HESTIA PASS */
 

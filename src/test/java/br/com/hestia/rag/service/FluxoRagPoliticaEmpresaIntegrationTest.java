@@ -124,9 +124,8 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 acessoResposta,
                 geracao,
                 respostas = mock(RespostaReutilizavelService.class),
-                mock(ManutencaoConteudoService.class),
                 mock(RegistroUsoIAService.class),
-                0L, false
+                0L, contextualizacao, new OrcamentoContextoRagService(6000,4,100,1200)
         );
     }
 
@@ -233,7 +232,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historicoConversa(usuario, segunda.id())).isEmpty();
         assertThat(service.conversas(usuario)).extracting(InteracaoRagService.Conversa::id).containsExactly(segunda.id(), primeira.id());
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("turno-2", PERGUNTA, Modo.CONSULTAR, null, segunda.id())))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
 
     @Test
@@ -242,13 +241,13 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         usuario.setId(11L);
         assertThat(service.conversas(usuario)).isEmpty();
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("invasao", PERGUNTA, Modo.CONSULTAR, null, conversa.id())))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         usuario.setId(10L);
         usuario.setEmpresa(new Empresa(2L, "Outra", "11111111111111", null, null));
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThat(service.conversas(usuario)).isEmpty();
     }
 
@@ -271,5 +270,21 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         fonte.setReutilizavel(true);
         fonte.setPerfisPermitidos(Set.of(PerfilUsuario.FUNCIONARIO));
         return fonte;
+    }
+
+    @Test void respostaGeralExigeOptInENaoViraFonteDeContexto(){
+        String pergunta="Pergunta geral sem conteúdo corporativo";
+        when(busca.buscarSemelhantes(eq(1L),eq(pergunta),eq(5))).thenReturn(List.of());
+        var padrao=service.perguntar(usuario,new Pergunta("sem-opt-in",pergunta,Modo.GERAR_NOVA,null));
+        assertThat(padrao.estado()).isEqualTo("SEM_CONTEUDO_AUTORIZADO");verifyNoInteractions(geracao);
+        var geral=mock(GeracaoRagOpenAIService.class);
+        when(geral.gerarRespostaGeral(pergunta)).thenReturn(new GeracaoRagService.Gerada("Resposta geral de ensaio","modelo-teste",10L,5L));
+        ReflectionTestUtils.setField(service,"geracao",geral);ReflectionTestUtils.setField(service,"permitirRespostaGeral",true);
+        var conversa=service.criarConversa(usuario,"Geral");
+        var resultado=service.perguntar(usuario,new Pergunta("com-opt-in",pergunta,Modo.GERAR_NOVA,null,conversa.id()));
+        assertThat(resultado.estado()).isEqualTo("GERADA_SEM_FONTES");assertThat(resultado.fontes()).isEmpty();
+        assertThat(resultado.aviso()).contains("sem fontes autorizadas");assertThat(resultado.conversaId()).isEqualTo(conversa.id());
+        assertThat(((Number)service.limitesContexto(usuario,conversa.id()).get("turnosCompletos")).intValue()).isZero();
+        verify(geral).gerarRespostaGeral(pergunta);
     }
 }
