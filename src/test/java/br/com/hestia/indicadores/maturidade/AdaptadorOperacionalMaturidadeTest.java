@@ -18,14 +18,15 @@ class AdaptadorOperacionalMaturidadeTest {
         jdbc.execute("CREATE TABLE catalogo_treinamentos(id BIGINT, empresa_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, estado VARCHAR, publicado_em TIMESTAMP, retirado_em TIMESTAMP)");
         jdbc.execute("CREATE TABLE aprendizagem_leituras(empresa_id BIGINT, usuario_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), conclusao_id BIGINT, concluida_em TIMESTAMP)");
         jdbc.execute("CREATE TABLE conclusoes_microtreinamento(id BIGINT, usuario_id BIGINT, microtreinamento_id BIGINT, concluido BOOLEAN, data_conclusao TIMESTAMP)");
-        jdbc.execute("CREATE TABLE registros_uso_ia(id BIGINT, usuario_id BIGINT, data_hora TIMESTAMP)");
+        jdbc.execute("CREATE TABLE registros_uso_ia(id BIGINT, usuario_id BIGINT, data_hora TIMESTAMP, ferramenta_id BIGINT)");
+        jdbc.execute("CREATE TABLE autorizacoes_ferramentas_ia(empresa_id BIGINT, ferramenta_id BIGINT, status VARCHAR, inicio_vigencia TIMESTAMP, fim_vigencia TIMESTAMP)");
         jdbc.execute("CREATE TABLE politica_uso_versoes(id BIGINT, empresa_id BIGINT, politica_uso_id BIGINT)");
         jdbc.execute("CREATE TABLE avaliacoes_conformidade(id BIGINT, registro_uso_id BIGINT, politica_uso_id BIGINT, politica_versao_id BIGINT, regra_codigo VARCHAR, regra_versao VARCHAR, motivo_preservado VARCHAR, regra_preservada VARCHAR, limitacoes_preservadas VARCHAR, status VARCHAR, data_avaliacao TIMESTAMP)");
         jdbc.update("INSERT INTO usuarios VALUES(1,1,10,TRUE),(2,2,20,TRUE)");jdbc.update("INSERT INTO politica_uso_versoes VALUES(1,1,1),(2,2,2)");
         service=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade());
     }
     void inserir(int id,int empresa,String status,boolean fundamentos){
-        jdbc.update("INSERT INTO registros_uso_ia VALUES(?,?,TIMESTAMP '2026-01-01 12:00:00')",id,empresa);
+        jdbc.update("INSERT INTO registros_uso_ia(id, usuario_id, data_hora) VALUES(?,?,TIMESTAMP '2026-01-01 12:00:00')",id,empresa);
         jdbc.update("INSERT INTO avaliacoes_conformidade VALUES(?,?,?,?,?,?,?,?,?,?,TIMESTAMP '2026-01-02 12:00:00')",id,id,empresa,fundamentos?empresa:null,"R","1","motivo","regra","limites",status);
     }
     @Test void usaFundamentosPreservadosEMantemLegadasSeparadas(){
@@ -60,4 +61,26 @@ class AdaptadorOperacionalMaturidadeTest {
         var f=service.calcular(1L,10L,LocalDate.of(2026,10,1),LocalDate.of(2026,10,21)).stream().filter(x->x.codigo().equals("usoResponsavel")).findFirst().orElseThrow();
         assertThat(f.nota()).isNull();assertThat(f.estado()).isEqualTo("SEM_DADOS");
     }
+    @Test
+    void classificaPelaVigenciaNaDataDoUso() {
+        jdbc.update("""
+                INSERT INTO autorizacoes_ferramentas_ia VALUES
+                (1, 7, 'APROVADA', TIMESTAMP '2026-01-02 00:00:00', TIMESTAMP '2026-01-03 00:00:00'),
+                (1, 7, 'DESCONTINUADA', TIMESTAMP '2026-01-03 00:00:00', NULL),
+                (2, 7, 'APROVADA', TIMESTAMP '2026-01-01 00:00:00', NULL)
+                """);
+        jdbc.update("""
+                INSERT INTO registros_uso_ia VALUES
+                (1, 1, TIMESTAMP '2026-01-01 00:00:00', 7),
+                (2, 1, TIMESTAMP '2026-01-02 00:00:00', 7),
+                (3, 1, TIMESTAMP '2026-01-03 00:00:00', 7)
+                """);
+        var fator = service.calcular(1L, 10L, LocalDate.of(2026, 1, 1), LocalDate.of(2026, 1, 3))
+                .stream().filter(item -> item.codigo().equals("governanca")).findFirst().orElseThrow();
+        assertThat(fator.nota()).isEqualByComparingTo("50");
+        assertThat(fator.amostra()).isEqualTo(2L);
+        assertThat(fator.populacao()).isEqualTo(3L);
+        assertThat(fator.coberturaClassificacao()).isEqualByComparingTo(CalculadorasMaturidade.razao(2, 3));
+    }
+
 }

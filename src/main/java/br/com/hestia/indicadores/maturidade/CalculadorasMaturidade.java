@@ -134,4 +134,17 @@ public class CalculadorasMaturidade {
                 "Coorte de usuários ativos do escopo; corte pela finalização da tentativa no período");
     }
 
+    public FatorCalculado governancaOperacional(long usos, long classificados, long aprovados) {
+        contagens(usos, classificados, aprovados);
+        if (aprovados > classificados || classificados > usos) {
+            throw new IllegalArgumentException("Contagens de autorização inconsistentes");
+        }
+        return fator("governanca", percentual(aprovados, classificados), BigDecimal.ONE,
+                razao(classificados, usos), classificados, usos,
+                BigDecimal.valueOf(aprovados), BigDecimal.valueOf(classificados),
+                "100 * usos aprovados / usos classificados",
+                "registros_uso_ia / autorizacoes_ferramentas_ia", true, Map.of(),
+                "Usos sem autorização comprovada na data reduzem a cobertura");
+    }
+
 }
