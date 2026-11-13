@@ -11,6 +11,6 @@ Catálogo: `seguranca-1.0`, conforme a SCRUM-539. Esta matriz identifica evidên
 | SEG05 — Credenciais e canais | Backend lê a chave da OpenAI do ambiente. | Conferir transporte protegido no ambiente publicado, tratamento de segredos e conteúdo de logs/respostas. Ambiente publicado: SCRUM-555. |
 | SEG06 — Auditoria | `AuditoriaInterceptorTest` cobre o registro de uma ação autenticada. | Conferir campos, acesso restrito e ausência de segredos nas operações críticas. Interface: SCRUM-611. |
 | SEG07 — Falhas e repetição | `FluxoRagPoliticaEmpresaIntegrationTest` cobre falha de geração e reenvio de interação. | Confirmar timeout, retentativa e concorrência sem efeitos duplicados nos fluxos críticos da release. |
-| SEG08 — Restauração | Não foi localizada evidência de restauração executada na versão avaliada. | Anexar o resultado da restauração controlada da SCRUM-588. |
+| SEG08 — Restauração | [Ensaio da SCRUM-588](evidencias/SCRUM-612-validacao.json) em PostgreSQL isolado, com SHA-256 e cinco contagens conferidas. A base restaurada tinha 28 migrations. | NAO_VERIFICADO para a versão atual. Registrar a restauração de um backup da versão avaliada, que inclui a V29. |
 
 Para registrar uma verificação conclusiva no manifesto, vincular o resultado e sua referência à release ou commit, ambiente, data, responsável e escopo autorizado. Sem comprovação suficiente, manter `NAO_VERIFICADO`. Nenhum resultado foi lançado no manifesto por esta matriz.
