@@ -39,10 +39,10 @@ class MaturidadePostgresTest {
     @AfterEach void desfazer() throws Exception {
         if(connection!=null){try {connection.rollback();} finally {connection.close();}}
     }
-    @Test void atualizaBase17Para28EValidaHistorico() {
+    @Test void atualizaBase17Para29EValidaHistorico() {
         assertThat(atualizacoes).isEqualTo(11);
         flyway.validate();
-        assertThat(flyway.info().applied()).hasSize(28);
+        assertThat(flyway.info().applied()).hasSize(29);
         assertThat(flyway.migrate().migrationsExecuted).isZero();
         assertThat(jdbc.queryForList("SELECT tablename FROM pg_tables WHERE schemaname=?",String.class,schema))
             .contains("trilhas","trilha_etapas","participacoes_trilha","trilha_conclusoes");
