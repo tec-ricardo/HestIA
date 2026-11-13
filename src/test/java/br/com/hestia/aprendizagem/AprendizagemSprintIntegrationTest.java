@@ -487,4 +487,24 @@ class AprendizagemSprintIntegrationTest {
         assertThat(rag.conversas(aluno)).isEmpty();assertThat(rag.historico(aluno)).isEmpty();
         assertThat(respostas.findById(fonte.getId())).isPresent();
     }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings={"RETIRADA","BLOQUEADA","CONTEUDO_ALTERADO","SEM_PERFIL"})
+    void fonteInelegivelNaoEntraNoResumoNemNaProximaGeracao(String cenario){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Revogação "+cenario);
+        for(int i=0;i<16;i++)rag.perguntar(aluno,new InteracaoRagService.Pergunta("551-"+cenario+"-"+i,fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        assertThat(((Number)rag.limitesContexto(aluno,conversa.id()).get("turnosResumidos")).intValue()).isPositive();
+        switch(cenario){
+            case "RETIRADA","BLOQUEADA" -> revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.valueOf(cenario),"Ensaio de revogação",null,null));
+            case "CONTEUDO_ALTERADO" -> {fonte.setRespostaGerada("Texto substituído para o ensaio");respostas.saveAndFlush(fonte);}
+            case "SEM_PERFIL" -> {fonte.setPerfisPermitidos(Set.of(PerfilUsuario.ADMIN));respostas.saveAndFlush(fonte);}
+        }
+        var limites=rag.limitesContexto(aluno,conversa.id());
+        for(String campo:List.of("turnosCompletos","turnosTruncados","turnosResumidos"))assertThat(((Number)limites.get(campo)).intValue()).as(campo).isZero();
+        assertThat(rag.historicoConversa(aluno,conversa.id())).allSatisfy(m->{assertThat(m.fontes()).isEmpty();assertThat(m.resposta()).isNull();});
+        when(contextualizacao.interpretar(eq("E como aplico isso?"),anyList())).thenReturn(new ContextualizacaoRagService.Interpretacao(null,"Pode detalhar a pergunta?"));
+        var resultado=rag.perguntar(aluno,new InteracaoRagService.Pergunta("551-apos-"+cenario,"E como aplico isso?",InteracaoRagService.Modo.GERAR_NOVA,null,conversa.id()));
+        assertThat(resultado.estado()).isEqualTo("PRECISA_ESCLARECIMENTO");
+        verify(contextualizacao).interpretar(eq("E como aplico isso?"),argThat(List::isEmpty));verifyNoInteractions(geracao);
+    }
 }

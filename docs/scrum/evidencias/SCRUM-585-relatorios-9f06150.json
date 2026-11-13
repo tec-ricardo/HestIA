@@ -1,0 +1,110 @@
+{
+  "base": "9f06150",
+  "natureza": "ENSAIO_LOCAL_PARCIAL",
+  "periodo": {
+    "inicio": "2026-11-03",
+    "fim": "2026-11-24",
+    "fuso": "LOCAL_OPERACIONAL_SEM_CONVERSAO_ENTRE_FONTES"
+  },
+  "checks": [
+    {
+      "nome": "consulta-json-autorizada",
+      "aprovado": true
+    },
+    {
+      "nome": "oito-fatores-explicitos",
+      "aprovado": true
+    },
+    {
+      "nome": "global-nao-preenche-fatores-ausentes",
+      "aprovado": true
+    },
+    {
+      "nome": "finops-sem-dados-nao-vira-zero",
+      "aprovado": true
+    },
+    {
+      "nome": "notas-conferidas-contra-massa-controlada",
+      "aprovado": true
+    },
+    {
+      "nome": "fonte-operacional-preservada",
+      "aprovado": true
+    },
+    {
+      "nome": "exportacao-csv-autorizada",
+      "aprovado": true
+    },
+    {
+      "nome": "csv-preserva-notas-estados-e-amostras",
+      "aprovado": true
+    },
+    {
+      "nome": "csv-preserva-natureza-e-global-ausente",
+      "aprovado": true
+    },
+    {
+      "nome": "colaborador-nao-exporta-relatorio-gerencial",
+      "aprovado": true
+    }
+  ],
+  "aceiteFinal585": false,
+  "pendencias": [
+    "Integra├º├úo da 578 e demais branches anal├¡ticas do Knorre",
+    "Ranking/risco integrado 579/580/582",
+    "Compara├º├úo final dos oito fatores com a release aceita"
+  ],
+  "fatores": [
+    {
+      "codigo": "produtividade",
+      "nota": null,
+      "estado": "SEM_DADOS",
+      "amostra": 0
+    },
+    {
+      "codigo": "finOps",
+      "nota": null,
+      "estado": "SEM_DADOS",
+      "amostra": 0
+    },
+    {
+      "codigo": "seguranca",
+      "nota": null,
+      "estado": "SEM_DADOS",
+      "amostra": 0
+    },
+    {
+      "codigo": "colaboracao",
+      "nota": null,
+      "estado": "SEM_DADOS",
+      "amostra": 0
+    },
+    {
+      "codigo": "usoResponsavel",
+      "nota": 33.33,
+      "estado": "PARCIAL",
+      "amostra": 4
+    },
+    {
+      "codigo": "governanca",
+      "nota": null,
+      "estado": "SEM_DADOS",
+      "amostra": 0
+    },
+    {
+      "codigo": "desenvolvimentoCompetencias",
+      "nota": 100,
+      "estado": "PARCIAL",
+      "amostra": 1
+    },
+    {
+      "codigo": "aiLiteracy",
+      "nota": 100,
+      "estado": "PARCIAL",
+      "amostra": 1
+    }
+  ],
+  "scoreGlobal": null,
+  "baseInformadaOriginalmenteNoRoteiro": "f71021d",
+  "origemDaBase": "Imagem construída do código integrado 9f06150; roteiro histórico preservado, sem alterar resultados"
+}

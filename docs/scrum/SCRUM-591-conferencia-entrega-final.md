@@ -103,3 +103,7 @@ Dimensões, template visual, prazo, produção, pagamento, agenda da banca, sala
 - [ ] Registrar retorno da professora sobre custos/FinOps e simulações, sem assumir dispensa.
 
 Não foi enviada mensagem à professora, não houve submissão, alteração de notas ou marcação de tarefas acadêmicas. A 591 deve permanecer em desenvolvimento enquanto as confirmações essenciais estiverem pendentes.
+
+## Reconsulta em 12/11/2026
+
+Canvas autenticado: Template_DemoDay_2026_v1.pptx permaneceu acessível no visualizador; foram lidos os 17 quadros, incluindo dois tópicos de arquitetura numerados 8. Download bloqueado pelo Chrome; sem bypass. Atividades continuou exibindo apenas I e II/correções, e Avisos somente a publicação de 14/10. Nenhum novo prazo final confirmado nessas superfícies. Preparação de apresentação, pacote e ensaio em docs/entrega/ESTADO-DO-PACOTE.md e roteiros 597/598. O status Pronto para a Entrega da 591 no Jira não prova que as confirmações humanas listadas no checklist foram recebidas.

@@ -33,6 +33,41 @@ class RankingDepartamentalControllerTest {
         assertNull(linhas.getFirst().posicao());
     }
 
+
+    @Test
+    void funcionarioNaoConsultaDadosGerenciais() {
+        validarRecusa(br.com.hestia.usuario.model.PerfilUsuario.FUNCIONARIO, false, 403);
+    }
+
+    @Test
+    void gestorSemDepartamentoNaoConsultaRanking() {
+        validarRecusa(br.com.hestia.usuario.model.PerfilUsuario.GESTOR, false, 403);
+    }
+
+    @Test
+    void administradorNaoConsultaPeriodoInvertido() {
+        validarRecusa(br.com.hestia.usuario.model.PerfilUsuario.ADMIN, true, 400);
+    }
+
+    private void validarRecusa(br.com.hestia.usuario.model.PerfilUsuario perfil,
+                               boolean periodoInvertido, int status) {
+        var jdbc = mock(org.springframework.jdbc.core.JdbcTemplate.class);
+        var acesso = mock(br.com.hestia.reutilizavel.service.AcessoRespostaService.class);
+        var maturidade = mock(ResultadoMaturidadeService.class);
+        var risco = mock(ClassificacaoRiscoDepartamental.class);
+        var usuario = mock(br.com.hestia.usuario.model.Usuario.class);
+        when(usuario.getPerfil()).thenReturn(perfil);
+        when(acesso.validarEmpresa(usuario, null)).thenReturn(1L);
+        var controller = new RankingDepartamentalController(jdbc, acesso, maturidade, risco);
+        var inicio = java.time.LocalDate.of(2026, 11, 3);
+        var fim = periodoInvertido ? inicio.minusDays(1) : inicio.plusDays(1);
+        var erro = org.junit.jupiter.api.Assertions.assertThrows(
+                org.springframework.web.server.ResponseStatusException.class,
+                () -> controller.consultar(usuario, inicio, fim));
+        assertEquals(status, erro.getStatusCode().value());
+        org.mockito.Mockito.verifyNoInteractions(jdbc, maturidade, risco);
+    }
+
     private RankingDepartamentalController.Linha linha(Long id, String nome, String score) {
         var resultado = mock(ResultadoMaturidadeService.Resultado.class);
         when(resultado.scoreGlobal()).thenReturn(score == null ? null : new BigDecimal(score));

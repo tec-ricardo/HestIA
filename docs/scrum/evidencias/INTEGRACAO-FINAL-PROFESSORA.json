@@ -1,0 +1,50 @@
+{
+  "base": "85bb4b5",
+  "branch": "finalizacao",
+  "integracaoAdicional": "origin/features/Scrum-571 incorporada por squash, sem commit automático",
+  "natureza": "INTEGRACAO_LOCAL_PRE_APRESENTACAO",
+  "java": {
+    "total": 397,
+    "aprovados": 395,
+    "ignorados": 2,
+    "falhas": 0,
+    "erros": 0
+  },
+  "frontend": {
+    "aprovados": 52,
+    "falhas": 0
+  },
+  "http": [
+    {
+      "nome": "relatorios",
+      "aprovados": 10
+    },
+    {
+      "nome": "ranking",
+      "aprovados": 25
+    },
+    {
+      "nome": "perfis",
+      "aprovados": 16
+    }
+  ],
+  "ragAoVivoValidado": true,
+  "publicacaoCloudValidada": false,
+  "rag": {
+    "buscaCorreta": 8,
+    "casosBusca": 8,
+    "conversaAprovados": 7,
+    "geracaoRealConfirmadaNaTela": true,
+    "modelo": "gpt-4.1-mini",
+    "fonteId": 2,
+    "bancoDemo": "hestia_demo_final_rag",
+    "apiJava": "http://127.0.0.1:18080",
+    "site": "http://localhost:3300",
+    "credencialSomenteAmbienteDoProcesso": true
+  },
+  "correcaoPosteriorAoVerify": {
+    "descricao": "Limiar de similaridade voltou a respeitar configuração; demo 0.40 e padrão 0.70",
+    "testesDirecionadosAprovados": 8,
+    "execucaoRealAprovada": true
+  }
+}

@@ -29,9 +29,9 @@ class FlywayMigrationTest {
 
         var aplicadas = flyway.info().applied();
 
-        assertEquals(29, aplicadas.length);
+        assertEquals(30, aplicadas.length);
         assertEquals(
-                "29",
+                "30",
                 aplicadas[aplicadas.length - 1]
                         .getVersion()
                         .getVersion()
@@ -59,7 +59,7 @@ class FlywayMigrationTest {
                     "resposta_perfis",
                     "resposta_versoes",
                     "tratamentos_nao_conformidade", "conversas_rag", "ciencias_politica", "catalogo_treinamentos",
-                    "autorizacoes_ferramentas_ia"
+                    "autorizacoes_ferramentas_ia", "resposta_trechos_vetoriais"
             )));
         }
     }

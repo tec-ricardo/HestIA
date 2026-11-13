@@ -1,0 +1,26 @@
+const fs=require('node:fs'),path=require('node:path');
+const base=process.env.HESTIA_DEMO_API||'http://127.0.0.1:18080';
+if(!['127.0.0.1','localhost'].includes(new URL(base).hostname))throw Error('Somente ambiente local de demonstração');
+const temas=[
+ {titulo:'Proteção de dados e credenciais — demonstração',tema:'PROTECAO_DE_DADOS',objetivo:'Reconhecer dados que não devem ser enviados à IA.',atividade:'Reescreva um prompt fictício removendo nomes, dados pessoais, documentos confidenciais e credenciais.',perguntas:[['Que dados usar na demonstração?','Dados fictícios'],['Posso incluir a senha de um sistema no prompt?','Não; credenciais não devem ser enviadas'],['O que fazer antes de compartilhar um exemplo?','Remover identificadores e informações dispensáveis'],['O que fazer em dúvida sobre compartilhar dados?','Não enviar e consultar o responsável'],['Esta política é oficial da QSoft?','Não; é uma política fictícia da demonstração']]},
+ {titulo:'Ferramentas autorizadas e finalidade — demonstração',tema:'USO_DE_FERRAMENTAS_AUTORIZADAS',objetivo:'Relacionar a autorização da ferramenta à finalidade de uso.',atividade:'Avalie um cenário fictício em que uma ferramenta aprovada para redação recebe dados de clientes.',perguntas:[['Qual ferramenta pode ser utilizada?','Uma ferramenta aprovada para a finalidade registrada'],['A ferramenta não está no catálogo. O que fazer?','Suspender o uso e consultar o responsável'],['Aprovação para redação autoriza processar dados de clientes?','Não; a finalidade precisa estar autorizada'],['O que registrar quando o fluxo exigir?','A finalidade e a validação realizada'],['A demonstração permite enviar dados pessoais reais?','Não; usar dados fictícios']]},
+ {titulo:'Validação humana e fontes vigentes — demonstração',tema:'VALIDACAO_HUMANA',objetivo:'Conferir respostas e respeitar a versão vigente e o acesso às fontes.',atividade:'Analise uma resposta fictícia com um número não verificado e uma referência retirada; descreva a correção.',perguntas:[['O que conferir antes de usar uma resposta?','Fatos, números e citações em fontes confiáveis'],['O que fazer com uma afirmação não verificável?','Sinalizar a limitação e corrigir erros identificados'],['Quem responde pela decisão final?','A pessoa que usa a ferramenta'],['Uma política retirada continua autorizando uma decisão?','Não; consultar a versão vigente e respeitar a retirada'],['Resposta sem fonte é orientação oficial?','Não; consultar o responsável quando não houver regra aplicável']]}
+];
+async function api(rota,t,body,method=body?'POST':'GET'){const r=await fetch(base+rota,{method,headers:{'Content-Type':'application/json',...(t?{Authorization:'Bearer '+t}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error(rota+': HTTP '+r.status);const s=await r.text();return s?JSON.parse(s):null;}
+(async()=>{
+ const t=(await api('/auth/login',null,{email:'admin.demo@hestia.local',senha:'Hestia@2026'})).token;
+ const existentes=await api('/catalogo-treinamentos',t);
+ const politica=fs.readFileSync(path.join(process.cwd(),'docs/scrum/SCRUM-543-politica-demo-v1.1.md'),'utf8');
+ const publicados=[];
+ for(const curso of temas){
+  let item=existentes.find(c=>c.titulo===curso.titulo);
+  if(!item)item=await api('/catalogo-treinamentos',t,{anteriorId:null,titulo:curso.titulo,tema:curso.tema,descricao:'Treinamento didático da política fictícia HestIA v1.1 para sprint review; não é política oficial da QSoft.',conteudo:politica,duracaoMinutos:5,fonte:'docs/scrum/SCRUM-543-politica-demo-v1.1.md',autorizacaoUso:'Material didático próprio para demonstração, autorizado pelo usuário; sem atribuição à QSoft real.',objetivo:curso.objetivo,publico:'Colaborador, gestor e administrador do ambiente demonstrativo',atividade:curso.atividade,criterioAceite:'Aplicar a política no cenário e obter pelo menos quatro acertos em cinco questões.',questoes:curso.perguntas.map(([enunciado,correta],i)=>({id:'Q'+(i+1),enunciado,alternativas:{A:correta,B:'Usar a IA sem consultar a política ou conferir informações',C:'Tratar qualquer resposta da IA como autorização automática'},correta:'A',explicacao:'Resposta fundamentada na política fictícia HestIA v1.1 apresentada neste curso.'}))});
+  if(item.estado==='RASCUNHO')await api('/catalogo-treinamentos/'+item.id+'/estado',t,{estado:'EM_REVISAO',motivo:'Conteúdo didático próprio conferido contra a política v1.1.'});
+  if(['RASCUNHO','EM_REVISAO'].includes(item.estado))await api('/catalogo-treinamentos/'+item.id+'/estado',t,{estado:'PUBLICADO',motivo:'Revisão da demonstração: fonte acessível, natureza fictícia explícita, autorização registrada, objetivo/atividade e cinco questões coerentes com a política v1.1.'});
+  if(item.estado==='RETIRADO')throw Error('Curso retirado: criar nova versão em vez de republicar.');
+  publicados.push({id:item.id,titulo:curso.titulo});
+ }
+ const aluno=(await api('/auth/login',null,{email:'colaborador.demo@hestia.local',senha:'Hestia@2026'})).token;
+ const visiveis=await api('/aprendizagem/conteudos',aluno);if(publicados.some(p=>!visiveis.some(v=>v.id===p.id)))throw Error('Publicação não visível ao colaborador');
+ console.log(JSON.stringify({natureza:'DIDATICO',cursos:publicados,visiveisAoColaborador:true},null,2));
+})().catch(e=>{console.error(e.message);process.exitCode=1});

@@ -1,0 +1,109 @@
+{
+  "base": "f71021d",
+  "tarefa": "SCRUM-568",
+  "data": "2026-11-13T02:23:49.187Z",
+  "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+  "checks": [
+    {
+      "nome": "saude-api-inclui-banco-e-alertas",
+      "aprovado": true
+    },
+    {
+      "nome": "catalogo-sem-fallback-ficticio",
+      "aprovado": true
+    },
+    {
+      "nome": "curadoria-restrita-ao-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "rascunho-nao-entra-na-listagem",
+      "aprovado": true
+    },
+    {
+      "nome": "publicacao-usa-catalogo-persistido-e-uma-prova",
+      "aprovado": true
+    },
+    {
+      "nome": "colaborador-nao-forja-conferencia-conclusiva",
+      "aprovado": true
+    },
+    {
+      "nome": "ausencia-de-evidencia-vira-revisao-sem-reprovar",
+      "aprovado": true
+    },
+    {
+      "nome": "revisao-preserva-criterios-nao-verificados",
+      "aprovado": true
+    },
+    {
+      "nome": "retentativa-exige-perfil-autorizado",
+      "aprovado": true
+    },
+    {
+      "nome": "revisao-nao-gera-xp-de-conformidade",
+      "aprovado": true
+    },
+    {
+      "nome": "registro-dispara-avaliacao-conforme-com-evidencias",
+      "aprovado": true
+    },
+    {
+      "nome": "retentativa-nao-duplica-avaliacao-ou-recompensa",
+      "aprovado": true
+    },
+    {
+      "nome": "violacao-comprovada-cria-tratamento",
+      "aprovado": true
+    },
+    {
+      "nome": "trilha-usa-o-curso-publicado-do-tema",
+      "aprovado": true
+    },
+    {
+      "nome": "aprendizagem-corrigida-no-servidor",
+      "aprovado": true
+    },
+    {
+      "nome": "aprovacao-conclui-trilha-da-ocorrencia",
+      "aprovado": true
+    },
+    {
+      "nome": "reenvio-da-prova-nao-duplica-xp",
+      "aprovado": true
+    },
+    {
+      "nome": "historico-longo-com-resumo-dentro-do-orcamento",
+      "aprovado": true
+    },
+    {
+      "nome": "limites-da-conversa-isolados-por-autor",
+      "aprovado": true
+    },
+    {
+      "nome": "fonte-revogada-nao-volta-em-resumo",
+      "aprovado": true
+    },
+    {
+      "nome": "retirada-preserva-avaliacao-e-historico",
+      "aprovado": true
+    }
+  ],
+  "cursoId": 1000,
+  "registros": [
+    6,
+    7
+  ],
+  "conversaId": 1,
+  "limites": {
+    "estrategia": "EXTRATIVO-1",
+    "unidade": "CARACTERES_JSON_UTF16",
+    "maxCaracteres": 6000,
+    "turnosCompletos": 4,
+    "aviso": "Sele├º├úo atual para a pr├│xima pergunta; resumo extrativo parcial n├úo substitui fontes vigentes nem garante preservar todos os detalhes.",
+    "turnosOmitidos": 9,
+    "turnosTruncados": 0,
+    "turnosResumidos": 5,
+    "caracteresSelecionados": 2058
+  }
+}

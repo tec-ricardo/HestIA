@@ -1,0 +1,80 @@
+{
+  "data": "2026-11-13T11:31:58.903Z",
+  "modelo": "gpt-4.1-mini",
+  "natureza": "DIDATICO_COM_PROVEDOR_REAL",
+  "banco": "hestia_demo_final_rag",
+  "checks": {
+    "inicialComFontes": true,
+    "continuacaoComFontes": true,
+    "novaConversaPedeEsclarecimento": true,
+    "historicoDaMesmaConversa": true,
+    "isolamento": true,
+    "revogacao": true,
+    "semCreditoPorGeracao": true
+  },
+  "inicial": {
+    "id": 67,
+    "pergunta": "Posso enviar dados pessoais de clientes a uma ferramenta de IA?",
+    "criadaEm": "2026-11-13T08:31:54.392963",
+    "estado": "GERADA_COM_FONTES",
+    "resposta": "De acordo com a Política de Uso Responsável de IA (Fonte 2), não é permitido enviar dados pessoais de clientes a uma ferramenta de IA. O trecho explicita que \"Não envie dados pessoais, documentos confidenciais, senhas, tokens ou chaves de API\". Para demonstrações ou exemplos, deve-se usar dados fictícios e remover qualquer identificador ou informação dispensável antes de compartilhar.\n\nPortanto, você não deve enviar dados pessoais reais de clientes a ferramentas de IA, a menos que haja uma autorização específica e aprovada para essa finalidade, o que não é presumido automaticamente. Em caso de dúvida, a orientação é não enviar os dados e solicitar orientação ao responsável.",
+    "fontes": [
+      {
+        "id": 2,
+        "titulo": "Política de Uso Responsável de IA — Demonstração HestIA — v1.1",
+        "trecho": "# Política de Uso Responsável de IA — Demonstração HestIA\n\nVersão 1.1. Aplicável exclusivamente à empresa fictícia do ambiente demo após aprovação e publicação pelo administrador da demonstração. Perfis previstos: ADMIN, GESTOR e FUNCIONARIO da mesma empresa. Este material não representa uma política oficial da QSoft.\n\n## Ferramentas e finalidades\n\nUse apenas ferramentas aprovadas no catálogo da empresa para a finalidade registrada. Se uma ferramenta não estiver listada ou a aprovação não cobrir a atividade, suspenda o uso e consulte o responsável. Uma ferramenta aprovada para redação não recebe automaticamente autorização para processar dados de clientes.\n\n## Dados e credenciais\n\nNão envie dados pessoais, documentos confidenciais, senhas, tokens ou chaves de API. Para demonstrar uma tarefa, use dados fictícios. Quando um exemplo puder ser compartilhado, remova identificadores e informações dispensáveis antes de enviá-lo. Em caso de dúvida sobre o compartilhamento, não envie o conteúdo e solicite orientação.\n\n## Validação humana\n\nConfira fatos, números e citações em fontes confiáveis antes de usar ou compartilhar uma resposta. Corrija erros e sinalize afirmações que não puder verificar. A decisão e o resultado final são responsabilidade de quem usa a ferramenta. Registre a finalidade e a validação realizada quando o fluxo exigir.\n\n## Versões e retirada\n\nConsulte a versão vigente antes de tomar uma decisão. Se a fonte for retirada ou o perfil perder acesso, não use trechos de uma conversa antiga como autorização. Se o assistente não encontrar uma regra aplicável, consulte o responsável; não trate uma resposta sem fonte como orientação oficial.\n",
+        "versao": 1,
+        "conteudoSha256": "01082c7d5843aa383a0611c03a5a573135f546ff25d54ebcc226fb8699e4955c",
+        "criadaEm": "2026-11-13T07:54:58.180277",
+        "origem": "BASE_CORPORATIVA",
+        "similaridade": 0.6459330130527567
+      }
+    ],
+    "similaridade": 0.6459330130527567,
+    "confianca": "NAO_CLASSIFICADA",
+    "natureza": "GERADA_COM_FONTES",
+    "aviso": "Similaridade vetorial (cosseno), quando disponível, não é probabilidade de acerto; ausente significa não medida. Somente confirmação explícita registra reutilização. Fontes revalidadas no acesso.",
+    "conversaId": 64
+  },
+  "continuacao": {
+    "id": 68,
+    "pergunta": "E se eu remover os nomes e identificadores?",
+    "criadaEm": "2026-11-13T08:31:58.549039",
+    "estado": "GERADA_COM_FONTES",
+    "resposta": "De acordo com a Política de Uso Responsável de IA (Fonte 2), não é permitido enviar dados pessoais de clientes, mesmo que os nomes e identificadores pessoais tenham sido removidos, salvo se forem dados fictícios ou exemplos autorizados. O documento orienta que, para demonstrações ou exemplos, use-se dados fictícios e que, quando for possível compartilhar um exemplo, devem-se remover identificadores e informações dispensáveis antes do envio. \n\nPorém, a regra principal é não enviar dados pessoais reais a ferramentas de IA, e caso haja dúvida, não envie o conteúdo e solicite orientação ao responsável. Portanto, remover nomes e identificadores pode não ser suficiente se o dado original for pessoal ou confidencial; a melhor prática é não enviar esses dados e usar dados fictícios ou consultar o responsável antes.",
+    "fontes": [
+      {
+        "id": 2,
+        "titulo": "Política de Uso Responsável de IA — Demonstração HestIA — v1.1",
+        "trecho": "# Política de Uso Responsável de IA — Demonstração HestIA\n\nVersão 1.1. Aplicável exclusivamente à empresa fictícia do ambiente demo após aprovação e publicação pelo administrador da demonstração. Perfis previstos: ADMIN, GESTOR e FUNCIONARIO da mesma empresa. Este material não representa uma política oficial da QSoft.\n\n## Ferramentas e finalidades\n\nUse apenas ferramentas aprovadas no catálogo da empresa para a finalidade registrada. Se uma ferramenta não estiver listada ou a aprovação não cobrir a atividade, suspenda o uso e consulte o responsável. Uma ferramenta aprovada para redação não recebe automaticamente autorização para processar dados de clientes.\n\n## Dados e credenciais\n\nNão envie dados pessoais, documentos confidenciais, senhas, tokens ou chaves de API. Para demonstrar uma tarefa, use dados fictícios. Quando um exemplo puder ser compartilhado, remova identificadores e informações dispensáveis antes de enviá-lo. Em caso de dúvida sobre o compartilhamento, não envie o conteúdo e solicite orientação.\n\n## Validação humana\n\nConfira fatos, números e citações em fontes confiáveis antes de usar ou compartilhar uma resposta. Corrija erros e sinalize afirmações que não puder verificar. A decisão e o resultado final são responsabilidade de quem usa a ferramenta. Registre a finalidade e a validação realizada quando o fluxo exigir.\n\n## Versões e retirada\n\nConsulte a versão vigente antes de tomar uma decisão. Se a fonte for retirada ou o perfil perder acesso, não use trechos de uma conversa antiga como autorização. Se o assistente não encontrar uma regra aplicável, consulte o responsável; não trate uma resposta sem fonte como orientação oficial.\n",
+        "versao": 1,
+        "conteudoSha256": "01082c7d5843aa383a0611c03a5a573135f546ff25d54ebcc226fb8699e4955c",
+        "criadaEm": "2026-11-13T07:54:58.180277",
+        "origem": "BASE_CORPORATIVA",
+        "similaridade": 0.6531402579398307
+      }
+    ],
+    "similaridade": 0.6531402579398307,
+    "confianca": "NAO_CLASSIFICADA",
+    "natureza": "GERADA_COM_FONTES",
+    "aviso": "Similaridade vetorial (cosseno), quando disponível, não é probabilidade de acerto; ausente significa não medida. Somente confirmação explícita registra reutilização. Fontes revalidadas no acesso.",
+    "conversaId": 64
+  },
+  "separada": {
+    "id": 69,
+    "pergunta": "E se eu remover os nomes e identificadores?",
+    "criadaEm": "2026-11-13T08:31:58.598943",
+    "estado": "PRECISA_ESCLARECIMENTO",
+    "resposta": "Pode informar a ferramenta, o dado ou a regra a que você está se referindo?",
+    "fontes": [],
+    "similaridade": null,
+    "confianca": "NAO_CLASSIFICADA",
+    "natureza": "CONSULTA",
+    "aviso": "Similaridade vetorial (cosseno), quando disponível, não é probabilidade de acerto; ausente significa não medida. Somente confirmação explícita registra reutilização. Fontes revalidadas no acesso.",
+    "conversaId": 65
+  },
+  "revogacao": {
+    "historicoOculto": true,
+    "estado": "PRECISA_ESCLARECIMENTO"
+  }
+}

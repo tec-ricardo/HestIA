@@ -40,8 +40,16 @@ class HistoricoAutorizacaoFerramentaTest {
         var service = new FerramentaIAService(
                 mock(FerramentaIARepository.class), mock(EmpresaRepository.class), jdbc);
 
-        service.registrarAutorizacao(autor, 7L, StatusFerramentaIA.APROVADA, "Aprovação");
-        service.registrarAutorizacao(autor, 7L, StatusFerramentaIA.DESCONTINUADA, "Retirada");
+        // A resolução do relógio no Windows pode produzir o mesmo instante em duas chamadas.
+        // Este cenário verifica decisões em instantes distintos, sem depender da velocidade da máquina.
+        var primeira = java.time.LocalDateTime.of(2026, 11, 3, 10, 0);
+        var segunda = primeira.plusSeconds(1);
+        try (var relogio = org.mockito.Mockito.mockStatic(java.time.LocalDateTime.class,
+                org.mockito.Mockito.CALLS_REAL_METHODS)) {
+            relogio.when(java.time.LocalDateTime::now).thenReturn(primeira, segunda);
+            service.registrarAutorizacao(autor, 7L, StatusFerramentaIA.APROVADA, "Aprovação");
+            service.registrarAutorizacao(autor, 7L, StatusFerramentaIA.DESCONTINUADA, "Retirada");
+        }
 
         var historico = jdbc.queryForList("SELECT * FROM autorizacoes_ferramentas_ia ORDER BY inicio_vigencia");
         assertThat(historico).hasSize(2);
