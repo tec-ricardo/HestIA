@@ -342,7 +342,7 @@ class AprendizagemSprintIntegrationTest {
         var consulta=rag.perguntar(aluno,new InteracaoRagService.Pergunta("consulta-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null));
         assertThat(consulta.estado()).isEqualTo("RECUPERADA");assertThat(consulta.natureza()).isEqualTo("CONSULTA");
         assertThat(consulta.similaridade()).isNull();assertThat(consulta.confianca()).isEqualTo("NAO_CLASSIFICADA");
-        assertThat(consulta.fontes().getFirst().id()).isEqualTo(fonte.getId());
+        assertThat(consulta.fontes().getFirst().id()).isEqualTo(fonte.getId());assertThat(consulta.fontes().getFirst().criadaEm()).isNotBlank();assertThat(consulta.fontes().getFirst().origem()).isEqualTo("BASE_CORPORATIVA");
         assertThat(fonte.getQuantidadeReutilizacoes()).isZero();assertThat(movimentosReuso(aluno)).isZero();
         var pedido=new InteracaoRagService.Pergunta("confirmar-544",fonte.getPromptOriginal(),InteracaoRagService.Modo.REUTILIZAR,fonte.getId());
         var confirmada=rag.perguntar(aluno,pedido);assertThat(confirmada.estado()).isEqualTo("REUTILIZADA");
@@ -458,5 +458,33 @@ class AprendizagemSprintIntegrationTest {
         var historico=rag.historicoConversa(aluno,conversa.id());
         assertThat(historico).hasSize(1);assertThat(historico.getFirst().estado()).isEqualTo("FONTES_INDISPONIVEIS");
         assertThat(historico.getFirst().resposta()).isNull();assertThat(historico.getFirst().fontes()).isEmpty();
+    }
+
+    @Test void conversaLongaResumeSobOrcamentoESuaRevogacaoNaoReapareceNoResumo(){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Conversa longa");
+        for(int i=0;i<16;i++)rag.perguntar(aluno,new InteracaoRagService.Pergunta("longa-612-"+i,fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        var antes=rag.limitesContexto(aluno,conversa.id());
+        assertThat(((Number)antes.get("turnosResumidos")).intValue()).isPositive();
+        assertThat(((Number)antes.get("caracteresSelecionados")).intValue()).isLessThanOrEqualTo(((Number)antes.get("maxCaracteres")).intValue());
+        assertThat(rag.historicoConversa(aluno,conversa.id())).hasSize(16);
+        revisoes.revisar(admin,fonte.getId(),new RevisaoRespostaService.Acao(StatusQualidadeResposta.RETIRADA,"Fonte retirada",null,null));
+        var depois=rag.limitesContexto(aluno,conversa.id());
+        assertThat(((Number)depois.get("turnosResumidos")).intValue()).isZero();assertThat(((Number)depois.get("turnosCompletos")).intValue()).isZero();
+        assertThatThrownBy(()->rag.limitesContexto(outro,conversa.id())).isInstanceOf(ResponseStatusException.class);
+    }
+
+    @Test void exclusaoDoHistoricoPreservaIsolamentoEAtualizaContexto(){
+        var fonte=resposta();var conversa=rag.criarConversa(aluno,"Exclusão");
+        var primeira=rag.perguntar(aluno,new InteracaoRagService.Pergunta("excluir-a",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        var segunda=rag.perguntar(aluno,new InteracaoRagService.Pergunta("excluir-b",fonte.getPromptOriginal(),InteracaoRagService.Modo.CONSULTAR,null,conversa.id()));
+        assertThat(primeira.conversaId()).isEqualTo(conversa.id());
+        assertThatThrownBy(()->rag.apagarInteracao(outro,primeira.id())).isInstanceOf(ResponseStatusException.class);
+        assertThat(rag.historicoConversa(aluno,conversa.id())).hasSize(2);
+        rag.apagarInteracao(aluno,primeira.id());
+        assertThat(rag.historicoConversa(aluno,conversa.id())).extracting(InteracaoRagService.Resultado::id).containsExactly(segunda.id());
+        assertThat(((Number)rag.limitesContexto(aluno,conversa.id()).get("turnosCompletos")).intValue()).isEqualTo(1);
+        rag.apagarHistorico(aluno);
+        assertThat(rag.conversas(aluno)).isEmpty();assertThat(rag.historico(aluno)).isEmpty();
+        assertThat(respostas.findById(fonte.getId())).isPresent();
     }
 }

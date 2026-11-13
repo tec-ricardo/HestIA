@@ -37,7 +37,8 @@ public class RelatorioMaturidadeController {
   return ResponseEntity.ok().cacheControl(CacheControl.noStore()).header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename="+arquivo).contentType(MediaType.parseMediaType("text/csv;charset=UTF-8")).body(texto.toString());
  }
  private void achatar(JsonNode node,String caminho,StringBuilder csv){
-  if(node.isObject()){var campos=node.fields();while(campos.hasNext()){var c=campos.next();achatar(c.getValue(),caminho.isEmpty()?c.getKey():caminho+"."+c.getKey(),csv);}}
+  if(node.isContainerNode()&&node.isEmpty())csv.append(RelatorioUsoController.campo(caminho)).append(',').append(RelatorioUsoController.campo(node.toString())).append("\r\n");
+  else if(node.isObject()){var campos=node.fields();while(campos.hasNext()){var c=campos.next();achatar(c.getValue(),caminho.isEmpty()?c.getKey():caminho+"."+c.getKey(),csv);}}
   else if(node.isArray()){for(int i=0;i<node.size();i++)achatar(node.get(i),caminho+"["+i+"]",csv);}
   else csv.append(RelatorioUsoController.campo(caminho)).append(',').append(RelatorioUsoController.campo(node.isNull()?null:node.asText())).append("\r\n");
  }

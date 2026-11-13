@@ -1,0 +1,338 @@
+{
+  "versao": "colaboracao-vinculos-demo-1.0",
+  "geradoEm": "2026-11-13T01:56:46.039Z",
+  "ambiente": {
+    "container": "hestiadefinicoesvalidacao-postgres-1",
+    "banco": "hestia"
+  },
+  "sha256Fonte": "366156bfe97e037a6a50cd1ee38a13ba65deeb9dd1694ef16d9b4c74d62e86ad",
+  "natureza": "EVENTOS_GITHUB_REAIS_COM_VINCULOS_DEMO",
+  "fonte": "tec-ricardo/HestIA",
+  "inicio": "2026-11-03",
+  "fim": "2026-11-12",
+  "populacaoPrsCompleta": true,
+  "vinculos": [
+    {
+      "githubId": 189694698,
+      "login": "toffan0",
+      "usuarioId": 7,
+      "empresaId": 2,
+      "departamentoId": 3,
+      "loginHabilitado": false
+    },
+    {
+      "githubId": 199632675,
+      "login": "GKnorre",
+      "usuarioId": 5,
+      "empresaId": 2,
+      "departamentoId": 3,
+      "loginHabilitado": false
+    },
+    {
+      "githubId": 199632860,
+      "login": "tec-ricardo",
+      "usuarioId": 6,
+      "empresaId": 2,
+      "departamentoId": 3,
+      "loginHabilitado": false
+    },
+    {
+      "githubId": 199633216,
+      "login": "kevinnleee",
+      "usuarioId": 4,
+      "empresaId": 2,
+      "departamentoId": 3,
+      "loginHabilitado": false
+    }
+  ],
+  "pullRequests": [
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 148,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/148",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 147,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/147",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 146,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/146",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 145,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/145",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 143,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 6,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/143",
+      "autorGithubId": 199632860
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 141,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/141",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 140,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/140",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 129,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/129",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 128,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/128",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 139,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 7,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/139",
+      "autorGithubId": 189694698
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 138,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/138",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 137,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/137",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 136,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/136",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 134,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/134",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 135,
+      "dataMerge": "2026-11-12",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 7,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/135",
+      "autorGithubId": 189694698
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 132,
+      "dataMerge": "2026-11-11",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/132",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 131,
+      "dataMerge": "2026-11-11",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/131",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 126,
+      "dataMerge": "2026-11-11",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 5,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/126",
+      "autorGithubId": 199632675
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 125,
+      "dataMerge": "2026-11-10",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/125",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 124,
+      "dataMerge": "2026-11-10",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/124",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 123,
+      "dataMerge": "2026-11-10",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/123",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 122,
+      "dataMerge": "2026-11-09",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/122",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 121,
+      "dataMerge": "2026-11-07",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 4,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/121",
+      "autorGithubId": 199633216
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 120,
+      "dataMerge": "2026-11-06",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 7,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/120",
+      "autorGithubId": 189694698
+    },
+    {
+      "repositorio": "tec-ricardo/HestIA",
+      "numero": 119,
+      "dataMerge": "2026-11-06",
+      "empresaId": 2,
+      "departamentoId": 3,
+      "autorId": 7,
+      "quantidadeRevisoes": 0,
+      "evidencia": "https://github.com/tec-ricardo/HestIA/pull/119",
+      "autorGithubId": 189694698
+    }
+  ],
+  "resumo": {
+    "candidatos": 25,
+    "validos": 25,
+    "revisados": 0,
+    "notaDescritiva": 0,
+    "cobertura": 1,
+    "fragil": true
+  },
+  "avisos": [
+    "Eventos reais do projeto; vínculos de empresa e departamento são exclusivos da demonstração, sem associação à QSoft.",
+    "Review exige aprovação registrada por outra conta antes do merge. Identidades civis ou qualidade da revisão não foram comprovadas.",
+    "Não representa toda a Sprint 4: corte em 12/11/2026. Não prova colaboração causada pela HestIA."
+  ]
+}
