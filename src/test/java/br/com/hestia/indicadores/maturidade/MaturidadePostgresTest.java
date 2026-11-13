@@ -86,7 +86,7 @@ class MaturidadePostgresTest {
         jdbc.update("INSERT INTO ferramentas_ia(id,nome,fornecedor,tipo,finalidade_uso,status,nivel_risco,trata_dados_pessoais,data_cadastro,data_atualizacao,empresa_id) SELECT id,'Teste','Teste','TESTE','Teste','ATIVA','BAIXO',false,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,id FROM empresas");
         jdbc.update("INSERT INTO registros_uso_ia(id,usuario_id,ferramenta_id,modelo_ia,data_hora,finalidade,status_execucao) VALUES(1,1,1,'Teste','2026-01-01','TESTE','SUCESSO'),(2,1,1,'Teste','2025-12-31','TESTE','SUCESSO'),(3,1,1,'Teste','2026-01-31 23:59:59','TESTE','SUCESSO'),(4,1,1,'Teste','2026-01-10','TESTE','SUCESSO'),(5,2,2,'Teste','2026-01-10','TESTE','SUCESSO')");
         jdbc.update("INSERT INTO avaliacoes_conformidade(registro_uso_id,politica_uso_id,politica_versao_id,status,data_avaliacao,regra_codigo,regra_versao,motivo_preservado,regra_preservada,limitacoes_preservadas) VALUES(1,1,1,'CONFORME','2026-01-02','R','1','M','R','L'),(2,1,1,'NAO_CONFORME','2026-01-02','R','1','M','R','L'),(3,1,1,'NAO_CONFORME','2026-01-31 23:59:59','R','1','M','R','L'),(4,1,1,'NAO_CONFORME','2026-02-01','R','1','M','R','L'),(5,2,2,'NAO_CONFORME','2026-01-02','R','1','M','R','L')");
-        var fator=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade())
+        var fator=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade(),new FonteEvidenciasSeguranca())
                 .calcular(1L,10L,LocalDate.of(2026,1,1),LocalDate.of(2026,1,31)).stream()
                 .filter(f->f.codigo().equals("usoResponsavel")).findFirst().orElseThrow();
         assertThat(fator.nota()).isEqualByComparingTo("50");
