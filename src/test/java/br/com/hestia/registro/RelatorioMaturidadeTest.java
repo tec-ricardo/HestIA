@@ -25,4 +25,12 @@ class RelatorioMaturidadeTest {
   var controller=new RelatorioMaturidadeController(mock(ResultadoMaturidadeService.class),apuracoes);
   assertThrows(org.springframework.web.server.ResponseStatusException.class,()->controller.evolucao(u,1L,2L,new MockHttpServletRequest("GET","/relatorios-maturidade/evolucao.csv")));
  }
+
+ @Test void csvPreservaListasEObjetosVaziosDoResultado(){
+  var apuracoes=mock(ApuracaoMaturidadeService.class);var u=mock(Usuario.class);
+  when(apuracoes.evolucao(u,1L,2L)).thenReturn(Map.of("registros",java.util.List.of(),"filtros",Map.of(),"comparavel",false));
+  var controller=new RelatorioMaturidadeController(mock(ResultadoMaturidadeService.class),apuracoes);
+  var csv=(ResponseEntity<?>)controller.evolucao(u,1L,2L,new MockHttpServletRequest("GET","/relatorios-maturidade/evolucao.csv"));
+  assertTrue(csv.getBody().toString().contains("[]"));assertTrue(csv.getBody().toString().contains("{}"));assertTrue(csv.getBody().toString().contains("false"));
+ }
 }

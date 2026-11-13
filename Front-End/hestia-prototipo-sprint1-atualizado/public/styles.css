@@ -7672,3 +7672,68 @@ body:has(a[href="/ocorrencias"].active) select:focus {
         font-size: 12px;
     }
 }
+/* HestIA | acabamento visual adicional do Assistente RAG — adicionar ao FINAL de styles.css */
+/* Não altera rotas, scripts, classes existentes nem regras globais. */
+#ragChat .rag-user { box-shadow: 0 8px 24px rgba(49,88,216,.14); }
+#ragChat .rag-assistant, #ragChat .rag-welcome { box-shadow: 0 8px 24px rgba(23,43,73,.06); }
+#ragChat .rag-message { transition: box-shadow .18s ease, transform .18s ease; }
+#ragChat .rag-message:hover { box-shadow: 0 10px 26px rgba(23,43,73,.12); }
+#ragChat .rag-thinking-dots { box-shadow: 0 5px 18px rgba(23,43,73,.07); }
+@media (prefers-reduced-motion: reduce) { #ragChat .rag-message { transition: none; } }
+/* HestIA — adicionar SOMENTE ao final de styles.css */
+.login-card .hestia-auth-logo {display:flex;justify-content:center;align-items:center;min-height:85px;margin:0 auto 20px;text-align:center}
+.hestia-auth-logo img{display:block;max-width:205px;max-height:92px;width:auto;height:auto;object-fit:contain}
+.hestia-auth-logo-fallback{font-size:30px;font-weight:800;color:#f59e0b}
+.hestia-forgot-wrap{margin-top:22px;text-align:center}
+.hestia-forgot-wrap a,.hestia-auth-back{color:#fbbf62;font-size:14px;font-weight:600;text-decoration:none}
+.hestia-forgot-wrap a:hover,.hestia-auth-back:hover{text-decoration:underline}
+.hestia-recovery-card{width:min(440px,calc(100vw - 32px));box-sizing:border-box}
+.hestia-recovery-card h1{line-height:1.15;margin:8px 0 14px}
+.hestia-recovery-subtitle{line-height:1.6;margin:0 0 24px;opacity:.82}
+.hestia-recovery-form{display:flex;flex-direction:column;gap:20px}
+.hestia-recovery-form label{display:flex;flex-direction:column;gap:9px}
+.hestia-recovery-form input{width:100%;box-sizing:border-box}
+.hestia-recovery-form button{width:100%;min-height:47px}
+.hestia-recovery-card .hestia-auth-back{display:block;text-align:center;margin-top:24px}
+.hestia-recovery-success{border:1px solid rgba(245,158,11,.35);border-radius:12px;background:rgba(245,158,11,.09);padding:18px;line-height:1.6}
+.hestia-recovery-success strong{display:block;font-size:17px;color:#fbbf62;margin-bottom:7px}
+.hestia-recovery-success p{margin:0}
+.hestia-recovery-card .hestia-auth-back-button{border:1px solid rgba(245,158,11,.5);padding:13px;border-radius:9px}
+
+/* REGISTROS DE USO — checkbox compacto, sem alterar o formulário */
+.usage-records-page .usage-time-option{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.usage-records-page .usage-time-label{font-weight:650}
+.usage-records-page .usage-time-checkbox{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;width:auto!important;max-width:100%;cursor:pointer;font-weight:400;line-height:1.5}
+.usage-records-page .usage-time-checkbox input[type="checkbox"]{appearance:auto!important;-webkit-appearance:checkbox!important;display:inline-block!important;position:static!important;flex:0 0 17px!important;width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;max-width:17px!important;max-height:17px!important;margin:0!important;padding:0!important;transform:none!important;box-shadow:none!important;border-radius:3px!important;vertical-align:middle;accent-color:#3555d8}
+.usage-records-page .usage-time-checkbox span{display:inline!important;width:auto!important;flex:0 1 auto!important;font-size:14px;line-height:1.5}
+/* Logo centralizado - Recuperação de senha */
+.login-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin: 0 auto 30px;
+}
+
+.login-brand img {
+    width: 110px !important;
+    height: 110px !important;
+    object-fit: contain;
+    display: block;
+}
+/* Logo da recuperação igual ao login */
+body:has(form[action="/recuperar-senha"]) .login-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto 24px;
+}
+
+body:has(form[action="/recuperar-senha"]) .login-brand img {
+    width: 230px !important;
+    height: 90px !important;
+    max-width: 100%;
+    object-fit: contain;
+}

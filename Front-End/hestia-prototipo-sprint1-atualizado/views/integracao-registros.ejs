@@ -1,190 +1,385 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registros de uso | HestIA</title>
-    <link rel="stylesheet" href="/styles.css">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Registros de uso | HestIA</title>
+
+    <link rel="stylesheet" href="/styles.css">
+
 </head>
+
 <body>
+
 <div class="app-shell">
-    <%- include("menu", { active: active, perfil: perfil }) %>
 
-    <main class="main-content usage-records-page">
-        <header class="usage-records-header">
-            <div>
-                <span class="usage-records-kicker">Governança de IA</span>
-                <h1>Registros de uso</h1>
-                <p>Acompanhe suas utilizações e mantenha o uso de IA rastreável.</p>
-            </div>
-            <div class="usage-origin-pill"><span class="usage-origin-dot"></span>Registro manual</div>
-        </header>
+    <%- include("menu", { active: active, perfil: perfil }) %>
 
-        <section class="usage-summary" aria-label="Resumo dos registros">
-            <article class="usage-summary-card">
-                <span>Registros encontrados</span>
-                <strong><%= registros.length %></strong>
-                <small>Utilizações vinculadas à sua conta</small>
-            </article>
-            <article class="usage-summary-card">
-                <span>Ferramentas disponíveis</span>
-                <strong><%= contexto.ferramentas.length %></strong>
-                <small>Aprovadas para registro nesta empresa</small>
-            </article>
-            <article class="usage-summary-card usage-summary-highlight">
-                <span>Recompensa</span>
-                <strong>+10 XP</strong>
-                <small>Por cada registro válido enviado</small>
-            </article>
-        </section>
 
-        <div class="usage-records-layout">
-            <section class="usage-panel usage-form-panel">
-                <div class="usage-panel-heading">
-                    <div>
-                        <span class="usage-step">Novo registro</span>
-                        <h2>Registrar utilização</h2>
-                        <p>Informe os dados observados durante o uso da ferramenta.</p>
+
+    <main class="main-content usage-records-page">
+
+        <header class="usage-records-header">
+
+            <div>
+
+                <span class="usage-records-kicker">Governança de IA</span>
+
+                <h1>Registros de uso</h1>
+
+                <p>Acompanhe suas utilizações e mantenha o uso de IA rastreável.</p>
+
+            </div>
+
+            <div class="usage-origin-pill"><span class="usage-origin-dot"></span>Registro manual</div>
+
+        </header>
+
+
+
+        <section class="usage-summary" aria-label="Resumo dos registros">
+
+            <article class="usage-summary-card">
+
+                <span>Registros encontrados</span>
+
+                <strong><%= registros.length %></strong>
+
+                <small>Utilizações vinculadas à sua conta</small>
+
+            </article>
+
+            <article class="usage-summary-card">
+
+                <span>Ferramentas disponíveis</span>
+
+                <strong><%= contexto.ferramentas.length %></strong>
+
+                <small>Aprovadas para registro nesta empresa</small>
+
+            </article>
+
+            <article class="usage-summary-card usage-summary-highlight">
+
+                <span>Recompensa</span>
+
+                <strong>+10 XP</strong>
+
+                <small>Por cada registro válido enviado</small>
+
+            </article>
+
+        </section>
+
+
+
+        <div class="usage-records-layout">
+
+            <section class="usage-panel usage-form-panel">
+
+                <div class="usage-panel-heading">
+
+                    <div>
+
+                        <span class="usage-step">Novo registro</span>
+
+                        <h2>Registrar utilização</h2>
+
+                        <p>Informe os dados observados durante o uso da ferramenta.</p>
+
+                    </div>
+
+                </div>
+
+
+
+                <% if (contexto.aviso) { %><div class="usage-info"><%= contexto.aviso %></div><% } %>
+
+
+
+                <form id="formRegistro" class="usage-form">
+
+                    <div class="usage-field usage-field-full usage-time-option">
+                        <span class="usage-time-label">Instante do uso</span>
+                        <label class="usage-time-checkbox">
+                            <input type="checkbox" name="horarioSalvamento" checked>
+                            <span>Usar horário do salvamento para uso realizado agora</span>
+                        </label>
                     </div>
-                </div>
 
-                <% if (contexto.aviso) { %><div class="usage-info"><%= contexto.aviso %></div><% } %>
+                    <% if(['gestor','administrador'].includes(perfil)){ %>
 
-                <form id="formRegistro" class="usage-form">
-                    <label class="usage-field usage-field-full"><span>Instante do uso</span><span><input type="checkbox" name="horarioSalvamento" checked> Usar horário do salvamento para uso realizado agora</span></label>
-                    <% if(['gestor','administrador'].includes(perfil)){ %>
-                    <details class="usage-field-full"><summary>Conferência de evidências pelo responsável (opcional)</summary><p>Registre somente critérios que conferiu conforme a política aplicável. Use referências minimizadas e o vínculo com o resultado revisado. Não copie dados pessoais ou confidenciais. A conferência ficará vinculada à sua conta e à data.</p>
-                    <% [['FINALIDADE_ADEQUADA','Finalidade e regra da política'],['DADOS_SENSIVEIS','Categorias de dados e controles aplicados'],['VALIDACAO_HUMANA','Revisão e resultado utilizado'],['LGPD','Requisitos da política para tratamento de dados']].forEach(([c,label])=>{ %>
-                    <label class="usage-field"><span><%= label %></span><select name="estado_<%= c %>"><option value="">Sem conferência</option><option value="ATENDIDO">Atendido — conferido</option><option value="NAO_ATENDIDO">Não atendido — comprovado</option><option value="NAO_VERIFICADO">Não verificado</option></select><textarea name="referencia_<%= c %>" maxlength="2000" placeholder="Referência, regra aplicável e justificativa da conferência"></textarea></label>
-                    <% }) %></details><% } %>
+                    <details class="usage-field-full"><summary>Conferência de evidências pelo responsável (opcional)</summary><p>Registre somente critérios que conferiu conforme a política aplicável. Use referências minimizadas e o vínculo com o resultado revisado. Não copie dados pessoais ou confidenciais. A conferência ficará vinculada à sua conta e à data.</p>
 
-                    <label class="usage-field usage-field-full">
-                        <span>Ferramenta utilizada</span>
-                        <select name="ferramentaId" required>
-                            <% for (const f of contexto.ferramentas) { %><option value="<%= f.id %>"><%= f.nome %></option><% } %>
-                        </select>
-                    </label>
-                    <label class="usage-field">
-                        <span>Modelo de IA</span>
-                        <input name="modeloIa" maxlength="100" placeholder="Ex.: GPT-4.1 mini" required>
-                    </label>
-                    <label class="usage-field">
-                        <span>Data e hora</span>
-                        <input name="dataHora" type="datetime-local" required>
-                    </label>
-                    <label class="usage-field usage-field-full">
-                        <span>Finalidade</span>
-                        <select name="finalidade" required>
-                            <option value="PESQUISA">Pesquisa</option>
-                            <option value="GERACAO_CODIGO">Geração de código</option>
-                            <option value="GERACAO_CONTEUDO">Geração de conteúdo</option>
-                            <option value="ANALISE_DADOS">Análise de dados</option>
-                            <option value="RESUMO">Resumo</option>
-                            <option value="AUTOMACAO">Automação</option>
-                            <option value="SUPORTE_DECISAO">Suporte à decisão</option>
-                            <option value="OUTROS">Outros</option>
-                        </select>
-                    </label>
-                    <label class="usage-field">
-                        <span>Tokens de entrada</span>
-                        <input name="tokensEntrada" type="number" min="0" placeholder="0" required>
-                    </label>
-                    <label class="usage-field">
-                        <span>Tokens de saída</span>
-                        <input name="tokensSaida" type="number" min="0" placeholder="0" required>
-                    </label>
-                    <label class="usage-field">
-                        <span>Custo observado <small>opcional</small></span>
-                        <div class="usage-money-input"><b>R$</b><input name="custoEstimado" type="number" min="0" step="0.000001" placeholder="0,00"></div>
-                    </label>
-                    <label class="usage-field">
-                        <span>Situação</span>
-                        <select name="statusExecucao" required>
-                            <option value="SUCESSO">Concluída com sucesso</option>
-                            <option value="ERRO">Finalizada com erro</option>
-                            <option value="INTERROMPIDA">Interrompida</option>
-                        </select>
-                    </label>
-                    <div class="usage-form-footer usage-field-full">
-                        <p>Os registros ajudam a empresa a medir o uso responsável sem alterar os dados informados.</p>
-                        <button class="usage-submit" type="submit"><span>Salvar registro</span><b>+10 XP</b></button>
-                    </div>
-                    <p id="avisoRegistro" class="usage-feedback usage-field-full" role="status" hidden></p>
-                </form>
-            </section>
+                    <% [['FINALIDADE_ADEQUADA','Finalidade e regra da política'],['DADOS_SENSIVEIS','Categorias de dados e controles aplicados'],['VALIDACAO_HUMANA','Revisão e resultado utilizado'],['LGPD','Requisitos da política para tratamento de dados']].forEach(([c,label])=>{ %>
 
-            <section class="usage-panel usage-history-panel">
-                <div class="usage-panel-heading usage-history-heading">
-                    <div>
-                        <span class="usage-step">Histórico</span>
-                        <h2>Utilizações recentes</h2>
-                        <p>Registros armazenados e vinculados à sua conta.</p>
-                    </div>
-                    <span class="usage-count"><%= registros.length %></span>
-                </div>
+                    <label class="usage-field"><span><%= label %></span><select name="estado_<%= c %>"><option value="">Sem conferência</option><option value="ATENDIDO">Atendido — conferido</option><option value="NAO_ATENDIDO">Não atendido — comprovado</option><option value="NAO_VERIFICADO">Não verificado</option></select><textarea name="referencia_<%= c %>" maxlength="2000" placeholder="Referência, regra aplicável e justificativa da conferência"></textarea></label>
 
-                <% if (registros.length === 0) { %>
-                    <div class="usage-empty"><span>◎</span><strong>Nenhum registro ainda</strong><p>Seu primeiro registro aparecerá aqui após o envio.</p></div>
-                <% } else { %>
-                    <div class="usage-table-wrap">
-                        <table class="usage-table">
-                            <thead><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr></thead>
-                            <tbody>
-                            <% for (const r of registros) { %>
-                                <tr>
-                                    <td><strong><%= new Date(r.dataHora).toLocaleDateString('pt-BR') %></strong><small><%= new Date(r.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></small></td>
-                                    <td><%= r.ferramentaNome || 'Ferramenta não informada' %></td>
-                                    <td><span class="usage-source"><%= r.origem %></span></td>
-                                    <td><span class="usage-status usage-status-<%= String(r.statusExecucao).toLowerCase() %>"><%= r.statusExecucao === 'SUCESSO' ? 'Sucesso' : (r.statusExecucao === 'ERRO' ? 'Erro' : 'Interrompida') %></span></td>
-                                </tr>
-                            <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                <% } %>
-            </section>
-        </div>
-    </main>
+                    <% }) %></details><% } %>
+
+
+
+                    <label class="usage-field usage-field-full">
+
+                        <span>Ferramenta utilizada</span>
+
+                        <select name="ferramentaId" required>
+
+                            <% for (const f of contexto.ferramentas) { %><option value="<%= f.id %>"><%= f.nome %></option><% } %>
+
+                        </select>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Modelo de IA</span>
+
+                        <input name="modeloIa" maxlength="100" placeholder="Ex.: GPT-4.1 mini" required>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Data e hora</span>
+
+                        <input name="dataHora" type="datetime-local" required>
+
+                    </label>
+
+                    <label class="usage-field usage-field-full">
+
+                        <span>Finalidade</span>
+
+                        <select name="finalidade" required>
+
+                            <option value="PESQUISA">Pesquisa</option>
+
+                            <option value="GERACAO_CODIGO">Geração de código</option>
+
+                            <option value="GERACAO_CONTEUDO">Geração de conteúdo</option>
+
+                            <option value="ANALISE_DADOS">Análise de dados</option>
+
+                            <option value="RESUMO">Resumo</option>
+
+                            <option value="AUTOMACAO">Automação</option>
+
+                            <option value="SUPORTE_DECISAO">Suporte à decisão</option>
+
+                            <option value="OUTROS">Outros</option>
+
+                        </select>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Tokens de entrada</span>
+
+                        <input name="tokensEntrada" type="number" min="0" placeholder="0" required>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Tokens de saída</span>
+
+                        <input name="tokensSaida" type="number" min="0" placeholder="0" required>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Custo observado <small>opcional</small></span>
+
+                        <div class="usage-money-input"><b>R$</b><input name="custoEstimado" type="number" min="0" step="0.000001" placeholder="0,00"></div>
+
+                    </label>
+
+                    <label class="usage-field">
+
+                        <span>Situação</span>
+
+                        <select name="statusExecucao" required>
+
+                            <option value="SUCESSO">Concluída com sucesso</option>
+
+                            <option value="ERRO">Finalizada com erro</option>
+
+                            <option value="INTERROMPIDA">Interrompida</option>
+
+                        </select>
+
+                    </label>
+
+                    <div class="usage-form-footer usage-field-full">
+
+                        <p>Os registros ajudam a empresa a medir o uso responsável sem alterar os dados informados.</p>
+
+                        <button class="usage-submit" type="submit"><span>Salvar registro</span><b>+10 XP</b></button>
+
+                    </div>
+
+                    <p id="avisoRegistro" class="usage-feedback usage-field-full" role="status" hidden></p>
+
+                </form>
+
+            </section>
+
+
+
+            <section class="usage-panel usage-history-panel">
+
+                <div class="usage-panel-heading usage-history-heading">
+
+                    <div>
+
+                        <span class="usage-step">Histórico</span>
+
+                        <h2>Utilizações recentes</h2>
+
+                        <p>Registros armazenados e vinculados à sua conta.</p>
+
+                    </div>
+
+                    <span class="usage-count"><%= registros.length %></span>
+
+                </div>
+
+
+
+                <% if (registros.length === 0) { %>
+
+                    <div class="usage-empty"><span>◎</span><strong>Nenhum registro ainda</strong><p>Seu primeiro registro aparecerá aqui após o envio.</p></div>
+
+                <% } else { %>
+
+                    <div class="usage-table-wrap">
+
+                        <table class="usage-table">
+
+                            <thead><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr></thead>
+
+                            <tbody>
+
+                            <% for (const r of registros) { %>
+
+                                <tr>
+
+                                    <td><strong><%= new Date(r.dataHora).toLocaleDateString('pt-BR') %></strong><small><%= new Date(r.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></small></td>
+
+                                    <td><%= r.ferramentaNome || 'Ferramenta não informada' %></td>
+
+                                    <td><span class="usage-source"><%= r.origem %></span></td>
+
+                                    <td><span class="usage-status usage-status-<%= String(r.statusExecucao).toLowerCase() %>"><%= r.statusExecucao === 'SUCESSO' ? 'Sucesso' : (r.statusExecucao === 'ERRO' ? 'Erro' : 'Interrompida') %></span></td>
+
+                                </tr>
+
+                            <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+        </div>
+
+    </main>
+
 </div>
 
+
+
 <script>
+
 const formRegistro = document.getElementById('formRegistro');
+
 const dataHora = formRegistro.elements.dataHora;
+
 const agora = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
+
 dataHora.value = agora.toISOString().slice(0, 16);
 
+
+
 formRegistro.addEventListener('submit', async function (evento) {
-    evento.preventDefault();
-    const botao = formRegistro.querySelector('.usage-submit');
-    const aviso = document.getElementById('avisoRegistro');
-    const dados = Object.fromEntries(new FormData(formRegistro));
-    if(dados.horarioSalvamento)dados.dataHora=null;
-    dados.evidencias=['FINALIDADE_ADEQUADA','DADOS_SENSIVEIS','VALIDACAO_HUMANA','LGPD'].filter(c=>dados['estado_'+c]).map(c=>({criterio:c,estado:dados['estado_'+c],referencia:dados['referencia_'+c]}));
-    for (const campo of ['ferramentaId', 'tokensEntrada', 'tokensSaida']) dados[campo] = Number(dados[campo]);
-    dados.custoEstimado = dados.custoEstimado === '' ? null : Number(dados.custoEstimado);
-    botao.disabled = true;
-    botao.querySelector('span').textContent = 'Salvando...';
-    aviso.hidden = true;
-    aviso.className = 'usage-feedback usage-field-full';
-    try {
-        const resposta = await fetch('/api/registros', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados)});
-        const resultado = await resposta.json();
-        if (!resposta.ok) throw new Error(resultado.erro || 'Registro não salvo');
-        const atualizacao = {tipo: 'xp-atualizado', origem: 'registro-uso', instante: Date.now()};
-        if ('BroadcastChannel' in window) { const canal = new BroadcastChannel('hestia-pass'); canal.postMessage(atualizacao); canal.close(); }
-        localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
-        aviso.textContent = 'Registro salvo com sucesso. +10 XP adicionados ao HestIA Pass.';
-        aviso.classList.add('usage-feedback-success');
-        aviso.hidden = false;
-        setTimeout(() => location.reload(), 700);
-    } catch (erro) {
-        aviso.textContent = erro.message;
-        aviso.classList.add('usage-feedback-error');
-        aviso.hidden = false;
-        botao.disabled = false;
-        botao.querySelector('span').textContent = 'Salvar registro';
-    }
+
+    evento.preventDefault();
+
+    const botao = formRegistro.querySelector('.usage-submit');
+
+    const aviso = document.getElementById('avisoRegistro');
+
+    const dados = Object.fromEntries(new FormData(formRegistro));
+
+    if(dados.horarioSalvamento)dados.dataHora=null;
+
+    dados.evidencias=['FINALIDADE_ADEQUADA','DADOS_SENSIVEIS','VALIDACAO_HUMANA','LGPD'].filter(c=>dados['estado_'+c]).map(c=>({criterio:c,estado:dados['estado_'+c],referencia:dados['referencia_'+c]}));
+
+    for (const campo of ['ferramentaId', 'tokensEntrada', 'tokensSaida']) dados[campo] = Number(dados[campo]);
+
+    dados.custoEstimado = dados.custoEstimado === '' ? null : Number(dados.custoEstimado);
+
+    botao.disabled = true;
+
+    botao.querySelector('span').textContent = 'Salvando...';
+
+    aviso.hidden = true;
+
+    aviso.className = 'usage-feedback usage-field-full';
+
+    try {
+
+        const resposta = await fetch('/api/registros', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados)});
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) throw new Error(resultado.erro || 'Registro não salvo');
+
+        const atualizacao = {tipo: 'xp-atualizado', origem: 'registro-uso', instante: Date.now()};
+
+        if ('BroadcastChannel' in window) { const canal = new BroadcastChannel('hestia-pass'); canal.postMessage(atualizacao); canal.close(); }
+
+        localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
+
+        aviso.textContent = 'Registro salvo com sucesso. +10 XP adicionados ao HestIA Pass.';
+
+        aviso.classList.add('usage-feedback-success');
+
+        aviso.hidden = false;
+
+        setTimeout(() => location.reload(), 700);
+
+    } catch (erro) {
+
+        aviso.textContent = erro.message;
+
+        aviso.classList.add('usage-feedback-error');
+
+        aviso.hidden = false;
+
+        botao.disabled = false;
+
+        botao.querySelector('span').textContent = 'Salvar registro';
+
+    }
+
 });
+
 </script>
+
 </body>
+
 </html>

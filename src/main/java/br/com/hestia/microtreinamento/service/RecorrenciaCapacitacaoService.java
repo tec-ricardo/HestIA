@@ -88,7 +88,7 @@ public class RecorrenciaCapacitacaoService {
         }
 
         var historico = catalogo instanceof CatalogoTreinamentoService persistido
-                ? persistido.historico(conclusao.getMicrotreinamentoId()).stream()
+                ? persistido.historico(empresaId, conclusao.getMicrotreinamentoId()).stream()
                 : catalogo.criarTreinamentos().stream();
         var treinamento = historico
                 .filter(item -> item.getId().equals(

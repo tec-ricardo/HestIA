@@ -1,4 +1,3 @@
-
 package br.com.hestia.reutilizavel.service;
 
 import br.com.hestia.autenticacao.contexto.EmpresaAtual;
@@ -15,6 +14,9 @@ import br.com.hestia.reutilizavel.repository.RespostaReutilizavelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 
 import br.com.hestia.usuario.model.Usuario;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,9 @@ public class RespostaReutilizavelService {
     private final GamificacaoService gamificacaoService;
     private final RegistroUsoIARepository registroUsoIARepository;
     private final EmpresaAtual empresaAtual;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     public RespostaReutilizavelService(
@@ -155,8 +160,24 @@ public class RespostaReutilizavelService {
             Long id, Long usuarioReutilizadorId
     ) {
 
-        RespostaReutilizavel resposta =
-                buscarPorId(id);
+        RespostaReutilizavel resposta;
+
+        if (entityManager != null) {
+            resposta = entityManager.find(
+                    RespostaReutilizavel.class,
+                    id,
+                    LockModeType.PESSIMISTIC_WRITE
+            );
+            if (resposta == null) {
+                throw new NoSuchElementException("Resposta reutilizável não encontrada.");
+            }
+            validarEmpresa(resposta.getEmpresaId());
+            // A entidade pode ter sido carregada antes do bloqueio.
+            // Rele o contador atualizado enquanto a linha esta bloqueada.
+            entityManager.refresh(resposta, LockModeType.PESSIMISTIC_WRITE);
+        } else {
+            resposta = buscarPorId(id);
+        }
 
         if (!resposta.isElegivel()) {
 
