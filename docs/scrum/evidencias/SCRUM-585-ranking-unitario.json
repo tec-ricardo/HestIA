@@ -1,0 +1,20 @@
+{
+  "base": "77ce704",
+  "branch": "finalizacao",
+  "tipo": "TESTES_UNITARIOS",
+  "testes": 11,
+  "falhas": 0,
+  "erros": 0,
+  "ignorados": 0,
+  "aceiteFinal585": false,
+  "classes": [
+    "RankingDepartamentalControllerTest",
+    "ClassificacaoRiscoDepartamentalTest",
+    "HistoricoAutorizacaoFerramentaTest"
+  ],
+  "pendencias": [
+    "Integração 578/580/582",
+    "Aceite integrado HTTP/UI dos fatores e ranking",
+    "Release publicada aceita"
+  ]
+}

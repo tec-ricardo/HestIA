@@ -9,10 +9,16 @@ import java.util.*;
 @Service
 public class AdaptadorOperacionalMaturidade {
     private final JdbcTemplate jdbc;private final CalculadorasMaturidade calculo;
-    public AdaptadorOperacionalMaturidade(JdbcTemplate jdbc,CalculadorasMaturidade calculo){this.jdbc=jdbc;this.calculo=calculo;}
+    private final FonteEvidenciasSeguranca seguranca;
+    public AdaptadorOperacionalMaturidade(JdbcTemplate jdbc, CalculadorasMaturidade calculo,
+                                          FonteEvidenciasSeguranca seguranca) {
+        this.jdbc = jdbc;
+        this.calculo = calculo;
+        this.seguranca = seguranca;
+    }
     public List<FatorCalculado> calcular(Long empresa,Long departamento,LocalDate inicio,LocalDate fim){
         List<FatorCalculado> fatores=new ArrayList<>();
-        for(String codigo:List.of("produtividade","finOps","seguranca","colaboracao"))
+        for(String codigo:List.of("produtividade","finOps","colaboracao"))
             fatores.add(calculo.pendente(codigo,"SEM_DADOS","Fonte operacional compatível ainda não disponibilizada para esta fórmula","OPERACIONAL"));
         String escopo=" u.empresa_id = ? AND (CAST(? AS BIGINT) IS NULL OR u.departamento_id = ?) ";
         Object[] parametros={empresa,departamento,departamento,Timestamp.valueOf(inicio.atStartOfDay()),Timestamp.valueOf(fim.plusDays(1).atStartOfDay())};
@@ -39,6 +45,7 @@ public class AdaptadorOperacionalMaturidade {
                 +"JOIN avaliacoes_conformidade a ON a.registro_uso_id=r.id LEFT JOIN politica_uso_versoes v ON v.id=a.politica_versao_id "
                 +"WHERE "+escopo+periodoAvaliado+" AND "+preservado,Long.class,parametrosAvaliacoes);
         fatores.add(calculo.usoResponsavel(c,n,revisao,legadas,registros==null?0:registros,avaliados==null?0:avaliados));
+        fatores.add(seguranca.calcular(empresa, departamento, inicio, fim));
         fatores.add(governanca(parametros));
         fatores.add(competencias(parametros));
         var tentativas = new EvidenciasAiLiteracyRepository(jdbc).buscar(empresa, departamento, inicio, fim)

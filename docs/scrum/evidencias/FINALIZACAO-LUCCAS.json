@@ -1,0 +1,63 @@
+{
+  "data": "2026-11-12",
+  "branch": "finalizacao",
+  "base": "f71021d",
+  "natureza": "VALIDACAO_LOCAL_DIDATICA",
+  "java": {
+    "executados": 50,
+    "aprovados": 50,
+    "falhas": 0,
+    "erros": 0,
+    "ignorados": 0,
+    "classes": [
+      "AprendizagemSprintIntegrationTest",
+      "AvaliacaoAutomaticaIntegrationTest",
+      "FluxoRagPoliticaEmpresaIntegrationTest",
+      "OrcamentoContextoRagServiceTest"
+    ]
+  },
+  "fontes551": [
+    "RETIRADA",
+    "BLOQUEADA",
+    "CONTEUDO_ALTERADO",
+    "SEM_PERFIL"
+  ],
+  "jornada568": {
+    "aprovados": 21,
+    "fonte": "SCRUM-568-jornada.json"
+  },
+  "relatorios585": {
+    "aprovados": 10,
+    "aceiteFinal": false,
+    "fonte": "SCRUM-585-parcial.json"
+  },
+  "cloud": {
+    "publicado": false,
+    "confirmadoPeloUsuario": true
+  },
+  "apresentacao": {
+    "slides": 14,
+    "tempoPlanejadoSegundos": 1080,
+    "ensaioComGrupoRealizado": false
+  },
+  "suiteCompletaRepetida": false,
+  "baseAtual": "3760a40",
+  "compatibilidade": {
+    "executados": 70,
+    "aprovados": 70,
+    "falhas": 0,
+    "erros": 0,
+    "ignorados": 0,
+    "testeDoRelogioEstabilizadoEReexecutadoSeparadamente": true,
+    "regraDeAutorizacaoPreservada": true
+  },
+  "jornadaV29": {
+    "aprovados": 21,
+    "fonte": "SCRUM-568-jornada-v29.json"
+  },
+  "relatoriosV29": {
+    "aprovados": 10,
+    "fonte": "SCRUM-585-parcial-v29.json",
+    "aceiteFinal": false
+  }
+}

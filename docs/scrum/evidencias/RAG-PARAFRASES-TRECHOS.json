@@ -1,0 +1,136 @@
+{
+  "data": "2026-11-13T11:37:12.285Z",
+  "natureza": "DIDATICO_COM_PROVEDOR_REAL",
+  "estrategia": "documento e trechos com mesma fonte, permissão e snapshot",
+  "limiarDemo": 0.35,
+  "casos": [
+    {
+      "pergunta": "Posso colocar o CPF do cliente no ChatGPT?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.38224720974156146,
+      "correto": true
+    },
+    {
+      "pergunta": "Posso mandar o nome e telefone do cliente para uma IA?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.5549860256793264,
+      "correto": true
+    },
+    {
+      "pergunta": "É permitido colar a senha do sistema no assistente?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.43449668510891803,
+      "correto": true
+    },
+    {
+      "pergunta": "Preciso revisar os números que a inteligência artificial produz?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.5310899154939186,
+      "correto": true
+    },
+    {
+      "pergunta": "Posso usar qualquer ferramenta de inteligência artificial no trabalho?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.5853112238222963,
+      "correto": true
+    },
+    {
+      "pergunta": "Posso confiar numa política que já foi retirada?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.413741125704954,
+      "correto": true
+    },
+    {
+      "pergunta": "Se eu apagar os nomes, posso compartilhar um exemplo com IA?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.6223248962194882,
+      "correto": true
+    },
+    {
+      "pergunta": "Quem é responsável pela decisão tomada com uma resposta de IA?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.6071663371741133,
+      "correto": true
+    },
+    {
+      "pergunta": "O ChatGPT pode receber documentos confidenciais da empresa?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.4611409062034605,
+      "correto": true
+    },
+    {
+      "pergunta": "Preciso checar as citações geradas pelo assistente?",
+      "esperada": true,
+      "recuperou": true,
+      "estado": "RECUPERADA",
+      "similaridade": 0.44932591029524027,
+      "correto": true
+    },
+    {
+      "pergunta": "Como fazer bolo de cenoura?",
+      "esperada": false,
+      "recuperou": false,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "similaridade": null,
+      "correto": true
+    },
+    {
+      "pergunta": "Qual é a capital da França?",
+      "esperada": false,
+      "recuperou": false,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "similaridade": null,
+      "correto": true
+    },
+    {
+      "pergunta": "Como solicitar férias?",
+      "esperada": false,
+      "recuperou": false,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "similaridade": null,
+      "correto": true
+    },
+    {
+      "pergunta": "Qual é o resultado do jogo de futebol de ontem?",
+      "esperada": false,
+      "recuperou": false,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "similaridade": null,
+      "correto": true
+    },
+    {
+      "pergunta": "Me ensine uma receita de lasanha.",
+      "esperada": false,
+      "recuperou": false,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "similaridade": null,
+      "correto": true
+    }
+  ],
+  "geracaoCPF": {
+    "estado": "GERADA_COM_FONTES",
+    "fontes": [
+      2
+    ],
+    "resposta": "De acordo com a Política de Uso Responsável de IA disponível, não é permitido enviar dados pessoais, como o CPF do cliente, ao ChatGPT. Para demonstrar tarefas, deve-se usar dados fictícios e remover identificadores antes de enviar qualquer exemplo. Portanto, você não deve colocar o CPF do cliente no ChatGPT."
+  },
+  "aprovado": true
+}

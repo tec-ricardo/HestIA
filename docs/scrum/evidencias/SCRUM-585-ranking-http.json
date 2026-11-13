@@ -1,0 +1,128 @@
+{
+  "base": "9f06150",
+  "data": "2026-11-13T03:22:17.907Z",
+  "natureza": "ENSAIO_DIDATICO_LOCAL_DOCKER",
+  "checks": [
+    {
+      "nome": "admin-consulta-ranking",
+      "aprovado": true
+    },
+    {
+      "nome": "ranking-restrito-a-empresa",
+      "aprovado": true
+    },
+    {
+      "nome": "fonte-periodo-versao-preservados",
+      "aprovado": true
+    },
+    {
+      "nome": "score-ausente-sem-posicao",
+      "aprovado": true
+    },
+    {
+      "nome": "gestor-consulta-ranking",
+      "aprovado": true
+    },
+    {
+      "nome": "gestor-ve-apenas-seu-departamento-sem-posicao",
+      "aprovado": true
+    },
+    {
+      "nome": "funcionario-nao-consulta-ranking",
+      "aprovado": true
+    },
+    {
+      "nome": "periodo-invertido-rejeitado",
+      "aprovado": true
+    },
+    {
+      "nome": "investigacao-autorizada-departamento-3",
+      "aprovado": true
+    },
+    {
+      "nome": "risco-investigacao-igual-ranking-3",
+      "aprovado": true
+    },
+    {
+      "nome": "fatores-investigacao-iguais-ranking-3",
+      "aprovado": true
+    },
+    {
+      "nome": "pendencias-conferidas-no-banco-3",
+      "aprovado": true
+    },
+    {
+      "nome": "sem-fatores-nao-inventa-classificacao-3",
+      "aprovado": true
+    },
+    {
+      "nome": "investigacao-autorizada-departamento-2",
+      "aprovado": true
+    },
+    {
+      "nome": "risco-investigacao-igual-ranking-2",
+      "aprovado": true
+    },
+    {
+      "nome": "fatores-investigacao-iguais-ranking-2",
+      "aprovado": true
+    },
+    {
+      "nome": "pendencias-conferidas-no-banco-2",
+      "aprovado": true
+    },
+    {
+      "nome": "sem-fatores-nao-inventa-classificacao-2",
+      "aprovado": true
+    },
+    {
+      "nome": "investigacao-autorizada-departamento-1",
+      "aprovado": true
+    },
+    {
+      "nome": "risco-investigacao-igual-ranking-1",
+      "aprovado": true
+    },
+    {
+      "nome": "fatores-investigacao-iguais-ranking-1",
+      "aprovado": true
+    },
+    {
+      "nome": "pendencias-conferidas-no-banco-1",
+      "aprovado": true
+    },
+    {
+      "nome": "sem-fatores-nao-inventa-classificacao-1",
+      "aprovado": true
+    },
+    {
+      "nome": "gestor-nao-investiga-outro-departamento",
+      "aprovado": true
+    },
+    {
+      "nome": "funcionario-nao-investiga",
+      "aprovado": true
+    }
+  ],
+  "departamentos": [
+    {
+      "id": 3,
+      "score": null,
+      "posicao": null,
+      "risco": "SEM_CLASSIFICACAO"
+    },
+    {
+      "id": 2,
+      "score": null,
+      "posicao": null,
+      "risco": "SEM_CLASSIFICACAO"
+    },
+    {
+      "id": 1,
+      "score": null,
+      "posicao": null,
+      "risco": "SEM_CLASSIFICACAO"
+    }
+  ],
+  "aceiteFinal585": false
+}

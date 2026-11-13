@@ -174,9 +174,34 @@ class BuscaVetorialPostgresTest {
         return id;
     }
 
+
+    @Test
+    void trechoRecuperaFonteSemDuplicarEIgnoraSnapshotAntigo() {
+        long id = row(1, PerfilUsuario.FUNCIONARIO, false, true, 0, 1);
+        String vetor = "[" + String.join(",", vetorDeTeste().stream().map(String::valueOf).toList()) + "]";
+        for (int i = 0; i < 2; i++) jdbc.update(
+                "INSERT INTO resposta_trechos_vetoriais VALUES(?,?,?,?,CAST(? AS vector))",
+                id, i, "Pergunta de teste\nConteúdo de teste", "Seção " + i, vetor);
+        assertThat(service.buscarSemelhantes(1L, "pergunta", 5))
+                .extracting(RespostaReutilizavel::getId).containsExactly(id);
+        jdbc.update("UPDATE resposta_trechos_vetoriais SET texto_fonte='Versão anterior' WHERE resposta_id=?", id);
+        assertThat(service.buscarSemelhantes(1L, "pergunta", 5)).isEmpty();
+    }
+
+    @Test
+    void trechoMuitoProximoNaoContornaPermissaoDaFonte() {
+        long negado = row(1, PerfilUsuario.GESTOR, false, true, 0, 1);
+        long permitido = row(1, PerfilUsuario.FUNCIONARIO, false, true, 1, 1);
+        String vetor = "[" + String.join(",", vetorDeTeste().stream().map(String::valueOf).toList()) + "]";
+        jdbc.update("INSERT INTO resposta_trechos_vetoriais VALUES(?,?,?,?,CAST(? AS vector))",
+                negado, 0, "Pergunta de teste\nConteúdo de teste", "Seção privada", vetor);
+        assertThat(service.buscarSemelhantes(1L, "pergunta", 1))
+                .extracting(RespostaReutilizavel::getId).containsExactly(permitido);
+    }
+
     @Test
     void migratesAllVersionsAndCreatesVectorIndexAndStaging() {
-        assertThat(flyway.info().applied()).hasSize(29);
+        assertThat(flyway.info().applied()).hasSize(30);
         assertThat(flyway.validateWithResult().validationSuccessful).isTrue();
         assertThat(flyway.migrate().migrationsExecuted).isZero();
 

@@ -1,0 +1,170 @@
+{
+  "executadoEm": "2026-11-13T11:31:51.376Z",
+  "corpus": "demo-v1.1-545",
+  "natureza": "DIDATICO",
+  "empresaId": 1,
+  "fonteId": 2,
+  "casos": [
+    {
+      "id": "ferramentas",
+      "pergunta": "Quais ferramentas de inteligência artificial posso usar no trabalho?",
+      "esperada": true,
+      "similaridade": 0.5439671173858788,
+      "estado": "RECUPERADA",
+      "recuperou": true,
+      "correto": true,
+      "ids": [
+        2
+      ]
+    },
+    {
+      "id": "dados",
+      "pergunta": "Posso enviar dados pessoais de clientes para uma ferramenta de IA?",
+      "esperada": true,
+      "similaridade": 0.6505104254960269,
+      "estado": "RECUPERADA",
+      "recuperou": true,
+      "correto": true,
+      "ids": [
+        2
+      ]
+    },
+    {
+      "id": "credenciais",
+      "pergunta": "É permitido colocar senhas e chaves de API em um prompt?",
+      "esperada": true,
+      "similaridade": 0.46102364922436245,
+      "estado": "RECUPERADA",
+      "recuperou": true,
+      "correto": true,
+      "ids": [
+        2
+      ]
+    },
+    {
+      "id": "validacao",
+      "pergunta": "Preciso conferir fatos e números antes de usar a resposta da IA?",
+      "esperada": true,
+      "similaridade": 0.699752233781616,
+      "estado": "RECUPERADA",
+      "recuperou": true,
+      "correto": true,
+      "ids": [
+        2
+      ]
+    },
+    {
+      "id": "revogacao",
+      "pergunta": "Posso continuar usando uma política que foi retirada?",
+      "esperada": true,
+      "similaridade": 0.48040670360762405,
+      "estado": "RECUPERADA",
+      "recuperou": true,
+      "correto": true,
+      "ids": [
+        2
+      ]
+    },
+    {
+      "id": "culinaria",
+      "pergunta": "Como preparar um bolo de cenoura com cobertura de chocolate?",
+      "esperada": false,
+      "similaridade": 0.16025777494323568,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    },
+    {
+      "id": "ferias",
+      "pergunta": "Quantos dias de férias remuneradas tenho direito na empresa?",
+      "esperada": false,
+      "similaridade": 0.2848062868127963,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    },
+    {
+      "id": "astronomia",
+      "pergunta": "Qual é a distância entre a Terra e o planeta Júpiter?",
+      "esperada": false,
+      "similaridade": 0.16156699840815214,
+      "estado": "SEM_CONTEUDO_AUTORIZADO",
+      "recuperou": false,
+      "correto": true,
+      "ids": []
+    }
+  ],
+  "limiares": [
+    {
+      "limiar": 0.2,
+      "acertos": 7,
+      "falsosPositivos": 1,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.25,
+      "acertos": 7,
+      "falsosPositivos": 1,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.3,
+      "acertos": 8,
+      "falsosPositivos": 0,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.35,
+      "acertos": 8,
+      "falsosPositivos": 0,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.4,
+      "acertos": 8,
+      "falsosPositivos": 0,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.45,
+      "acertos": 8,
+      "falsosPositivos": 0,
+      "falsosNegativos": 0
+    },
+    {
+      "limiar": 0.5,
+      "acertos": 6,
+      "falsosPositivos": 0,
+      "falsosNegativos": 2
+    },
+    {
+      "limiar": 0.55,
+      "acertos": 5,
+      "falsosPositivos": 0,
+      "falsosNegativos": 3
+    },
+    {
+      "limiar": 0.6,
+      "acertos": 5,
+      "falsosPositivos": 0,
+      "falsosNegativos": 3
+    },
+    {
+      "limiar": 0.65,
+      "acertos": 5,
+      "falsosPositivos": 0,
+      "falsosNegativos": 3
+    },
+    {
+      "limiar": 0.7,
+      "acertos": 3,
+      "falsosPositivos": 0,
+      "falsosNegativos": 5
+    }
+  ],
+  "consultaSemContagem": true,
+  "confirmacaoUnica": true,
+  "observacao": "Amostra didática pequena: não demonstra qualidade em documentos ou perguntas fora deste corpus."
+}

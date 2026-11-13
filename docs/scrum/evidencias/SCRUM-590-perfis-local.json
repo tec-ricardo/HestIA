@@ -1,0 +1,72 @@
+{
+  "base": "9f06150",
+  "data": "2026-11-13T03:22:18.566Z",
+  "natureza": "HTTP_FRONTEND_LOCAL_SEM_VALIDACAO_VISUAL_OU_HTTPS_PUBLICO",
+  "checks": [
+    {
+      "nome": "prontidao",
+      "aprovado": true
+    },
+    {
+      "nome": "visitante-nao-abre-mapa",
+      "aprovado": true
+    },
+    {
+      "nome": "login-admin.demo",
+      "aprovado": true
+    },
+    {
+      "nome": "login-gestor.demo",
+      "aprovado": true
+    },
+    {
+      "nome": "login-colaborador.demo",
+      "aprovado": true
+    },
+    {
+      "nome": "mapa-renderiza-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "ausencia-explicita-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "cache-privado-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "posicao-so-admin-admin",
+      "aprovado": true
+    },
+    {
+      "nome": "mapa-renderiza-gestor",
+      "aprovado": true
+    },
+    {
+      "nome": "ausencia-explicita-gestor",
+      "aprovado": true
+    },
+    {
+      "nome": "cache-privado-gestor",
+      "aprovado": true
+    },
+    {
+      "nome": "posicao-so-admin-gestor",
+      "aprovado": true
+    },
+    {
+      "nome": "colaborador-nao-abre-mapa",
+      "aprovado": true
+    },
+    {
+      "nome": "periodo-invalido-exibe-alerta",
+      "aprovado": true
+    },
+    {
+      "nome": "logout-invalida-sessao",
+      "aprovado": true
+    }
+  ],
+  "aceiteFinal590": false
+}

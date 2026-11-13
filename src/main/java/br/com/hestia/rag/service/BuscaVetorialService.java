@@ -24,10 +24,11 @@ public class BuscaVetorialService {
     private br.com.hestia.auditoria.service.DecisaoRecuperacaoService decisoes;
 
     private static final int DIMENSAO = 1536;
-    private static final double SIMILARIDADE_PADRAO = 0.70;
+    @org.springframework.beans.factory.annotation.Value("${hestia.rag.similaridade-minima:0.70}")
+    private double similaridadeConfigurada = 0.70;
 
     public double similaridadePadrao() {
-        return SIMILARIDADE_PADRAO;
+        return similaridadeConfigurada;
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -84,7 +85,10 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-        String vetor = gerarVetor(promptIndexado + "\n" + respostaIndexada);
+        String textoFonte = promptIndexado + "\n" + respostaIndexada;
+        String vetor = gerarVetor(textoFonte);
+        var trechos = TrechosDocumentoRag.dividir(respostaIndexada);
+        var vetoresTrechos = trechos.stream().map(t -> gerarVetor(promptIndexado + "\n" + t)).toList();
 
         int atualizadas = jdbcTemplate.update(
                 """
@@ -123,6 +127,11 @@ public class BuscaVetorialService {
                             + "Execute a indexação novamente."
             );
         }
+        jdbcTemplate.update("DELETE FROM resposta_trechos_vetoriais WHERE resposta_id = ?", respostaId);
+        for (int i = 0; i < trechos.size(); i++) {
+            jdbcTemplate.update("INSERT INTO resposta_trechos_vetoriais(resposta_id,ordem,texto_fonte,trecho,embedding_vector) VALUES(?,?,?,?,CAST(? AS vector))",
+                    respostaId, i, textoFonte, trechos.get(i), vetoresTrechos.get(i));
+        }
     }
 
     @Transactional(readOnly = true)
@@ -132,7 +141,7 @@ public class BuscaVetorialService {
             int limite
     ) {
         return buscarSemelhantes(
-                empresaId, pergunta, limite, SIMILARIDADE_PADRAO
+                empresaId, pergunta, limite, similaridadeConfigurada
         );
     }
 
@@ -199,22 +208,28 @@ public class BuscaVetorialService {
 
         List<Map<String, Object>> resultados = jdbcTemplate.queryForList(
                 """
-                SELECT id, 1.0 - (embedding_vector <=> CAST(? AS vector)) AS similaridade
-                FROM respostas_reutilizaveis
-                WHERE empresa_id = ?
-                  AND reutilizavel = true
-                  AND status_qualidade = 'APROVADA'
-                  AND (expira_em IS NULL OR expira_em > ?)
-                  AND possui_dados_sensiveis = false
-                  AND embedding_vector IS NOT NULL
+                SELECT r.id, MAX(1.0 - (v.embedding_vector <=> CAST(? AS vector))) AS similaridade
+                FROM respostas_reutilizaveis r
+                CROSS JOIN LATERAL (
+                    SELECT r.embedding_vector
+                    UNION ALL
+                    SELECT CAST(c.embedding_vector AS vector) FROM resposta_trechos_vetoriais c
+                    WHERE c.resposta_id = r.id
+                      AND c.texto_fonte = r.prompt_original || chr(10) || r.resposta_gerada
+                ) v
+                WHERE r.empresa_id = ?
+                  AND r.reutilizavel = true
+                  AND r.status_qualidade = 'APROVADA'
+                  AND (r.expira_em IS NULL OR r.expira_em > ?)
+                  AND r.possui_dados_sensiveis = false
+                  AND r.embedding_vector IS NOT NULL
                   AND EXISTS (
-                      SELECT 1
-                      FROM resposta_perfis p
-                      WHERE p.resposta_id = respostas_reutilizaveis.id
-                        AND p.perfil = ?
+                      SELECT 1 FROM resposta_perfis p
+                      WHERE p.resposta_id = r.id AND p.perfil = ?
                   )
-                  AND (embedding_vector <=> CAST(? AS vector)) <= ?
-                ORDER BY embedding_vector <=> CAST(? AS vector)
+                  AND (v.embedding_vector <=> CAST(? AS vector)) <= ?
+                GROUP BY r.id
+                ORDER BY similaridade DESC, r.id
                 LIMIT ?
                 """,
                 vetor,
@@ -223,7 +238,6 @@ public class BuscaVetorialService {
                 usuario.getPerfil().name(),
                 vetor,
                 1.0 - similaridadeMinima,
-                vetor,
                 limite
         );
 
