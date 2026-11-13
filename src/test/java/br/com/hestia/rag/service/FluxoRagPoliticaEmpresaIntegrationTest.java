@@ -116,14 +116,17 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
 
         var acessoCapacitacao = mock(AcessoCapacitacao.class);
         var db = new RepositorioIntegracao(jdbc, acessoCapacitacao);
+        var contextualizacao=mock(ContextualizacaoRagService.class);
+        when(contextualizacao.interpretar(anyString(),anyList())).thenAnswer(i->new ContextualizacaoRagService.Interpretacao(i.getArgument(0),null));
         service = new InteracaoRagService(
                 db,
                 busca,
                 acessoResposta,
                 geracao,
                 respostas = mock(RespostaReutilizavelService.class),
+                mock(ManutencaoConteudoService.class),
                 mock(RegistroUsoIAService.class),
-                0L
+                0L, false
         );
     }
 
@@ -134,7 +137,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 new Pergunta("consulta-politica-1", PERGUNTA, Modo.CONSULTAR, null)
         );
 
-        assertThat(resultado.estado()).isEqualTo("REUTILIZADA");
+        assertThat(resultado.estado()).isEqualTo("RECUPERADA");
         assertThat(resultado.resposta()).isEqualTo(POLITICA);
         assertThat(resultado.fontes()).singleElement().satisfies(fonte -> {
             assertThat(fonte.id()).isEqualTo(77L);
@@ -153,7 +156,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historico(usuario))
                 .extracting(InteracaoRagService.Resultado::id)
                 .containsExactly(resultado.id());
-        verify(respostas).registrarReutilizacao(77L, 10L);
+        verify(respostas, never()).registrarReutilizacao(anyLong(), anyLong());
     }
 
     @Test
@@ -230,7 +233,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historicoConversa(usuario, segunda.id())).isEmpty();
         assertThat(service.conversas(usuario)).extracting(InteracaoRagService.Conversa::id).containsExactly(segunda.id(), primeira.id());
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("turno-2", PERGUNTA, Modo.CONSULTAR, null, segunda.id())))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
 
     @Test
@@ -239,13 +242,13 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         usuario.setId(11L);
         assertThat(service.conversas(usuario)).isEmpty();
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("invasao", PERGUNTA, Modo.CONSULTAR, null, conversa.id())))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         usuario.setId(10L);
         usuario.setEmpresa(new Empresa(2L, "Outra", "11111111111111", null, null));
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThat(service.conversas(usuario)).isEmpty();
     }
 

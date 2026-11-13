@@ -1,0 +1,60 @@
+{
+  "data": "2026-11-12",
+  "repositorio": "C:\\Users\\ricardo.davila\\OneDrive - ESPM\\QUARTO SEMESTRE\\PROJETO INTEGRADO\\HestIA",
+  "branch": "develop",
+  "head": "4617f77006143cbc26b4a3e3b73c1d04f6e4f181",
+  "origin_develop_observada": "4617f77006143cbc26b4a3e3b73c1d04f6e4f181",
+  "java_ultimos_relatorios_por_classe": {
+    "tests": 351,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "observacao_java": "Execução completa após V28 aprovada; reexecução dirigida das últimas correções de critérios, efeitos e relatório de economia aprovada. Total agregado dos relatórios mais recentes.",
+  "frontend": {
+    "tests": 46,
+    "failures": 0
+  },
+  "http": {
+    "ambiente": "PostgreSQL descartavel local; contas demo; catalogo operacional",
+    "cenarios": [
+      "Saude da API",
+      "Catalogo operacional sem cursos ficticios",
+      "Restricoes de curadoria, exportacao e configuracao cruzada",
+      "Publicacao repetida cria um unico curso operacional",
+      "Ciencia repetida preserva uma ocorrencia",
+      "Uso salvo avaliado e nova tentativa nao duplica resultado",
+      "CSV reproduz consulta filtrada",
+      "Retirada esconde curso e preserva versao da curadoria",
+      "Colaborador nao pode forjar conferencia conclusiva",
+      "Conferencia autorizada produz conforme e preserva sete fundamentos sem repeticao",
+      "Economia acumulada exporta indisponivel sem filtros ficticios",
+      "Desativacao revoga sessao aberta"
+    ]
+  },
+  "docker": [
+    "hestia-backend:validacao-v28",
+    "hestia-frontend:validacao-v28"
+  ],
+  "fontes_verificadas_na_raiz": 96,
+  "merge_release_completa_aprovado": false,
+  "tasks_todas_concluidas": false,
+  "pendencias": [
+    "Hospedagem, endereço e aceite do ambiente de entrega",
+    "Servidor SMTP e entrega real de recuperação de senha",
+    "Homologação do conteúdo operacional pela equipe",
+    "Integração com relatório de risco dependente e aceite do escopo de exportações",
+    "Homologação das regras e referências de conferência por responsáveis no piloto"
+  ],
+  "restauracao_v28": {
+    "SHA256": "2E36BFB46952DBA141EE85273F6331EA3A1DEEB07528864A0306A7B02C59310E",
+    "Conferencia": [
+      "catalogo|3",
+      "ciencias|1",
+      "migracoes|28",
+      "registros|6",
+      "usuarios|3"
+    ],
+    "Resultado": "Restauração validada em container isolado"
+  }
+}

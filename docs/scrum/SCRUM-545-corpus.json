@@ -1,0 +1,47 @@
+{
+  "versao": "demo-v1.1-545",
+  "politica": "SCRUM-543-politica-demo-v1.1.md",
+  "natureza": "DIDATICO",
+  "casos": [
+    {
+      "id": "ferramentas",
+      "pergunta": "Quais ferramentas de inteligência artificial posso usar no trabalho?",
+      "esperada": true
+    },
+    {
+      "id": "dados",
+      "pergunta": "Posso enviar dados pessoais de clientes para uma ferramenta de IA?",
+      "esperada": true
+    },
+    {
+      "id": "credenciais",
+      "pergunta": "É permitido colocar senhas e chaves de API em um prompt?",
+      "esperada": true
+    },
+    {
+      "id": "validacao",
+      "pergunta": "Preciso conferir fatos e números antes de usar a resposta da IA?",
+      "esperada": true
+    },
+    {
+      "id": "revogacao",
+      "pergunta": "Posso continuar usando uma política que foi retirada?",
+      "esperada": true
+    },
+    {
+      "id": "culinaria",
+      "pergunta": "Como preparar um bolo de cenoura com cobertura de chocolate?",
+      "esperada": false
+    },
+    {
+      "id": "ferias",
+      "pergunta": "Quantos dias de férias remuneradas tenho direito na empresa?",
+      "esperada": false
+    },
+    {
+      "id": "astronomia",
+      "pergunta": "Qual é a distância entre a Terra e o planeta Júpiter?",
+      "esperada": false
+    }
+  ]
+}

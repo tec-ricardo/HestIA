@@ -63,7 +63,7 @@ public class AcessoRespostaService {
         return resultado;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, noRollbackFor = ResponseStatusException.class)
     public RespostaReutilizavel buscarPorId(Usuario usuario, Long id) {
         return recuperar(usuario, null, id, null, false, Pageable.unpaged()).stream().findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

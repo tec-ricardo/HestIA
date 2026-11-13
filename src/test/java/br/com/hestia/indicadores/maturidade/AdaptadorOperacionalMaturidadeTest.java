@@ -11,11 +11,17 @@ class AdaptadorOperacionalMaturidadeTest {
     JdbcTemplate jdbc;AdaptadorOperacionalMaturidade service;
     @BeforeEach void preparar(){
         jdbc=new JdbcTemplate(new DriverManagerDataSource("jdbc:h2:mem:"+UUID.randomUUID()+";DB_CLOSE_DELAY=-1","sa",""));
-        jdbc.execute("CREATE TABLE usuarios(id BIGINT, empresa_id BIGINT, departamento_id BIGINT)");
+        jdbc.execute("CREATE TABLE usuarios(id BIGINT, empresa_id BIGINT, departamento_id BIGINT, ativo BOOLEAN)");
+        jdbc.execute("CREATE TABLE aprendizagem_ciclos(id BIGINT, usuario_id BIGINT, empresa_id BIGINT, catalogo_id BIGINT)");
+        jdbc.execute("CREATE TABLE aprendizagem_tentativas(ciclo_id BIGINT, nota NUMERIC(5,2), status VARCHAR, finalizada_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE aprendizagem_catalogo(id BIGINT, empresa_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, publicado_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE catalogo_treinamentos(id BIGINT, empresa_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, estado VARCHAR, publicado_em TIMESTAMP, retirado_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE aprendizagem_leituras(empresa_id BIGINT, usuario_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), conclusao_id BIGINT, concluida_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE conclusoes_microtreinamento(id BIGINT, usuario_id BIGINT, microtreinamento_id BIGINT, concluido BOOLEAN, data_conclusao TIMESTAMP)");
         jdbc.execute("CREATE TABLE registros_uso_ia(id BIGINT, usuario_id BIGINT, data_hora TIMESTAMP)");
         jdbc.execute("CREATE TABLE politica_uso_versoes(id BIGINT, empresa_id BIGINT, politica_uso_id BIGINT)");
         jdbc.execute("CREATE TABLE avaliacoes_conformidade(id BIGINT, registro_uso_id BIGINT, politica_uso_id BIGINT, politica_versao_id BIGINT, regra_codigo VARCHAR, regra_versao VARCHAR, motivo_preservado VARCHAR, regra_preservada VARCHAR, limitacoes_preservadas VARCHAR, status VARCHAR, data_avaliacao TIMESTAMP)");
-        jdbc.update("INSERT INTO usuarios VALUES(1,1,10),(2,2,20)");jdbc.update("INSERT INTO politica_uso_versoes VALUES(1,1,1),(2,2,2)");
+        jdbc.update("INSERT INTO usuarios VALUES(1,1,10,TRUE),(2,2,20,TRUE)");jdbc.update("INSERT INTO politica_uso_versoes VALUES(1,1,1),(2,2,2)");
         service=new AdaptadorOperacionalMaturidade(jdbc,new CalculadorasMaturidade());
     }
     void inserir(int id,int empresa,String status,boolean fundamentos){

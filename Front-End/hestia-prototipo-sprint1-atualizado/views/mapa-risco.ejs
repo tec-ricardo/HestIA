@@ -7,60 +7,60 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div class="app-shell">
-        <%- include("menu", { perfil, email, active }) %>
-        <main class="main">
-            <header class="topbar">
-                <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
-                <div><p class="eyebrow">Governança</p><h1>Mapa de Risco</h1></div>
-                <div class="profile-switch"><span><%= email %></span></div>
-                <a class="topbar-logout" href="/sair">Sair</a>
-            </header>
-            <section class="panel">
-                <div class="panel-head"><h3>Apuração departamental</h3></div>
-                <form method="get" action="/mapa-risco">
-                    <label for="inicio">Início</label>
-                    <input id="inicio" name="inicio" type="date" value="<%= inicio %>" required>
-                    <label for="fim">Fim</label>
-                    <input id="fim" name="fim" type="date" value="<%= fim %>" required>
-                    <button type="submit">Consultar</button>
-                </form>
-                <% if (erro) { %>
-                    <p role="alert"><%= erro %></p>
-                <% } else if (resultado) { %>
-                    <p>Fonte operacional. A classificação de risco aguarda homologação dos critérios.</p>
-                    <% if (!resultado.departamentos.length) { %>
-                        <p>Sem dados: nenhum departamento no escopo consultado.</p>
-                    <% } else { %>
-                        <div class="table-wrap">
-                            <table>
-                                <thead><tr>
-                                    <th scope="col">Departamento</th>
-                                    <% if (perfil === "administrador") { %><th scope="col">Posição</th><% } %>
-                                    <th scope="col">Score global</th>
-                                    <th scope="col">Cobertura dos pesos</th>
-                                    <th scope="col">Dimensões pendentes</th>
-                                </tr></thead>
-                                <tbody>
-                                    <% for (const item of resultado.departamentos) { %>
-                                        <tr>
-                                            <td><%= item.departamento %></td>
-                                            <% if (perfil === "administrador") { %><td><%= item.posicao ?? "Sem posição" %></td><% } %>
-                                            <td><%= item.apuracao.scoreGlobal == null ? "Sem dados para score global" : formatar(item.apuracao.scoreGlobal) %></td>
-                                            <td><%= item.apuracao.coberturaPesos == null ? "Sem dados" : formatar(item.apuracao.coberturaPesos * 100) + "%" %></td>
-                                            <td><%= (item.apuracao.dimensoesAusentes || []).join(", ") || "Nenhuma" %></td>
-                                        </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    <% } %>
+<div class="app-shell">
+    <%- include("menu", { perfil, email, active }) %>
+    <main class="main hm-risk-refresh">
+        <header class="topbar">
+            <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
+            <div><p class="eyebrow">Governança</p><h1>Mapa de Risco</h1></div>
+            <div class="profile-switch"><span><%= email %></span></div>
+            <a class="topbar-logout" href="/sair">Sair</a>
+        </header>
+        <section class="panel hm-risk-panel">
+            <div class="panel-head"><h3>Apuração departamental</h3></div>
+            <form method="get" action="/mapa-risco">
+                <label for="inicio">Início</label>
+                <input id="inicio" name="inicio" type="date" value="<%= inicio %>" required>
+                <label for="fim">Fim</label>
+                <input id="fim" name="fim" type="date" value="<%= fim %>" required>
+                <button type="submit">Consultar</button>
+            </form>
+            <% if (erro) { %>
+                <p role="alert"><%= erro %></p>
+            <% } else if (resultado) { %>
+                <p>Fonte operacional. A classificação de risco aguarda homologação dos critérios.</p>
+                <% if (!resultado.departamentos.length) { %>
+                    <p>Sem dados: nenhum departamento no escopo consultado.</p>
                 <% } else { %>
-                    <p>Selecione o período para consultar os resultados operacionais.</p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr>
+                                <th scope="col">Departamento</th>
+                                <% if (perfil === "administrador") { %><th scope="col">Posição</th><% } %>
+                                <th scope="col">Score global</th>
+                                <th scope="col">Cobertura dos pesos</th>
+                                <th scope="col">Dimensões pendentes</th>
+                            </tr></thead>
+                            <tbody>
+                            <% for (const item of resultado.departamentos) { %>
+                                <tr>
+                                    <td><%= item.departamento %></td>
+                                    <% if (perfil === "administrador") { %><td><%= item.posicao ?? "Sem posição" %></td><% } %>
+                                    <td><%= item.apuracao.scoreGlobal == null ? "Sem dados para score global" : formatar(item.apuracao.scoreGlobal) %></td>
+                                    <td><%= item.apuracao.coberturaPesos == null ? "Sem dados" : formatar(item.apuracao.coberturaPesos * 100) + "%" %></td>
+                                    <td><%= (item.apuracao.dimensoesAusentes || []).join(", ") || "Nenhuma" %></td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    </div>
                 <% } %>
-            </section>
-        </main>
-    </div>
-    <script src="/app.js"></script>
+            <% } else { %>
+                <p>Selecione o período para consultar os resultados operacionais.</p>
+            <% } %>
+        </section>
+    </main>
+</div>
+<script src="/app.js"></script>
 </body>
 </html>

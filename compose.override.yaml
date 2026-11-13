@@ -1,0 +1,39 @@
+services:
+  backend:
+    image: hestia-backend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        VCS_REF: ${HESTIA_VCS_REF:-unknown}
+    environment:
+      SPRING_PROFILES_ACTIVE: demo
+      DB_URL: jdbc:postgresql://postgres:5432/hestia
+      DB_USERNAME: hestia
+      DB_PASSWORD: hestia
+      ALERT_SERVICE_URL: http://alert-service:3001
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      alert-service:
+        condition: service_started
+
+  frontend:
+    image: hestia-frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VCS_REF: ${HESTIA_VCS_REF:-unknown}
+    environment:
+      PORT: "3000"
+      API_URL: http://backend:8080
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_started

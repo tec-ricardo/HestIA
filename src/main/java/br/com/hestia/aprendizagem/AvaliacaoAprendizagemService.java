@@ -19,6 +19,10 @@ import static br.com.hestia.aprendizagem.ContratoAvaliacao.*;
 
 @Service @Transactional
 public class AvaliacaoAprendizagemService {
+    private br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService catalogo = new br.com.hestia.microtreinamento.service.MicrotreinamentoFicticioService();
+    @org.springframework.beans.factory.annotation.Autowired
+    public void usarCatalogoPersistido(br.com.hestia.microtreinamento.service.CatalogoTreinamentoService catalogo){this.catalogo=catalogo;}
+
     final JdbcTemplate jdbc; final AcessoCapacitacao acesso; final ApplicationEventPublisher eventos;
     final ObjectMapper json=new ObjectMapper();
     public AvaliacaoAprendizagemService(JdbcTemplate jdbc,AcessoCapacitacao acesso,ApplicationEventPublisher eventos){this.jdbc=jdbc;this.acesso=acesso;this.eventos=eventos;}
@@ -26,7 +30,8 @@ public class AvaliacaoAprendizagemService {
     public AcessoCapacitacao acesso(){return acesso;}
     public ObjectMapper json(){return json;}
     public ApplicationEventPublisher eventos(){return eventos;}
-    public Microtreinamento conteudo(Long id){return new MicrotreinamentoFicticioService().criarTreinamentos().stream().filter(t->t.isAtivo()&&t.getId().equals(id)).findFirst().orElseThrow(()->erro(HttpStatus.NOT_FOUND,"Conteúdo ativo indisponível"));}
+    public java.util.List<Microtreinamento> conteudos(){return catalogo.criarTreinamentos();}
+    public Microtreinamento conteudo(Long id){return catalogo.criarTreinamentos().stream().filter(t->t.isAtivo()&&t.getId().equals(id)).findFirst().orElseThrow(()->erro(HttpStatus.NOT_FOUND,"Conteúdo ativo indisponível"));}
     public String escrever(Object o){try{return json.writeValueAsString(o);}catch(Exception e){throw new IllegalStateException(e);}}
     public List<Questao> ler(String s){try{return json.readValue(s,new TypeReference<List<Questao>>(){});}catch(Exception e){throw new IllegalStateException("Questionário preservado inválido",e);}}
     public long inserir(String sql,Object... args){var chave=new GeneratedKeyHolder();jdbc.update(c->{var st=c.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);for(int i=0;i<args.length;i++)st.setObject(i+1,args[i]);return st;},chave);return Objects.requireNonNull(chave.getKeys()).entrySet().stream().filter(e->e.getKey().equalsIgnoreCase("id")).map(e->((Number)e.getValue()).longValue()).findFirst().orElseThrow();}

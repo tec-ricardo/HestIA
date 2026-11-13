@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DataJpaTest
-@Import({TrilhaService.class, QualidadeDadosService.class, AcessoRespostaService.class})
+@Import({br.com.hestia.microtreinamento.service.CatalogoTreinamentoService.class, br.com.hestia.autenticacao.contexto.EmpresaAtual.class, TrilhaService.class, QualidadeDadosService.class, AcessoRespostaService.class})
 class DependenciasSprintIntegrationTest {
     @Autowired EntityManager em;
     @Autowired TrilhaService trilhas;

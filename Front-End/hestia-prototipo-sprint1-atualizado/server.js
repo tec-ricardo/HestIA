@@ -24,9 +24,18 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.get('/health', (req,res) => res.json({status:'UP'}));
+if (process.env.NODE_ENV === 'production' && (!process.env.SESSION_SECRET || !process.env.SESSION_DATABASE_URL)) {
+    throw new Error('Configure SESSION_SECRET e SESSION_DATABASE_URL antes de iniciar em produção.');
+}
+if(process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+const sessionStore = process.env.SESSION_DATABASE_URL
+    ? new (require('connect-pg-simple')(session))({conString: process.env.SESSION_DATABASE_URL, createTableIfMissing: true})
+    : undefined;
 /* SCRUM-376 - SESSAO INDIVIDUAL */
 
 app.use(session({
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || "hestia-prototipo-alterar-esta-chave",
     resave: false,
     saveUninitialized: false,
@@ -43,7 +52,7 @@ app.use(session({
 
 app.use(function(req, res, next) {
 
-    if (req.path == "/acesso") {
+    if (["/acesso", "/recuperar-senha", "/redefinir-senha"].includes(req.path)) {
         return next();
     }
 
@@ -52,6 +61,9 @@ app.use(function(req, res, next) {
     }
 
     if (!req.session.apiToken && req.path !== "/sair") {
+        // Somente a Visão Geral pode ser aberta com uma conta demonstrativa.
+        const demo = /@(adm|gestor|colaborador)$/.test(String(req.session.email || ""));
+        if (demo && req.path === "/" && req.method === "GET") return next();
         if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
         return res.redirect("/acesso?expirada=1");
     }
@@ -72,6 +84,14 @@ app.use((req, res, next) => contextoApi.run({
 
 require("./integracoes-sprint")(app, api);
 require("./simulacao-produtividade").registrarRotasSimulacao(app);
+require("./configuracao-inicial")(app, api);
+require("./ciencia-politica")(app, api);
+require("./catalogo-real")(app, api);
+require("./avaliacoes-automaticas")(app, api);
+require("./relatorios-uso")(app, api);
+require("./relatorios-maturidade")(app, api);
+require("./relatorios-economia")(app, api);
+require("./recuperacao-senha")(app, api);
 
 /* USUARIO */
 
@@ -110,6 +130,21 @@ app.post("/acesso", async (req, res, next) => {
 /* VISAO GERAL */
 
 app.get("/", async (req, res) => {
+    // Contas demonstrativas não têm token: renderizar sem chamar a API protegida.
+    if (!req.session.apiToken) {
+        return res.set("Cache-Control", "no-store").render("index", {
+            perfil: req.session.perfil,
+            email: req.session.email,
+            active: "dashboard",
+            indicadores: { empresas: 0, departamentos: 0, usuarios: 0, politicas: 0, ferramentas: 0 },
+            resumo: {
+                creditos: null, posicao: null, participantes: 0, xp: null,
+                nivel: null, percentualProgresso: null, xpProximoNivel: null,
+                totalRegistros: 0, registrosComSucesso: 0, tokensRegistrados: 0,
+                atividadeRecente: [], maturidadeParcial: null, coberturaMaturidade: null
+            }
+        });
+    }
     const usuarioId = Number(req.session.usuarioId);
     const colaborador = req.session.perfil === "colaborador";
 
@@ -968,7 +1003,8 @@ app.get("/reutilizacoes/buscar", async (req, res) => {
 app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
     try {
         const response = await api.patch(
-            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`
+            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`,
+            undefined, { headers: { "Idempotency-Key": req.get("Idempotency-Key") || "" } }
         );
         return res.json(response.data);
     } catch (error) {

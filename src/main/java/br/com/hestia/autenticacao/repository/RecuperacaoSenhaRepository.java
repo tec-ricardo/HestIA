@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface RecuperacaoSenhaRepository extends JpaRepository<RecuperacaoSenha, Long> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     Optional<RecuperacaoSenha> findByTokenHash(String tokenHash);
 
     @Modifying

@@ -1,80 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HestIA - Governança</title>
-    <link rel="stylesheet" href="/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HestIA - Governança</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+/* Visual HestIA atualizado: estilos isolados por pagina */
+.hx-page{padding:4px 0 42px;color:#172c49}
+.hx-page .hx-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#172c49,#294a70);border:0;border-radius:20px;padding:30px 32px;color:white;margin-bottom:22px;box-shadow:0 14px 30px rgba(23,44,73,.12)}
+.hx-page .hx-hero:after{content:"";position:absolute;right:-85px;top:-120px;width:240px;height:240px;border:38px solid rgba(255,255,255,.05);border-radius:50%;pointer-events:none}
+.hx-page .hx-hero .eyebrow{color:#f2b07d;font-weight:800;letter-spacing:1.4px}
+.hx-page .hx-hero h2{font-size:clamp(23px,3vw,31px);margin:9px 0;color:white}
+.hx-page .hx-hero p:last-child{color:#dbe5f1;margin-bottom:0;line-height:1.6}
+.hx-page .hx-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.hx-page .hx-governance-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.hx-page .hx-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.hx-page .hx-card{min-width:0;background:#fff;border:1px solid #dce5ef;border-top:4px solid #d47739;border-radius:16px;padding:21px;box-shadow:0 8px 24px rgba(23,44,73,.04);transition:transform .2s,box-shadow .2s}
+.hx-page .hx-card:nth-child(2){border-top-color:#4777bc}
+.hx-page .hx-card:nth-child(3){border-top-color:#29966a}
+.hx-page .hx-card:nth-child(4){border-top-color:#8162b4}
+.hx-page .hx-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(23,44,73,.09)}
+.hx-page .hx-card>span{display:block;color:#6c7e93;font-size:12px;font-weight:800;letter-spacing:.045em;text-transform:uppercase}
+.hx-page .hx-card>strong{display:block;font-size:clamp(23px,2.7vw,32px);line-height:1.2;margin:12px 0 8px;color:#172c49;overflow-wrap:anywhere}
+.hx-page .hx-card>p{margin:0;color:#708199;font-size:12px;line-height:1.6}
+.hx-page .hx-panel{background:#fff;border:1px solid #dce5ef;border-radius:18px;padding:25px;margin-bottom:20px;box-shadow:0 10px 28px rgba(23,44,73,.035)}
+.hx-page .hx-panel .panel-head{margin-bottom:20px;align-items:flex-start}
+.hx-page .hx-panel .panel-head h3{font-size:20px;color:#172c49;margin:0 0 7px}
+.hx-page .hx-panel .panel-head p{margin:0;color:#708199;font-size:13px;line-height:1.6}
+.hx-page .hx-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hx-page .hx-rules .solid-item{background:#f5f8fc;border:1px solid #e3eaf2;border-radius:11px;padding:15px 17px;position:relative}
+.hx-page .hx-rules .solid-item:before{content:"";display:block;position:absolute;left:0;top:13px;bottom:13px;width:3px;background:#d47739;border-radius:4px}
+.hx-page .hx-rules .solid-item span{margin:0;color:#3b506a;font-size:13px;font-weight:600}
+.hx-page .hx-table-wrap{overflow-x:auto;border:1px solid #e4ebf3;border-radius:12px}
+.hx-page .hx-table{width:100%;min-width:650px;border-collapse:collapse}
+.hx-page .hx-table th{text-align:left;background:#f4f7fb;color:#63758e;font-size:12px;font-weight:800;padding:15px}
+.hx-page .hx-table td{padding:16px 15px;color:#273d58;font-size:13px;border-top:1px solid #edf1f6;vertical-align:middle}
+.hx-page .hx-table tbody tr:hover{background:#f8fbff}
+.hx-page .hx-table .current-user-row{background:#fff7ed}
+.hx-page .hx-table td strong{color:#172c49}
+.hx-page .hx-table td small{display:inline-block;color:#73849a;margin-top:5px;line-height:1.5}
+.hx-page .hx-muted{color:#708199;font-size:13px;line-height:1.6}
+.hx-page .hx-form{gap:16px}
+.hx-page .hx-form label{color:#344963;font-weight:750}
+.hx-page .hx-form input,.hx-page .hx-form textarea{width:100%;border:1px solid #d7e1ec;border-radius:10px;background:#fbfcfe;padding:12px;font:inherit;color:#172c49}
+.hx-page .hx-form input:focus,.hx-page .hx-form textarea:focus{outline:2px solid #adc6e9;outline-offset:1px}
+.hx-page .hx-form .primary{background:#d47739;border-radius:10px;padding:12px 19px}
+.hx-page .hx-form .primary:hover{background:#bd622b}
+.hx-page .hx-info-link{display:inline-flex;margin-top:14px;color:#b45b27;font-weight:800}
+.hx-page .hx-info-link:hover{text-decoration:underline}
+.hx-page .hx-panel>p{font-size:13px;line-height:1.7;color:#526680}
+@media(max-width:1100px){.hx-page .hx-governance-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.hx-page .hx-kpis,.hx-page .hx-metrics{grid-template-columns:1fr}}
+@media(max-width:650px){.hx-page .hx-governance-kpis,.hx-page .hx-rules{grid-template-columns:1fr}.hx-page .hx-panel,.hx-page .hx-hero{padding:20px}}
+</style>
 </head>
 <body>
 <div class="app-shell">
-    <%- include("menu", { perfil, email, active }) %>
-    <main class="main">
-        <header class="topbar">
-            <button class="menu-button" id="menuButton">☰</button>
-            <div><p class="eyebrow">Governança</p><h1>Políticas e conformidade</h1></div>
-            <div class="profile-switch"><span><%= email %></span></div>
-            <a class="topbar-logout" href="/sair">Sair</a>
-        </header>
-
-        <% if (mensagem) { %><div class="feedback success"><%= mensagem %></div><% } %>
-        <% if (erro) { %><div class="feedback error"><%= erro %></div><% } %>
-
-        <section class="hero-card">
-            <p class="eyebrow"><%= perfil === 'colaborador' ? 'Meu uso' : 'Visão da empresa' %></p>
-            <h2>Regras vigentes e resultados registrados</h2>
-            <p>Esta tela utiliza somente políticas e avaliações persistidas no banco do HestIA.</p>
-        </section>
-
-        <section class="dashboard-summary">
-            <article class="dashboard-summary-card"><span>Políticas cadastradas</span><strong><%= politicas.length %></strong><p><%= politicas.filter(p => p.ativa && !p.excluida).length %> ativas</p></article>
-            <article class="dashboard-summary-card"><span>Usos registrados</span><strong><%= resumoConformidade ? resumoConformidade.registros : '—' %></strong><p><%= perfil === 'colaborador' ? 'Associados à sua conta' : 'No escopo da empresa' %></p></article>
-            <article class="dashboard-summary-card"><span>Usos avaliados</span><strong><%= resumoConformidade ? resumoConformidade.avaliadas : '—' %></strong><p>Avaliações de conformidade persistidas</p></article>
-            <article class="dashboard-summary-card"><span>Conformidade</span><strong><%= resumoConformidade && resumoConformidade.percentualConformidade !== null ? Number(resumoConformidade.percentualConformidade).toLocaleString('pt-BR') + '%' : '—' %></strong><p><%= resumoConformidade && resumoConformidade.avaliadas ? resumoConformidade.conformes + ' conformes de ' + resumoConformidade.avaliadas + ' avaliadas' : 'Ainda não há amostra avaliada' %></p></article>
-        </section>
-
-        <section class="grid three">
-            <article class="metric-card"><span>Conformes</span><strong><%= resumoConformidade ? resumoConformidade.conformes : '—' %></strong><p>Atendem à política aplicada.</p></article>
-            <article class="metric-card"><span>Não conformes</span><strong><%= resumoConformidade ? resumoConformidade.nao_conformes : '—' %></strong><p>Demandam tratamento.</p></article>
-            <article class="metric-card"><span>Em revisão</span><strong><%= resumoConformidade ? resumoConformidade.requerem_revisao : '—' %></strong><p>Aguardam decisão complementar.</p></article>
-        </section>
-
-        <section class="panel">
-            <div class="panel-head"><div><h3>Políticas e diretrizes</h3><p>Versões atualmente registradas para a empresa autenticada.</p></div></div>
-            <% if (!politicas.length) { %>
-                <p class="muted">Nenhuma política cadastrada. Um administrador precisa publicar a primeira política antes das avaliações.</p>
-            <% } else { %>
-                <div class="table-wrap"><table>
-                    <thead><tr><th>Política</th><th>Versão</th><th>Revisão</th><th>Situação</th><th>Atualizada em</th></tr></thead>
-                    <tbody><% politicas.forEach(politica => { %><tr>
-                        <td><strong><%= politica.titulo %></strong><br><small><%= politica.descricao %></small></td>
-                        <td><%= politica.versao %></td><td><%= politica.revisao || 1 %></td>
-                        <td><%= politica.ativa && !politica.excluida ? 'Ativa' : 'Inativa' %></td>
-                        <td><%= politica.dataAtualizacao ? new Date(politica.dataAtualizacao).toLocaleString('pt-BR') : '—' %></td>
-                    </tr><% }) %></tbody>
-                </table></div>
-            <% } %>
-        </section>
-
-        <% if (perfil === 'administrador') { %>
-            <section class="panel">
-                <div class="panel-head"><div><h3>Cadastrar política</h3><p>A política será vinculada automaticamente à empresa da sua sessão.</p></div></div>
-                <form class="form-grid" action="/governanca/politicas" method="post">
-                    <label class="full">Título<input name="titulo" type="text" maxlength="150" required></label>
-                    <label>Versão<input name="versao" type="text" maxlength="20" value="1.0" required></label>
-                    <label class="full">Descrição<input name="descricao" type="text" maxlength="500" required></label>
-                    <label class="full">Conteúdo<textarea name="conteudo" rows="6" required></textarea></label>
-                    <button class="primary" type="submit">Cadastrar política</button>
-                </form>
-            </section>
-        <% } %>
-
-        <section class="panel">
-            <div class="panel-head"><div><h3>Como uma avaliação é registrada</h3><p>A conformidade nasce da avaliação de um registro de uso contra uma política e sua revisão exata.</p></div></div>
-            <p>Consulte os registros para acompanhar o uso. A avaliação preserva a política, a regra, o motivo e as limitações utilizados na decisão.</p>
-            <a class="personal-card-link" href="/utilizacoes/registros">Ver registros de uso →</a>
-        </section>
-    </main>
+<%- include("menu", { perfil, email, active }) %>
+<main class="main">
+<header class="topbar"><button class="menu-button" id="menuButton">☰</button><div><p class="eyebrow">Governança</p><h1>Políticas e conformidade</h1></div><div class="profile-switch"><span><%= email %></span></div><a class="topbar-logout" href="/sair">Sair</a></header>
+<div class="hx-page">
+<% if (mensagem) { %><div class="feedback success"><%= mensagem %></div><% } %>
+<% if (erro) { %><div class="feedback error"><%= erro %></div><% } %>
+<section class="hx-hero hero-card">
+<p class="eyebrow"><%= perfil === 'colaborador' ? 'Meu uso' : 'Visão da empresa' %></p>
+<h2>Regras vigentes e resultados registrados</h2>
+<p>Esta tela utiliza somente políticas e avaliações persistidas no banco do HestIA.</p>
+</section>
+<section class="hx-kpis hx-governance-kpis">
+<article class="hx-card"><span>Políticas cadastradas</span><strong><%= politicas.length %></strong><p><%= politicas.filter(p => p.ativa && !p.excluida).length %> ativas</p></article>
+<article class="hx-card"><span>Usos registrados</span><strong><%= resumoConformidade ? resumoConformidade.registros : '—' %></strong><p><%= perfil === 'colaborador' ? 'Associados à sua conta' : 'No escopo da empresa' %></p></article>
+<article class="hx-card"><span>Usos avaliados</span><strong><%= resumoConformidade ? resumoConformidade.avaliadas : '—' %></strong><p>Avaliações de conformidade persistidas</p></article>
+<article class="hx-card"><span>Conformidade</span><strong><%= resumoConformidade && resumoConformidade.percentualConformidade !== null ? Number(resumoConformidade.percentualConformidade).toLocaleString('pt-BR') + '%' : '—' %></strong><p><%= resumoConformidade && resumoConformidade.avaliadas ? resumoConformidade.conformes + ' conformes de ' + resumoConformidade.avaliadas + ' avaliadas' : 'Ainda não há amostra avaliada' %></p></article>
+</section>
+<section class="hx-metrics">
+<article class="hx-card"><span>Conformes</span><strong><%= resumoConformidade ? resumoConformidade.conformes : '—' %></strong><p>Atendem à política aplicada.</p></article>
+<article class="hx-card"><span>Não conformes</span><strong><%= resumoConformidade ? resumoConformidade.nao_conformes : '—' %></strong><p>Demandam tratamento.</p></article>
+<article class="hx-card"><span>Em revisão</span><strong><%= resumoConformidade ? resumoConformidade.requerem_revisao : '—' %></strong><p>Aguardam decisão complementar.</p></article>
+</section>
+<section class="hx-panel">
+<div class="panel-head"><div><h3>Políticas e diretrizes</h3><p>Versões atualmente registradas para a empresa autenticada.</p></div></div>
+<% if (!politicas.length) { %>
+<p class="muted hx-muted">Nenhuma política cadastrada. Um administrador precisa publicar a primeira política antes das avaliações.</p>
+<% } else { %>
+<div class="hx-table-wrap"><table class="hx-table">
+<thead><tr><th>Política</th><th>Versão</th><th>Revisão</th><th>Situação</th><th>Atualizada em</th></tr></thead>
+<tbody><% politicas.forEach(politica => { %><tr>
+<td><strong><%= politica.titulo %></strong><br><small><%= politica.descricao %></small></td>
+<td><%= politica.versao %></td><td><%= politica.revisao || 1 %></td>
+<td><%= politica.ativa && !politica.excluida ? 'Ativa' : 'Inativa' %></td>
+<td><%= politica.dataAtualizacao ? new Date(politica.dataAtualizacao).toLocaleString('pt-BR') : '—' %></td>
+</tr><% }) %></tbody>
+</table></div>
+<% } %>
+</section>
+<% if (perfil === 'administrador') { %>
+<section class="hx-panel">
+<div class="panel-head"><div><h3>Cadastrar política</h3><p>A política será vinculada automaticamente à empresa da sua sessão.</p></div></div>
+<form class="form-grid hx-form" action="/governanca/politicas" method="post">
+<label class="full">Título<input name="titulo" type="text" maxlength="150" required></label>
+<label>Versão<input name="versao" type="text" maxlength="20" value="1.0" required></label>
+<label class="full">Descrição<input name="descricao" type="text" maxlength="500" required></label>
+<label class="full">Conteúdo<textarea name="conteudo" rows="6" required></textarea></label>
+<button class="primary" type="submit">Cadastrar política</button>
+</form>
+</section>
+<% } %>
+<section class="hx-panel">
+<div class="panel-head"><div><h3>Como uma avaliação é registrada</h3><p>A conformidade nasce da avaliação de um registro de uso contra uma política e sua revisão exata.</p></div></div>
+<p>Consulte os registros para acompanhar o uso. A avaliação preserva a política, a regra, o motivo e as limitações utilizados na decisão.</p>
+<a class="personal-card-link hx-info-link" href="/utilizacoes/registros">Ver registros de uso →</a>
+</section>
+</div>
+</main>
 </div>
 <script src="/app.js"></script>
 </body>

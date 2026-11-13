@@ -1,6 +1,5 @@
 const express = require('express');
 const { randomUUID } = require('node:crypto');
-
 // Adaptadores HTTP das tasks de Ricardo; preservam os templates de Kevin.
 module.exports = function montarIntegracoes(app, api) {
   const router = express.Router();
@@ -8,14 +7,17 @@ module.exports = function montarIntegracoes(app, api) {
   const executar = fn => async (req, res) => {
     try { await fn(req, res); }
     catch (erro) {
-      const status = erro.response?.status || 503;
-      const mensagem = erro.response?.data?.message || erro.response?.data?.detail || 'Serviço indisponível. Nenhum resultado demonstrativo foi usado.';
+      const status = erro.response?.status || (erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? 504 : 503);
+      const origem = erro.response?.data;
+      const mensagem = origem?.message || origem?.detail || origem?.erro || (typeof origem === 'string' && origem.trim() ? origem.slice(0, 300) : null) || (erro.code === 'ECONNREFUSED' ? 'Spring Boot inacessível. Confira API_URL e se a porta 8080 está ativa.' : erro.code === 'ECONNABORTED' || erro.code === 'ETIMEDOUT' ? (req.method === 'POST' && req.path === '/api/registros' ? 'Confirmação pendente. Atualize o histórico antes de tentar novamente.' : 'Tempo limite ao consultar o Spring Boot.') : erro.response ? 'O Spring Boot recusou a operação. Consulte o log do Java.' : 'Falha de comunicação com o Spring Boot. Consulte o terminal do Node.js.');
+      console.error('[HestIA API]', { metodo: req.method, rota: req.originalUrl, status, codigo: erro.code || null, backendStatus: erro.response?.status || null, mensagem: String(mensagem).slice(0, 500) });
       if (status === 401) return req.session.destroy(() => res.status(401).json({ erro: 'Sessão expirada. Entre novamente.' }));
       return res.status(status).json({ erro: mensagem });
     }
   };
   const colaborador = (req, res, next) => req.session.perfil === 'colaborador' ? next() : res.status(403).json({ erro: 'Acesso exclusivo do colaborador.' });
   const admin = (req, res, next) => req.session.perfil === 'administrador' ? next() : res.status(403).json({ erro: 'Acesso exclusivo de administrador.' });
+  const curadoriaLeitura = (req, res, next) => ['administrador', 'gestor'].includes(req.session.perfil) ? next() : res.status(403).json({ erro: 'Acesso exclusivo de gestor ou administrador.' });
   const id = valor => {
     if (!/^\d+$/.test(String(valor)) || !Number.isSafeInteger(Number(valor)) || Number(valor) <= 0) {
       const erro = new Error('Identificador inválido'); erro.response = { status: 400, data: { message: erro.message } }; throw erro;
@@ -28,40 +30,16 @@ module.exports = function montarIntegracoes(app, api) {
     GUARDIAO: { numero: 3, nome: 'Guardião' },
     EMBAIXADOR: { numero: 4, nome: 'Embaixador' }
   });
-  const nivelNecessarioPorId = cursoId => {
-    const numero = Number(cursoId);
-    if (!Number.isInteger(numero) || numero < 1 || numero > 16) throw new Error(`Curso fora da trilha: ${cursoId}`);
-    return Math.ceil(numero / 4);
-  };
-  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião', 4: 'Embaixador' })[numero] || 'Embaixador';
+  const nivelNecessarioPorPosicao = indice => indice < 3 ? 1 : indice < 5 ? 2 : 3;
+  const nomeNivel = numero => ({ 1: 'Aprendiz', 2: 'Consciente', 3: 'Guardião' })[numero] || 'Guardião';
   const consultarNivelPasse = async req => {
     const usuarioId = id(req.session.usuarioId);
     const { data } = await api.get(`/gamificacao/usuarios/${usuarioId}/passe`);
-    const xp = Number(data?.xpTotal);
-    if (!Number.isFinite(xp) || xp < 0) {
-      const erro = new Error('Não foi possível confirmar o XP do HestIA Pass. Acesso bloqueado por segurança.');
-      erro.response = { status: 503, data: { message: erro.message } };
-      throw erro;
-    }
-    const chaveNivel = String(data?.nivel || '').trim().toUpperCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    const nivel = niveisPasse[chaveNivel];
-    if (!nivel) {
-      const erro = new Error('Nível do HestIA Pass inválido ou indisponível.');
-      erro.response = { status: 503, data: { message: erro.message } };
-      throw erro;
-    }
-    return { ...nivel, xpAtual: xp };
+    return niveisPasse[String(data?.nivel || '').toUpperCase()] || niveisPasse.APRENDIZ;
   };
   const adaptar = (treinamento, indice, nivelAtual) => {
-    const exigido = nivelNecessarioPorId(treinamento.id);
-    // O primeiro curso do nível Consciente (5) é liberado ao atingir o nível 2.
-    // Os demais cursos dessa etapa (6 a 8) exigem também 300 XP.
-    // Assim, um usuário Consciente com 150 XP acessa os cursos 1 a 5.
-    const exigeXpComplementar = nivelAtual.numero === 2 &&
-      Number(treinamento.id) >= 6 && Number(treinamento.id) <= 8 &&
-      nivelAtual.xpAtual < 300;
-    const bloqueado = nivelAtual.numero < exigido || exigeXpComplementar;
+    const exigido = nivelNecessarioPorPosicao(indice);
+    const bloqueado = nivelAtual.numero < exigido;
     return {
       ...treinamento,
       id: String(treinamento.id),
@@ -80,7 +58,7 @@ module.exports = function montarIntegracoes(app, api) {
       api.get('/aprendizagem/conteudos'),
       consultarNivelPasse(req)
     ]);
-    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)).sort((a,b) => Number(a.id) - Number(b.id)), nivelAtual };
+    return { treinamentos: data.map((treinamento, indice) => adaptar(treinamento, indice, nivelAtual)), nivelAtual };
   };
   const exigirCursoLiberado = async (req, cursoId) => {
     const { treinamentos } = await consultarTreinamentosComNivel(req);
@@ -97,15 +75,6 @@ module.exports = function montarIntegracoes(app, api) {
     }
     return treinamento;
   };
-  // Cadastro administrativo das certificações existentes da Academy (sem conceder sem aprovação).
-  router.post('/api/admin/academy/certificacoes/inicializar', admin, executar(async (req, res) => {
-    const { data } = await api.post('/aprendizagem/academy/certificacoes/inicializar');
-    res.json(data);
-  }));
-  // Tela administrativa para executar a inicializacao com a sessao autenticada do HestIA.
-  router.get('/admin/academy/certificacoes', admin, (req, res) => {
-    res.type('html').send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Certificações | HestIA Academy</title><link rel="stylesheet" href="/styles.css"></head><body style="font-family:Arial,sans-serif;padding:32px;max-width:720px;margin:auto"><h1>Certificações HestIA Academy</h1><p>Cadastre ou atualize as quatro certificações usando sua sessão de administrador. Isso não concede certificados sem aprovação.</p><button id="inicializar" type="button" style="padding:12px 18px;cursor:pointer">Inicializar certificações</button><pre id="resultado" style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px"></pre><p><a href="/">Voltar à visão geral</a></p><script>document.getElementById('inicializar').addEventListener('click', async function(){const botao=this;botao.disabled=true;const saida=document.getElementById('resultado');saida.textContent='Inicializando...';try{const resposta=await fetch('/api/admin/academy/certificacoes/inicializar',{method:'POST',credentials:'same-origin'});const dados=await resposta.json();saida.textContent=resposta.ok?'Concluído: '+JSON.stringify(dados,null,2):'Erro '+resposta.status+': '+(dados.erro||JSON.stringify(dados));}catch(e){saida.textContent='Erro de conexão: '+e.message;}finally{botao.disabled=false;}});</script></body></html>`);
-  });
   router.get('/api/certificacoes', colaborador, executar(async (req, res) => {
     const usuarioId = id(req.session.usuarioId);
     const { data: situacoes } = await api.post(`/certificacoes/usuarios/${usuarioId}/verificar`);
@@ -152,16 +121,29 @@ module.exports = function montarIntegracoes(app, api) {
     res.json({ ...data, total: data.questoes.length, aprovado: data.status === 'APROVADA', mensagem: data.status === 'APROVADA' ? 'Aprendizagem validada e registrada.' : 'Reveja o feedback. A aprovação exige pelo menos 80%; as tentativas são controladas pelo servidor.' });
   }));
   router.get('/microtreinamentos/:id/avaliacao', colaborador, executar(async (req, res) => {
-    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    id(req.params.id); res.render('microtreinamento-avaliacao', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
   }));
   router.get('/microtreinamentos/:id', colaborador, executar(async (req, res) => {
-    await exigirCursoLiberado(req, id(req.params.id)); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+    id(req.params.id); res.render('microtreinamento-curso', { perfil: req.session.perfil, active: 'microtreinamentos', cursoId: req.params.id });
+  }));
+  router.post('/api/rag/conversas', executar(async (req, res) => {
+    const titulo = String(req.body?.titulo || '').slice(0, 120);
+    res.status(201).json((await api.post('/api/rag/conversas', { titulo })).data);
+  }));
+  router.get('/api/rag/conversas/:id/historico', executar(async (req, res) => {
+    res.json((await api.get('/api/rag/conversas/' + id(req.params.id) + '/historico')).data);
   }));
   router.post('/api/rag/perguntas', executar(async (req, res) => {
-    const { chave, pergunta, modo, respostaId } = req.body;
-    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'CONSULTAR', respostaId: respostaId == null ? null : id(respostaId) }, { timeout: 45000 })).data);
+    const { chave, pergunta, modo, respostaId, conversaId } = req.body;
+    res.json((await api.post('/api/rag/perguntas', { chave, pergunta, modo: modo || 'GERAR_NOVA', respostaId: respostaId == null ? null : id(respostaId), ...(conversaId == null ? {} : { conversaId: id(conversaId) }) }, { timeout: 45000 })).data);
   }));
   router.get('/api/rag/historico', executar(async (req, res) => res.json((await api.get('/api/rag/historico')).data)));
+  router.delete('/api/rag/historico', executar(async (req, res) => {
+    await api.delete('/api/rag/historico'); res.status(204).end();
+  }));
+  router.delete('/api/rag/historico/:id', executar(async (req, res) => {
+    await api.delete(`/api/rag/historico/${id(req.params.id)}`); res.status(204).end();
+  }));
   router.get('/api/registros/contexto', executar(async (req, res) => res.json((await api.get('/registros-uso-ia/contexto')).data)));
   router.get('/utilizacoes/registros', executar(async (req, res) => {
     const contexto = (await api.get('/registros-uso-ia/contexto')).data;
@@ -173,11 +155,11 @@ module.exports = function montarIntegracoes(app, api) {
     const campos = ['ferramentaId','modeloIa','dataHora','finalidade','tokensEntrada','tokensSaida','custoEstimado','statusExecucao','tempoRespostaMs'];
     const dto = { usuarioId: req.session.usuarioId };
     for (const campo of campos) if (Object.hasOwn(req.body, campo)) dto[campo] = req.body[campo];
-    res.status(201).json((await api.post('/registros-uso-ia', dto)).data);
+    res.status(201).json((await api.post('/registros-uso-ia', dto, { timeout: 15000 })).data);
   }));
-  router.get('/api/admin/respostas', admin, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
-  router.get('/api/admin/respostas/:id', admin, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));
-  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null })).data)));
+  router.get('/api/admin/respostas', curadoriaLeitura, executar(async (req, res) => res.json((await api.get('/api/admin/respostas', { params: { pagina: Number(req.query.pagina || 0), tamanho: 50 } })).data)));
+  router.get('/api/admin/respostas/:id', curadoriaLeitura, executar(async (req, res) => res.json((await api.get(`/api/admin/respostas/${id(req.params.id)}`)).data)));
+  router.post('/api/admin/respostas/:id/revisoes', admin, executar(async (req, res) => res.json((await api.post(`/api/admin/respostas/${id(req.params.id)}/revisoes`, { status: req.body.status, justificativa: req.body.justificativa, expiraEm: req.body.expiraEm || null, dadosSensiveisVerificados: req.body.dadosSensiveisVerificados === true })).data)));
   router.get('/administracao/respostas', admin, executar(async (req, res) => {
     const lista = (await api.get('/api/admin/respostas')).data;
     const detalhe = req.query.id ? (await api.get(`/api/admin/respostas/${id(req.query.id)}`)).data : null;

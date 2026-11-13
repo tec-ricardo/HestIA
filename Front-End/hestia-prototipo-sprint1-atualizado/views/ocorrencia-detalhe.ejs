@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,105 +6,583 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>HestIA — Detalhe da ocorrência</title>
   <link rel="stylesheet" href="/styles.css">
+
   <style>
-    .oc-page{padding:8px 0 35px}.oc-panel{background:#fff;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin:18px 0}.oc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.oc-panel dt{font-size:13px;font-weight:600;color:#64748b}.oc-panel dd{margin:5px 0 15px;overflow-wrap:anywhere}.oc-muted{color:#64748b}.oc-alert,.oc-success{padding:12px 15px;border-radius:8px;margin:12px 0}.oc-alert{background:#fff0f0;color:#a32a2a}.oc-success{background:#e3f7ec;color:#216b44}.oc-back{display:inline-block;margin:8px 0;color:#2545a5;font-weight:600}.oc-form{display:grid;gap:14px}.oc-form label{font-weight:600}.oc-form select,.oc-form textarea{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:#fff;color:#18263d;font:inherit}.oc-form textarea{min-height:120px;resize:vertical}.oc-form button{justify-self:start;border:0;border-radius:8px;padding:11px 18px;background:#2545a5;color:#fff;font-weight:700;cursor:pointer}.oc-form small{color:#64748b}@media(max-width:760px){.oc-grid{grid-template-columns:1fr}.oc-panel{padding:16px}}
+    .oc-page {
+      padding: 18px 0 48px;
+      color: #172c49;
+    }
+
+    .oc-back {
+      display: inline-flex;
+      align-items: center;
+      color: #315c91;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .oc-back:hover {
+      color: #d47739;
+    }
+
+    .oc-hero {
+      background: linear-gradient(120deg, #172c49, #294a70);
+      color: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 22px;
+    }
+
+    .oc-hero-eyebrow {
+      color: #f0aa75;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .oc-hero h2 {
+      color: white;
+      font-size: 30px;
+      margin: 10px 0;
+    }
+
+    .oc-hero p {
+      color: #dce7f5;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .oc-hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .oc-hero-tag {
+      background: rgba(255,255,255,.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,.17);
+      padding: 8px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .oc-panel {
+      background: white;
+      border: 1px solid #dce5ef;
+      border-radius: 18px;
+      padding: 26px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(23,44,73,.035);
+    }
+
+    .oc-section-label {
+      color: #d47739;
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin: 0 0 8px;
+    }
+
+    .oc-panel h2 {
+      color: #172c49;
+      font-size: 22px;
+      margin: 0 0 10px;
+    }
+
+    .oc-section-description {
+      color: #65768e;
+      line-height: 1.6;
+      font-size: 14px;
+      margin: 0 0 22px;
+    }
+
+    .oc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .oc-field {
+      background: #f7f9fc;
+      border: 1px solid #e8edf4;
+      border-radius: 12px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .oc-field dt {
+      font-size: 12px;
+      font-weight: 800;
+      color: #728198;
+      margin-bottom: 8px;
+    }
+
+    .oc-field dd {
+      margin: 0;
+      color: #172c49;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+    }
+
+    .oc-full {
+      grid-column: 1 / -1;
+    }
+
+    .oc-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 99px;
+      padding: 7px 12px;
+      background: #eef2f7;
+      color: #43546b;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .oc-pill.ABERTA {
+      background: #fff0db;
+      color: #94600c;
+    }
+
+    .oc-pill.EM_TRATAMENTO {
+      background: #e8efff;
+      color: #284db1;
+    }
+
+    .oc-pill.RESOLVIDA {
+      background: #e3f7ec;
+      color: #216b44;
+    }
+
+    .oc-highlight {
+      background: #fff8f2;
+      border: 1px solid #f2d8c5;
+      border-left: 4px solid #d47739;
+      border-radius: 12px;
+      padding: 18px;
+      line-height: 1.6;
+      color: #65452f;
+      overflow-wrap: anywhere;
+    }
+
+    .oc-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .oc-form-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .oc-form label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #334b68;
+    }
+
+    .oc-form select,
+    .oc-form textarea {
+      width: 100%;
+      border: 1px solid #ccd9e7;
+      border-radius: 11px;
+      padding: 13px;
+      background: #fbfcfe;
+      color: #172c49;
+      font: inherit;
+      box-sizing: border-box;
+    }
+
+    .oc-form select:focus,
+    .oc-form textarea:focus {
+      outline: none;
+      border-color: #d47739;
+      box-shadow: 0 0 0 3px rgba(212,119,57,.12);
+    }
+
+    .oc-form textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .oc-form small {
+      color: #718199;
+      line-height: 1.5;
+    }
+
+    .oc-form button {
+      justify-self: start;
+      background: #172c49;
+      color: white;
+      border: none;
+      border-radius: 11px;
+      padding: 13px 22px;
+      font-weight: 800;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .oc-form button:hover {
+      background: #294a70;
+    }
+
+    .oc-alert,
+    .oc-success {
+      border-radius: 12px;
+      padding: 15px 18px;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .oc-alert {
+      background: #fff0f0;
+      color: #a32a2a;
+      border: 1px solid #f4d1d1;
+    }
+
+    .oc-success {
+      background: #e3f7ec;
+      color: #216b44;
+      border: 1px solid #bde5cd;
+    }
+
+    @media (max-width: 760px) {
+      .oc-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .oc-full {
+        grid-column: auto;
+      }
+
+      .oc-hero,
+      .oc-panel {
+        padding: 20px;
+      }
+
+      .oc-hero h2 {
+        font-size: 25px;
+      }
+    }
   </style>
 </head>
+
 <body>
 <div class="app-shell">
-  <%- include("menu", {perfil, email, active}) %>
+
+  <%- include("menu", { perfil, email, active }) %>
+
   <main class="main">
+
     <header class="topbar">
       <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
-      <div><p class="eyebrow">Governança</p><h1>Detalhe da ocorrência</h1></div>
-      <div class="profile-switch"><span><%= email %></span></div>
-      <a class="topbar-logout" href="/sair">Sair</a>
+
+      <div>
+        <p class="eyebrow">Governança</p>
+        <h1>Detalhe da ocorrência</h1>
+      </div>
     </header>
+
     <div class="oc-page">
+
       <a class="oc-back" href="/ocorrencias">← Voltar à lista</a>
+
       <% if (erro) { %>
-        <div class="oc-alert" role="alert"><%= erro %> <% if (erro.includes("sessão")) { %><a href="/acesso">Entrar novamente</a><% } %></div>
+        <div class="oc-alert" role="alert">
+          <%= erro %>
+          <% if (String(erro).includes("sessão")) { %>
+            <a href="/acesso">Entrar novamente</a>
+          <% } %>
+        </div>
       <% } %>
-      <% if (sucesso) { %><div class="oc-success" role="status">Tratamento atualizado com sucesso.</div><% } %>
-      <% if (detalhe) { const t = detalhe.tratamento, o = detalhe.ocorrencia, a = detalhe.avaliacao, p = detalhe.politicaAplicada; %>
-        <section class="oc-panel">
+
+      <% if (sucesso) { %>
+        <div class="oc-success" role="status">
+          Tratamento atualizado com sucesso.
+        </div>
+      <% } %>
+
+      <% if (detalhe) {
+        const t = detalhe.tratamento;
+        const o = detalhe.ocorrencia;
+        const a = detalhe.avaliacao;
+        const p = detalhe.politicaAplicada;
+      %>
+
+        <section class="oc-hero">
+          <span class="oc-hero-eyebrow">Governança · Acompanhamento</span>
+
           <h2>Tratamento #<%= t.id %></h2>
-          <div class="oc-grid">
-            <dl>
-              <dt>Status</dt><dd><%= nomesStatus[t.status] || t.status %></dd>
-              <dt>Responsável</dt><dd><%= t.responsavelId ?? "Ainda não definido" %></dd>
-              <dt>Ação corretiva</dt><dd><%= t.acaoCorretiva || "Ainda não definida" %></dd>
-            </dl>
-            <dl>
-              <dt>Avaliação de origem</dt><dd>#<%= t.avaliacaoId %></dd>
-              <dt>Departamento</dt><dd><%= t.departamentoId ?? "Não informado" %></dd>
-              <dt>Aberta em</dt><dd><%= t.criadoEm ? new Date(t.criadoEm).toLocaleString("pt-BR") : "Não informada" %></dd>
-              <dt>Versão do registro</dt><dd><%= t.versaoRegistro %></dd>
-            </dl>
+
+          <p>
+            Acompanhe a não conformidade, entenda o contexto da avaliação
+            e registre as ações necessárias para sua resolução.
+          </p>
+
+          <div class="oc-hero-meta">
+            <span class="oc-hero-tag">
+              <%= nomesStatus[t.status] || t.status %>
+            </span>
+
+            <span class="oc-hero-tag">
+              Avaliação #<%= t.avaliacaoId %>
+            </span>
+
+            <span class="oc-hero-tag">
+              Departamento <%= t.departamentoId ?? "não informado" %>
+            </span>
           </div>
         </section>
+
+        <!-- ETAPA 1 -->
         <section class="oc-panel">
+          <p class="oc-section-label">Etapa 01 · Contexto</p>
+          <h2>O que aconteceu?</h2>
+
+          <p class="oc-section-description">
+            Informações do registro de uso de inteligência artificial
+            que originou esta avaliação.
+          </p>
+
+          <dl class="oc-grid">
+            <div class="oc-field">
+              <dt>Registro</dt>
+              <dd>#<%= o.id %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Ferramenta</dt>
+              <dd><%= o.ferramentaNome || ("#" + o.ferramentaId) %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Modelo</dt>
+              <dd><%= o.modeloIa || "Não informado" %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Usuário</dt>
+              <dd><%= o.usuarioNome || ("#" + o.usuarioId) %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Finalidade</dt>
+              <dd><%= o.finalidade || "Não informada" %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Data do uso</dt>
+              <dd>
+                <%= o.dataHora
+                  ? new Date(o.dataHora).toLocaleString("pt-BR")
+                  : "Não informada" %>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <!-- ETAPA 2 -->
+        <section class="oc-panel">
+          <p class="oc-section-label">Etapa 02 · Avaliação</p>
+          <h2>Por que foi sinalizado?</h2>
+
+          <p class="oc-section-description">
+            Entenda o resultado da avaliação e a política
+            de governança aplicada ao registro.
+          </p>
+
+          <dl class="oc-grid">
+
+            <div class="oc-field">
+              <dt>Resultado</dt>
+              <dd><%= a.status || "Não informado" %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Avaliação de origem</dt>
+              <dd>#<%= t.avaliacaoId %></dd>
+            </div>
+
+            <div class="oc-full">
+              <dt>Motivo preservado</dt>
+              <dd class="oc-highlight">
+                <%= a.motivo || a.justificativa || "Não informado" %>
+              </dd>
+            </div>
+
+            <div class="oc-field oc-full">
+              <dt>Regra aplicada</dt>
+              <dd><%= a.regraAplicada || "Não informada" %></dd>
+            </div>
+
+            <div class="oc-field oc-full">
+              <dt>Limitações</dt>
+              <dd><%= a.limitacoes || "Não informadas" %></dd>
+            </div>
+
+            <div class="oc-field oc-full">
+              <dt>Política aplicada</dt>
+              <dd>
+                <%= p
+                  ? (p.titulo || "Política #" + p.politicaUsoId)
+                    + " — versão "
+                    + (p.versao || a.politicaVersao || "não informada")
+                  : "Versão histórica indisponível" %>
+              </dd>
+            </div>
+
+          </dl>
+        </section>
+
+        <!-- ETAPA 3 -->
+        <section class="oc-panel">
+          <p class="oc-section-label">Etapa 03 · Tratamento</p>
+          <h2>O que precisa ser feito?</h2>
+
+          <p class="oc-section-description">
+            Consulte a ação corretiva registrada e os dados
+            de acompanhamento do tratamento.
+          </p>
+
+          <div class="oc-highlight">
+            <strong>Ação corretiva registrada</strong>
+            <p><%= t.acaoCorretiva || "Ainda não definida" %></p>
+          </div>
+
+          <dl class="oc-grid" style="margin-top: 18px;">
+
+            <div class="oc-field">
+              <dt>Status</dt>
+              <dd>
+                <span class="oc-pill <%= t.status %>">
+                  <%= nomesStatus[t.status] || t.status %>
+                </span>
+              </dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Responsável</dt>
+              <dd><%= t.responsavelId ?? "Ainda não definido" %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Departamento</dt>
+              <dd><%= t.departamentoId ?? "Não informado" %></dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Aberta em</dt>
+              <dd>
+                <%= t.criadoEm
+                  ? new Date(t.criadoEm).toLocaleString("pt-BR")
+                  : "Não informada" %>
+              </dd>
+            </div>
+
+            <div class="oc-field">
+              <dt>Versão do registro</dt>
+              <dd><%= t.versaoRegistro %></dd>
+            </div>
+
+          </dl>
+        </section>
+
+        <!-- ETAPA 4 -->
+        <section class="oc-panel">
+          <p class="oc-section-label">Etapa 04 · Atualização</p>
           <h2>Atualizar tratamento</h2>
-          <form class="oc-form" method="post" action="/ocorrencias/<%= t.id %>/tratamento">
+
+          <p class="oc-section-description">
+            Defina o responsável, atualize o status e registre
+            as medidas adotadas para resolver a ocorrência.
+          </p>
+
+          <form
+            class="oc-form"
+            method="post"
+            action="/ocorrencias/<%= t.id %>/tratamento"
+          >
+
             <input type="hidden" name="versaoRegistro" value="<%= t.versaoRegistro %>">
-            <div>
+
+            <div class="oc-form-field">
               <label for="responsavelId">Responsável</label>
+
               <select id="responsavelId" name="responsavelId">
                 <option value="">Não definido</option>
+
                 <% responsaveis.forEach(usuario => { %>
-                  <option value="<%= usuario.id %>" <%= t.responsavelId === usuario.id ? "selected" : "" %>><%= usuario.nome %> (#<%= usuario.id %>)</option>
+                  <option
+                    value="<%= usuario.id %>"
+                    <%= t.responsavelId === usuario.id ? "selected" : "" %>
+                  >
+                    <%= usuario.nome %> (#<%= usuario.id %>)
+                  </option>
                 <% }); %>
-                <% if (t.responsavelId && !responsaveis.some(usuario => usuario.id === t.responsavelId)) { %>
-                  <option value="<%= t.responsavelId %>" selected>Usuário #<%= t.responsavelId %></option>
+
+                <% if (
+                  t.responsavelId &&
+                  !responsaveis.some(usuario => usuario.id === t.responsavelId)
+                ) { %>
+                  <option value="<%= t.responsavelId %>" selected>
+                    Usuário #<%= t.responsavelId %>
+                  </option>
                 <% } %>
               </select>
-              <% if (responsaveis.length === 0) { %><small>Nenhum usuário ativo foi disponibilizado pela API.</small><% } %>
+
+              <% if (responsaveis.length === 0) { %>
+                <small>Nenhum usuário ativo foi disponibilizado pela API.</small>
+              <% } %>
             </div>
-            <div>
+
+            <div class="oc-form-field">
               <label for="status">Status</label>
+
               <select id="status" name="status" required>
                 <% Object.entries(nomesStatus).forEach(([codigo, nome]) => { %>
-                  <option value="<%= codigo %>" <%= t.status === codigo ? "selected" : "" %>><%= nome %></option>
+                  <option
+                    value="<%= codigo %>"
+                    <%= t.status === codigo ? "selected" : "" %>
+                  >
+                    <%= nome %>
+                  </option>
                 <% }); %>
               </select>
             </div>
-            <div>
+
+            <div class="oc-form-field">
               <label for="acaoCorretiva">Ação corretiva</label>
-              <textarea id="acaoCorretiva" name="acaoCorretiva" maxlength="1000"><%= t.acaoCorretiva || "" %></textarea>
-              <small>Em tratamento e resolvida exigem responsável e ação corretiva.</small>
+
+              <textarea
+                id="acaoCorretiva"
+                name="acaoCorretiva"
+                maxlength="1000"
+              ><%= t.acaoCorretiva || "" %></textarea>
+
+              <small>
+                Em tratamento e resolvida exigem responsável
+                e ação corretiva.
+              </small>
             </div>
+
             <button type="submit">Salvar tratamento</button>
           </form>
         </section>
-        <section class="oc-panel">
-          <h2>Uso de IA associado</h2>
-          <div class="oc-grid">
-            <dl>
-              <dt>Registro</dt><dd>#<%= o.id %></dd>
-              <dt>Ferramenta</dt><dd><%= o.ferramentaNome || ("#" + o.ferramentaId) %></dd>
-              <dt>Modelo</dt><dd><%= o.modeloIa || "Não informado" %></dd>
-            </dl>
-            <dl>
-              <dt>Usuário</dt><dd><%= o.usuarioNome || ("#" + o.usuarioId) %></dd>
-              <dt>Finalidade</dt><dd><%= o.finalidade || "Não informada" %></dd>
-              <dt>Data do uso</dt><dd><%= o.dataHora ? new Date(o.dataHora).toLocaleString("pt-BR") : "Não informada" %></dd>
-            </dl>
-          </div>
-        </section>
-        <section class="oc-panel">
-          <h2>Fundamento da avaliação</h2>
-          <dl>
-            <dt>Resultado</dt><dd><%= a.status || "Não informado" %></dd>
-            <dt>Motivo preservado</dt><dd><%= a.motivo || a.justificativa || "Não informado" %></dd>
-            <dt>Regra aplicada</dt><dd><%= a.regraAplicada || "Não informada" %></dd>
-            <dt>Limitações</dt><dd><%= a.limitacoes || "Não informadas" %></dd>
-            <dt>Política aplicada</dt><dd><%= p ? (p.titulo || "Política #" + p.politicaUsoId) + " — versão " + (p.versao || a.politicaVersao || "não informada") : "Versão histórica indisponível" %></dd>
-          </dl>
-        </section>
+
       <% } %>
+
     </div>
   </main>
 </div>
+
 <script src="/app.js"></script>
 </body>
 </html>

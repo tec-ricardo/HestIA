@@ -176,7 +176,7 @@ class BuscaVetorialPostgresTest {
 
     @Test
     void migratesAllVersionsAndCreatesVectorIndexAndStaging() {
-        assertThat(flyway.info().applied()).hasSize(24);
+        assertThat(flyway.info().applied()).hasSize(28);
         assertThat(flyway.validateWithResult().validationSuccessful).isTrue();
         assertThat(flyway.migrate().migrationsExecuted).isZero();
 
@@ -213,6 +213,14 @@ class BuscaVetorialPostgresTest {
         jdbc.update("UPDATE respostas_reutilizaveis SET expira_em=? WHERE id=?",futura,aprovada);
         entities.get(aprovada).setExpiraEm(futura);
         assertThat(service.buscarSemelhantes(1L,"Pergunta de teste",1)).extracting(RespostaReutilizavel::getId).containsExactly(aprovada);
+    }
+
+    @Test
+    void similaridadeRetornadaECalculadaPeloBancoSemSerProbabilidade(){
+        row(1,PerfilUsuario.FUNCIONARIO,false,true,1,0);
+        var encontradas=service.buscarSemelhantes(1L,"pergunta",1);
+        assertThat(encontradas).hasSize(1);
+        assertThat(encontradas.getFirst().getSimilaridade()).isCloseTo(1.0,org.assertj.core.data.Offset.offset(0.000001));
     }
 
     @Test
@@ -272,6 +280,7 @@ class BuscaVetorialPostgresTest {
         );
 
         service.indexarResposta(1L, allowed);
+        verify(embeddings).gerarEmbedding("Pergunta de teste\nConteúdo de teste");
 
         assertThat(jdbc.queryForObject(
                 """
@@ -306,7 +315,7 @@ class BuscaVetorialPostgresTest {
                 id
         );
 
-        when(embeddings.gerarEmbedding("Pergunta de teste"))
+        when(embeddings.gerarEmbedding(org.mockito.ArgumentMatchers.startsWith("Pergunta de teste\n")))
                 .thenAnswer(invocation -> {
                     jdbc.update(
                             """
