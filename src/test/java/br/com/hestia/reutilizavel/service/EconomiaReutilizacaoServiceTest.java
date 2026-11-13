@@ -89,13 +89,7 @@ class EconomiaReutilizacaoServiceTest {
                 resultado.tokensEconomizados()
         );
 
-        assertEquals(
-                0,
-                new BigDecimal("0.50")
-                        .compareTo(
-                                resultado.custoEstimadoEvitado()
-                        )
-        );
+        org.junit.jupiter.api.Assertions.assertNull(resultado.custoEstimadoEvitado());
 
         assertEquals(
                 30.0,
@@ -145,12 +139,7 @@ class EconomiaReutilizacaoServiceTest {
                 resultado.tokensEconomizados()
         );
 
-        assertEquals(
-                0,
-                BigDecimal.ZERO.compareTo(
-                        resultado.custoEstimadoEvitado()
-                )
-        );
+        org.junit.jupiter.api.Assertions.assertNull(resultado.custoEstimadoEvitado());
 
         assertEquals(
                 0.0,

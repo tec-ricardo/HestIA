@@ -1,82 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HestIA - Visão Geral</title>
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HestIA - Visão Geral</title>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="app-shell">
-    <%- include("menu", { perfil, email, active }) %>
-    <main class="main">
-        <header class="topbar">
-            <button class="menu-button" id="menuButton">☰</button>
-            <div><p class="eyebrow">Plataforma corporativa</p><h1>Visão geral</h1></div>
-            <div class="profile-switch"><span><%= email %></span></div>
-            <a class="topbar-logout" href="/sair">Sair</a>
-        </header>
+<div class="app-shell overview-app">
+  <%- include("menu", { perfil, email, active }) %>
+  <main class="main overview-page hestia-manager-refresh">
+    <header class="topbar overview-topbar">
+      <button class="menu-button" id="menuButton">☰</button>
+      <div><p class="eyebrow">Plataforma corporativa</p><h1>Visão geral</h1></div>
+    </header>
 
-        <section class="hero-card">
-            <p class="eyebrow"><%= perfil === 'colaborador' ? 'Minha jornada' : 'Visão organizacional' %></p>
-            <h2><%= perfil === 'colaborador' ? 'Seu progresso no uso responsável de IA' : 'Governança e adoção de IA na empresa' %></h2>
-            <p>Os valores abaixo vêm dos registros atuais da plataforma e são atualizados a cada acesso.</p>
-        </section>
+    <section class="hero-card overview-hero">
+      <div class="overview-hero-copy">
+        <p class="eyebrow"><%= perfil === 'colaborador' ? 'Minha jornada' : 'Visão organizacional' %></p>
+        <h2><%= perfil === 'colaborador' ? 'Seu progresso no uso responsável de IA' : 'Governança e adoção de IA na empresa' %></h2>
+        <p>Os valores abaixo vêm dos registros atuais da plataforma e são atualizados a cada acesso.</p>
+      </div>
+      <div class="overview-hero-art" aria-hidden="true"><span class="overview-orbit overview-orbit-a"></span><span class="overview-orbit overview-orbit-b"></span><span class="overview-hero-symbol">✦</span></div>
+    </section>
 
-        <% if (perfil === 'colaborador') { %>
-            <section class="dashboard-summary">
-                <article class="dashboard-summary-card"><span>HestIA Pass</span><strong><%= resumo.xp === null ? '—' : resumo.xp + ' XP' %></strong><p><%= resumo.nivel || 'Progresso indisponível' %></p></article>
-                <article class="dashboard-summary-card"><span>AI Credits</span><strong><%= resumo.creditos === null ? '—' : resumo.creditos %></strong><p>Mesmo histórico validado do Passe</p></article>
-                <article class="dashboard-summary-card"><span>Ranking</span><strong><%= resumo.posicao ? resumo.posicao + 'º' : '—' %></strong><p><%= resumo.participantes %> participante<%= resumo.participantes === 1 ? '' : 's' %> com pontuação</p></article>
-                <article class="dashboard-summary-card"><span>Registros de uso</span><strong><%= resumo.totalRegistros %></strong><p><%= resumo.registrosComSucesso %> execuções concluídas com sucesso</p></article>
-            </section>
+    <% if (perfil === 'colaborador') { %>
+      <section class="dashboard-summary overview-summary" aria-label="Indicadores pessoais">
+        <article class="dashboard-summary-card overview-kpi overview-kpi-pass"><div class="overview-kpi-top"><span>HestIA Pass</span><span class="overview-kpi-icon" aria-hidden="true">✦</span></div><strong><%= resumo.xp === null ? '—' : resumo.xp + ' XP' %></strong><p><%= resumo.nivel || 'Progresso indisponível' %></p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>AI Credits</span><span class="overview-kpi-icon" aria-hidden="true">◆</span></div><strong><%= resumo.creditos === null ? '—' : resumo.creditos %></strong><p>Mesmo histórico validado do Passe</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Ranking</span><span class="overview-kpi-icon" aria-hidden="true">★</span></div><strong><%= resumo.posicao ? resumo.posicao + 'º' : '—' %></strong><p><%= resumo.participantes %> participante<%= resumo.participantes === 1 ? '' : 's' %> com pontuação</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Registros de uso</span><span class="overview-kpi-icon" aria-hidden="true">▤</span></div><strong><%= resumo.totalRegistros %></strong><p><%= resumo.registrosComSucesso %> execuções concluídas com sucesso</p></article>
+      </section>
 
-            <section class="grid two">
-                <article class="panel">
-                    <div class="panel-head"><div><h3>Evolução no HestIA Pass</h3><p>Progresso calculado pelo backend.</p></div></div>
-                    <% if (resumo.xp === null) { %><p class="muted">Progresso indisponível.</p><% } else { %>
-                        <h2><%= resumo.nivel %></h2>
-                        <div class="personal-xp-progress"><div class="personal-xp-progress-value" style="width:<%= resumo.percentualProgresso %>%"></div></div>
-                        <p><%= resumo.xpProximoNivel === null ? 'Nível máximo alcançado.' : resumo.percentualProgresso + '% do caminho para o próximo nível.' %></p>
-                        <a class="personal-card-link" href="/passe-hestia">Ver HestIA Pass →</a>
-                    <% } %>
-                </article>
-                <article class="panel">
-                    <div class="panel-head"><div><h3>Uso registrado</h3><p>Dados associados à sua conta.</p></div></div>
-                    <div class="list-clean"><span><strong><%= resumo.totalRegistros %></strong> utilizações registradas</span><span><strong><%= resumo.tokensRegistrados.toLocaleString('pt-BR') %></strong> tokens informados</span><span><strong><%= resumo.registrosComSucesso %></strong> execuções bem-sucedidas</span></div>
-                    <a class="personal-card-link" href="/utilizacoes/registros">Ver registros →</a>
-                </article>
-            </section>
+      <section class="grid two overview-detail-grid">
+        <article class="panel overview-feature-panel overview-progress-panel">
+          <div class="panel-head"><div><p class="overview-section-label">EVOLUÇÃO PESSOAL</p><h3>Evolução no HestIA Pass</h3><p>Progresso calculado pelo backend.</p></div><span class="overview-panel-icon" aria-hidden="true">✦</span></div>
+          <% if (resumo.xp === null) { %>
+            <p class="muted">Progresso indisponível.</p>
+          <% } else { %>
+            <div class="overview-level-row"><div><span class="overview-small-label">Seu nível atual</span><h2><%= resumo.nivel %></h2></div><div class="overview-xp-bubble"><strong><%= resumo.xp %></strong><small>XP total</small></div></div>
+            <div class="overview-progress-meta"><span>Progresso para o próximo nível</span><strong><%= resumo.xpProximoNivel === null ? 'Máximo' : resumo.percentualProgresso + '%' %></strong></div>
+            <div class="personal-xp-progress overview-progress-track" role="progressbar" aria-valuenow="<%= resumo.percentualProgresso %>" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso para o próximo nível"><div class="personal-xp-progress-value" style="width:<%= resumo.percentualProgresso %>%"></div></div>
+            <p class="overview-progress-note"><%= resumo.xpProximoNivel === null ? 'Nível máximo alcançado.' : resumo.percentualProgresso + '% do caminho para o próximo nível.' %></p>
+            <a class="personal-card-link overview-card-link" href="/passe-hestia">Ver HestIA Pass <span aria-hidden="true">→</span></a>
+          <% } %>
+        </article>
+        <article class="panel overview-feature-panel overview-usage-panel">
+          <div class="panel-head"><div><p class="overview-section-label">SEU HISTÓRICO</p><h3>Uso registrado</h3><p>Dados associados à sua conta.</p></div><span class="overview-panel-icon" aria-hidden="true">▤</span></div>
+          <div class="list-clean overview-usage-list"><span><strong><%= resumo.totalRegistros %></strong> utilizações registradas</span><span><strong><%= resumo.tokensRegistrados.toLocaleString('pt-BR') %></strong> tokens informados</span><span><strong><%= resumo.registrosComSucesso %></strong> execuções bem-sucedidas</span></div>
+          <a class="personal-card-link overview-card-link" href="/utilizacoes/registros">Ver registros <span aria-hidden="true">→</span></a>
+        </article>
+      </section>
 
-            <section class="panel">
-                <div class="panel-head"><div><h3>Atividade recente</h3><p>Últimos registros encontrados no banco.</p></div></div>
-                <% if (!resumo.atividadeRecente.length) { %><p class="muted">Nenhuma utilização registrada.</p><% } else { %>
-                    <div class="table-wrap"><table><thead><tr><th>Ferramenta</th><th>Modelo</th><th>Finalidade</th><th>Status</th><th>Data</th></tr></thead><tbody>
-                    <% resumo.atividadeRecente.forEach(item => { %><tr><td><%= item.ferramentaNome %></td><td><%= item.modeloIa %></td><td><%= item.finalidade %></td><td><%= item.statusExecucao %></td><td><%= new Date(item.dataHora).toLocaleString('pt-BR') %></td></tr><% }) %>
-                    </tbody></table></div>
-                <% } %>
-            </section>
-        <% } else { %>
-            <section class="dashboard-summary">
-                <article class="dashboard-summary-card"><span>Empresas</span><strong><%= indicadores.empresas %></strong><p>Cadastros acessíveis</p></article>
-                <article class="dashboard-summary-card"><span>Departamentos</span><strong><%= indicadores.departamentos %></strong><p>Estruturas cadastradas</p></article>
-                <article class="dashboard-summary-card"><span>Usuários</span><strong><%= indicadores.usuarios %></strong><p>Contas cadastradas</p></article>
-                <article class="dashboard-summary-card"><span>Ferramentas</span><strong><%= indicadores.ferramentas %></strong><p>Ferramentas de IA cadastradas</p></article>
-            </section>
-            <section class="grid two">
-                <article class="panel">
-                    <div class="panel-head"><div><h3>AI Maturity Score</h3><p>Apuração parcial com a base sintética da QSoft.</p></div></div>
-                    <h2><%= resumo.maturidadeParcial === null ? 'Não disponível' : resumo.maturidadeParcial.toFixed(2) + ' / 100' %></h2>
-                    <p><%= resumo.coberturaMaturidade === null ? 'Cobertura não disponível.' : 'Cobertura dos pesos elegíveis: ' + resumo.coberturaMaturidade + '%.' %></p>
-                    <a class="personal-card-link" href="/maturidade">Ver apuração →</a>
-                </article>
-                <article class="panel">
-                    <div class="panel-head"><div><h3>Operação registrada</h3><p>Uso de IA presente no banco operacional.</p></div></div>
-                    <div class="list-clean"><span><strong><%= resumo.totalRegistros %></strong> utilizações</span><span><strong><%= resumo.tokensRegistrados.toLocaleString('pt-BR') %></strong> tokens informados</span><span><strong><%= indicadores.politicas %></strong> políticas cadastradas</span></div>
-                </article>
-            </section>
+      <section class="panel overview-activity-panel">
+        <div class="panel-head"><div><p class="overview-section-label">ACOMPANHAMENTO</p><h3>Atividade recente</h3><p>Últimos registros encontrados no banco.</p></div><span class="overview-panel-icon" aria-hidden="true">◷</span></div>
+        <% if (!resumo.atividadeRecente.length) { %><p class="muted">Nenhuma utilização registrada.</p><% } else { %>
+          <div class="table-wrap overview-table-wrap"><table><thead><tr><th>Ferramenta</th><th>Modelo</th><th>Finalidade</th><th>Status</th><th>Data</th></tr></thead><tbody>
+            <% resumo.atividadeRecente.forEach(item => { %><tr><td><%= item.ferramentaNome %></td><td><%= item.modeloIa %></td><td><%= item.finalidade %></td><td><span class="overview-status <%= String(item.statusExecucao).toUpperCase() === 'SUCESSO' ? 'overview-status-ok' : String(item.statusExecucao).toUpperCase() === 'ERRO' ? 'overview-status-error' : 'overview-status-other' %>"><%= item.statusExecucao %></span></td><td><%= new Date(item.dataHora).toLocaleString('pt-BR') %></td></tr><% }) %>
+          </tbody></table></div>
         <% } %>
-    </main>
+      </section>
+    <% } else { %>
+      <div class="hm-section-intro" aria-label="Resumo gerencial"><div><span class="hm-kicker">PAINEL GERENCIAL</span><h2>Indicadores da organização</h2><p>Uma visão consolidada dos cadastros, da maturidade e da atividade registrada.</p></div><span class="hm-live-note"><span aria-hidden="true">●</span> Dados da plataforma</span></div>
+      <section class="dashboard-summary overview-summary hm-manager-metrics" aria-label="Indicadores organizacionais">
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Empresas</span><span class="overview-kpi-icon" aria-hidden="true">▦</span></div><strong><%= indicadores.empresas %></strong><p>Cadastros acessíveis</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Departamentos</span><span class="overview-kpi-icon" aria-hidden="true">▤</span></div><strong><%= indicadores.departamentos %></strong><p>Estruturas cadastradas</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Usuários</span><span class="overview-kpi-icon" aria-hidden="true">♙</span></div><strong><%= indicadores.usuarios %></strong><p>Contas cadastradas</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Ferramentas</span><span class="overview-kpi-icon" aria-hidden="true">✦</span></div><strong><%= indicadores.ferramentas %></strong><p>Ferramentas de IA cadastradas</p></article>
+      </section>
+      <section class="grid two overview-detail-grid hm-manager-panels">
+        <article class="panel overview-feature-panel overview-maturity-panel">
+          <div class="panel-head"><div><p class="overview-section-label">MATURIDADE EM IA</p><h3>AI Maturity Score</h3><p>Apuração parcial com a base sintética da QSoft.</p></div><span class="overview-panel-icon" aria-hidden="true">✦</span></div>
+          <div class="overview-maturity-value"><h2><%= resumo.maturidadeParcial === null ? 'Não disponível' : resumo.maturidadeParcial.toFixed(2) + ' / 100' %></h2></div>
+          <p class="overview-maturity-note"><%= resumo.coberturaMaturidade === null ? 'Cobertura não disponível.' : 'Cobertura dos pesos elegíveis: ' + resumo.coberturaMaturidade + '%.' %></p>
+          <a class="personal-card-link overview-card-link" href="/maturidade">Ver apuração <span aria-hidden="true">→</span></a>
+        </article>
+        <article class="panel overview-feature-panel overview-usage-panel">
+          <div class="panel-head"><div><p class="overview-section-label">ATIVIDADE ORGANIZACIONAL</p><h3>Operação registrada</h3><p>Uso de IA presente no banco operacional.</p></div><span class="overview-panel-icon" aria-hidden="true">▤</span></div>
+          <div class="list-clean overview-usage-list"><span><strong><%= resumo.totalRegistros %></strong> utilizações</span><span><strong><%= resumo.tokensRegistrados.toLocaleString('pt-BR') %></strong> tokens informados</span><span><strong><%= indicadores.politicas %></strong> políticas cadastradas</span></div>
+        </article>
+      </section>
+    <% } %>
+  </main>
 </div>
 <script src="/app.js"></script>
 </body>

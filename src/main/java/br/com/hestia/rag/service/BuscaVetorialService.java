@@ -26,6 +26,10 @@ public class BuscaVetorialService {
     private static final int DIMENSAO = 1536;
     private static final double SIMILARIDADE_PADRAO = 0.70;
 
+    public double similaridadePadrao() {
+        return SIMILARIDADE_PADRAO;
+    }
+
     private final JdbcTemplate jdbcTemplate;
     private final EmbeddingService embeddingService;
     private final RespostaReutilizavelRepository repository;
@@ -80,7 +84,7 @@ public class BuscaVetorialService {
         String promptIndexado = resposta.getPromptOriginal();
         String respostaIndexada = resposta.getRespostaGerada();
         String perfilAutorizado = usuario.getPerfil().name();
-        String vetor = gerarVetor(promptIndexado);
+        String vetor = gerarVetor(promptIndexado + "\n" + respostaIndexada);
 
         int atualizadas = jdbcTemplate.update(
                 """
@@ -164,11 +168,38 @@ public class BuscaVetorialService {
             );
         }
 
+        // Não chamar a OpenAI se não existe nenhum vetor autorizado para pesquisar.
+        // Sem fontes, o serviço deve retornar lista vazia, não erro 503.
+        Long quantidade = jdbcTemplate.queryForObject(
+                """
+                SELECT count(*) FROM respostas_reutilizaveis r
+                WHERE r.empresa_id = ?
+                  AND r.reutilizavel = true
+                  AND r.status_qualidade = 'APROVADA'
+                  AND (r.expira_em IS NULL OR r.expira_em > ?)
+                  AND r.possui_dados_sensiveis = false
+                  AND r.embedding_vector IS NOT NULL
+                  AND EXISTS (
+                      SELECT 1 FROM resposta_perfis p
+                      WHERE p.resposta_id = r.id AND p.perfil = ?
+                  )
+                """,
+                Long.class,
+                empresaId,
+                java.time.LocalDateTime.now(),
+                usuario.getPerfil().name()
+        );
+        if (quantidade == null || quantidade == 0) {
+            if (decisoes != null) decisoes.registrar(usuario, null,
+                    "RECUPERACAO_VETORIAL", true, "SEM_CONTEUDO_AUTORIZADO");
+            return List.of();
+        }
+
         String vetor = gerarVetor(pergunta);
 
-        List<Long> ids = jdbcTemplate.queryForList(
+        List<Map<String, Object>> resultados = jdbcTemplate.queryForList(
                 """
-                SELECT id
+                SELECT id, 1.0 - (embedding_vector <=> CAST(? AS vector)) AS similaridade
                 FROM respostas_reutilizaveis
                 WHERE empresa_id = ?
                   AND reutilizavel = true
@@ -186,7 +217,7 @@ public class BuscaVetorialService {
                 ORDER BY embedding_vector <=> CAST(? AS vector)
                 LIMIT ?
                 """,
-                Long.class,
+                vetor,
                 empresaId,
                 java.time.LocalDateTime.now(),
                 usuario.getPerfil().name(),
@@ -196,10 +227,20 @@ public class BuscaVetorialService {
                 limite
         );
 
-        if (ids.isEmpty()) {
+        if (resultados.isEmpty()) {
             if(decisoes!=null)decisoes.registrar(usuario,null,"RECUPERACAO_VETORIAL",true,"SEM_CONTEUDO_AUTORIZADO");
             return List.of();
         }
+
+        List<Long> ids = resultados.stream()
+                .map(linha -> ((Number) linha.get("id")).longValue())
+                .toList();
+
+        Map<Long, Double> similaridades = resultados.stream()
+                .collect(Collectors.toMap(
+                        linha -> ((Number) linha.get("id")).longValue(),
+                        linha -> ((Number) linha.get("similaridade")).doubleValue()
+                ));
 
         Map<Long, RespostaReutilizavel> respostas =
                 repository.findAllById(ids)
@@ -221,6 +262,7 @@ public class BuscaVetorialService {
         return ids.stream()
                 .map(respostas::get)
                 .filter(Objects::nonNull)
+                .peek(r -> r.setSimilaridade(similaridades.get(r.getId())))
                 .toList();
     }
 

@@ -1,72 +1,493 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HestIA — Ocorrências</title>
+  <title>HestIA — Gestão de ocorrências</title>
   <link rel="stylesheet" href="/styles.css">
+
   <style>
-    .oc-page{padding:8px 0 35px}.oc-panel{background:#fff;border:1px solid #dce3ee;border-radius:12px;padding:22px;margin:18px 0}.oc-head{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap}.oc-head h2{margin:0}.oc-muted{color:#64748b}.oc-table{overflow-x:auto;margin-top:15px}.oc-table table{width:100%;border-collapse:collapse}.oc-table th,.oc-table td{padding:13px 10px;text-align:left;border-bottom:1px solid #e5eaf2}.oc-table th{color:#64748b;font-size:12px}.oc-pill{display:inline-block;border-radius:99px;background:#f1f5f9;padding:5px 10px;font-size:12px}.oc-pill.ABERTA{background:#fff1dc;color:#875300}.oc-pill.EM_TRATAMENTO{background:#e8efff;color:#284db1}.oc-pill.RESOLVIDA{background:#e3f7ec;color:#216b44}.oc-alert{padding:12px 15px;border-radius:8px;background:#fff0f0;color:#a32a2a;margin:15px 0}.oc-pages{display:flex;justify-content:flex-end;align-items:center;gap:15px;margin-top:18px}.oc-pages a,.oc-table a{color:#2545a5;font-weight:600}select{border:1px solid #cbd5e1;border-radius:8px;padding:10px;background:#fff;color:#18263d;font:inherit}
+    .oc-page {
+      padding: 20px 0 48px;
+      color: #172c49;
+    }
+
+    .oc-hero {
+      background: linear-gradient(120deg, #172c49, #294a70);
+      color: white;
+      padding: 32px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .oc-hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 45px solid rgba(255,255,255,.045);
+      border-radius: 50%;
+      right: -90px;
+      top: -100px;
+      pointer-events: none;
+    }
+
+    .oc-eyebrow {
+      color: #f0aa75;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .oc-hero h2 {
+      color: white;
+      font-size: clamp(25px, 3vw, 34px);
+      margin: 0 0 10px;
+      letter-spacing: -.7px;
+    }
+
+    .oc-hero p {
+      color: #dce7f5;
+      max-width: 670px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .oc-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .oc-metric {
+      background: white;
+      border: 1px solid #dce5ef;
+      border-radius: 16px;
+      padding: 23px;
+      box-shadow: 0 8px 25px rgba(23,44,73,.035);
+      border-top: 4px solid #d47739;
+    }
+
+    .oc-metric:nth-child(2) {
+      border-top-color: #4777bc;
+    }
+
+    .oc-metric:nth-child(3) {
+      border-top-color: #29966a;
+    }
+
+    .oc-metric-label {
+      color: #65768e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .oc-metric-value {
+      display: block;
+      font-size: 34px;
+      font-weight: 850;
+      margin: 9px 0 5px;
+      color: #172c49;
+    }
+
+    .oc-metric-note {
+      color: #7c8ca0;
+      font-size: 12px;
+    }
+
+    .oc-panel {
+      background: white;
+      border: 1px solid #dce5ef;
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(23,44,73,.035);
+    }
+
+    .oc-panel-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .oc-panel-header h2 {
+      font-size: 21px;
+      color: #172c49;
+      margin: 0 0 6px;
+    }
+
+    .oc-muted {
+      color: #65768e;
+      font-size: 14px;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .oc-filter {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .oc-filter label {
+      color: #40536d;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .oc-filter select {
+      border: 1px solid #cfdbe8;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #172c49;
+      padding: 11px 14px;
+      font: inherit;
+      min-width: 180px;
+    }
+
+    .oc-filter select:focus {
+      outline: none;
+      border-color: #d47739;
+      box-shadow: 0 0 0 3px rgba(212,119,57,.12);
+    }
+
+    .oc-table {
+      overflow-x: auto;
+      border: 1px solid #e5ebf3;
+      border-radius: 12px;
+    }
+
+    .oc-table table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 780px;
+    }
+
+    .oc-table th {
+      background: #f4f7fb;
+      color: #64758d;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+      padding: 16px;
+    }
+
+    .oc-table td {
+      color: #273d58;
+      font-size: 13px;
+      padding: 18px 16px;
+      border-top: 1px solid #edf1f6;
+      vertical-align: middle;
+    }
+
+    .oc-table tbody tr:hover {
+      background: #f8fbff;
+    }
+
+    .oc-id {
+      color: #172c49;
+      font-weight: 800;
+    }
+
+    .oc-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 99px;
+      background: #eef2f7;
+      color: #43546b;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .oc-pill.ABERTA {
+      background: #fff0db;
+      color: #94600c;
+    }
+
+    .oc-pill.EM_TRATAMENTO {
+      background: #e8efff;
+      color: #284db1;
+    }
+
+    .oc-pill.RESOLVIDA {
+      background: #e3f7ec;
+      color: #216b44;
+    }
+
+    .oc-details {
+      display: inline-block;
+      padding: 9px 13px;
+      border: 1px solid #d8e4f1;
+      border-radius: 9px;
+      color: #2455a5;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .oc-details:hover {
+      background: #172c49;
+      color: white;
+      text-decoration: none;
+    }
+
+    .oc-alert {
+      padding: 17px;
+      border-radius: 11px;
+      background: #fff0f0;
+      color: #a32a2a;
+      margin-top: 18px;
+    }
+
+    .oc-empty {
+      text-align: center;
+      padding: 55px 20px;
+      background: #f8fafc;
+      border: 1px dashed #d7e1ed;
+      border-radius: 12px;
+    }
+
+    .oc-empty h3 {
+      margin: 0 0 9px;
+      color: #172c49;
+    }
+
+    .oc-pages {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 22px;
+      font-size: 13px;
+      color: #65768e;
+    }
+
+    .oc-pages a {
+      color: #2455a5;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    @media (max-width: 850px) {
+      .oc-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .oc-hero,
+      .oc-panel {
+        padding: 20px;
+      }
+    }
   </style>
 </head>
+
 <body>
 <div class="app-shell">
-  <%- include("menu", {perfil, email, active}) %>
+
+  <%- include("menu", { perfil, email, active }) %>
+
   <main class="main">
+
     <header class="topbar">
       <button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button>
-      <div><p class="eyebrow">Governança</p><h1>Gestão de ocorrências</h1></div>
-      <div class="profile-switch"><span><%= email %></span></div>
-      <a class="topbar-logout" href="/sair">Sair</a>
+
+      <div>
+        <p class="eyebrow">Governança</p>
+        <h1>Gestão de ocorrências</h1>
+      </div>
     </header>
+
     <div class="oc-page">
-      <p class="oc-muted">Tratamentos de não conformidade da sua empresa e do seu escopo de acesso.</p>
+
+      <section class="oc-hero">
+        <div class="oc-eyebrow">Governança · Monitoramento</div>
+        <h2>Gestão de ocorrências</h2>
+        <p>
+          Acompanhe não conformidades identificadas no uso de inteligência
+          artificial, monitore os tratamentos e mantenha a rastreabilidade
+          das ações corretivas.
+        </p>
+      </section>
+
+      <%
+        const ocorrenciasVisiveis = Array.isArray(itens) ? itens : [];
+        const quantidadeTratamento = ocorrenciasVisiveis.filter(
+          item => item.status === "EM_TRATAMENTO"
+        ).length;
+        const quantidadeResolvidas = ocorrenciasVisiveis.filter(
+          item => item.status === "RESOLVIDA"
+        ).length;
+      %>
+
+      <section class="oc-metrics" aria-label="Indicadores de ocorrências">
+
+        <article class="oc-metric">
+          <span class="oc-metric-label">Ocorrências no filtro</span>
+          <strong class="oc-metric-value"><%= erro ? "—" : totalItens %></strong>
+          <span class="oc-metric-note">Total retornado para o filtro atual</span>
+        </article>
+
+        <article class="oc-metric">
+          <span class="oc-metric-label">Em tratamento</span>
+          <strong class="oc-metric-value"><%= erro ? "—" : quantidadeTratamento %></strong>
+          <span class="oc-metric-note">Registros nesta página</span>
+        </article>
+
+        <article class="oc-metric">
+          <span class="oc-metric-label">Resolvidas</span>
+          <strong class="oc-metric-value"><%= erro ? "—" : quantidadeResolvidas %></strong>
+          <span class="oc-metric-note">Registros nesta página</span>
+        </article>
+
+      </section>
+
       <section class="oc-panel">
-        <div class="oc-head">
-          <div><h2>Ocorrências registradas</h2><% if (!erro) { %><p class="oc-muted"><%= totalItens %> tratamento(s) neste filtro.</p><% } %></div>
-          <form action="/ocorrencias" method="get">
-            <label for="statusFiltro">Status</label>
+
+        <div class="oc-panel-header">
+
+          <div>
+            
+<h2>Ocorrências registradas</h2>
+
+<% if (!erro) { %>
+  <p class="oc-muted">
+    <%= totalItens %> tratamento(s) neste filtro.
+  </p>
+<% } %>
+
+            <p class="oc-muted">
+              Consulte avaliações, responsáveis, departamentos e
+              o andamento das ações corretivas.
+            </p>
+          </div>
+
+          <form class="oc-filter" action="/ocorrencias" method="get">
+            <label for="statusFiltro">Filtrar por status</label>
+
             <select id="statusFiltro" name="status" onchange="this.form.submit()">
               <option value="">Todos</option>
+
               <% Object.entries(nomesStatus).forEach(([codigo, nome]) => { %>
-                <option value="<%= codigo %>" <%= status === codigo ? "selected" : "" %>><%= nome %></option>
+                <option value="<%= codigo %>" <%= status === codigo ? "selected" : "" %>>
+                  <%= nome %>
+                </option>
               <% }); %>
             </select>
-            <noscript><button type="submit">Filtrar</button></noscript>
+
+            <noscript>
+              <button type="submit">Filtrar</button>
+            </noscript>
           </form>
+
         </div>
+
         <% if (erro) { %>
-          <div class="oc-alert" role="alert"><%= erro %> <% if (erro.includes("sessão")) { %><a href="/acesso">Entrar novamente</a><% } %></div>
-        <% } else if (itens.length === 0) { %>
-          <p class="oc-muted">Nenhuma ocorrência encontrada.</p>
+
+          <div class="oc-alert" role="alert">
+            <strong>Não foi possível carregar as ocorrências.</strong>
+            <p><%= erro %></p>
+
+            <% if (String(erro).includes("sessão")) { %>
+              <a href="/acesso">Entrar novamente</a>
+            <% } %>
+          </div>
+
+        <% } else if (ocorrenciasVisiveis.length === 0) { %>
+
+          <div class="oc-empty">
+            <h3>Nenhuma ocorrência encontrada</h3>
+            <p class="oc-muted">
+              Não existem registros para o filtro selecionado.
+            </p>
+          </div>
+
         <% } else { %>
-          <div class="oc-table"><table>
-            <thead><tr><th>ID</th><th>Avaliação</th><th>Departamento</th><th>Responsável</th><th>Aberta em</th><th>Status</th><th></th></tr></thead>
-            <tbody>
-              <% itens.forEach(item => { %>
+
+          <div class="oc-table">
+            <table>
+              <thead>
                 <tr>
-                  <td>#<%= item.id %></td><td>#<%= item.avaliacaoId %></td>
-                  <td><%= item.departamentoId ?? "Não informado" %></td>
-                  <td><%= item.responsavelId ?? "Não definido" %></td>
-                  <td><%= item.criadoEm ? new Date(item.criadoEm).toLocaleString("pt-BR") : "Não informada" %></td>
-                  <td><span class="oc-pill <%= item.status %>"><%= nomesStatus[item.status] || item.status %></span></td>
-                  <td><a href="/ocorrencias/<%= item.id %>">Ver detalhes</a></td>
+                  <th>ID</th>
+                  <th>Avaliação</th>
+                  <th>Departamento</th>
+                  <th>Responsável</th>
+                  <th>Aberta em</th>
+                  <th>Status</th>
+                  <th>Ação</th>
                 </tr>
-              <% }); %>
-            </tbody>
-          </table></div>
+              </thead>
+
+              <tbody>
+                <% ocorrenciasVisiveis.forEach(item => { %>
+                  <tr>
+                    <td class="oc-id">#<%= item.id %></td>
+                    <td>#<%= item.avaliacaoId %></td>
+                    <td><%= item.departamentoId ?? "Não informado" %></td>
+                    <td><%= item.responsavelId ?? "Não definido" %></td>
+
+                    <td>
+                      <%= item.criadoEm
+                        ? new Date(item.criadoEm).toLocaleString("pt-BR")
+                        : "Não informada" %>
+                    </td>
+
+                    <td>
+                      <span class="oc-pill <%= item.status %>">
+                        <%= nomesStatus[item.status] || item.status %>
+                      </span>
+                    </td>
+
+                    <td>
+                      <a class="oc-details" href="/ocorrencias/<%= item.id %>">
+                        Ver detalhes
+                      </a>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
         <% } %>
+
         <% if (!erro && totalPaginas > 1) { %>
           <nav class="oc-pages" aria-label="Páginas de ocorrências">
-            <% if (pagina > 0) { %><a href="/ocorrencias?status=<%= encodeURIComponent(status) %>&pagina=<%= pagina - 1 %>">Anterior</a><% } %>
+
+            <% if (pagina > 0) { %>
+              <a href="/ocorrencias?status=<%= encodeURIComponent(status) %>&pagina=<%= pagina - 1 %>">
+                Anterior
+              </a>
+            <% } %>
+
             <span>Página <%= pagina + 1 %> de <%= totalPaginas %></span>
-            <% if (pagina + 1 < totalPaginas) { %><a href="/ocorrencias?status=<%= encodeURIComponent(status) %>&pagina=<%= pagina + 1 %>">Próxima</a><% } %>
+
+            <% if (pagina + 1 < totalPaginas) { %>
+              <a href="/ocorrencias?status=<%= encodeURIComponent(status) %>&pagina=<%= pagina + 1 %>">
+                Próxima
+              </a>
+            <% } %>
+
           </nav>
         <% } %>
+
       </section>
+
     </div>
   </main>
 </div>
+
 <script src="/app.js"></script>
 </body>
 </html>

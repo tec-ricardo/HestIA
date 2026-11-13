@@ -116,6 +116,8 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
 
         var acessoCapacitacao = mock(AcessoCapacitacao.class);
         var db = new RepositorioIntegracao(jdbc, acessoCapacitacao);
+        var contextualizacao=mock(ContextualizacaoRagService.class);
+        when(contextualizacao.interpretar(anyString(),anyList())).thenAnswer(i->new ContextualizacaoRagService.Interpretacao(i.getArgument(0),null));
         service = new InteracaoRagService(
                 db,
                 busca,
@@ -123,7 +125,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 geracao,
                 respostas = mock(RespostaReutilizavelService.class),
                 mock(RegistroUsoIAService.class),
-                0L
+                0L, contextualizacao, new OrcamentoContextoRagService(6000,4,100,1200)
         );
     }
 
@@ -134,7 +136,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 new Pergunta("consulta-politica-1", PERGUNTA, Modo.CONSULTAR, null)
         );
 
-        assertThat(resultado.estado()).isEqualTo("REUTILIZADA");
+        assertThat(resultado.estado()).isEqualTo("RECUPERADA");
         assertThat(resultado.resposta()).isEqualTo(POLITICA);
         assertThat(resultado.fontes()).singleElement().satisfies(fonte -> {
             assertThat(fonte.id()).isEqualTo(77L);
@@ -153,7 +155,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historico(usuario))
                 .extracting(InteracaoRagService.Resultado::id)
                 .containsExactly(resultado.id());
-        verify(respostas).registrarReutilizacao(77L, 10L);
+        verify(respostas, never()).registrarReutilizacao(anyLong(), anyLong());
     }
 
     @Test
@@ -268,5 +270,21 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         fonte.setReutilizavel(true);
         fonte.setPerfisPermitidos(Set.of(PerfilUsuario.FUNCIONARIO));
         return fonte;
+    }
+
+    @Test void respostaGeralExigeOptInENaoViraFonteDeContexto(){
+        String pergunta="Pergunta geral sem conteúdo corporativo";
+        when(busca.buscarSemelhantes(eq(1L),eq(pergunta),eq(5))).thenReturn(List.of());
+        var padrao=service.perguntar(usuario,new Pergunta("sem-opt-in",pergunta,Modo.GERAR_NOVA,null));
+        assertThat(padrao.estado()).isEqualTo("SEM_CONTEUDO_AUTORIZADO");verifyNoInteractions(geracao);
+        var geral=mock(GeracaoRagOpenAIService.class);
+        when(geral.gerarRespostaGeral(pergunta)).thenReturn(new GeracaoRagService.Gerada("Resposta geral de ensaio","modelo-teste",10L,5L));
+        ReflectionTestUtils.setField(service,"geracao",geral);ReflectionTestUtils.setField(service,"permitirRespostaGeral",true);
+        var conversa=service.criarConversa(usuario,"Geral");
+        var resultado=service.perguntar(usuario,new Pergunta("com-opt-in",pergunta,Modo.GERAR_NOVA,null,conversa.id()));
+        assertThat(resultado.estado()).isEqualTo("GERADA_SEM_FONTES");assertThat(resultado.fontes()).isEmpty();
+        assertThat(resultado.aviso()).contains("sem fontes autorizadas");assertThat(resultado.conversaId()).isEqualTo(conversa.id());
+        assertThat(((Number)service.limitesContexto(usuario,conversa.id()).get("turnosCompletos")).intValue()).isZero();
+        verify(geral).gerarRespostaGeral(pergunta);
     }
 }

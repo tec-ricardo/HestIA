@@ -135,6 +135,11 @@ public class RespostaReutilizavel {
         );
     }
 
+    @Transient
+    private Double similaridade;
+    public Double getSimilaridade() { return similaridade; }
+    public void setSimilaridade(Double similaridade) { this.similaridade = similaridade; }
+
     public Long getId() {
         return id;
     }

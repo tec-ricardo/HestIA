@@ -15,12 +15,21 @@ import static br.com.hestia.aprendizagem.AcessoCapacitacao.*;
 public class RevisaoRespostaService {
     private final AcessoCapacitacao acesso;private final JdbcTemplate jdbc;private final EntityManager em;private final RespostaReutilizavelRepository repository;
     public RevisaoRespostaService(AcessoCapacitacao acesso,JdbcTemplate jdbc,EntityManager em,RespostaReutilizavelRepository repository){this.acesso=acesso;this.jdbc=jdbc;this.em=em;this.repository=repository;}
-    public record Acao(StatusQualidadeResposta status,String justificativa,LocalDateTime expiraEm){}
-    public List<Map<String,Object>> listar(Usuario u,int pagina,int tamanho){acesso.administrador(u);exigir(pagina>=0&&pagina<=10000&&tamanho>=1&&tamanho<=100,HttpStatus.BAD_REQUEST,"Paginação inválida");return jdbc.queryForList("SELECT id,prompt_original,categoria,status_qualidade,expira_em,data_criacao,quantidade_reutilizacoes FROM respostas_reutilizaveis WHERE empresa_id=? ORDER BY id DESC LIMIT ? OFFSET ?",acesso.empresa(u),tamanho,pagina*tamanho);}
-    private RespostaReutilizavel obter(Usuario u,Long id,boolean lock){acesso.administrador(u);var r=lock?em.find(RespostaReutilizavel.class,id,LockModeType.PESSIMISTIC_WRITE):repository.findById(id).orElse(null);exigir(r!=null&&acesso.empresa(u).equals(r.getEmpresaId()),HttpStatus.NOT_FOUND,"Resposta indisponível");return r;}
+    // Leitura compartilhada apenas entre ADMIN e GESTOR da mesma empresa.
+    // A aprovação, o bloqueio e a retirada continuam exclusivos de ADMIN.
+    private void autorizarLeitura(Usuario u) {
+        acesso.empresa(u);
+        exigir(u.getPerfil() == br.com.hestia.usuario.model.PerfilUsuario.ADMIN
+                        || u.getPerfil() == br.com.hestia.usuario.model.PerfilUsuario.GESTOR,
+                HttpStatus.FORBIDDEN, "Somente gestor ou administrador consulta a curadoria");
+    }
+    public record Acao(StatusQualidadeResposta status,String justificativa,LocalDateTime expiraEm,Boolean dadosSensiveisVerificados){}
+    public List<Map<String,Object>> listar(Usuario u,int pagina,int tamanho){autorizarLeitura(u);exigir(pagina>=0&&pagina<=10000&&tamanho>=1&&tamanho<=100,HttpStatus.BAD_REQUEST,"Paginação inválida");return jdbc.queryForList("SELECT id,prompt_original,categoria,status_qualidade,expira_em,data_criacao,quantidade_reutilizacoes FROM respostas_reutilizaveis WHERE empresa_id=? ORDER BY id DESC LIMIT ? OFFSET ?",acesso.empresa(u),tamanho,pagina*tamanho);}
+    private RespostaReutilizavel obter(Usuario u,Long id,boolean lock){if(lock)acesso.administrador(u);else autorizarLeitura(u);var r=lock?em.find(RespostaReutilizavel.class,id,LockModeType.PESSIMISTIC_WRITE):repository.findById(id).orElse(null);exigir(r!=null&&acesso.empresa(u).equals(r.getEmpresaId()),HttpStatus.NOT_FOUND,"Resposta indisponível");return r;}
     public Map<String,Object> detalhe(Usuario u,Long id){var r=obter(u,id,false);return Map.of("resposta",r,"revisoes",jdbc.queryForList("SELECT * FROM resposta_revisoes WHERE empresa_id=? AND resposta_id=? ORDER BY id DESC",acesso.empresa(u),id),"versoes",jdbc.queryForList("SELECT id,numero_versao,origem,tipo_conteudo,conteudo_sha256,criada_em FROM resposta_versoes WHERE resposta_id=? ORDER BY numero_versao DESC",id));}
     public RespostaReutilizavel revisar(Usuario u,Long id,Acao a){
         exigir(a!=null&&a.status()!=null&&a.justificativa()!=null&&!a.justificativa().isBlank()&&a.justificativa().length()<=1000,HttpStatus.BAD_REQUEST,"Status e justificativa obrigatórios");var r=obter(u,id,true);var anterior=r.getStatusQualidade();
+        if(a.status()==StatusQualidadeResposta.APROVADA && Boolean.TRUE.equals(r.getPossuiDadosSensiveis()) && Boolean.TRUE.equals(a.dadosSensiveisVerificados())){r.setPossuiDadosSensiveis(false);}
         exigir(anterior!=StatusQualidadeResposta.RETIRADA||a.status()==StatusQualidadeResposta.RETIRADA,HttpStatus.CONFLICT,"Conteúdo retirado exige nova publicação");
         if(a.status()==StatusQualidadeResposta.APROVADA)exigir(Boolean.FALSE.equals(r.getPossuiDadosSensiveis())&&!r.getPerfisPermitidos().isEmpty()&&r.getPromptOriginal()!=null&&!r.getPromptOriginal().isBlank()&&r.getRespostaGerada()!=null&&!r.getRespostaGerada().isBlank()&&(a.expiraEm()==null||a.expiraEm().isAfter(LocalDateTime.now())),HttpStatus.UNPROCESSABLE_ENTITY,"Conteúdo, perfis ou validade impedem aprovação");
         if(anterior==a.status()&&Objects.equals(r.getExpiraEm(),a.expiraEm()))return r;

@@ -24,9 +24,22 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.get('/health', (req,res) => res.json({status:'UP'}));
+if (process.env.NODE_ENV === 'production' && (!process.env.SESSION_SECRET || !process.env.SESSION_DATABASE_URL)) {
+    throw new Error('Configure SESSION_SECRET e SESSION_DATABASE_URL antes de iniciar em produção.');
+}
+if(process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
+const sessionStore = process.env.SESSION_DATABASE_URL
+    ? new (require('connect-pg-simple')(session))({conString: process.env.SESSION_DATABASE_URL, createTableIfMissing: true})
+    : undefined;
+app.get('/ready',async(req,res)=>{
+    const resultado=await require('./prontidao').verificarProntidao(api,sessionStore);
+    res.set('Cache-Control','no-store').status(resultado.status==='UP'?200:503).json(resultado);
+});
 /* SCRUM-376 - SESSAO INDIVIDUAL */
 
 app.use(session({
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || "hestia-prototipo-alterar-esta-chave",
     resave: false,
     saveUninitialized: false,
@@ -43,7 +56,7 @@ app.use(session({
 
 app.use(function(req, res, next) {
 
-    if (req.path == "/acesso") {
+    if (["/acesso", "/recuperar-senha", "/redefinir-senha"].includes(req.path)) {
         return next();
     }
 
@@ -52,6 +65,9 @@ app.use(function(req, res, next) {
     }
 
     if (!req.session.apiToken && req.path !== "/sair") {
+        // Somente a Visão Geral pode ser aberta com uma conta demonstrativa.
+        const demo = /@(adm|gestor|colaborador)$/.test(String(req.session.email || ""));
+        if (demo && req.path === "/" && req.method === "GET") return next();
         if (req.path.startsWith("/api/")) return res.status(401).json({ erro: "Entre com uma conta cadastrada para usar este recurso." });
         return res.redirect("/acesso?expirada=1");
     }
@@ -72,6 +88,14 @@ app.use((req, res, next) => contextoApi.run({
 
 require("./integracoes-sprint")(app, api);
 require("./simulacao-produtividade").registrarRotasSimulacao(app);
+require("./configuracao-inicial")(app, api);
+require("./ciencia-politica")(app, api);
+require("./catalogo-real")(app, api);
+require("./avaliacoes-automaticas")(app, api);
+require("./relatorios-uso")(app, api);
+require("./relatorios-maturidade")(app, api);
+require("./relatorios-economia")(app, api);
+require("./recuperacao-senha")(app, api);
 
 /* USUARIO */
 
@@ -110,6 +134,21 @@ app.post("/acesso", async (req, res, next) => {
 /* VISAO GERAL */
 
 app.get("/", async (req, res) => {
+    // Contas demonstrativas não têm token: renderizar sem chamar a API protegida.
+    if (!req.session.apiToken) {
+        return res.set("Cache-Control", "no-store").render("index", {
+            perfil: req.session.perfil,
+            email: req.session.email,
+            active: "dashboard",
+            indicadores: { empresas: 0, departamentos: 0, usuarios: 0, politicas: 0, ferramentas: 0 },
+            resumo: {
+                creditos: null, posicao: null, participantes: 0, xp: null,
+                nivel: null, percentualProgresso: null, xpProximoNivel: null,
+                totalRegistros: 0, registrosComSucesso: 0, tokensRegistrados: 0,
+                atividadeRecente: [], maturidadeParcial: null, coberturaMaturidade: null
+            }
+        });
+    }
     const usuarioId = Number(req.session.usuarioId);
     const colaborador = req.session.perfil === "colaborador";
 
@@ -151,9 +190,9 @@ app.get("/", async (req, res) => {
         posicao: creditos?.posicao || null,
         participantes: Number(creditos?.participantes || 0),
         xp: passe ? Number(passe.xpTotal || 0) : null,
-        nivel: passe ? (nomesNiveis[passe.nivel] || passe.nivel) : null,
-        percentualProgresso: passe ? Number(passe.percentualProgresso || 0) : null,
-        xpProximoNivel: passe?.xpProximoNivel ?? null,
+        nivel: passe ? (passe.xpTotal >= 2500 ? "Embaixador" : passe.xpTotal >= 750 ? "Guardião" : passe.xpTotal >= 300 ? "Consciente" : "Aprendiz") : null,
+        percentualProgresso: passe ? Math.min(100, Math.round(Number(passe.xpTotal || 0) / 2500 * 100)) : null,
+        xpProximoNivel: passe ? (Number(passe.xpTotal || 0) < 300 ? 300 : Number(passe.xpTotal || 0) < 750 ? 750 : Number(passe.xpTotal || 0) < 2500 ? 2500 : null) : null,
         totalRegistros: registros.length,
         registrosComSucesso: registros.filter(item => item.statusExecucao === "SUCESSO").length,
         tokensRegistrados: registros.reduce((total, item) => total + Number(item.tokensTotal || 0), 0),
@@ -968,7 +1007,8 @@ app.get("/reutilizacoes/buscar", async (req, res) => {
 app.post("/reutilizacoes/:id/reutilizar", async (req, res) => {
     try {
         const response = await api.patch(
-            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`
+            `/api/respostas-reutilizaveis/${encodeURIComponent(req.params.id)}/reutilizar`,
+            undefined, { headers: { "Idempotency-Key": req.get("Idempotency-Key") || "" } }
         );
         return res.json(response.data);
     } catch (error) {
@@ -1313,299 +1353,46 @@ app.get(
 
 /* MAPA DE RISCO */
 
-function calcularRiscoDepartamental(fatores) {
-
-    if (
-        fatores == null ||
-        typeof fatores.conformidade != "number" ||
-        typeof fatores.nivelRiscoFerramenta != "number" ||
-        typeof fatores.tratamentoDadosPessoais != "number" ||
-        typeof fatores.statusFerramenta != "number"
-    ) {
-
-        return null;
-
-    }
-
-    return (
-        fatores.conformidade * 0.35 +
-        fatores.nivelRiscoFerramenta * 0.30 +
-        fatores.tratamentoDadosPessoais * 0.20 +
-        fatores.statusFerramenta * 0.15
-    );
-
-}
-
-
-function classificarNivelRisco(pontuacao) {
-
-    if (
-        pontuacao == null ||
-        typeof pontuacao != "number"
-    ) {
-
-        return {
-            nivel: "Não avaliado",
-            classe: "not-evaluated",
-            descricao:
-                "Não existem dados suficientes para avaliar o risco."
-        };
-
-    }
-
-
-    if (pontuacao <= 25) {
-
-        return {
-            nivel: "Baixo",
-            classe: "low",
-            descricao:
-                "Uso de IA com menor nível de atenção."
-        };
-
-    }
-
-
-    if (pontuacao <= 50) {
-
-        return {
-            nivel: "Médio",
-            classe: "medium",
-            descricao:
-                "Uso de IA que requer acompanhamento."
-        };
-
-    }
-
-
-    if (pontuacao <= 75) {
-
-        return {
-            nivel: "Alto",
-            classe: "high",
-            descricao:
-                "Uso de IA que requer maior atenção."
-        };
-
-    }
-
-
-    return {
-        nivel: "Crítico",
-        classe: "critical",
-        descricao:
-            "Uso de IA que requer prioridade de análise e tratamento."
-    };
-
-}
-
-
-function calcularNivelRiscoDepartamento(item) {
-
-    let pontuacao = null;
-
-
-    if (typeof item.pontuacao == "number") {
-
-        pontuacao =
-            item.pontuacao;
-
-    } else if (item.fatores) {
-
-        pontuacao =
-            calcularRiscoDepartamental(
-                item.fatores
-            );
-
-    }
-
-
-    if (pontuacao == null) {
-
-        return item;
-
-    }
-
-
-    const classificacao =
-        classificarNivelRisco(
-            pontuacao
-        );
-
-
-    return {
-        ...item,
-
-        pontuacao:
-            Math.round(
-                pontuacao * 100
-            ) / 100,
-
-        nivel:
-        classificacao.nivel,
-
-        classe:
-        classificacao.classe,
-
-        descricao:
-        classificacao.descricao
-    };
-
-}
-
-
-app.get(
-    "/mapa-risco",
-    async (req, res) => {
-
-        if (
-            req.session.perfil != "gestor" &&
-            req.session.perfil != "administrador"
-        ) {
-
-            return res.redirect("/");
-
-        }
-
-
-        const mapaRiscoMock = [
-
-            {
-
-                departamento:
-                    "Tecnologia",
-
-                nivel: "Baixo",
-
-                classe: "low",
-
-                descricao:
-                    "Uso de IA com menor nível de atenção."
-
-            },
-
-            {
-
-                departamento:
-                    "Marketing",
-
-                nivel: "Médio",
-
-                classe: "medium",
-
-                descricao:
-                    "Uso de IA que requer acompanhamento."
-
-            },
-
-            {
-
-                departamento:
-                    "Financeiro",
-
-                nivel: "Alto",
-
-                classe: "high",
-
-                descricao:
-                    "Uso de IA que requer maior atenção."
-
-            },
-
-            {
-
-                departamento:
-                    "RH",
-
-                nivel: "Médio",
-
-                classe: "medium",
-
-                descricao:
-                    "Uso de IA que requer acompanhamento."
-
+app.get("/mapa-risco", async (req, res) => {
+    const perfil = req.session.perfil;
+    if (perfil !== "gestor" && perfil !== "administrador") return res.redirect("/");
+
+    const inicio = typeof req.query.inicio === "string" ? req.query.inicio : "";
+    const fim = typeof req.query.fim === "string" ? req.query.fim : "";
+    const formatar = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format;
+    let resultado = null;
+    let erro = null;
+    let status = 200;
+
+    if (Object.hasOwn(req.query, "inicio") || Object.hasOwn(req.query, "fim")) {
+        const dataIso = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dataIso.test(inicio) || !dataIso.test(fim) || inicio > fim) {
+            status = 400;
+            erro = "Informe um período válido.";
+        } else {
+            try {
+                const resposta = await api.get("/indicadores/maturidade/ranking-departamental", {
+                    params: { inicio, fim }
+                });
+                if (resposta.data?.fonte !== "OPERACIONAL" || !Array.isArray(resposta.data.departamentos)) {
+                    throw new Error("Resposta de ranking inválida");
+                }
+                resultado = resposta.data;
+            } catch (falha) {
+                const http = falha.response?.status;
+                status = [400, 401, 403].includes(http) ? http : 503;
+                erro = status === 400 ? "Confira o período informado." :
+                    status === 401 ? "Sua sessão expirou. Entre novamente." :
+                    status === 403 ? "Seu perfil não permite consultar este escopo." :
+                    "A consulta operacional está indisponível.";
             }
-
-        ];
-
-
-        const mapaRiscoRecebido =
-            await consultarListaComFallback(
-                "/indicadores/mapa-risco",
-                mapaRiscoMock
-            );
-
-
-        const mapaRisco =
-            mapaRiscoRecebido.map(
-                calcularNivelRiscoDepartamento
-            );
-
-
-        const resumoRisco = {
-
-            baixo:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "low";
-
-                }
-            ).length,
-
-            medio:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "medium";
-
-                }
-            ).length,
-
-            alto:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "high";
-
-                }
-            ).length,
-
-            critico:
-            mapaRisco.filter(
-                function(item) {
-
-                    return item.classe ==
-                        "critical";
-
-                }
-            ).length
-
-        };
-
-
-        res.render("mapa-risco", {
-
-            perfil: req.session.perfil,
-
-            email: req.session.email,
-
-            active: "mapa-risco",
-
-            mapaRisco:
-            mapaRisco,
-
-            resumoRisco:
-            resumoRisco
-
-        });
-
+        }
     }
-);
 
+    return res.set("Cache-Control", "no-store").status(status).render("mapa-risco", {
+        perfil, email: req.session.email, active: "mapa-risco", inicio, fim, resultado, erro, formatar
+    });
+});
 
 /* HESTIA PASS */
 
@@ -1641,11 +1428,11 @@ app.get(
 
         const passeMock = {
 
-    nivelAtual: 2,
+    nivelAtual: 1,
 
-    nomeNivel: "Consciente",
+    nomeNivel: "Aprendiz",
 
-    xpAtual: 235,
+    xpAtual: 0,
 
     xpProximoNivel: 300,
 
@@ -1821,7 +1608,7 @@ app.get(
             : null;
         const passe = passeApi
             ? adaptarPasseHestIA(passeApi, passeMock)
-            : passeMock;
+            : adaptarPasseHestIA({ xpTotal: 0, missoes: [] }, passeMock);
 
 
         res.set("Cache-Control", "no-store").render("passe-hestia", {
@@ -1855,7 +1642,7 @@ app.get("/api/passe-hestia/status", async (req, res) => {
             .set("Cache-Control", "no-store")
             .json({
                 xpTotal: Number(response.data?.xpTotal || 0),
-                nivel: response.data?.nivel || null
+                nivel: Number(response.data?.xpTotal || 0) >= 2500 ? "EMBAIXADOR" : Number(response.data?.xpTotal || 0) >= 750 ? "GUARDIAO" : Number(response.data?.xpTotal || 0) >= 300 ? "CONSCIENTE" : "APRENDIZ"
             });
     } catch (error) {
         console.error(`Falha ao atualizar o HestIA Pass: ${mensagemDaApi(error)}`);
@@ -1905,15 +1692,17 @@ app.get("/ranking", async (req, res) => {
         totalParticipantes: Number(creditos.participantes || 0),
         usuario: {
             nome: passe.nome,
-            nivel: nomesNiveis[passe.nivel] || passe.nivel,
+            nivel: Number(passe.xpTotal || 0) >= 2500 ? "Embaixador" : Number(passe.xpTotal || 0) >= 750 ? "Guardião" : Number(passe.xpTotal || 0) >= 300 ? "Consciente" : "Aprendiz",
             xp: Number(passe.xpTotal || 0)
         },
         classificacao: (creditos.ranking || []).map(item => ({
             posicao: item.posicao,
             nome: item.nome,
             iniciais: iniciais(item.nome),
-            nivel: nomesNiveis[item.nivel] || item.nivel,
-            xp: Number(item.creditos || 0),
+            nivel: item.xpTotal != null && Number.isFinite(Number(item.xpTotal))
+                ? (Number(item.xpTotal) >= 2500 ? "Embaixador" : Number(item.xpTotal) >= 750 ? "Guardião" : Number(item.xpTotal) >= 300 ? "Consciente" : "Aprendiz")
+                : (nomesNiveis[item.nivel] || item.nivel),
+            xp: Number(item.xpTotal ?? item.creditos ?? 0),
             usuarioAtual: Boolean(item.usuarioAtual)
         }))
     };
@@ -2822,24 +2611,25 @@ function adaptarPasseHestIA(passeApi, fallback) {
         GUARDIAO: { nivel: 3, nome: "Guardião" },
         EMBAIXADOR: { nivel: 4, nome: "Embaixador" }
     };
-    const nivelApi = nomesNiveis[String(passeApi.nivel || "").toUpperCase()];
-    const nivelAtual = nivelApi ? nivelApi.nivel : fallback.nivelAtual;
-    const xpAtual = Number(passeApi.xpTotal || 0);
-    const xpProximoNivel = passeApi.xpProximoNivel || fallback.xpProximoNivel;
+    const xpAtual = Math.max(0, Number(passeApi.xpTotal) || 0);
     const missoes = Array.isArray(passeApi.missoes) ? passeApi.missoes : [];
     const ordemNiveis = [
         { codigo: "APRENDIZ", nivel: 1, nome: "Aprendiz", xpNecessario: 0 },
-        { codigo: "CONSCIENTE", nivel: 2, nome: "Consciente", xpNecessario: 100 },
-        { codigo: "GUARDIAO", nivel: 3, nome: "Guardião", xpNecessario: 300 },
-        { codigo: "EMBAIXADOR", nivel: 4, nome: "Embaixador", xpNecessario: 700 }
+        { codigo: "CONSCIENTE", nivel: 2, nome: "Consciente", xpNecessario: 300 },
+        { codigo: "GUARDIAO", nivel: 3, nome: "Guardião", xpNecessario: 750 },
+        { codigo: "EMBAIXADOR", nivel: 4, nome: "Embaixador", xpNecessario: 2500 }
     ];
-    const indiceAtual = ordemNiveis.findIndex(nivel => nivel.codigo === String(passeApi.nivel || "").toUpperCase());
-    const proximo = indiceAtual >= 0 ? ordemNiveis[indiceAtual + 1] : null;
+    // Recalcula o nivel pelo XP total para nao usar um nivel antigo salvo no backend.
+    const indiceAtual = ordemNiveis.reduce((indice, nivel, i) => xpAtual >= nivel.xpNecessario ? i : indice, 0);
+    const nivelAtual = ordemNiveis[indiceAtual].nivel;
+    const nivelApi = nomesNiveis[ordemNiveis[indiceAtual].codigo];
+    const proximo = ordemNiveis[indiceAtual + 1] || null;
+    const xpProximoNivel = proximo ? proximo.xpNecessario : xpAtual;
 
     return {
         ...fallback,
         nivelAtual,
-        nomeNivel: nivelApi ? nivelApi.nome : fallback.nomeNivel,
+        nomeNivel: nivelApi.nome,
         xpAtual,
         xpProximoNivel,
         taxaConformidade: null,

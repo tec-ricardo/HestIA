@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HestIA - Configuração inicial</title><link rel="stylesheet" href="/styles.css"></head>
+<body><div class="app-shell"><%- include('menu', {perfil, email, active}) %>
+<main class="main-content" style="padding:32px"><header class="topbar"><h1>Configuração inicial</h1><a href="/administracao">Administração</a></header>
+<p>Continue a preparação da organização usando os cadastros existentes. Ao voltar, as pendências serão consultadas novamente.</p>
+<% if (erro) { %><p class="feedback error" role="alert"><%= erro %></p><a href="/configuracao-inicial">Tentar novamente</a><% } %>
+<% if (salvo && situacao) { %><p class="feedback success" role="status">Configurações salvas. Você pode sair e continuar depois.</p><% } %>
+<% if (situacao) { %>
+<section class="panel"><h2>Preparação da organização</h2><ul>
+<% situacao.etapas.forEach(etapa => { %><li><strong><%= etapa.nome %></strong> — <%= ({CONCLUIDA:'Cadastro encontrado', PENDENTE:'Pendente', REVISAR:'Conferir parâmetros', NAO_VERIFICADO:'Ainda não verificado'})[etapa.estado] %> <a href="<%= etapa.destino %>"><%= etapa.estado === 'PENDENTE' ? 'Continuar cadastro' : 'Consultar' %></a></li><% }) %>
+</ul><p>A existência dos cadastros não substitui a validação dos dados e do conteúdo do piloto.</p></section>
+<% const c = situacao.configuracao || {registrarUsosAutomaticamente:true,bloquearFerramentasNaoAprovadas:true,limiteCustoMensal:null,diasRetencaoAuditoria:365}; %>
+<section class="panel" id="parametros"><h2>Configurações da organização</h2>
+<% if (!situacao.configuracao) { %><p>Valores iniciais sugeridos. Revise e salve para persistir.</p><% } %>
+<form method="post" action="/configuracao-inicial" class="form-grid">
+<input type="hidden" name="csrf" value="<%= csrf %>">
+<label class="full"><input type="checkbox" name="registrarUsosAutomaticamente" <%= c.registrarUsosAutomaticamente ? 'checked' : '' %>> Registrar usos automaticamente</label>
+<label class="full"><input type="checkbox" name="bloquearFerramentasNaoAprovadas" <%= c.bloquearFerramentasNaoAprovadas ? 'checked' : '' %>> Bloquear ferramentas não aprovadas</label>
+<label>Limite mensal de custo (opcional)<input type="number" name="limiteCustoMensal" min="0" step="0.01" value="<%= c.limiteCustoMensal ?? '' %>"></label>
+<label>Retenção de auditoria em dias<input type="number" name="diasRetencaoAuditoria" min="1" step="1" required value="<%= c.diasRetencaoAuditoria %>"></label>
+<button class="primary" type="submit">Salvar configurações</button></form></section>
+<% } %></main></div><script src="/app.js"></script></body></html>

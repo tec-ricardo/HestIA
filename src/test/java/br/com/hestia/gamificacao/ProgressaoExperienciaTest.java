@@ -1,20 +1,30 @@
+
 package br.com.hestia.gamificacao;
 
 import br.com.hestia.gamificacao.model.*;
 import br.com.hestia.usuario.model.Usuario;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ProgressaoExperienciaTest {
+
     @Test
     void deveEvoluirAutomaticamenteConformeXpAcumulado() {
-        ProgressoUsuario progresso = new ProgressoUsuario(mock(Usuario.class));
-        progresso.adicionarXp(99);
+        ProgressoUsuario progresso =
+                new ProgressoUsuario(mock(Usuario.class));
+
+        progresso.adicionarXp(299);
         assertEquals(NivelExperiencia.APRENDIZ, progresso.getNivel());
+
         progresso.adicionarXp(1);
         assertEquals(NivelExperiencia.CONSCIENTE, progresso.getNivel());
-        progresso.adicionarXp(600);
+
+        progresso.adicionarXp(450);
+        assertEquals(NivelExperiencia.GUARDIAO, progresso.getNivel());
+
+        progresso.adicionarXp(1750);
         assertEquals(NivelExperiencia.EMBAIXADOR, progresso.getNivel());
     }
 
@@ -22,7 +32,10 @@ class ProgressaoExperienciaTest {
     void deveConcluirMissaoSomenteAoAtingirMeta() {
         Missao missao = mock(Missao.class);
         when(missao.getMetaQuantidade()).thenReturn(2);
-        ProgressoMissao progresso = new ProgressoMissao(mock(Usuario.class), missao);
+
+        ProgressoMissao progresso =
+                new ProgressoMissao(mock(Usuario.class), missao);
+
         assertFalse(progresso.incrementar());
         assertTrue(progresso.incrementar());
         assertNotNull(progresso.getConcluidaEm());
