@@ -13,8 +13,8 @@ class AdaptadorOperacionalMaturidadeTest {
         jdbc=new JdbcTemplate(new DriverManagerDataSource("jdbc:h2:mem:"+UUID.randomUUID()+";DB_CLOSE_DELAY=-1","sa",""));
         jdbc.execute("CREATE TABLE usuarios(id BIGINT, empresa_id BIGINT, departamento_id BIGINT, ativo BOOLEAN)");
         jdbc.execute("CREATE TABLE aprendizagem_ciclos(id BIGINT, usuario_id BIGINT, empresa_id BIGINT, catalogo_id BIGINT)");
-        jdbc.execute("CREATE TABLE aprendizagem_tentativas(ciclo_id BIGINT, nota NUMERIC(5,2), status VARCHAR, finalizada_em TIMESTAMP)");
-        jdbc.execute("CREATE TABLE aprendizagem_catalogo(id BIGINT, empresa_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, publicado_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE aprendizagem_tentativas(id BIGINT, ciclo_id BIGINT, nota NUMERIC(5,2), status VARCHAR, finalizada_em TIMESTAMP)");
+        jdbc.execute("CREATE TABLE aprendizagem_catalogo(id BIGINT, versao INT, empresa_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, publicado_em TIMESTAMP)");
         jdbc.execute("CREATE TABLE catalogo_treinamentos(id BIGINT, empresa_id BIGINT, conteudo_sha256 VARCHAR(64), tema VARCHAR, estado VARCHAR, publicado_em TIMESTAMP, retirado_em TIMESTAMP)");
         jdbc.execute("CREATE TABLE aprendizagem_leituras(empresa_id BIGINT, usuario_id BIGINT, treinamento_id BIGINT, conteudo_sha256 VARCHAR(64), conclusao_id BIGINT, concluida_em TIMESTAMP)");
         jdbc.execute("CREATE TABLE conclusoes_microtreinamento(id BIGINT, usuario_id BIGINT, microtreinamento_id BIGINT, concluido BOOLEAN, data_conclusao TIMESTAMP)");
@@ -83,4 +83,21 @@ class AdaptadorOperacionalMaturidadeTest {
         assertThat(fator.coberturaClassificacao()).isEqualByComparingTo(CalculadorasMaturidade.razao(2, 3));
     }
 
+
+    @Test void calculaLiteracyComUltimaTentativaValidaPorPessoa() {
+        jdbc.update("INSERT INTO usuarios VALUES (3,1,10,TRUE)");
+        jdbc.update("INSERT INTO catalogo_treinamentos VALUES (100,1,'hash','tema','PUBLICADO',TIMESTAMP '2025-12-01 00:00:00',NULL)");
+        jdbc.update("INSERT INTO aprendizagem_catalogo VALUES (100,1,1,100,'hash','tema',TIMESTAMP '2025-12-01 00:00:00')");
+        jdbc.update("INSERT INTO aprendizagem_ciclos VALUES (1,1,1,100),(2,3,1,100)");
+        jdbc.update("""
+                INSERT INTO aprendizagem_tentativas VALUES
+                (1,1,40,'REPROVADA',TIMESTAMP '2026-01-01 10:00:00'),
+                (2,1,60,'REPROVADA',TIMESTAMP '2026-01-02 10:00:00'),
+                (3,2,100,'APROVADA',TIMESTAMP '2026-01-01 10:00:00')
+                """);
+        var fator = service.calcular(1L,10L,LocalDate.of(2026,1,1),LocalDate.of(2026,1,31))
+                .stream().filter(item -> item.codigo().equals("aiLiteracy")).findFirst().orElseThrow();
+        assertThat(fator.nota()).isEqualByComparingTo("80");
+        assertThat(fator.amostra()).isEqualTo(2L);
+    }
 }
