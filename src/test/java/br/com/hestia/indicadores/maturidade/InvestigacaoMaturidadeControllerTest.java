@@ -59,10 +59,20 @@ class InvestigacaoMaturidadeControllerTest {
                 inicio, fim, ResultadoMaturidadeService.Natureza.OPERACIONAL, null, 10L, null, null)))
                 .thenReturn(maturidade);
 
-        var consulta = new InvestigacaoMaturidadeController(resultados, jdbc)
+        when(maturidade.fatores()).thenReturn(java.util.List.of(
+                new CalculadorasMaturidade().governancaOperacional(30, 30, 24)));
+
+        var consulta = new InvestigacaoMaturidadeController(
+                resultados, jdbc, new ClassificacaoRiscoDepartamental())
                 .consultar(usuario, inicio, fim, 10L);
 
         assertThat(consulta.maturidade()).isSameAs(maturidade);
+        assertThat(consulta.risco().estado()).isEqualTo("SEM_CLASSIFICACAO");
+        assertThat(consulta.risco().evidencias())
+                .extracting(ClassificacaoRiscoDepartamental.Evidencia::fator)
+                .containsExactly("governanca");
+        assertThat(consulta.risco().pendencias())
+                .contains("usoResponsavel: sem nota válida", "seguranca: sem nota válida");
         assertThat(consulta.pendencias()).containsExactly(
                 new InvestigacaoMaturidadeController.Pendencia(21L, 11L, "EM_TRATAMENTO", 42L),
                 new InvestigacaoMaturidadeController.Pendencia(22L, 11L, "ABERTA", null));

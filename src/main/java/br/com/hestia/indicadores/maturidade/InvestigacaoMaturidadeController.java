@@ -17,10 +17,13 @@ public class InvestigacaoMaturidadeController {
 
     private final ResultadoMaturidadeService resultados;
     private final JdbcTemplate jdbc;
+    private final ClassificacaoRiscoDepartamental classificacao;
 
-    public InvestigacaoMaturidadeController(ResultadoMaturidadeService resultados, JdbcTemplate jdbc) {
+    public InvestigacaoMaturidadeController(ResultadoMaturidadeService resultados, JdbcTemplate jdbc,
+                                            ClassificacaoRiscoDepartamental classificacao) {
         this.resultados = resultados;
         this.jdbc = jdbc;
+        this.classificacao = classificacao;
     }
 
     @GetMapping("/investigacao")
@@ -50,10 +53,11 @@ public class InvestigacaoMaturidadeController {
                 Timestamp.valueOf(inicio.atStartOfDay()), Timestamp.valueOf(fim.plusDays(1).atStartOfDay()),
                 Timestamp.valueOf(inicio.atStartOfDay()), Timestamp.valueOf(fim.plusDays(1).atStartOfDay()));
 
-        return new Investigacao(resultado, pendencias);
+        return new Investigacao(resultado, classificacao.classificar(resultado.fatores()), pendencias);
     }
 
-    public record Investigacao(ResultadoMaturidadeService.Resultado maturidade, List<Pendencia> pendencias) {}
+    public record Investigacao(ResultadoMaturidadeService.Resultado maturidade,
+                               ClassificacaoRiscoDepartamental.Resultado risco, List<Pendencia> pendencias) {}
 
     public record Pendencia(long tratamentoId, long avaliacaoId, String status, Long responsavelId) {}
 }
