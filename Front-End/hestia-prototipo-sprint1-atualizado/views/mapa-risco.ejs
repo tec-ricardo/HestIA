@@ -28,7 +28,7 @@
             <% if (erro) { %>
                 <p role="alert"><%= erro %></p>
             <% } else if (resultado) { %>
-                <p>Fonte operacional. A classificação de risco aguarda homologação dos critérios.</p>
+                <p>Fonte operacional. O índice de risco é descritivo.</p>
                 <% if (!resultado.departamentos.length) { %>
                     <p>Sem dados: nenhum departamento no escopo consultado.</p>
                 <% } else { %>
@@ -40,6 +40,7 @@
                                 <th scope="col">Score global</th>
                                 <th scope="col">Cobertura dos pesos</th>
                                 <th scope="col">Dimensões pendentes</th>
+                                <th scope="col">Risco</th>
                             </tr></thead>
                             <tbody>
                             <% for (const item of resultado.departamentos) { %>
@@ -49,6 +50,16 @@
                                     <td><%= item.apuracao.scoreGlobal == null ? "Sem dados para score global" : formatar(item.apuracao.scoreGlobal) %></td>
                                     <td><%= item.apuracao.coberturaPesos == null ? "Sem dados" : formatar(item.apuracao.coberturaPesos * 100) + "%" %></td>
                                     <td><%= (item.apuracao.dimensoesAusentes || []).join(", ") || "Nenhuma" %></td>
+                                    <td>
+                                        <% if (item.risco?.estado === "CLASSIFICADO") { %>
+                                            <%= item.risco.classificacao %> (<%= formatar(item.risco.indice) %>)
+                                        <% } else if (item.risco?.estado === "FRAGIL") { %>
+                                            Indicativo: <%= item.risco.classificacaoIndicativa %> (<%= formatar(item.risco.indice) %>)
+                                            <small>Amostra ou cobertura insuficiente</small>
+                                        <% } else { %>
+                                            Sem classificação
+                                        <% } %>
+                                    </td>
                                 </tr>
                             <% } %>
                             </tbody>

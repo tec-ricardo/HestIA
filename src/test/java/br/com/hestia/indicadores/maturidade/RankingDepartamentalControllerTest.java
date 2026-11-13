@@ -36,6 +36,6 @@ class RankingDepartamentalControllerTest {
     private RankingDepartamentalController.Linha linha(Long id, String nome, String score) {
         var resultado = mock(ResultadoMaturidadeService.Resultado.class);
         when(resultado.scoreGlobal()).thenReturn(score == null ? null : new BigDecimal(score));
-        return new RankingDepartamentalController.Linha(id, nome, null, resultado);
+        return new RankingDepartamentalController.Linha(id, nome, null, resultado, null);
     }
 }

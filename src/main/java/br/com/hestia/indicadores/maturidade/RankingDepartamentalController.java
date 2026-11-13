@@ -25,12 +25,14 @@ public class RankingDepartamentalController {
     private final JdbcTemplate jdbc;
     private final AcessoRespostaService acesso;
     private final ResultadoMaturidadeService maturidade;
+    private final ClassificacaoRiscoDepartamental classificacao;
 
     public RankingDepartamentalController(JdbcTemplate jdbc, AcessoRespostaService acesso,
-                                          ResultadoMaturidadeService maturidade) {
+                                          ResultadoMaturidadeService maturidade, ClassificacaoRiscoDepartamental classificacao) {
         this.jdbc = jdbc;
         this.acesso = acesso;
         this.maturidade = maturidade;
+        this.classificacao = classificacao;
     }
 
     @GetMapping("/indicadores/maturidade/ranking-departamental")
@@ -65,9 +67,10 @@ public class RankingDepartamentalController {
         var itens = departamentos.stream().map(d -> {
             var consulta = new ResultadoMaturidadeService.Consulta(inicio, fim,
                     ResultadoMaturidadeService.Natureza.OPERACIONAL, null, d.id(), null, null);
-            return new Linha(d.id(), d.nome(), null, maturidade.consultar(usuario, consulta));
+            var apuracao = maturidade.consultar(usuario, consulta);
+            return new Linha(d.id(), d.nome(), null, apuracao, classificacao.classificar(apuracao.fatores()));
         }).toList();
-        return new Resposta(empresa, inicio, fim, "OPERACIONAL", "CRITERIOS_DE_RISCO_PENDENTES",
+        return new Resposta(empresa, inicio, fim, "OPERACIONAL", ClassificacaoRiscoDepartamental.VERSAO,
                 ordenar(itens, administrador));
     }
 
@@ -89,14 +92,15 @@ public class RankingDepartamentalController {
                 lugar = posicao;
                 anterior = score;
             }
-            saida.add(new Linha(linha.departamentoId(), linha.departamento(), lugar, linha.apuracao()));
+            saida.add(new Linha(linha.departamentoId(), linha.departamento(), lugar, linha.apuracao(), linha.risco()));
         }
         return List.copyOf(saida);
     }
 
     private record Departamento(Long id, String nome) {}
     public record Linha(Long departamentoId, String departamento, Integer posicao,
-                        ResultadoMaturidadeService.Resultado apuracao) {}
+                        ResultadoMaturidadeService.Resultado apuracao,
+                        ClassificacaoRiscoDepartamental.Resultado risco) {}
     public record Resposta(Long empresaId, LocalDate inicio, LocalDate fim, String fonte,
                            String situacaoRisco, List<Linha> departamentos) {}
 }
