@@ -61,6 +61,41 @@ class AdaptadorOperacionalMaturidadeTest {
         var f=service.calcular(1L,10L,LocalDate.of(2026,10,1),LocalDate.of(2026,10,21)).stream().filter(x->x.codigo().equals("usoResponsavel")).findFirst().orElseThrow();
         assertThat(f.nota()).isNull();assertThat(f.estado()).isEqualTo("SEM_DADOS");
     }
+
+    @Test
+    void compoeQuatroFatoresOperacionaisNoMesmoEscopo() {
+        jdbc.update("INSERT INTO catalogo_treinamentos VALUES (100,1,'hash','tema','PUBLICADO',TIMESTAMP '2025-12-01 00:00:00',NULL)");
+        jdbc.update("INSERT INTO aprendizagem_catalogo VALUES (100,1,1,100,'hash','tema',TIMESTAMP '2025-12-01 00:00:00')");
+        jdbc.update("INSERT INTO autorizacoes_ferramentas_ia VALUES (1,7,'APROVADA',TIMESTAMP '2025-12-01 00:00:00',NULL)");
+        for (int i = 1; i <= 30; i++) {
+            long usuario = 100L + i;
+            jdbc.update("INSERT INTO usuarios VALUES (?,1,30,TRUE)", usuario);
+            jdbc.update("INSERT INTO registros_uso_ia(id,usuario_id,data_hora,ferramenta_id) VALUES (?,?,TIMESTAMP '2026-01-01 12:00:00',7)", i, usuario);
+            jdbc.update("INSERT INTO avaliacoes_conformidade VALUES (?,?,1,1,'R','1','motivo','regra','limites',?,TIMESTAMP '2026-01-02 12:00:00')",
+                    i, i, i <= 24 ? "CONFORME" : "NAO_CONFORME");
+            jdbc.update("INSERT INTO conclusoes_microtreinamento VALUES (?,?,100,TRUE,TIMESTAMP '2026-01-01 08:00:00')", i, usuario);
+            jdbc.update("INSERT INTO aprendizagem_leituras VALUES (1,?,100,'hash',?,TIMESTAMP '2026-01-01 08:00:01')", usuario, i);
+            jdbc.update("INSERT INTO aprendizagem_ciclos VALUES (?,?,1,100)", i, usuario);
+            jdbc.update("INSERT INTO aprendizagem_tentativas VALUES (?,?,100,'APROVADA',TIMESTAMP '2026-01-02 09:00:00')", i, i);
+        }
+
+        var inicio = LocalDate.of(2026, 1, 1);
+        var fim = LocalDate.of(2026, 1, 31);
+        var consulta = new ResultadoMaturidadeService.Consulta(
+                inicio, fim, ResultadoMaturidadeService.Natureza.OPERACIONAL, null, null, null, null);
+        var resultado = ResultadoMaturidadeService.compor(
+                1L, 30L, null, null, consulta, null, "teste", java.util.Map.of(),
+                service.calcular(1L, 30L, inicio, fim), "1.0");
+
+        assertThat(resultado.fatores()).filteredOn(FatorCalculado::elegivelGlobal)
+                .extracting(FatorCalculado::codigo)
+                .containsExactlyInAnyOrder("usoResponsavel", "desenvolvimentoCompetencias", "governanca", "aiLiteracy");
+        assertThat(resultado.scoreParcial()).isEqualByComparingTo("94.55");
+        assertThat(resultado.coberturaPesos()).isEqualByComparingTo("0.55");
+        assertThat(resultado.scoreGlobal()).isNull();
+        assertThat(resultado.dimensoesAusentes()).hasSize(4);
+    }
+
     @Test
     void classificaPelaVigenciaNaDataDoUso() {
         jdbc.update("""
