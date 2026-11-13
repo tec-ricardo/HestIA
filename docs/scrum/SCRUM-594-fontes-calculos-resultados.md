@@ -20,11 +20,26 @@ Revisão parcial da Sprint 4. As evidências abaixo correspondem às mudanças i
 .\mvnw.cmd "-Dtest=AprendizagemSprintIntegrationTest#integraConclusaoTrilhaEEfetividadeComCatalogoPersistido" test
 ```
 
+## Colaboração na demonstração
+
+A fonte é a coleta congelada de PRs do HestIA, de 03 a 12/11/2026, com fuso America/Sao_Paulo. Os vínculos de quatro autores com empresa e departamento são didáticos e exclusivos da empresa GitHub demo. Os eventos ficam separados da apuração da QSoft.
+
+A API retornou 25 PRs válidos, zero aprovações formais elegíveis, nota 0, cobertura de 100% e amostra frágil (mínimo de 30 PRs). A nota é o percentual de PRs válidos com aprovação elegível antes do merge. O recorte termina na coleta e não mede toda a colaboração da equipe. A reprodução com o banco da demonstração está no [manual da fonte](COLABORACAO-GITHUB-DEMO.md). [PR #144](https://github.com/tec-ricardo/HestIA/pull/144)
+
+## RAG na demonstração
+
+| Verificação | Resultado registrado | Evidência |
+| --- | --- | --- |
+| Busca semântica e confirmação de reutilização | OpenAI, text-embedding-3-small (1536 dimensões), PostgreSQL/pgvector e política didática v1.1. Após reindexar título e corpo e aplicar limiar 0,40 no perfil demo, a busca recuperou os cinco casos pertinentes e rejeitou os três negativos. A busca sem confirmação não incrementou contadores; a confirmação explícita seguida de reenvio incrementou uma vez. | [Roteiro e limites](SCRUM-545-validacao-busca-real.md), [corpus](SCRUM-545-corpus.json), [resultados](SCRUM-545-evidencias-finais.json) |
+| Continuidade e acesso | O histórico é associado à conversa e restrito ao autor. A validação verificou retomada do assunto, isolamento entre conversas e usuários e exclusão de fontes revogadas da interpretação seguinte. A geração não incrementou reutilizações ou créditos. | [Roteiro](SCRUM-546-continuidade-conversas.md), [resultados](SCRUM-546-evidencias-reais.json) |
+| Orçamento de contexto | A seleção preserva turnos recentes elegíveis e pode resumir trechos antigos de forma extrativa e parcial. Os limites são medidos em caracteres JSON UTF-16. A consulta de contexto e os ensaios de revogação são descritos nas evidências. | [Complemento técnico](SCRUM-612-complemento-ricardo.md), [validação](evidencias/SCRUM-612-validacao.json), [verificações da integração](evidencias/correcoes-validacao.json) |
+
+A política utilizada é fictícia. Os oito casos sustentam a calibração da demo nesse corpus e provedor. A configuração padrão fora do perfil demo permanece em 0,70. Para reproduzir o ensaio, use o corpus e o roteiro da SCRUM-545 e reindexe a fonte existente no banco demo antes de repetir as perguntas.
+
 ## Evidências pendentes para a versão final
 
 | Área | Evidência a incorporar |
 | --- | --- |
 | Maturidade e risco | Resultado dos oito fatores, cobertura e confiança no mesmo escopo e período; critérios homologados de classificação de risco e validação do ranking departamental. |
 | Comparação entre períodos | Validação com fontes integradas, versões compatíveis e períodos equivalentes. |
-| RAG | Evidências da validação com embeddings, corpus autorizado, permissões e comportamento quando não houver correspondência segura. |
 | Análises no produto | Evidência das telas e da jornada da versão final, quando exigida pelas rubricas da Entrega 3. |
