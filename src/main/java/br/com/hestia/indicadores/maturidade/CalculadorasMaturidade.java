@@ -147,4 +147,14 @@ public class CalculadorasMaturidade {
                 "Usos sem autorização comprovada na data reduzem a cobertura");
     }
 
+
+    public FatorCalculado literacyOperacional(SelecaoAiLiteracy.Selecao selecao) {
+        var base = literacy(selecao.notasPorPessoa(), selecao.avaliacoesCandidatas());
+        return fator("aiLiteracy", base.nota(), base.coberturaTecnica(), base.coberturaClassificacao(),
+                base.amostra(), base.populacao(), null, null, base.formula(),
+                "aprendizagem_tentativas / aprendizagem_catalogo / catalogo_treinamentos", true,
+                Map.of("avaliacoesCandidatas", BigDecimal.valueOf(selecao.avaliacoesCandidatas()),
+                        "avaliacoesValidas", BigDecimal.valueOf(selecao.tentativas().size())),
+                "Última tentativa válida por pessoa e versão; regra " + selecao.versao());
+    }
 }
