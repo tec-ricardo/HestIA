@@ -32,6 +32,10 @@ if(process.env.TRUST_PROXY === '1') app.set('trust proxy', 1);
 const sessionStore = process.env.SESSION_DATABASE_URL
     ? new (require('connect-pg-simple')(session))({conString: process.env.SESSION_DATABASE_URL, createTableIfMissing: true})
     : undefined;
+app.get('/ready',async(req,res)=>{
+    const resultado=await require('./prontidao').verificarProntidao(api,sessionStore);
+    res.set('Cache-Control','no-store').status(resultado.status==='UP'?200:503).json(resultado);
+});
 /* SCRUM-376 - SESSAO INDIVIDUAL */
 
 app.use(session({

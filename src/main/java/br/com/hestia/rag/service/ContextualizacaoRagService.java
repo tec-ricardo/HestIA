@@ -13,7 +13,10 @@ import static br.com.hestia.aprendizagem.AcessoCapacitacao.*;
 /** Interpreta referências; não substitui a busca nem autoriza uma fonte. */
 @Service
 public class ContextualizacaoRagService {
-    public record Turno(String pergunta,String resposta){}
+    public record Turno(String pergunta,String resposta,List<Long> fontes,boolean resumo){
+        public Turno(String pergunta,String resposta){this(pergunta,resposta,List.of(),false);}
+        public Turno{fontes=List.copyOf(fontes);}
+    }
     public record Interpretacao(String consulta,String esclarecimento){}
     private final String modelo;
     private final ObjectMapper json=new ObjectMapper();

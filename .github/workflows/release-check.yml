@@ -5,10 +5,33 @@ on:
     paths:
       - 'Dockerfile.*'
       - 'compose.release.yaml'
-      - 'alert-service/Dockerfile'
+      - 'alert-service/**'
+      - 'src/**'
+      - 'Front-End/**'
+      - 'pom.xml'
+      - 'scripts/**'
+      - '.github/workflows/release-check.yml'
 jobs:
   package:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: hestia_ci
+          POSTGRES_USER: hestia_ci
+          POSTGRES_PASSWORD: release_ephemeral
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hestia_ci -d hestia_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      HESTIA_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_ci
+      HESTIA_SPRINT_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_validacao
+      HESTIA_MATURIDADE_PG_TEST_URL: jdbc:postgresql://localhost:5432/hestia_validacao
+      HESTIA_PG_TEST_USER: hestia_ci
+      HESTIA_PG_TEST_PASSWORD: release_ephemeral
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -19,6 +42,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Preparar banco descartável de integração
+        run: docker exec ${{ job.services.postgres.id }} createdb -U hestia_ci hestia_validacao
       - run: ./mvnw --batch-mode test
       - run: npm ci && npm test
         working-directory: Front-End/hestia-prototipo-sprint1-atualizado
@@ -30,8 +55,15 @@ jobs:
           docker build --build-arg VCS_REF=${{ github.sha }} -f Dockerfile.frontend -t hestia-frontend:${{ github.sha }} .
           docker build -t hestia-alert:${{ github.sha }} alert-service
           docker save hestia-backend:${{ github.sha }} hestia-frontend:${{ github.sha }} hestia-alert:${{ github.sha }} | gzip > release-images.tar.gz
+      - name: Registrar integridade do pacote
+        run: sha256sum release-images.tar.gz > SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: hestia-${{ github.sha }}
-          path: release-images.tar.gz
+          path: |
+            release-images.tar.gz
+            SHA256SUMS
+            compose.release.yaml
+            scripts/publicar-release.ps1
+            docs/scrum/SCRUM-612-complemento-ricardo.md
           retention-days: 7
