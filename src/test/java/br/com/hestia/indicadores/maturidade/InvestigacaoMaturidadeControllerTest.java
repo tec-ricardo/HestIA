@@ -77,4 +77,49 @@ class InvestigacaoMaturidadeControllerTest {
                 new InvestigacaoMaturidadeController.Pendencia(21L, 11L, "EM_TRATAMENTO", 42L),
                 new InvestigacaoMaturidadeController.Pendencia(22L, 11L, "ABERTA", null));
     }
+
+    @Test
+    void retornaRiscoClassificadoComEvidenciasDosTresFatores() {
+        var jdbc = mock(JdbcTemplate.class);
+        var resultados = mock(ResultadoMaturidadeService.class);
+        var maturidade = mock(ResultadoMaturidadeService.Resultado.class);
+        var usuario = mock(Usuario.class);
+        var inicio = LocalDate.of(2026, 10, 1);
+        var fim = inicio.plusDays(30);
+        when(resultados.consultar(usuario, new ResultadoMaturidadeService.Consulta(
+                inicio, fim, ResultadoMaturidadeService.Natureza.OPERACIONAL, null, 10L, null, null)))
+                .thenReturn(maturidade);
+        when(maturidade.empresaId()).thenReturn(1L);
+        when(maturidade.departamentoId()).thenReturn(10L);
+
+        var calculo = new CalculadorasMaturidade();
+        var totalControles = CatalogoControlesSeguranca.Controle.values().length;
+        when(maturidade.fatores()).thenReturn(java.util.List.of(
+                calculo.governancaOperacional(30, 30, 24),
+                calculo.usoResponsavel(24, 6, 0, 0, 30, 30),
+                fatorSeguranca(totalControles)));
+
+        var risco = new InvestigacaoMaturidadeController(
+                resultados, jdbc, new ClassificacaoRiscoDepartamental())
+                .consultar(usuario, inicio, fim, 10L).risco();
+
+        assertThat(risco.estado()).isEqualTo("CLASSIFICADO");
+        assertThat(risco.indice()).isEqualByComparingTo("12");
+        assertThat(risco.classificacao()).isEqualTo(ClassificacaoRiscoDepartamental.Faixa.BAIXO);
+        assertThat(risco.pendencias()).isEmpty();
+        assertThat(risco.evidencias())
+                .extracting(ClassificacaoRiscoDepartamental.Evidencia::fator)
+                .containsExactly("governanca", "usoResponsavel", "seguranca");
+        assertThat(risco.evidencias()).allMatch(ClassificacaoRiscoDepartamental.Evidencia::suficiente);
+    }
+
+    private FatorCalculado fatorSeguranca(int totalControles) {
+        var total = java.math.BigDecimal.valueOf(totalControles);
+        return new FatorCalculado("seguranca", new java.math.BigDecimal("0.20"),
+                new java.math.BigDecimal("100"), "CALCULADO", true, "Controles verificados",
+                java.math.BigDecimal.ONE, java.math.BigDecimal.ONE, totalControles, (long) totalControles,
+                total, total, "Controles atendidos / controles avaliados", "Evidências de teste",
+                java.util.Map.of(), java.util.List.of(), CalculadorasMaturidade.VERSAO);
+    }
+
 }
