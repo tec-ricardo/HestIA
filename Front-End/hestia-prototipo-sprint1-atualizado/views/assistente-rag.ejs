@@ -667,7 +667,7 @@ function renderBank() {
       });
       question.addEventListener('input', mostrarSugestoes);
       historySearch.addEventListener('input', renderHistory);
-      let proximoModo = 'CONSULTAR';
+      let proximoModo = 'GERAR_NOVA';
       function mensagemDoServidor(dados, input, conversaId) {
         const fonte = dados.fontes && dados.fontes[0];
         return { role: 'assistant', text: dados.resposta || 'Não há conteúdo autorizado disponível para esta pergunta.',
@@ -675,7 +675,7 @@ function renderBank() {
           policy: fonte ? 'Conteúdo autorizado #' + fonte.id : dados.estado === 'GERADA_SEM_FONTES' ? 'Resposta geral sem fontes autorizadas' : 'Nenhuma fonte autorizada',
           policyId: fonte ? String(fonte.id) : '', section: fonte && fonte.versao ? 'Versão ' + fonte.versao : '',
           source: fonte ? fonte.titulo : null,
-          respostaId: fonte && dados.estado !== 'GERADA_COM_FONTES' ? fonte.id : null,
+          respostaId: fonte && ['RECUPERADA', 'GERADA_COM_FONTES', 'REUTILIZADA'].includes(dados.estado) ? fonte.id : null,
           reutilizada:dados.estado==='REUTILIZADA', similarity: dados.similaridade,
           confidence: dados.confianca === 'NAO_CLASSIFICADA' ? null : dados.confianca };
       }
@@ -692,7 +692,7 @@ function renderBank() {
         conversa.historicoCarregado = true;
       }
       async function answerFor(input, conversa) {
-        const modo=proximoModo; proximoModo = 'CONSULTAR';
+        const modo=proximoModo; proximoModo = 'GERAR_NOVA';
         if (conversa && !conversa.servidorId) {
           // A criação usa a rota fetch('/api/rag/conversas') com método POST.
           const criacao = await fetch('/api/rag/conversas', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ titulo: conversa.title || input.slice(0,60) }) });

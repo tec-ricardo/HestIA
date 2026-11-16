@@ -7737,3 +7737,984 @@ body:has(form[action="/recuperar-senha"]) .login-brand img {
     max-width: 100%;
     object-fit: contain;
 }
+
+/* CORRECAO DO LAYOUT HESTIA */
+
+.app-shell {
+    display: grid;
+    grid-template-columns: 215px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.app-shell > .sidebar {
+    width: 215px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 15px;
+    background: #e8eef5;
+    color: #10223c;
+}
+
+.app-shell > .sidebar .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.app-shell > .sidebar .nav-link {
+    display: block;
+    padding: 11px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #10223c;
+    text-decoration: none;
+}
+
+.app-shell > .sidebar .nav-link.active {
+    background: #ffffff;
+    border-left: 3px solid #d87932;
+}
+
+.app-shell > .sidebar .sidebar-footer {
+    margin-top: auto;
+}
+
+.app-shell > .main-content,
+.app-shell > .main {
+    min-width: 0;
+    width: 100%;
+}
+
+@media (max-width: 760px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .app-shell > .sidebar {
+        position: fixed;
+        left: -260px;
+        width: 215px;
+        z-index: 100;
+    }
+
+    .app-shell > .sidebar.open {
+        left: 0;
+    }
+}
+/* CORREÇÃO DO LAYOUT — REGISTROS DE USO */
+
+body:has(.usage-records-page) {
+    margin: 0;
+}
+
+body:has(.usage-records-page) .app-shell {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    max-width: none;
+}
+
+body:has(.usage-records-page) .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 215px;
+    height: 100vh;
+    margin: 0;
+    z-index: 100;
+}
+
+body:has(.usage-records-page) .main-content {
+    display: block;
+    flex: 1;
+    width: calc(100% - 215px);
+    max-width: none;
+    min-width: 0;
+    min-height: 100vh;
+    margin: 0 0 0 215px;
+    padding: 28px 30px;
+    visibility: visible;
+    opacity: 1;
+}
+
+body:has(.usage-records-page) .usage-records-header,
+body:has(.usage-records-page) .usage-summary,
+body:has(.usage-records-page) .usage-records-layout {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    body:has(.usage-records-page) .sidebar {
+        width: 185px;
+    }
+
+    body:has(.usage-records-page) .main-content {
+        width: calc(100% - 185px);
+        margin-left: 185px;
+        padding: 20px;
+    }
+}
+/* CORREÇÃO FINAL — REGISTROS DE USO */
+
+body:has(.usage-records-page) .main-content {
+    display: block;
+    width: calc(100% - 215px);
+    max-width: none;
+    margin: 0 0 0 215px;
+    padding: 28px 30px;
+}
+
+body:has(.usage-records-page) .usage-records-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+body:has(.usage-records-page) .usage-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    margin: 0 0 24px;
+}
+
+body:has(.usage-records-page) .usage-summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: auto;
+    min-width: 0;
+    min-height: 145px;
+    height: auto;
+    margin: 0;
+    padding: 22px;
+}
+
+body:has(.usage-records-page) .usage-records-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 22px;
+    width: 100%;
+}
+
+body:has(.usage-records-page) .usage-panel {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+@media (max-width: 1000px) {
+    body:has(.usage-records-page) .usage-summary {
+        grid-template-columns: 1fr;
+    }
+
+    body:has(.usage-records-page) .usage-records-layout {
+        grid-template-columns: 1fr;
+    }
+}
+/* HESTIA — ORGANIZAÇÃO DA TELA DE REGISTROS */
+
+body:has(a[href="/utilizacoes"].active) .app-shell {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+body:has(a[href="/utilizacoes"].active) .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 215px;
+    height: 100vh;
+    z-index: 100;
+}
+
+body:has(a[href="/utilizacoes"].active) .main-content {
+    margin-left: 215px;
+    width: calc(100% - 215px);
+    max-width: none;
+    min-width: 0;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transform: none;
+}
+
+body:has(a[href="/utilizacoes"].active) .main-content > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Indicadores: três cards na mesma linha */
+body:has(a[href="/utilizacoes"].active) .main-content .stats-grid,
+body:has(a[href="/utilizacoes"].active) .main-content .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+/* Formulário e histórico abaixo dos indicadores */
+body:has(a[href="/utilizacoes"].active) .main-content form,
+body:has(a[href="/utilizacoes"].active) .main-content table {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    body:has(a[href="/utilizacoes"].active) .main-content .stats-grid,
+    body:has(a[href="/utilizacoes"].active) .main-content .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* CORREÇÃO DO LAYOUT DOS REGISTROS DE USO */
+
+body:has(a[href="/utilizacoes"].active) .main-content {
+    display: block !important;
+    margin-left: 215px;
+    width: calc(100% - 215px);
+    max-width: none;
+    padding: 32px;
+}
+
+/* Organizar os três indicadores na mesma linha */
+body:has(a[href="/utilizacoes"].active) .stats-grid,
+body:has(a[href="/utilizacoes"].active) .metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+    width: 100% !important;
+    align-items: stretch;
+}
+
+/* Remover deslocamentos dos indicadores */
+body:has(a[href="/utilizacoes"].active) .stats-grid > *,
+body:has(a[href="/utilizacoes"].active) .metrics-grid > * {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    transform: none !important;
+}
+
+/* ==========================================
+   HESTIA - CORRECAO FINAL REGISTROS DE USO
+   Adicionar ao FINAL do styles.css
+========================================== */
+
+@media (min-width: 769px) {
+
+    body:has(.usage-records-page) .app-shell {
+        display: grid !important;
+        grid-template-columns: 215px minmax(0, 1fr) !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-height: 100vh;
+        align-items: start;
+    }
+
+    body:has(.usage-records-page) .app-shell > .sidebar {
+        position: sticky !important;
+        top: 0 !important;
+        left: auto !important;
+        width: 215px !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        grid-column: 1;
+    }
+
+    body:has(.usage-records-page) .app-shell > .main-content {
+        display: block !important;
+        grid-column: 2;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 28px 34px 50px !important;
+        transform: none !important;
+    }
+}
+
+/* CONTEUDO PRINCIPAL */
+
+body:has(.usage-records-page) .usage-records-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+}
+
+/* TITULO */
+
+body:has(.usage-records-page) .usage-records-header {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 24px !important;
+    gap: 20px !important;
+}
+
+/* TRES INDICADORES LADO A LADO */
+
+body:has(.usage-records-page) .usage-summary {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 0 24px !important;
+    align-items: stretch !important;
+}
+
+body:has(.usage-records-page) .usage-summary > .usage-summary-card {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 145px !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 22px !important;
+    transform: none !important;
+}
+
+/* FORMULARIO E HISTORICO ABAIXO */
+
+body:has(.usage-records-page) .usage-records-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+body:has(.usage-records-page) .usage-records-layout > .usage-panel {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    transform: none !important;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1200px) {
+    body:has(.usage-records-page) .usage-records-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body:has(.usage-records-page) .app-shell {
+        display: block !important;
+    }
+
+    body:has(.usage-records-page) .app-shell > .sidebar {
+        position: fixed !important;
+        left: -260px !important;
+        width: 215px !important;
+    }
+
+    body:has(.usage-records-page) .app-shell > .sidebar.open {
+        left: 0 !important;
+    }
+
+    body:has(.usage-records-page) .app-shell > .main-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+
+    body:has(.usage-records-page) .usage-records-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    body:has(.usage-records-page) .usage-summary,
+    body:has(.usage-records-page) .usage-records-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+ HESTIA — AJUSTE EXCLUSIVO DA PAGINA REGISTROS DE USO */
+/* Adicionar no FINAL do styles.css. Nao altera HTML nem JavaScript. */
+
+@media (min-width: 769px) {
+  body:has(main.usage-records-page) .app-shell {
+    display: grid !important;
+    grid-template-columns: 215px minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body:has(main.usage-records-page) .app-shell > aside.sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    width: 215px !important;
+    height: 100vh !important;
+    margin: 0 !important;
+  }
+
+  body:has(main.usage-records-page) .app-shell > main.usage-records-page {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 32px 34px 50px !important;
+    flex: none !important;
+    align-self: stretch !important;
+    transform: none !important;
+    font-size: 14px !important;
+  }
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-header,
+body:has(main.usage-records-page) main.usage-records-page > .usage-summary,
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  transform: none !important;
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  margin-bottom: 24px !important;
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  margin-bottom: 24px !important;
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-summary > .usage-summary-card {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 145px !important;
+  height: auto !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 22px !important;
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout > .usage-panel {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+@media (max-width: 1200px) {
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body:has(main.usage-records-page) .app-shell {
+    display: block !important;
+  }
+  body:has(main.usage-records-page) .app-shell > aside.sidebar {
+    position: fixed !important;
+    left: -260px !important;
+    width: 215px !important;
+  }
+  body:has(main.usage-records-page) .app-shell > aside.sidebar.open {
+    left: 0 !important;
+  }
+  body:has(main.usage-records-page) .app-shell > main.usage-records-page {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  body:has(main.usage-records-page) main.usage-records-page > .usage-summary,
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* HestIA - ajuste exclusivo de posicionamento de Registros de uso.
+   Cole ao FINAL do styles.css, sem apagar regras existentes. */
+
+@media (min-width: 769px) {
+  body:has(main.usage-records-page) .app-shell {
+    display: grid !important;
+    grid-template-columns: 215px minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  body:has(main.usage-records-page) .app-shell > aside.sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 215px !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+  body:has(main.usage-records-page) .app-shell > main.usage-records-page {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    flex: initial !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 32px !important;
+    transform: none !important;
+  }
+}
+
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  transform: none !important;
+}
+body:has(main.usage-records-page) main.usage-records-page > .usage-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  transform: none !important;
+}
+body:has(main.usage-records-page) main.usage-records-page > .usage-summary > article.usage-summary-card {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 145px !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  gap: 22px !important;
+  align-items: start !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout > section.usage-panel {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+@media (max-width: 1100px) {
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+@media (max-width: 768px) {
+  body:has(main.usage-records-page) .app-shell { display: block !important; }
+  body:has(main.usage-records-page) .app-shell > main.usage-records-page {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+  body:has(main.usage-records-page) .app-shell > aside.sidebar {
+    position: fixed !important;
+    left: -260px !important;
+    width: 215px !important;
+  }
+  body:has(main.usage-records-page) .app-shell > aside.sidebar.open { left: 0 !important; }
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  body:has(main.usage-records-page) main.usage-records-page > .usage-summary,
+  body:has(main.usage-records-page) main.usage-records-page > .usage-records-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* HESTIA - CORRECAO DO LAYOUT DE REGISTROS */
+
+@media (min-width: 769px) {
+  body:has(.usage-records-page) .app-shell {
+    display: grid !important;
+    grid-template-columns: 185px minmax(0, 1fr) !important;
+    align-items: start !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body:has(.usage-records-page) .app-shell > .sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: auto !important;
+    width: 185px !important;
+    height: 100vh !important;
+    margin: 0 !important;
+  }
+
+  body:has(.usage-records-page) .app-shell > .main-content,
+  body:has(.usage-records-page) .app-shell > main.usage-records-page {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 30px 34px !important;
+    flex: none !important;
+    align-self: start !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+  }
+}
+
+body:has(.usage-records-page) .usage-records-page {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* TITULO */
+
+body:has(.usage-records-page) .usage-records-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 20px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* TRES INDICADORES LADO A LADO */
+
+body:has(.usage-records-page) .usage-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 18px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+body:has(.usage-records-page) .usage-summary > .usage-summary-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 150px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 22px !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* FORMULARIO E HISTORICO */
+
+body:has(.usage-records-page) .usage-records-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 22px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+body:has(.usage-records-page) .usage-records-layout > .usage-panel {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+body:has(.usage-records-page) .usage-panel input,
+body:has(.usage-records-page) .usage-panel select,
+body:has(.usage-records-page) .usage-panel textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1100px) {
+  body:has(.usage-records-page) .usage-records-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body:has(.usage-records-page) .app-shell {
+    display: block !important;
+  }
+
+  body:has(.usage-records-page) .main-content,
+  body:has(.usage-records-page) main.usage-records-page {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+  }
+
+  body:has(.usage-records-page) .usage-records-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  body:has(.usage-records-page) .usage-summary,
+  body:has(.usage-records-page) .usage-records-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* HESTIA - ALINHAMENTO DEFINITIVO DOS REGISTROS */
+
+@media (min-width: 769px) {
+
+  body:has(.usage-records-page) .app-shell {
+    display: grid !important;
+    grid-template-columns: 185px minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
+  body:has(.usage-records-page) .app-shell > .sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 185px !important;
+    position: sticky !important;
+    top: 0 !important;
+  }
+
+  body:has(.usage-records-page) .app-shell > .main-content {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 28px 32px !important;
+  }
+}
+
+/* CONTEUDO EM FLUXO NORMAL */
+
+body:has(.usage-records-page) .usage-records-page {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+}
+
+/* CABECALHO */
+
+body:has(.usage-records-page) .usage-records-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  position: static !important;
+}
+
+/* TRES CARDS NA MESMA LINHA */
+
+body:has(.usage-records-page) .usage-summary {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  grid-template-rows: auto !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  margin: 0 0 24px !important;
+  padding: 0 !important;
+  position: static !important;
+}
+
+body:has(.usage-records-page) .usage-summary > * {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  justify-self: stretch !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 150px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 22px !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
+/* FORMULARIO E HISTORICO */
+
+body:has(.usage-records-page) .usage-records-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+  gap: 22px !important;
+  align-items: start !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+}
+
+body:has(.usage-records-page) .usage-records-layout > * {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  position: static !important;
+  transform: none !important;
+}
+
+/* TELAS MENORES */
+
+@media (max-width: 1000px) {
+  body:has(.usage-records-page) .usage-records-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body:has(.usage-records-page) .usage-summary {
+    grid-template-columns: 1fr !important;
+  }
+
+  body:has(.usage-records-page) .usage-records-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
