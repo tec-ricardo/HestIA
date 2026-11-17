@@ -133,6 +133,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 .thenAnswer(invocacao -> {
                     var dto = (br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO) invocacao.getArgument(0);
                     var cadastrada = new RespostaReutilizavel();
+                    ReflectionTestUtils.setField(cadastrada, "id", 999L);
 
                     cadastrada.setEmpresaId(dto.getEmpresaId());
                     cadastrada.setPromptOriginal(dto.getPromptOriginal());

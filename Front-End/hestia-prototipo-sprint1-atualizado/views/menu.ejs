@@ -120,7 +120,14 @@
     </style>
     <script>
       (function(){
-        const toggle=document.getElementById('hestiaMiniToggle'), win=document.getElementById('hestiaMiniWindow'),close=document.getElementById('hestiaMiniClose'),frame=win.querySelector('iframe');
+        
+const toggle = document.getElementById('hestiaMiniToggle'),
+      win = document.getElementById('hestiaMiniWindow'),
+      close = document.getElementById('hestiaMiniClose'),
+      frame = win ? win.querySelector('iframe') : null;
+
+if (!toggle || !win || !close || !frame) return;
+
         function setOpen(open){win.hidden=!open;toggle.setAttribute('aria-expanded',String(open));if(open&&!frame.src)frame.src=frame.dataset.src;}
         toggle.addEventListener('click',()=>setOpen(win.hidden));close.addEventListener('click',()=>setOpen(false));
         document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});
