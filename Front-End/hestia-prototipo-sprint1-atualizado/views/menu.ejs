@@ -15,7 +15,7 @@
         <% if (perfil == "colaborador") { %>
             <a class="nav-link <%= active == 'utilizacoes' ? 'active' : '' %>" href="/utilizacoes">Utilizações de IA</a>
             <!-- ASSISTENTE RAG -->
-            <a class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>" href="/assistente-rag">Assistente RAG</a>
+            <a class="nav-link <%= active == 'assistente-rag' ? 'active' : '' %>" href="/assistente-rag">Assistente HestIA</a>
             <!-- HESTIA PASS -->
             <a class="nav-link <%= active == 'passe-hestia' ? 'active' : '' %>" href="/passe-hestia">HestIA Pass</a>
             <!-- RANKING -->
@@ -50,7 +50,6 @@
             <a class="nav-link <%= active == 'ocorrencias' ? 'active' : '' %>" href="/ocorrencias">Gestão de ocorrências</a>
             <a class="nav-link <%= active == 'mapa-risco' ? 'active' : '' %>" href="/mapa-risco">Mapa de Risco</a>
             <a class="nav-link <%= active == 'administracao' ? 'active' : '' %>" href="/administracao">Administração</a>
-            <a class="nav-link" href="/administracao/respostas">Revisão de respostas</a>
             <a class="nav-link <%= active == 'configuracoes' ? 'active' : '' %>" href="/configuracoes">Configurações</a>
         <% } %>
     </nav>
@@ -99,3 +98,32 @@
     })();
     </script>
 </aside>
+    <% if (perfil === "colaborador" && active !== "assistente-rag") { %>
+    <div class="hestia-mini" id="hestiaMini">
+      <button type="button" class="hestia-mini-toggle" id="hestiaMiniToggle" aria-label="Abrir Assistente HestIA" aria-expanded="false">✦</button>
+      <section class="hestia-mini-window" id="hestiaMiniWindow" hidden aria-label="Assistente HestIA">
+        <header><strong>✦ Assistente HestIA</strong><div><a href="/assistente-rag" title="Abrir assistente completo">↗</a><button type="button" id="hestiaMiniClose" aria-label="Fechar">×</button></div></header>
+        <iframe title="Conversa com Assistente HestIA" loading="lazy" data-src="/assistente-rag?mini=1"></iframe>
+      </section>
+    </div>
+    <style>
+      .hestia-mini{position:fixed;right:24px;bottom:22px;z-index:9999;font-family:inherit}
+      .hestia-mini-toggle{width:60px;height:60px;border:2px solid #f28c37;border-radius:50%;background:#142235;color:#ff9c45;font-size:29px;box-shadow:0 12px 35px #08162750;cursor:pointer}
+      .hestia-mini-window{position:absolute;right:0;bottom:75px;width:min(410px,calc(100vw - 28px));height:min(610px,calc(100dvh - 110px));background:#111b29;border:1px solid #f28c37;border-radius:17px;overflow:hidden;box-shadow:0 24px 65px #07111d80}
+      .hestia-mini-window[hidden]{display:none!important}
+      .hestia-mini-window header{height:52px;display:flex;justify-content:space-between;align-items:center;padding:0 15px;background:#172538;color:#fff}
+      .hestia-mini-window header strong{font-size:14px}
+      .hestia-mini-window header div{display:flex;align-items:center;gap:15px}
+      .hestia-mini-window header a,.hestia-mini-window header button{color:#ff9c45;background:none;border:0;font-size:21px;text-decoration:none;cursor:pointer}
+      .hestia-mini-window iframe{width:100%;height:calc(100% - 52px);border:0;background:#101925}
+      @media(max-width:480px){.hestia-mini{right:12px;bottom:12px}.hestia-mini-window{height:calc(100dvh - 105px)}}
+    </style>
+    <script>
+      (function(){
+        const toggle=document.getElementById('hestiaMiniToggle'), win=document.getElementById('hestiaMiniWindow'),close=document.getElementById('hestiaMiniClose'),frame=win.querySelector('iframe');
+        function setOpen(open){win.hidden=!open;toggle.setAttribute('aria-expanded',String(open));if(open&&!frame.src)frame.src=frame.dataset.src;}
+        toggle.addEventListener('click',()=>setOpen(win.hidden));close.addEventListener('click',()=>setOpen(false));
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});
+      })();
+    </script>
+    <% } %>

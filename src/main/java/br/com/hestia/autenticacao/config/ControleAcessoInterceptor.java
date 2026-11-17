@@ -53,19 +53,49 @@ public class ControleAcessoInterceptor implements HandlerInterceptor {
         }
     }
 
+
     private boolean permitido(String rota, String metodo, PerfilUsuario perfil) {
-        if (rota.startsWith("/politicas") && "GET".equals(metodo)) return true;
-        if (rota.equals("/avaliacoes-conformidade/resumo") && "GET".equals(metodo)) return true;
-        if (rota.startsWith("/usuarios") || rota.startsWith("/empresas")
-                || rota.startsWith("/departamentos") || rota.startsWith("/politicas")
-                || rota.startsWith("/auditoria")) {
-            return perfil == PerfilUsuario.ADMIN;
+
+        boolean admin = perfil == PerfilUsuario.ADMIN;
+        boolean gestor = perfil == PerfilUsuario.GESTOR;
+        boolean consulta = "GET".equals(metodo);
+
+        // Administrador e gestor podem consultar indicadores
+        if (consulta && (
+                rota.startsWith("/usuarios") ||
+                        rota.startsWith("/empresas") ||
+                        rota.startsWith("/departamentos")
+        )) {
+            return admin || gestor;
         }
-        if (rota.startsWith("/avaliacoes-conformidade") || rota.startsWith("/tratamentos-nao-conformidade")) {
-            return perfil == PerfilUsuario.ADMIN || perfil == PerfilUsuario.GESTOR;
+
+        // Consultas de políticas e resumo de conformidade
+        if (rota.startsWith("/politicas") && consulta) {
+            return true;
         }
+
+        if (rota.equals("/avaliacoes-conformidade/resumo") && consulta) {
+            return true;
+        }
+
+        // Operações administrativas continuam restritas
+        if (rota.startsWith("/usuarios") ||
+                rota.startsWith("/empresas") ||
+                rota.startsWith("/departamentos") ||
+                rota.startsWith("/politicas") ||
+                rota.startsWith("/auditoria")) {
+            return admin;
+        }
+
+        // Avaliações e tratamentos
+        if (rota.startsWith("/avaliacoes-conformidade") ||
+                rota.startsWith("/tratamentos-nao-conformidade")) {
+            return admin || gestor;
+        }
+
         return true;
     }
+
 
     private String bearer(String authorization) {
         return authorization != null && authorization.startsWith("Bearer ")

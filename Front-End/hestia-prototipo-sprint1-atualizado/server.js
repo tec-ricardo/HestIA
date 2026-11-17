@@ -153,7 +153,7 @@ app.get("/", async (req, res) => {
     const colaborador = req.session.perfil === "colaborador";
 
     const [indicadores, creditos, passe, registros] = await Promise.all([
-        carregarIndicadores(),
+        carregarIndicadores(req.session.perfil),
         consultarObjetoComFallback("/gamificacao/creditos", null),
         Number.isSafeInteger(usuarioId) && usuarioId > 0
             ? consultarObjetoComFallback(`/gamificacao/usuarios/${usuarioId}/passe`, null)
@@ -1735,6 +1735,7 @@ app.get("/curadoria", (req, res) => {
 app.get("/assistente-rag", (req, res) => {
 
     res.render("assistente-rag", {
+        mini: req.query.mini === "1",
         perfil: req.session.perfil,
         email: req.session.email,
         active: "assistente-rag"
@@ -2140,49 +2141,42 @@ async function consultarObjetoComFallback(
 
 /* INDICADORES GERAIS */
 
-async function carregarIndicadores() {
-
-    const [
-        empresas,
-        departamentos,
-        usuarios,
-        politicas,
-        ferramentas
-    ] =
-        await Promise.all([
-
-            consultar("/empresas"),
-
-            consultar("/departamentos"),
-
-            consultar("/usuarios"),
-
-            consultar("/politicas"),
-
-            consultar("/ferramentas-ia")
-
-        ]);
-
-
-    return {
-
-        empresas:
-            empresas.length,
-
-        departamentos:
-            departamentos.length,
-
-        usuarios:
-            usuarios.length,
-
-        politicas:
-            politicas.length,
-
-        ferramentas:
-            ferramentas.length
-
+async function carregarIndicadores(perfil) {
+    // Mantem os mesmos indicadores e a mesma tela para gestor e administrador.
+    const endpoints = {
+        empresas: "/empresas",
+        departamentos: "/departamentos",
+        usuarios: "/usuarios",
+        politicas: "/politicas",
+        ferramentas: "/ferramentas-ia"
     };
+    const entradas = await Promise.all(Object.entries(endpoints).map(async ([nome, endpoint]) => {
+        try {
+            const { data } = await api.get(endpoint);
+            if (!Array.isArray(data)) throw new Error("Formato inesperado da resposta");
+            return [nome, data.length];
+        } catch (erro) {
+            console.error(`[Visao Geral] ${nome}: ${mensagemDaApi(erro)} (HTTP ${erro.response?.status || 'indisponivel'})`);
+            return [nome, null];
+        }
+    }));
+    const indicadores = Object.fromEntries(entradas);
 
+    // Endpoint somente de leitura, com totais organizacionais compartilhados.
+    // O backend deve autorizar tanto gestor quanto administrador neste endpoint.
+    if (perfil === "gestor" || perfil === "administrador") {
+        try {
+            const { data } = await api.get("/indicadores/dashboard");
+            for (const campo of ["empresas", "departamentos", "usuarios"]) {
+                if (Number.isSafeInteger(data?.[campo]) && data[campo] >= 0) {
+                    indicadores[campo] = data[campo];
+                }
+            }
+        } catch (erro) {
+            console.error(`[Dashboard compartilhado] ${mensagemDaApi(erro)} (HTTP ${erro.response?.status || 'indisponivel'})`);
+        }
+    }
+    return indicadores;
 }
 
 

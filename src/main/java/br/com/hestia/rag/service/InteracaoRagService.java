@@ -50,6 +50,7 @@ public class InteracaoRagService {
         exigir(interpretacao!=null,HttpStatus.SERVICE_UNAVAILABLE,"Contextualização indisponível");
         if(interpretacao.esclarecimento()!=null){
             Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,criada_em,conversa_id) VALUES(?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),"PRECISA_ESCLARECIMENTO",interpretacao.esclarecimento(),"[]",LocalDateTime.now(),conversa);
+            cadastrarNaCuradoria(u, empresa, p.pergunta(), interpretacao.esclarecimento(), "PRECISA_ESCLARECIMENTO", null, null, null);
             return ler(u,db.jdbc().queryForMap("SELECT * FROM interacoes_rag WHERE id=?",nova));
         }
         String consulta=interpretacao.consulta();
@@ -91,14 +92,37 @@ public class InteracaoRagService {
             estado="REUTILIZADA";
         }
         Long nova=db.inserir("INSERT INTO interacoes_rag(empresa_id,usuario_id,chave,pergunta,modo,estado,resposta,fontes,modelo,tokens_entrada,tokens_saida,registro_uso_id,criada_em,conversa_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",empresa,u.getId(),p.chave(),p.pergunta(),p.modo().name(),estado,texto,db.escrever(fontes),modelo,entrada,saida,registro,LocalDateTime.now(),conversa);
+        cadastrarNaCuradoria(u, empresa, p.pergunta(), texto, estado, modelo, entrada, saida);
         return ler(u,db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE id=? AND empresa_id=? AND usuario_id=?",nova,empresa,u.getId()).getFirst());
+    }
+    // Toda pergunta processada entra na Curadoria, mesmo quando não há fonte ou resposta.
+    // O registro fica EM_REVISAO e não é liberado para reutilização automaticamente.
+    private void cadastrarNaCuradoria(Usuario usuario, Long empresa, String pergunta,
+                                      String resposta, String estado, String modelo,
+                                      Long tokensEntrada, Long tokensSaida) {
+        var dto = new br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO();
+        dto.setEmpresaId(empresa);
+        dto.setPromptOriginal(pergunta);
+        dto.setRespostaGerada(resposta == null || resposta.isBlank()
+                ? "[Sem resposta gerada pelo assistente. Estado: " + estado + "]" : resposta);
+        dto.setCategoria("RAG_" + estado);
+        dto.setModeloIA(modelo);
+        if (tokensEntrada != null && tokensEntrada >= 0 && tokensEntrada <= Integer.MAX_VALUE)
+            dto.setTokensEntrada(tokensEntrada.intValue());
+        if (tokensSaida != null && tokensSaida >= 0 && tokensSaida <= Integer.MAX_VALUE)
+            dto.setTokensSaida(tokensSaida.intValue());
+        dto.setReutilizavel(false);
+        var cadastrada = respostas.cadastrar(dto, usuario);
+        if (cadastrada == null || cadastrada.getId() == null)
+            throw new IllegalStateException("Não foi possível cadastrar a pergunta na Curadoria");
+        log.info("RAG_CURADORIA perguntaSalva={} empresa={} estado={}", cadastrada.getId(), empresa, estado);
     }
     Resultado ler(Usuario u,Map<String,Object> row){
         List<Fonte> fontes;try{fontes=db.json().readValue((String)row.get("fontes"),new com.fasterxml.jackson.core.type.TypeReference<List<Fonte>>(){});}catch(Exception e){throw new IllegalStateException(e);}
         for(var f:fontes){try{var atual=acesso.buscarPorId(u,f.id());String atualHash=hash(atual.getPromptOriginal()+"\n"+atual.getRespostaGerada());var versoes=db.jdbc().queryForList("SELECT conteudo_sha256 FROM resposta_versoes WHERE resposta_id=? ORDER BY numero_versao DESC",f.id());if(!versoes.isEmpty())atualHash=(String)versoes.getFirst().get("conteudo_sha256");if(!atualHash.equals(f.conteudoSha256()))throw erro(HttpStatus.NOT_FOUND,"Fonte alterada");}catch(org.springframework.web.server.ResponseStatusException e){return new Resultado(id(row,"id"),(String)row.get("pergunta"),((java.sql.Timestamp)row.get("criada_em")).toLocalDateTime(),"FONTES_INDISPONIVEIS",null,List.of(),null,"NAO_CLASSIFICADA","PLATAFORMA","Fonte alterada, retirada, expirada ou sem permissão atual",id(row,"conversa_id"));}}
         return new Resultado(id(row,"id"),(String)row.get("pergunta"),((java.sql.Timestamp)row.get("criada_em")).toLocalDateTime(),(String)row.get("estado"),(String)row.get("resposta"),fontes,fontes.isEmpty()?null:fontes.getFirst().similaridade(),"NAO_CLASSIFICADA",
-            "REUTILIZADA".equals(row.get("estado"))?"REUTILIZADA":"GERADA_COM_FONTES".equals(row.get("estado"))?"GERADA_COM_FONTES":"GERADA_SEM_FONTES".equals(row.get("estado"))?"GERADA_SEM_FONTES":"CONSULTA",
-            "GERADA_SEM_FONTES".equals(row.get("estado"))?"Resposta geral de IA, sem fontes autorizadas e sem validação pela curadoria. Não constitui política da organização.":"Similaridade vetorial (cosseno), quando disponível, não é probabilidade de acerto; ausente significa não medida. Somente confirmação explícita registra reutilização. Fontes revalidadas no acesso.",id(row,"conversa_id"));
+                "REUTILIZADA".equals(row.get("estado"))?"REUTILIZADA":"GERADA_COM_FONTES".equals(row.get("estado"))?"GERADA_COM_FONTES":"GERADA_SEM_FONTES".equals(row.get("estado"))?"GERADA_SEM_FONTES":"CONSULTA",
+                "GERADA_SEM_FONTES".equals(row.get("estado"))?"Resposta geral de IA, sem fontes autorizadas e sem validação pela curadoria. Não constitui política da organização.":"Similaridade vetorial (cosseno), quando disponível, não é probabilidade de acerto; ausente significa não medida. Somente confirmação explícita registra reutilização. Fontes revalidadas no acesso.",id(row,"conversa_id"));
     }
     public List<Resultado> historico(Usuario u){Long empresa=acesso.validarEmpresa(u,null);return db.jdbc().queryForList("SELECT * FROM interacoes_rag WHERE empresa_id=? AND usuario_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId()).stream().map(r->ler(u,r)).toList();}
     public Conversa criarConversa(Usuario u,String titulo){
@@ -112,7 +136,7 @@ public class InteracaoRagService {
     public List<Conversa> conversas(Usuario u){
         Long empresa=acesso.validarEmpresa(u,null);
         return db.jdbc().queryForList("SELECT * FROM conversas_rag WHERE empresa_id=? AND usuario_id=? ORDER BY id DESC LIMIT 100",empresa,u.getId()).stream()
-            .map(r->new Conversa(id(r,"id"),(String)r.get("titulo"),((java.sql.Timestamp)r.get("criada_em")).toLocalDateTime())).toList();
+                .map(r->new Conversa(id(r,"id"),(String)r.get("titulo"),((java.sql.Timestamp)r.get("criada_em")).toLocalDateTime())).toList();
     }
     public List<Resultado> historicoConversa(Usuario u,Long conversa){
         Long empresa=acesso.validarEmpresa(u,null);validarConversa(u,empresa,conversa);
