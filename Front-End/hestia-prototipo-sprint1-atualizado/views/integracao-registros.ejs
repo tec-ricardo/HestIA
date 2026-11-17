@@ -4,13 +4,64 @@
 
 <head>
 
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Registros de uso | HestIA</title>
+    <title>Registros de uso | HestIA</title>
 
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css">
+<style>
+
+/* ESTILOS ISOLADOS: SOMENTE REGISTROS DE USO */
+@media (min-width: 769px) {
+ body:has(> .app-shell > main.usage-records-page) > .app-shell { display:grid !important;grid-template-columns:185px minmax(0,1fr) !important;align-items:start !important;width:100% !important; }
+ body:has(> .app-shell > main.usage-records-page) > .app-shell > .sidebar {grid-column:1 !important;grid-row:1 !important;position:sticky !important;top:0 !important;height:100vh !important;margin:0 !important;}
+ body:has(> .app-shell > main.usage-records-page) > .app-shell > main.usage-records-page {grid-column:2 !important;grid-row:1 !important;margin:0 !important;}
+}
+body .app-shell > main.usage-records-page {display:block !important;position:relative !important;top:auto !important;left:auto !important;right:auto !important;float:none !important;transform:none !important;min-height:100vh !important;width:100% !important;max-width:none !important;min-width:0 !important;padding:26px 32px 44px !important;background:#f3f6fa !important;}
+main.usage-records-page,main.usage-records-page * {box-sizing:border-box !important;}
+main.usage-records-page > header.usage-records-header {display:flex !important;flex-direction:row !important;align-items:center !important;justify-content:space-between !important;gap:18px !important;position:static !important;width:100% !important;max-width:none !important;margin:0 0 18px !important;padding:0 !important;text-align:left !important;transform:none !important;}
+main.usage-records-page .usage-records-header > div:first-child {margin:0 !important;padding:0 !important;text-align:left !important;}
+main.usage-records-page .usage-records-kicker {display:block !important;margin:0 0 5px !important;font-size:11px !important;letter-spacing:.07em !important;}
+main.usage-records-page .usage-records-header h1 {margin:0 0 6px !important;font-size:26px !important;line-height:1.2 !important;text-align:left !important;}
+main.usage-records-page .usage-records-header p {margin:0 !important;font-size:13px !important;line-height:1.4 !important;text-align:left !important;}
+main.usage-records-page > section.usage-summary {display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;grid-auto-flow:row !important;gap:14px !important;align-items:stretch !important;position:static !important;width:100% !important;max-width:none !important;margin:0 0 18px !important;padding:0 !important;transform:none !important;}
+main.usage-records-page .usage-summary > article.usage-summary-card {display:flex !important;flex-direction:column !important;justify-content:center !important;gap:7px !important;grid-column:auto !important;grid-row:auto !important;position:static !important;top:auto !important;left:auto !important;right:auto !important;float:none !important;transform:none !important;width:auto !important;max-width:none !important;min-width:0 !important;min-height:100px !important;height:auto !important;margin:0 !important;padding:15px 17px !important;text-align:left !important;}
+main.usage-records-page .usage-summary-card span {margin:0 !important;font-size:12px !important;}
+main.usage-records-page .usage-summary-card strong {margin:0 !important;font-size:24px !important;line-height:1.2 !important;}
+main.usage-records-page .usage-summary-card small {margin:0 !important;font-size:11px !important;line-height:1.4 !important;}
+main.usage-records-page > div.usage-records-layout {display:grid !important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) !important;grid-template-rows:auto !important;align-items:start !important;gap:16px !important;position:static !important;width:100% !important;max-width:none !important;margin:0 !important;padding:0 !important;transform:none !important;}
+main.usage-records-page .usage-records-layout > section.usage-panel {display:block !important;position:static !important;float:none !important;transform:none !important;top:auto !important;left:auto !important;right:auto !important;min-width:0 !important;max-width:none !important;width:100% !important;height:auto !important;min-height:0 !important;margin:0 !important;padding:20px 22px !important;}
+main.usage-records-page .usage-records-layout > .usage-form-panel {grid-column:1 !important;grid-row:1 !important;}
+main.usage-records-page .usage-records-layout > .usage-history-panel {grid-column:2 !important;grid-row:1 !important;}
+main.usage-records-page .usage-panel-heading {display:flex !important;align-items:flex-start !important;justify-content:space-between !important;gap:10px !important;min-height:0 !important;margin:0 0 14px !important;padding:0 !important;text-align:left !important;}
+main.usage-records-page .usage-panel-heading > div {margin:0 !important;padding:0 !important;text-align:left !important;}
+main.usage-records-page .usage-step {display:inline-block !important;margin:0 0 6px !important;padding:4px 8px !important;}
+main.usage-records-page .usage-panel-heading h2 {margin:0 0 6px !important;font-size:19px !important;line-height:1.2 !important;text-align:left !important;}
+main.usage-records-page .usage-panel-heading p {margin:0 !important;font-size:12px !important;line-height:1.4 !important;text-align:left !important;}
+main.usage-records-page .usage-info {margin:0 0 14px !important;padding:10px 12px !important;font-size:11px !important;line-height:1.4 !important;}
+main.usage-records-page form.usage-form {display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;grid-auto-flow:row !important;align-items:start !important;gap:12px 14px !important;width:100% !important;margin:0 !important;padding:0 !important;}
+main.usage-records-page form.usage-form > .usage-field {display:flex !important;flex-direction:column !important;align-items:stretch !important;justify-content:flex-start !important;gap:5px !important;grid-column:auto !important;grid-row:auto !important;position:static !important;min-width:0 !important;width:100% !important;max-width:none !important;margin:0 !important;padding:0 !important;text-align:left !important;}
+main.usage-records-page form.usage-form > .usage-field-full {grid-column:1/-1 !important;}
+main.usage-records-page form.usage-form > .usage-time-option {display:flex !important;flex-direction:column !important;gap:5px !important;}
+main.usage-records-page .usage-field > span {display:block !important;margin:0 !important;text-align:left !important;}
+main.usage-records-page .usage-field input:not([type=checkbox]),main.usage-records-page .usage-field select,main.usage-records-page .usage-field textarea {display:block !important;position:static !important;width:100% !important;min-width:0 !important;max-width:100% !important;height:39px !important;margin:0 !important;padding:8px 11px !important;}
+main.usage-records-page .usage-field textarea {height:auto !important;min-height:65px !important;}
+main.usage-records-page label.usage-time-checkbox {display:inline-flex !important;flex-direction:row !important;align-items:center !important;justify-content:flex-start !important;gap:8px !important;width:fit-content !important;margin:0 !important;padding:0 !important;}
+main.usage-records-page .usage-time-checkbox input[type=checkbox] {width:16px !important;height:16px !important;margin:0 !important;}
+main.usage-records-page .usage-money-input {display:flex !important;align-items:center !important;gap:7px !important;}
+main.usage-records-page .usage-money-input input {flex:1 !important;}
+main.usage-records-page .usage-form-footer {grid-column:1/-1 !important;margin:0 !important;padding:6px 0 0 !important;}
+main.usage-records-page .usage-form-footer p {margin:0 0 9px !important;}
+main.usage-records-page .usage-submit {width:100% !important;min-height:40px !important;}
+main.usage-records-page .usage-table-wrap {margin:0 !important;width:100% !important;overflow-x:auto !important;}
+main.usage-records-page .usage-table {width:100% !important;border-collapse:collapse !important;}
+main.usage-records-page .usage-table th,main.usage-records-page .usage-table td {padding:10px 7px !important;text-align:left !important;}
+@media(max-width:1100px) {main.usage-records-page > div.usage-records-layout {grid-template-columns:1fr !important;}main.usage-records-page .usage-records-layout > .usage-form-panel {grid-column:1 !important;grid-row:1 !important;}main.usage-records-page .usage-records-layout > .usage-history-panel {grid-column:1 !important;grid-row:2 !important;}}
+@media(max-width:768px) {body:has(> .app-shell > main.usage-records-page) > .app-shell {display:block !important;}body .app-shell > main.usage-records-page {padding:18px 15px 28px !important;}main.usage-records-page > header.usage-records-header {flex-direction:column !important;align-items:flex-start !important;}main.usage-records-page > section.usage-summary {grid-template-columns:1fr !important;}main.usage-records-page form.usage-form {grid-template-columns:1fr !important;}main.usage-records-page form.usage-form > .usage-field {grid-column:1 !important;}main.usage-records-page .usage-records-layout > section.usage-panel {grid-column:1 !important;}}
+
+</style>
 
 </head>
 
@@ -18,289 +69,277 @@
 
 <div class="app-shell">
 
-    <%- include("menu", { active: active, perfil: perfil }) %>
+    <%- include("menu", { active: active, perfil: perfil }) %>
 
+    <main class="main-content usage-records-page">
 
+        <header class="usage-records-header">
 
-    <main class="main-content usage-records-page">
+            <div>
 
-        <header class="usage-records-header">
+                <span class="usage-records-kicker">Governança de IA</span>
 
-            <div>
+                <h1>Registros de uso</h1>
 
-                <span class="usage-records-kicker">Governança de IA</span>
+                <p>Acompanhe suas utilizações e mantenha o uso de IA rastreável.</p>
 
-                <h1>Registros de uso</h1>
+            </div>
 
-                <p>Acompanhe suas utilizações e mantenha o uso de IA rastreável.</p>
+            <div class="usage-origin-pill"><span class="usage-origin-dot"></span>Registro manual</div>
 
-            </div>
+        </header>
 
-            <div class="usage-origin-pill"><span class="usage-origin-dot"></span>Registro manual</div>
+        <section class="usage-summary" aria-label="Resumo dos registros">
 
-        </header>
+            <article class="usage-summary-card">
 
+                <span>Registros encontrados</span>
 
+                <strong><%= registros.length %></strong>
 
-        <section class="usage-summary" aria-label="Resumo dos registros">
+                <small>Utilizações vinculadas à sua conta</small>
 
-            <article class="usage-summary-card">
+            </article>
 
-                <span>Registros encontrados</span>
+            <article class="usage-summary-card">
 
-                <strong><%= registros.length %></strong>
+                <span>Ferramentas disponíveis</span>
 
-                <small>Utilizações vinculadas à sua conta</small>
+                <strong><%= contexto.ferramentas.length %></strong>
 
-            </article>
+                <small>Aprovadas para registro nesta empresa</small>
 
-            <article class="usage-summary-card">
+            </article>
 
-                <span>Ferramentas disponíveis</span>
+            <article class="usage-summary-card usage-summary-highlight">
 
-                <strong><%= contexto.ferramentas.length %></strong>
+                <span>Recompensa</span>
 
-                <small>Aprovadas para registro nesta empresa</small>
+                <strong>+10 XP</strong>
 
-            </article>
+                <small>Por cada registro válido enviado</small>
 
-            <article class="usage-summary-card usage-summary-highlight">
+            </article>
 
-                <span>Recompensa</span>
+        </section>
 
-                <strong>+10 XP</strong>
+        <div class="usage-records-layout">
 
-                <small>Por cada registro válido enviado</small>
+            <section class="usage-panel usage-form-panel">
 
-            </article>
+                <div class="usage-panel-heading">
 
-        </section>
+                    <div>
 
+                        <span class="usage-step">Novo registro</span>
 
+                        <h2>Registrar utilização</h2>
 
-        <div class="usage-records-layout">
+                        <p>Informe os dados observados durante o uso da ferramenta.</p>
 
-            <section class="usage-panel usage-form-panel">
-
-                <div class="usage-panel-heading">
-
-                    <div>
-
-                        <span class="usage-step">Novo registro</span>
-
-                        <h2>Registrar utilização</h2>
-
-                        <p>Informe os dados observados durante o uso da ferramenta.</p>
-
-                    </div>
-
-                </div>
-
-
-
-                <% if (contexto.aviso) { %><div class="usage-info"><%= contexto.aviso %></div><% } %>
-
-
-
-                <form id="formRegistro" class="usage-form">
-
-                    <div class="usage-field usage-field-full usage-time-option">
-                        <span class="usage-time-label">Instante do uso</span>
-                        <label class="usage-time-checkbox">
-                            <input type="checkbox" name="horarioSalvamento" checked>
-                            <span>Usar horário do salvamento para uso realizado agora</span>
-                        </label>
                     </div>
 
-                    <% if(['gestor','administrador'].includes(perfil)){ %>
+                </div>
 
-                    <details class="usage-field-full"><summary>Conferência de evidências pelo responsável (opcional)</summary><p>Registre somente critérios que conferiu conforme a política aplicável. Use referências minimizadas e o vínculo com o resultado revisado. Não copie dados pessoais ou confidenciais. A conferência ficará vinculada à sua conta e à data.</p>
+                <% if (contexto.aviso) { %><div class="usage-info"><%= contexto.aviso %></div><% } %>
 
-                    <% [['FINALIDADE_ADEQUADA','Finalidade e regra da política'],['DADOS_SENSIVEIS','Categorias de dados e controles aplicados'],['VALIDACAO_HUMANA','Revisão e resultado utilizado'],['LGPD','Requisitos da política para tratamento de dados']].forEach(([c,label])=>{ %>
+                <form id="formRegistro" class="usage-form">
 
-                    <label class="usage-field"><span><%= label %></span><select name="estado_<%= c %>"><option value="">Sem conferência</option><option value="ATENDIDO">Atendido — conferido</option><option value="NAO_ATENDIDO">Não atendido — comprovado</option><option value="NAO_VERIFICADO">Não verificado</option></select><textarea name="referencia_<%= c %>" maxlength="2000" placeholder="Referência, regra aplicável e justificativa da conferência"></textarea></label>
+                    <div class="usage-field usage-field-full usage-time-option">
 
-                    <% }) %></details><% } %>
+                        <span class="usage-time-label">Instante do uso</span>
 
+                        <label class="usage-time-checkbox">
 
+                            <input type="checkbox" name="horarioSalvamento" checked>
 
-                    <label class="usage-field usage-field-full">
+                            <span>Usar horário do salvamento para uso realizado agora</span>
 
-                        <span>Ferramenta utilizada</span>
+                        </label>
 
-                        <select name="ferramentaId" required>
+                    </div>
 
-                            <% for (const f of contexto.ferramentas) { %><option value="<%= f.id %>"><%= f.nome %></option><% } %>
+                    <% if(['gestor','administrador'].includes(perfil)){ %>
 
-                        </select>
+                    <details class="usage-field-full"><summary>Conferência de evidências pelo responsável (opcional)</summary><p>Registre somente critérios que conferiu conforme a política aplicável. Use referências minimizadas e o vínculo com o resultado revisado. Não copie dados pessoais ou confidenciais. A conferência ficará vinculada à sua conta e à data.</p>
 
-                    </label>
+                    <% [['FINALIDADE_ADEQUADA','Finalidade e regra da política'],['DADOS_SENSIVEIS','Categorias de dados e controles aplicados'],['VALIDACAO_HUMANA','Revisão e resultado utilizado'],['LGPD','Requisitos da política para tratamento de dados']].forEach(([c,label])=>{ %>
 
-                    <label class="usage-field">
+                    <label class="usage-field"><span><%= label %></span><select name="estado_<%= c %>"><option value="">Sem conferência</option><option value="ATENDIDO">Atendido — conferido</option><option value="NAO_ATENDIDO">Não atendido — comprovado</option><option value="NAO_VERIFICADO">Não verificado</option></select><textarea name="referencia_<%= c %>" maxlength="2000" placeholder="Referência, regra aplicável e justificativa da conferência"></textarea></label>
 
-                        <span>Modelo de IA</span>
+                    <% }) %></details><% } %>
 
-                        <input name="modeloIa" maxlength="100" placeholder="Ex.: GPT-4.1 mini" required>
+                    <label class="usage-field usage-field-full">
 
-                    </label>
+                        <span>Ferramenta utilizada</span>
 
-                    <label class="usage-field">
+                        <select name="ferramentaId" required>
 
-                        <span>Data e hora</span>
+                            <% for (const f of contexto.ferramentas) { %><option value="<%= f.id %>"><%= f.nome %></option><% } %>
 
-                        <input name="dataHora" type="datetime-local" required>
+                        </select>
 
-                    </label>
+                    </label>
 
-                    <label class="usage-field usage-field-full">
+                    <label class="usage-field">
 
-                        <span>Finalidade</span>
+                        <span>Modelo de IA</span>
 
-                        <select name="finalidade" required>
+                        <input name="modeloIa" maxlength="100" placeholder="Ex.: GPT-4.1 mini" required>
 
-                            <option value="PESQUISA">Pesquisa</option>
+                    </label>
 
-                            <option value="GERACAO_CODIGO">Geração de código</option>
+                    <label class="usage-field">
 
-                            <option value="GERACAO_CONTEUDO">Geração de conteúdo</option>
+                        <span>Data e hora</span>
 
-                            <option value="ANALISE_DADOS">Análise de dados</option>
+                        <input name="dataHora" type="datetime-local" required>
 
-                            <option value="RESUMO">Resumo</option>
+                    </label>
 
-                            <option value="AUTOMACAO">Automação</option>
+                    <label class="usage-field usage-field-full">
 
-                            <option value="SUPORTE_DECISAO">Suporte à decisão</option>
+                        <span>Finalidade</span>
 
-                            <option value="OUTROS">Outros</option>
+                        <select name="finalidade" required>
 
-                        </select>
+                            <option value="PESQUISA">Pesquisa</option>
 
-                    </label>
+                            <option value="GERACAO_CODIGO">Geração de código</option>
 
-                    <label class="usage-field">
+                            <option value="GERACAO_CONTEUDO">Geração de conteúdo</option>
 
-                        <span>Tokens de entrada</span>
+                            <option value="ANALISE_DADOS">Análise de dados</option>
 
-                        <input name="tokensEntrada" type="number" min="0" placeholder="0" required>
+                            <option value="RESUMO">Resumo</option>
 
-                    </label>
+                            <option value="AUTOMACAO">Automação</option>
 
-                    <label class="usage-field">
+                            <option value="SUPORTE_DECISAO">Suporte à decisão</option>
 
-                        <span>Tokens de saída</span>
+                            <option value="OUTROS">Outros</option>
 
-                        <input name="tokensSaida" type="number" min="0" placeholder="0" required>
+                        </select>
 
-                    </label>
+                    </label>
 
-                    <label class="usage-field">
+                    <label class="usage-field">
 
-                        <span>Custo observado <small>opcional</small></span>
+                        <span>Tokens de entrada</span>
 
-                        <div class="usage-money-input"><b>R$</b><input name="custoEstimado" type="number" min="0" step="0.000001" placeholder="0,00"></div>
+                        <input name="tokensEntrada" type="number" min="0" placeholder="0" required>
 
-                    </label>
+                    </label>
 
-                    <label class="usage-field">
+                    <label class="usage-field">
 
-                        <span>Situação</span>
+                        <span>Tokens de saída</span>
 
-                        <select name="statusExecucao" required>
+                        <input name="tokensSaida" type="number" min="0" placeholder="0" required>
 
-                            <option value="SUCESSO">Concluída com sucesso</option>
+                    </label>
 
-                            <option value="ERRO">Finalizada com erro</option>
+                    <label class="usage-field">
 
-                            <option value="INTERROMPIDA">Interrompida</option>
+                        <span>Custo observado <small>opcional</small></span>
 
-                        </select>
+                        <div class="usage-money-input"><b>R$</b><input name="custoEstimado" type="number" min="0" step="0.000001" placeholder="0,00"></div>
 
-                    </label>
+                    </label>
 
-                    <div class="usage-form-footer usage-field-full">
+                    <label class="usage-field">
 
-                        <p>Os registros ajudam a empresa a medir o uso responsável sem alterar os dados informados.</p>
+                        <span>Situação</span>
 
-                        <button class="usage-submit" type="submit"><span>Salvar registro</span><b>+10 XP</b></button>
+                        <select name="statusExecucao" required>
 
-                    </div>
+                            <option value="SUCESSO">Concluída com sucesso</option>
 
-                    <p id="avisoRegistro" class="usage-feedback usage-field-full" role="status" hidden></p>
+                            <option value="ERRO">Finalizada com erro</option>
 
-                </form>
+                            <option value="INTERROMPIDA">Interrompida</option>
 
-            </section>
+                        </select>
 
+                    </label>
 
+                    <div class="usage-form-footer usage-field-full">
 
-            <section class="usage-panel usage-history-panel">
+                        <p>Os registros ajudam a empresa a medir o uso responsável sem alterar os dados informados.</p>
 
-                <div class="usage-panel-heading usage-history-heading">
+                        <button class="usage-submit" type="submit"><span>Salvar registro</span><b>+10 XP</b></button>
 
-                    <div>
+                    </div>
 
-                        <span class="usage-step">Histórico</span>
+                    <p id="avisoRegistro" class="usage-feedback usage-field-full" role="status" hidden></p>
 
-                        <h2>Utilizações recentes</h2>
+                </form>
 
-                        <p>Registros armazenados e vinculados à sua conta.</p>
+            </section>
 
-                    </div>
+            <section class="usage-panel usage-history-panel">
 
-                    <span class="usage-count"><%= registros.length %></span>
+                <div class="usage-panel-heading usage-history-heading">
 
-                </div>
+                    <div>
 
+                        <span class="usage-step">Histórico</span>
 
+                        <h2>Utilizações recentes</h2>
 
-                <% if (registros.length === 0) { %>
+                        <p>Registros armazenados e vinculados à sua conta.</p>
 
-                    <div class="usage-empty"><span>◎</span><strong>Nenhum registro ainda</strong><p>Seu primeiro registro aparecerá aqui após o envio.</p></div>
+                    </div>
 
-                <% } else { %>
+                    <span class="usage-count"><%= registros.length %></span>
 
-                    <div class="usage-table-wrap">
+                </div>
 
-                        <table class="usage-table">
+                <% if (registros.length === 0) { %>
 
-                            <thead><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr></thead>
+                    <div class="usage-empty"><span>◎</span><strong>Nenhum registro ainda</strong><p>Seu primeiro registro aparecerá aqui após o envio.</p></div>
 
-                            <tbody>
+                <% } else { %>
 
-                            <% for (const r of registros) { %>
+                    <div class="usage-table-wrap">
 
-                                <tr>
+                        <table class="usage-table">
 
-                                    <td><strong><%= new Date(r.dataHora).toLocaleDateString('pt-BR') %></strong><small><%= new Date(r.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></small></td>
+                            <thead><tr><th>Data</th><th>Ferramenta</th><th>Origem</th><th>Situação</th></tr></thead>
 
-                                    <td><%= r.ferramentaNome || 'Ferramenta não informada' %></td>
+                            <tbody>
 
-                                    <td><span class="usage-source"><%= r.origem %></span></td>
+                            <% for (const r of registros) { %>
 
-                                    <td><span class="usage-status usage-status-<%= String(r.statusExecucao).toLowerCase() %>"><%= r.statusExecucao === 'SUCESSO' ? 'Sucesso' : (r.statusExecucao === 'ERRO' ? 'Erro' : 'Interrompida') %></span></td>
+                                <tr>
 
-                                </tr>
+                                    <td><strong><%= new Date(r.dataHora).toLocaleDateString('pt-BR') %></strong><small><%= new Date(r.dataHora).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}) %></small></td>
 
-                            <% } %>
+                                    <td><%= r.ferramentaNome || 'Ferramenta não informada' %></td>
 
-                            </tbody>
+                                    <td><span class="usage-source"><%= r.origem %></span></td>
 
-                        </table>
+                                    <td><span class="usage-status usage-status-<%= String(r.statusExecucao).toLowerCase() %>"><%= r.statusExecucao === 'SUCESSO' ? 'Sucesso' : (r.statusExecucao === 'ERRO' ? 'Erro' : 'Interrompida') %></span></td>
 
-                    </div>
+                                </tr>
 
-                <% } %>
+                            <% } %>
 
-            </section>
+                            </tbody>
 
-        </div>
+                        </table>
 
-    </main>
+                    </div>
+
+                <% } %>
+
+            </section>
+
+        </div>
+
+    </main>
 
 </div>
-
-
 
 <script>
 
@@ -312,69 +351,68 @@ const agora = new Date(Date.now() - new Date().getTimezoneOffset() * 60000);
 
 dataHora.value = agora.toISOString().slice(0, 16);
 
-
-
 formRegistro.addEventListener('submit', async function (evento) {
 
-    evento.preventDefault();
+    evento.preventDefault();
 
-    const botao = formRegistro.querySelector('.usage-submit');
+    const botao = formRegistro.querySelector('.usage-submit');
 
-    const aviso = document.getElementById('avisoRegistro');
+    const aviso = document.getElementById('avisoRegistro');
 
-    const dados = Object.fromEntries(new FormData(formRegistro));
+    const dados = Object.fromEntries(new FormData(formRegistro));
 
-    if(dados.horarioSalvamento)dados.dataHora=null;
+    if(dados.horarioSalvamento)dados.dataHora=null;
 
-    dados.evidencias=['FINALIDADE_ADEQUADA','DADOS_SENSIVEIS','VALIDACAO_HUMANA','LGPD'].filter(c=>dados['estado_'+c]).map(c=>({criterio:c,estado:dados['estado_'+c],referencia:dados['referencia_'+c]}));
+    dados.evidencias=['FINALIDADE_ADEQUADA','DADOS_SENSIVEIS','VALIDACAO_HUMANA','LGPD'].filter(c=>dados['estado_'+c]).map(c=>({criterio:c,estado:dados['estado_'+c],referencia:dados['referencia_'+c]}));
 
-    for (const campo of ['ferramentaId', 'tokensEntrada', 'tokensSaida']) dados[campo] = Number(dados[campo]);
+    for (const campo of ['ferramentaId', 'tokensEntrada', 'tokensSaida']) dados[campo] = Number(dados[campo]);
 
-    dados.custoEstimado = dados.custoEstimado === '' ? null : Number(dados.custoEstimado);
+    dados.custoEstimado = dados.custoEstimado === '' ? null : Number(dados.custoEstimado);
 
-    botao.disabled = true;
+    botao.disabled = true;
 
-    botao.querySelector('span').textContent = 'Salvando...';
+    botao.querySelector('span').textContent = 'Salvando...';
 
-    aviso.hidden = true;
+    aviso.hidden = true;
 
-    aviso.className = 'usage-feedback usage-field-full';
+    aviso.className = 'usage-feedback usage-field-full';
 
-    try {
+    try {
 
-        const resposta = await fetch('/api/registros', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados)});
+        const resposta = await fetch('/api/registros', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(dados)});
 
-        const resultado = await resposta.json();
+        const resultado = await resposta.json();
 
-        if (!resposta.ok) throw new Error(resultado.erro || 'Registro não salvo');
+        if (!resposta.ok) throw new Error(resultado.erro || 'Registro não salvo');
 
-        const atualizacao = {tipo: 'xp-atualizado', origem: 'registro-uso', instante: Date.now()};
+        const atualizacao = {tipo: 'xp-atualizado', origem: 'registro-uso', instante: Date.now()};
 
-        if ('BroadcastChannel' in window) { const canal = new BroadcastChannel('hestia-pass'); canal.postMessage(atualizacao); canal.close(); }
+        if ('BroadcastChannel' in window) { const canal = new BroadcastChannel('hestia-pass'); canal.postMessage(atualizacao); canal.close(); }
 
-        localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
+        localStorage.setItem('hestia-pass-atualizado', JSON.stringify(atualizacao));
 
-        aviso.textContent = 'Registro salvo com sucesso. +10 XP adicionados ao HestIA Pass.';
+        aviso.textContent = 'Registro salvo com sucesso. +10 XP adicionados ao HestIA Pass.';
 
-        aviso.classList.add('usage-feedback-success');
+        aviso.classList.add('usage-feedback-success');
 
-        aviso.hidden = false;
+        aviso.hidden = false;
 
-        setTimeout(() => location.reload(), 700);
+        setTimeout(() => location.reload(), 700);
 
-    } catch (erro) {
+    } catch (erro) {
 
-        aviso.textContent = erro.message;
+        aviso.textContent = erro.message;
 
-        aviso.classList.add('usage-feedback-error');
+        aviso.classList.add('usage-feedback-error');
 
-        aviso.hidden = false;
+        aviso.hidden = false;
 
-        botao.disabled = false;
+        botao.disabled = false;
 
-        botao.querySelector('span').textContent = 'Salvar registro';
+        botao.querySelector('span').textContent = 'Salvar registro';
 
-    }
+    }
+    
 
 });
 

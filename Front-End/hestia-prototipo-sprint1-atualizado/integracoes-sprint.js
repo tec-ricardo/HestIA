@@ -167,6 +167,15 @@ module.exports = function montarIntegracoes(app, api) {
     if(conversaId!=null)payload.conversaId=id(conversaId);
     res.json((await api.post('/api/rag/perguntas',payload,{timeout:45000})).data);
   }));
+  router.post('/api/rag/banco-respostas', executar(async (req, res) => {
+    const { pergunta, resposta, modeloIA } = req.body || {};
+    if (typeof pergunta !== 'string' || !pergunta.trim() || typeof resposta !== 'string' || !resposta.trim())
+      return res.status(400).json({ erro: 'Pergunta e resposta são obrigatórias.' });
+    const { data } = await api.post('/api/respostas-reutilizaveis/assistente/salvar', {
+      pergunta: pergunta.trim(), resposta: resposta.trim(), modeloIA: modeloIA || null
+    });
+    res.status(201).json({ id: data.id, status: data.statusQualidade, reutilizavel: data.reutilizavel });
+  }));
   router.post('/api/rag/conversas', executar(async(req,res)=>res.status(201).json((await api.post('/api/rag/conversas',{titulo:req.body.titulo})).data)));
   router.get('/api/rag/conversas', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas')).data)));
   router.get('/api/rag/conversas/:id/contexto', executar(async(req,res)=>res.json((await api.get('/api/rag/conversas/'+id(req.params.id)+'/contexto')).data)));

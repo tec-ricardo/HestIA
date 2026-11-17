@@ -127,6 +127,19 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
                 mock(RegistroUsoIAService.class),
                 0L, contextualizacao, new OrcamentoContextoRagService(6000,4,100,1200)
         );
+        // A Curadoria é persistida por um serviço separado. Neste teste de fluxo RAG,
+        // o serviço está mockado e precisa devolver uma entidade cadastrada.
+        when(respostas.cadastrar(any(br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO.class), eq(usuario)))
+                .thenAnswer(invocacao -> {
+                    var dto = (br.com.hestia.reutilizavel.dto.RespostaReutilizavelDTO) invocacao.getArgument(0);
+                    var cadastrada = new RespostaReutilizavel();
+                    ReflectionTestUtils.setField(cadastrada, "id", 999L);
+
+                    cadastrada.setEmpresaId(dto.getEmpresaId());
+                    cadastrada.setPromptOriginal(dto.getPromptOriginal());
+                    cadastrada.setRespostaGerada(dto.getRespostaGerada());
+                    return cadastrada;
+                });
     }
 
     @Test
@@ -232,7 +245,7 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         assertThat(service.historicoConversa(usuario, segunda.id())).isEmpty();
         assertThat(service.conversas(usuario)).extracting(InteracaoRagService.Conversa::id).containsExactly(segunda.id(), primeira.id());
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("turno-2", PERGUNTA, Modo.CONSULTAR, null, segunda.id())))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
     }
 
     @Test
@@ -241,13 +254,13 @@ class FluxoRagPoliticaEmpresaIntegrationTest {
         usuario.setId(11L);
         assertThat(service.conversas(usuario)).isEmpty();
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThatThrownBy(() -> service.perguntar(usuario, new Pergunta("invasao", PERGUNTA, Modo.CONSULTAR, null, conversa.id())))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         usuario.setId(10L);
         usuario.setEmpresa(new Empresa(2L, "Outra", "11111111111111", null, null));
         assertThatThrownBy(() -> service.historicoConversa(usuario, conversa.id()))
-            .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
+                .isInstanceOf(org.springframework.web.server.ResponseStatusException.class);
         assertThat(service.conversas(usuario)).isEmpty();
     }
 

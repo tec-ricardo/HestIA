@@ -1666,198 +1666,58 @@ function mostrarAvaliacao() {
 
 
 
+
 function enviarAvaliacao(evento) {
-
-
-
-
-
-
-
     evento.preventDefault();
 
-
-
-
-
-
-
-    let respostas = [];
-
-
-
-
-
-
-
-    let formulario = document.getElementById("formAvaliacao");
-
-
-
-
-
-
-
-    let resultado = document.getElementById("resultadoAvaliacao");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    for (let i = 0; i < cursoAtual.questoes.length; i++) {
-
-
-
-
-
-
-
-        let selecionada = formulario.querySelector('input[name="questao' + i + '"]:checked');
-
-
-
-
-
-
-
-        if (selecionada == null) {
-
-
-
-
-
-
-
-            resultado.textContent = "Responda todas as perguntas.";
-
-
-
-
-
-
-
-            return;
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        respostas.push(parseInt(selecionada.value));
-
-
-
-
-
-
-
+    const formulario = evento.currentTarget ||
+        document.getElementById("formAvaliacao");
+
+    const resultado = document.getElementById("resultadoAvaliacao");
+
+    if (!formulario || !resultado ||
+        !cursoAtual || !Array.isArray(cursoAtual.questoes)) {
+        console.error("Formulário ou dados da avaliação indisponíveis.");
+        return;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    buscarDados("/api/microtreinamentos/" + cursoAtual.id + "/avaliacao", "POST", { respostas: respostas })
-
-
-
-
-
-
-
-        .then(function(dados) {
-
-
-
-
-
-
-
-            resultado.innerHTML = '<div class="mt-alert">Nota: ' + dados.nota + '%. ' + limparTexto(dados.mensagem) + '</div>';
-
-
-
-
-
-
-
-            if (dados.aprovado) {
-
-
-
-
-
-
-
-                resultado.innerHTML += '<a class="mt-btn mt-btn-primary" href="/microtreinamentos">Voltar aos cursos</a>';
-
-
-
-
-
-
-
-            }
-
-
-
-
-
-
-
-        }).catch(function(erro) {
-
-
-
-
-
-
-
-            resultado.textContent = erro.message;
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
+    const respostas = [];
+
+    for (let i = 0; i < cursoAtual.questoes.length; i++) {
+        const selecionada = formulario.querySelector(
+            'input[name="questao' + i + '"]:checked'
+        );
+
+        if (!selecionada) {
+            resultado.textContent = "Responda todas as perguntas.";
+            return;
+        }
+
+        respostas.push(parseInt(selecionada.value, 10));
+    }
+
+    buscarDados(
+        "/api/microtreinamentos/" + cursoAtual.id + "/avaliacao",
+        "POST",
+        { respostas: respostas }
+    )
+    .then(function(dados) {
+        resultado.innerHTML =
+            '<div class="mt-alert">Nota: ' +
+            dados.nota + '%. ' +
+            limparTexto(dados.mensagem) +
+            '</div>';
+
+        if (dados.aprovado) {
+            resultado.innerHTML +=
+                '<a class="mt-btn mt-btn-primary" ' +
+                'href="/microtreinamentos">' +
+                'Voltar aos cursos</a>';
+        }
+    })
+    .catch(function(erro) {
+        resultado.textContent = erro.message;
+    });
 }
 
 

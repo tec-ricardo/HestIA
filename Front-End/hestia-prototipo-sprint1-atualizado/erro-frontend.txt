@@ -1,0 +1,380 @@
+
+> hestia-prototipo@1.0.0 test
+> node --test
+
+TAP version 13
+# Subtest: BFF encaminha sessão e período sem aceitar empresa do navegador
+ok 1 - BFF encaminha sessão e período sem aceitar empresa do navegador
+  ---
+  duration_ms: 10.5096
+  type: 'test'
+  ...
+# Subtest: demonstração, falha e sessão expirada não geram notas fictícias
+ok 2 - demonstração, falha e sessão expirada não geram notas fictícias
+  ---
+  duration_ms: 1.3916
+  type: 'test'
+  ...
+# Subtest: template mostra nulo, zero medido, parcial e estimado corretamente e escapa conteúdo
+ok 3 - template mostra nulo, zero medido, parcial e estimado corretamente e escapa conteúdo
+  ---
+  duration_ms: 708.94
+  type: 'test'
+  ...
+# Subtest: login real, sessão BFF, consulta, expiração e logout funcionam por HTTP
+ok 4 - login real, sessão BFF, consulta, expiração e logout funcionam por HTTP
+  ---
+  duration_ms: 2032.8609
+  type: 'test'
+  ...
+# Subtest: retomada apresenta valores persistidos sem gravar cadastros
+ok 5 - retomada apresenta valores persistidos sem gravar cadastros
+  ---
+  duration_ms: 707.1741
+  type: 'test'
+  ...
+# Subtest: salvamento usa empresa autenticada e rejeita repetição sem proteção de formulário
+ok 6 - salvamento usa empresa autenticada e rejeita repetição sem proteção de formulário
+  ---
+  duration_ms: 319.4156
+  type: 'test'
+  ...
+# Subtest: falha de consulta não vira lista de pendências fictícias
+ok 7 - falha de consulta não vira lista de pendências fictícias
+  ---
+  duration_ms: 36.761
+  type: 'test'
+  ...
+# Subtest: colaborador não acessa configuração
+ok 8 - colaborador não acessa configuração
+  ---
+  duration_ms: 20.3711
+  type: 'test'
+  ...
+# Subtest: recarregar agrupa mensagens pela conversa e mantém o ID exato para excluir uma interação
+ok 9 - recarregar agrupa mensagens pela conversa e mantém o ID exato para excluir uma interação
+  ---
+  duration_ms: 16.1793
+  type: 'test'
+  ...
+# Subtest: resposta geral recarregada é identificada e não vira resposta reutilizável
+ok 10 - resposta geral recarregada é identificada e não vira resposta reutilizável
+  ---
+  duration_ms: 4.7434
+  type: 'test'
+  ...
+# Subtest: SCRUM-389: consulta e trata ocorrências pela API no escopo da sessão
+ok 11 - SCRUM-389: consulta e trata ocorrências pela API no escopo da sessão
+  ---
+  duration_ms: 3353.0863
+  type: 'test'
+  ...
+# Subtest: prontidão confere API e armazenamento da sessão sem expor segredos
+ok 12 - prontidão confere API e armazenamento da sessão sem expor segredos
+  ---
+  duration_ms: 5.7555
+  type: 'test'
+  ...
+# Subtest: API fora do ar deixa a prontidão indisponível
+ok 13 - API fora do ar deixa a prontidão indisponível
+  ---
+  duration_ms: 1.3513
+  type: 'test'
+  ...
+# Subtest: erro ou timeout do armazenamento de sessão não é sucesso
+ok 14 - erro ou timeout do armazenamento de sessão não é sucesso
+  ---
+  duration_ms: 16.637
+  type: 'test'
+  ...
+# Subtest: desenvolvimento explicita a sessão em memória
+ok 15 - desenvolvimento explicita a sessão em memória
+  ---
+  duration_ms: 0.7844
+  type: 'test'
+  ...
+# Subtest: registro aguarda confirmação após cinco segundos, sem reenviar a gravação
+ok 16 - registro aguarda confirmação após cinco segundos, sem reenviar a gravação
+  ---
+  duration_ms: 5809.3859
+  type: 'test'
+  ...
+# Subtest: falha de confirmação orienta consultar histórico e não repete o POST
+ok 17 - falha de confirmação orienta consultar histórico e não repete o POST
+  ---
+  duration_ms: 17.4534
+  type: 'test'
+  ...
+# Subtest: consulta descarta IDs de empresa e usuário enviados pelo navegador
+ok 18 - consulta descarta IDs de empresa e usuário enviados pelo navegador
+  ---
+  duration_ms: 5.3089
+  type: 'test'
+  ...
+# Subtest: HTTP: maturidade exige conta gerencial real, trata sessão expirada e logout indisponível
+ok 19 - HTTP: maturidade exige conta gerencial real, trata sessão expirada e logout indisponível
+  ---
+  duration_ms: 2696.3225
+  type: 'test'
+  ...
+# Subtest: curadoria bloqueia gestor e valida CSRF antes de gravar
+ok 20 - curadoria bloqueia gestor e valida CSRF antes de gravar
+  ---
+  duration_ms: 1003.032
+  type: 'test'
+  ...
+# Subtest: detalhe da curadoria escapa conteudo e apresenta revisao preservada
+ok 21 - detalhe da curadoria escapa conteudo e apresenta revisao preservada
+  ---
+  duration_ms: 59.2457
+  type: 'test'
+  ...
+# Subtest: CSV e consulta encaminham mesmos filtros sem empresa injetada
+ok 22 - CSV e consulta encaminham mesmos filtros sem empresa injetada
+  ---
+  duration_ms: 52.6718
+  type: 'test'
+  ...
+# Subtest: recuperacao retira token do endereco e envia somente no corpo protegido
+ok 23 - recuperacao retira token do endereco e envia somente no corpo protegido
+  ---
+  duration_ms: 60.2056
+  type: 'test'
+  ...
+# Subtest: maturidade exporta os mesmos filtros e preserva ausencia de dados
+ok 24 - maturidade exporta os mesmos filtros e preserva ausencia de dados
+  ---
+  duration_ms: 94.7391
+  type: 'test'
+  ...
+# Subtest: economia acumulada preserva valor indisponivel e recusa filtros nao suportados
+ok 25 - economia acumulada preserva valor indisponivel e recusa filtros nao suportados
+  ---
+  duration_ms: 48.5374
+  type: 'test'
+  ...
+# Subtest: sessões concorrentes não compartilham token nem empresa
+ok 26 - sessões concorrentes não compartilham token nem empresa
+  ---
+  duration_ms: 28.666
+  type: 'test'
+  ...
+# Subtest: sem contexto não inventa empresa nem credencial
+ok 27 - sem contexto não inventa empresa nem credencial
+  ---
+  duration_ms: 2.4165
+  type: 'test'
+  ...
+# Subtest: login pode consultar seu contexto com o novo token explícito
+ok 28 - login pode consultar seu contexto com o novo token explícito
+  ---
+  duration_ms: 0.7238
+  type: 'test'
+  ...
+# [HestIA API] {
+#   metodo: 'GET',
+#   rota: '/api/maturidade/apuracoes',
+#   status: 401,
+#   codigo: 'ERR_BAD_REQUEST',
+#   backendStatus: 401,
+#   mensagem: 'O Spring Boot recusou a operação. Consulte o log do Java.'
+# }
+# Subtest: a mesma sessão atende confiabilidade, resultados e registros; login recusado elimina acesso anterior
+ok 29 - a mesma sessão atende confiabilidade, resultados e registros; login recusado elimina acesso anterior
+  ---
+  duration_ms: 2279.4006
+  type: 'test'
+  ...
+# Subtest: certificação na tela depende de concessão, não da conclusão da leitura
+not ok 30 - certificação na tela depende de concessão, não da conclusão da leitura
+  ---
+  duration_ms: 25.5512
+  type: 'test'
+  location: 'C:\\Users\\kevin.lee\\Desktop\\4 - Semestre\\HestIA_Novo_Repositório\\HestIA\\Front-End\\hestia-prototipo-sprint1-atualizado\\tests\\conciliacao-stash.test.js:73:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of null (reading 'querySelector')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    evalmachine.<anonymous>:3:174
+    evalmachine.<anonymous>:7:9
+    Script.runInContext (node:vm:149:12)
+    Object.runInContext (node:vm:301:6)
+    TestContext.<anonymous> (C:\Users\kevin.lee\Desktop\4 - Semestre\HestIA_Novo_Repositório\HestIA\Front-End\hestia-prototipo-sprint1-atualizado\tests\conciliacao-stash.test.js:88:34)
+    process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: continuação usa a mesma conversa e uma conversa nova recebe outro ID
+ok 31 - continuação usa a mesma conversa e uma conversa nova recebe outro ID
+  ---
+  duration_ms: 14.0559
+  type: 'test'
+  ...
+# Subtest: retomada carrega só o histórico do ID selecionado e preserva o pedido de esclarecimento
+ok 32 - retomada carrega só o histórico do ID selecionado e preserva o pedido de esclarecimento
+  ---
+  duration_ms: 3.5295
+  type: 'test'
+  ...
+# [HestIA API] {
+#   metodo: 'POST',
+#   rota: '/api/rag/perguntas',
+#   status: 400,
+#   codigo: null,
+#   backendStatus: 400,
+#   mensagem: 'Identificador inválido'
+# }
+# Subtest: BFF preserva ID da conversa e valida IDs antes de chamar a API
+ok 33 - BFF preserva ID da conversa e valida IDs antes de chamar a API
+  ---
+  duration_ms: 1738.8703
+  type: 'test'
+  ...
+# [HestIA API] {
+#   metodo: 'GET',
+#   rota: '/api/microtreinamentos/6',
+#   status: 403,
+#   codigo: null,
+#   backendStatus: 403,
+#   mensagem: 'Alcance o nível Consciente no HestIA Pass para liberar.'
+# }
+# [HestIA API] {
+#   metodo: 'GET',
+#   rota: '/api/admin/respostas/1abc',
+#   status: 400,
+#   codigo: null,
+#   backendStatus: 400,
+#   mensagem: 'Identificador inválido'
+# }
+# [HestIA API] {
+#   metodo: 'POST',
+#   rota: '/api/rag/perguntas',
+#   status: 503,
+#   codigo: null,
+#   backendStatus: 503,
+#   mensagem: 'Fonte indisponível'
+# }
+# Subtest: adapta avaliações reais, mantém tentativa e não expõe gabarito
+ok 34 - adapta avaliações reais, mantém tentativa e não expõe gabarito
+  ---
+  duration_ms: 732.12
+  type: 'test'
+  ...
+# Subtest: scripts das telas integradas são válidos e a prova informa a regra do servidor
+ok 35 - scripts das telas integradas são válidos e a prova informa a regra do servidor
+  ---
+  duration_ms: 67.2169
+  type: 'test'
+  ...
+# Subtest: preserva a política recuperada no fluxo RAG entre interface e backend
+ok 36 - preserva a política recuperada no fluxo RAG entre interface e backend
+  ---
+  duration_ms: 51.751
+  type: 'test'
+  ...
+# Subtest: mantém os três modos do RAG no BFF e confirma a reutilização no backend
+ok 37 - mantém os três modos do RAG no BFF e confirma a reutilização no backend
+  ---
+  duration_ms: 43.7687
+  type: 'test'
+  ...
+# Subtest: as telas explicam fonte, reutilização, evolução, conquistas e próximo passo
+ok 38 - as telas explicam fonte, reutilização, evolução, conquistas e próximo passo
+  ---
+  duration_ms: 5.1839
+  type: 'test'
+  ...
+# Subtest: login real, isolamento e resultado parcial sem fallback demonstrativo
+ok 39 - login real, isolamento e resultado parcial sem fallback demonstrativo
+  ---
+  duration_ms: 2530.6618
+  type: 'test'
+  ...
+# Subtest: dados suficientes não significam desempenho alto; fragilidade não desaparece com nota alta
+ok 40 - dados suficientes não significam desempenho alto; fragilidade não desaparece com nota alta
+  ---
+  duration_ms: 4.7857
+  type: 'test'
+  ...
+# Subtest: simulação separa redução de tempo de aumento de capacidade e não cria valor financeiro
+ok 41 - simulação separa redução de tempo de aumento de capacidade e não cria valor financeiro
+  ---
+  duration_ms: 1.4921
+  type: 'test'
+  ...
+# Subtest: simulação preserva piora e ausência de melhoria em vez de forçar ganho
+ok 42 - simulação preserva piora e ausência de melhoria em vez de forçar ganho
+  ---
+  duration_ms: 1.8999
+  type: 'test'
+  ...
+# Subtest: não presume tempos ou quantidade e rejeita valores inválidos
+ok 43 - não presume tempos ou quantidade e rejeita valores inválidos
+  ---
+  duration_ms: 4.8078
+  type: 'test'
+  ...
+# Subtest: rota inicia vazia e retorna 400 para hipóteses incompletas
+ok 44 - rota inicia vazia e retorna 400 para hipóteses incompletas
+  ---
+  duration_ms: 3.1671
+  type: 'test'
+  ...
+# Subtest: tela de simulação mantém aviso e campos vazios antes da escolha de hipóteses
+ok 45 - tela de simulação mantém aviso e campos vazios antes da escolha de hipóteses
+  ---
+  duration_ms: 28.6972
+  type: 'test'
+  ...
+# Subtest: tela mantém nota frágil visível com aviso e não converte ausência em zero
+ok 46 - tela mantém nota frágil visível com aviso e não converte ausência em zero
+  ---
+  duration_ms: 12.1792
+  type: 'test'
+  ...
+# Subtest: falha de rede mantém a chave no reenvio e só sucesso registra reuso
+ok 47 - falha de rede mantém a chave no reenvio e só sucesso registra reuso
+  ---
+  duration_ms: 24.5523
+  type: 'test'
+  ...
+# Subtest: duplo clique aguarda a mesma confirmação
+ok 48 - duplo clique aguarda a mesma confirmação
+  ---
+  duration_ms: 3.0021
+  type: 'test'
+  ...
+# Subtest: fonte indisponível não copia texto antigo nem registra sucesso
+ok 49 - fonte indisponível não copia texto antigo nem registra sucesso
+  ---
+  duration_ms: 2.7748
+  type: 'test'
+  ...
+# Subtest: falha ao copiar depois do sucesso não desfaz confirmação nem gera novo crédito
+ok 50 - falha ao copiar depois do sucesso não desfaz confirmação nem gera novo crédito
+  ---
+  duration_ms: 3.4132
+  type: 'test'
+  ...
+# Subtest: retomar a consulta mantém a mesma chave de confirmação após recarregar
+ok 51 - retomar a consulta mantém a mesma chave de confirmação após recarregar
+  ---
+  duration_ms: 4.7909
+  type: 'test'
+  ...
+# Subtest: bloqueio do armazenamento local não transforma confirmação real em falha
+ok 52 - bloqueio do armazenamento local não transforma confirmação real em falha
+  ---
+  duration_ms: 7.9137
+  type: 'test'
+  ...
+1..52
+# tests 52
+# suites 0
+# pass 51
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8124.9394
