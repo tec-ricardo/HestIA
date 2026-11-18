@@ -1,9 +1,17 @@
-﻿param([string]$Token)
+﻿param(
+    [string]$Token,
+    [string]$BaseUrl = 'http://localhost:8080',
+    [switch]$SomenteVerificar
+)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Net.Http
 $client = [System.Net.Http.HttpClient]::new()
 $client.Timeout = [TimeSpan]::FromSeconds(60)
-$base = 'http://localhost:8080'
+$endereco = [Uri]$BaseUrl
+if (!$endereco.IsAbsoluteUri -or $endereco.Scheme -notin @('http','https') -or ($endereco.Scheme -eq 'http' -and !$endereco.IsLoopback)) {
+    throw 'Use HTTPS ou HTTP somente no computador local.'
+}
+$base = $BaseUrl.TrimEnd('/')
 $titulo = 'Política de Uso Responsável de IA — Demonstração HestIA — v1.1'
 $texto = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'SCRUM-543-politica-demo-v1.1.md'), [Text.Encoding]::UTF8)
 if ([string]::IsNullOrWhiteSpace($texto)) { throw 'Arquivo da política vazio.' }
@@ -39,7 +47,11 @@ try {
         } finally { Remove-Variable senha,credencial -ErrorAction SilentlyContinue }
     }
     $ctx = Api 'GET' '/api/contexto'
-    if ($ctx.perfil -ne 'ADMIN' -or $ctx.empresaId -ne 1) { throw 'Contexto inesperado: esperado ADMIN da empresa demo 1.' }
+    if ($ctx.perfil -ne 'ADMIN' -or !$ctx.empresaId) { throw 'Entre como administrador da empresa demonstrativa.' }
+    $empresa = Api 'GET' "/empresas/$($ctx.empresaId)"
+    if ($empresa.cnpj -ne '99999999000191' -or $empresa.nome -notmatch 'Demonstra') {
+        throw 'Este script publica somente na empresa fictícia de demonstração, nunca numa empresa real.'
+    }
 
     $titulos = @()
     for ($pagina = 0; $pagina -lt 100; $pagina++) {
@@ -50,6 +62,24 @@ try {
     }
     if ($pagina -ge 100) { throw 'Lista extensa demais para confirmar que não há duplicidade.' }
     if ($titulos.Count -gt 1) { throw 'Há mais de um registro v1.1 com esse título. Confira os IDs antes de continuar.' }
+    if ($SomenteVerificar) {
+        if ($titulos.Count -ne 1) { throw 'Política didática v1.1 não encontrada neste banco/empresa. Atualizar o Git não publica nem indexa a fonte.' }
+        $id = $titulos[0].id
+        $encontradas = @(Api 'POST' '/api/respostas-reutilizaveis/buscar-semelhantes' @{
+            pergunta = 'Posso colocar o CPF do cliente no ChatGPT?'
+            limite = 20
+        })
+        $fonte = @($encontradas | Where-Object { $_.id -eq $id })
+        [pscustomobject]@{
+            Backend = $base
+            EmpresaDemoId = $ctx.empresaId
+            FonteId = $id
+            RecuperouPerguntaCPF = ($fonte.Count -gt 0)
+            Similaridade = $(if ($fonte.Count) { $fonte[0].similaridade } else { $null })
+            Observacao = 'Se não recuperar: conferir perfil demo, processo Java atualizado, indexação e permissões. Este diagnóstico não altera a política.'
+        }
+        return
+    }
     if ($titulos.Count -eq 1) {
         $id = $titulos[0].id
         $atual = (Api 'GET' "/api/admin/respostas/$id").resposta
