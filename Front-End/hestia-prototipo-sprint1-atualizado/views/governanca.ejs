@@ -69,12 +69,17 @@
 <p>Esta tela utiliza somente políticas e avaliações persistidas no banco do HestIA.</p>
 </section>
 <section class="hx-kpis hx-governance-kpis">
+<% const historicoBase = typeof resumoBaseOriginal==='function' ? resumoBaseOriginal() : null; if(historicoBase) { %>
+<article class="hx-card"><span>Governança no histórico sintético</span><strong><%= historicoBase.governanca.nota==null?'Não disponível':Number(historicoBase.governanca.nota).toLocaleString('pt-BR')+'%' %></strong><p><%= historicoBase.empresa %>. Aderência ao cadastro de ferramentas autorizadas; não equivale à conformidade com LGPD ou com todas as políticas.</p></article>
+<article class="hx-card"><span>Conformidade na base original</span><strong>Não disponível</strong><p>A origem não contém avaliações fundamentadas de conformidade. Sucesso técnico ou ausência de incidentes não substituem essas avaliações.</p></article>
+<% } %>
 <article class="hx-card"><span>Políticas cadastradas</span><strong><%= politicas.length %></strong><p><%= politicas.filter(p => p.ativa && !p.excluida).length %> ativas</p></article>
 <article class="hx-card"><span>Usos registrados</span><strong><%= resumoConformidade ? resumoConformidade.registros : '—' %></strong><p><%= perfil === 'colaborador' ? 'Associados à sua conta' : 'No escopo da empresa' %></p></article>
 <article class="hx-card"><span>Usos avaliados</span><strong><%= resumoConformidade ? resumoConformidade.avaliadas : '—' %></strong><p>Avaliações de conformidade persistidas</p></article>
 <article class="hx-card"><span>Conformidade</span><strong><%= resumoConformidade && resumoConformidade.percentualConformidade !== null ? Number(resumoConformidade.percentualConformidade).toLocaleString('pt-BR') + '%' : '—' %></strong><p><%= resumoConformidade && resumoConformidade.avaliadas ? resumoConformidade.conformes + ' conformes de ' + resumoConformidade.avaliadas + ' avaliadas' : 'Ainda não há amostra avaliada' %></p></article>
 </section>
 <section class="hx-metrics">
+<% if(resumoConformidade && resumoConformidade.avaliadas && Number(resumoConformidade.percentualConformidade)===0) { %><p class="hx-muted">O resultado operacional de 0% decorre das avaliações persistidas: nenhuma foi classificada como conforme. Ele não é um valor padrão para ausência de dados e não representa os logs da base sintética.</p><% } %>
 <article class="hx-card"><span>Conformes</span><strong><%= resumoConformidade ? resumoConformidade.conformes : '—' %></strong><p>Atendem à política aplicada.</p></article>
 <article class="hx-card"><span>Não conformes</span><strong><%= resumoConformidade ? resumoConformidade.nao_conformes : '—' %></strong><p>Demandam tratamento.</p></article>
 <article class="hx-card"><span>Em revisão</span><strong><%= resumoConformidade ? resumoConformidade.requerem_revisao : '—' %></strong><p>Aguardam decisão complementar.</p></article>

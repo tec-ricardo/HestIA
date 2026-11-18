@@ -23,6 +23,12 @@
             <p>O indicador usa somente leituras e avaliações concluídas nos microtreinamentos publicados para sua empresa.</p>
         </section>
 
+        <% const historicoBase = typeof resumoBaseOriginal==='function' ? resumoBaseOriginal() : null; if(historicoBase) { %>
+        <section class="panel"><h3>AI Literacy no histórico da base original</h3>
+            <strong style="font-size:28px"><%= historicoBase.literacy.nota==null?'Não disponível':Number(historicoBase.literacy.nota).toLocaleString('pt-BR')+'/100' %></strong>
+            <p>Empresa sintética: <%= historicoBase.empresa %>. Média das médias por pessoa, com <%= historicoBase.literacy.denominador %> pessoas observadas em conclusões válidas de IA Generativa, de <%= historicoBase.periodo.inicio %> a <%= historicoBase.periodo.fim %>.</p>
+            <p>Esse resultado organizacional não é a nota da sua conta e não concede certificados ou XP. Abaixo está sua aprendizagem registrada na plataforma.</p>
+        </section><% } %>
         <% if (!literacy) { %>
             <section class="panel"><p class="error-message">Não foi possível consultar a AI Literacy agora.</p></section>
         <% } else { const nomes={NAO_AVALIADO:'Ainda não avaliado',INICIAL:'Inicial',EM_DESENVOLVIMENTO:'Em desenvolvimento',COMPETENTE:'Competente',AVANCADO:'Avançado'}; %>
@@ -47,6 +53,16 @@
             </section>
         <% } %>
 
+        <% if(literacy && Number(literacy.conteudosLidos)>Number(literacy.avaliacoesConcluidas)) { %>
+        <section class="panel"><h3>Próximo passo: concluir a avaliação</h3><p>A leitura está registrada, mas a nota exige o envio da prova. Aprovação exige pelo menos 80; XP e certificados seguem os requisitos publicados.</p><a href="/microtreinamentos">Abrir meus microtreinamentos e continuar a avaliação →</a></section>
+        <% } %>
+        <% if(typeof historicoAprendizagem!=='undefined') { %>
+        <section class="panel"><h3>Histórico das minhas avaliações</h3>
+        <% if(historicoAprendizagem==null){ %><p>Histórico indisponível no momento. Tente novamente.</p>
+        <% }else if(!historicoAprendizagem.length){ %><p>Nenhuma prova iniciada nesta conta. A nota ainda não foi avaliada; não equivale a zero.</p>
+        <% }else{ %><div class="table-wrap"><table><thead><tr><th>Conteúdo</th><th>Tentativa</th><th>Estado</th><th>Nota</th><th>Próximo passo</th></tr></thead><tbody>
+        <% for(const t of historicoAprendizagem){ %><tr><td>Microtreinamento <%= t.treinamento_id %> · versão <%= t.versao %></td><td><%= t.numero %></td><td><%= t.status %></td><td><%= t.nota==null?'Ainda não finalizada':Number(t.nota).toLocaleString('pt-BR')+'/100' %></td><td><a href="/microtreinamentos/<%= encodeURIComponent(t.treinamento_id) %>"><%= t.status==='APROVADA'?'Rever conteúdo':t.status==='EM_ANDAMENTO'?'Continuar conteúdo/avaliação':'Consultar feedback e requisitos de reforço' %></a></td></tr><% } %>
+        </tbody></table></div><% } %></section><% } %>
         <section class="panel">
             <div class="panel-head"><div><h3>Certificações concedidas</h3><p>Somente certificações verificadas pelo backend são exibidas.</p></div></div>
             <% if (!certificacoes.length) { %><p class="muted">Nenhuma certificação concedida até o momento.</p><% } else { %>

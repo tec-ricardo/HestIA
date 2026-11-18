@@ -36,3 +36,5 @@ build/
 .idea/
 
 node_modules/
+
+/dados-locais/
