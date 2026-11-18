@@ -1,78 +1,877 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HestIA - Competências</title>
+
     <link rel="stylesheet" href="/styles.css">
+
+
+
+    <style>
+
+        /* Estilos exclusivos da página Competências */
+
+        .main:has(> .dashboard-summary) > .hero-card {
+
+            background: linear-gradient(115deg,#172b47,#29476b) !important;
+
+            border-left: 5px solid #ef873a !important;
+
+            border-radius: 16px !important;
+
+            padding: 32px 36px !important;
+
+            margin-bottom: 28px !important;
+
+            color: #fff !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .hero-card h2 {
+
+            color: #fff !important;
+
+            font-size: 28px !important;
+
+            margin: 10px 0 !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .hero-card p {
+
+            color: #dce7f5 !important;
+
+            line-height: 1.65;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .hero-card .eyebrow {
+
+            color: #ffba80 !important;
+
+            font-weight: 800;
+
+            letter-spacing: 1.4px;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .panel {
+
+            margin-bottom: 26px !important;
+
+            padding: 26px !important;
+
+            border-radius: 15px !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .dashboard-summary {
+
+            display: grid !important;
+
+            grid-template-columns: repeat(4,minmax(0,1fr));
+
+            gap: 18px !important;
+
+            margin: 26px 0 !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .dashboard-summary-card {
+
+            padding: 22px !important;
+
+            border-radius: 14px !important;
+
+            border: 1px solid #dce4ee !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .dashboard-summary-card:first-child {
+
+            background: linear-gradient(135deg,#fff1e3,#fff) !important;
+
+            border: 2px solid #e58b45 !important;
+
+            box-shadow: 0 8px 24px rgba(190,95,30,.12);
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .dashboard-summary-card:first-child strong {
+
+            font-size: 38px !important;
+
+            color: #152b46 !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .dashboard-summary-card:first-child span {
+
+            color: #a94d12 !important;
+
+            font-weight: 800;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .grid.two {
+
+            gap: 22px !important;
+
+            margin-bottom: 28px !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) > .grid.two > .panel {
+
+            padding: 26px !important;
+
+            border-radius: 15px !important;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .panel h3 {
+
+            color: #172b47;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .panel p {
+
+            line-height: 1.65;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .list-clean {
+
+            gap: 10px;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .list-clean span {
+
+            padding: 13px 15px;
+
+            border-radius: 9px;
+
+            background: #f1f5f9;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) .table-wrap {
+
+            margin-top: 16px;
+
+            overflow-x: auto;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) table th {
+
+            background: #f1f5f9;
+
+            font-weight: 700;
+
+        }
+
+
+
+        .main:has(> .dashboard-summary) table td {
+
+            padding: 14px 12px;
+
+        }
+
+
+
+        @media(max-width:1000px) {
+
+            .main:has(> .dashboard-summary) > .dashboard-summary {
+
+                grid-template-columns: repeat(2,minmax(0,1fr));
+
+            }
+
+        }
+
+
+
+        @media(max-width:600px) {
+
+            .main:has(> .dashboard-summary) > .dashboard-summary {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+
+            .main:has(> .dashboard-summary) > .hero-card {
+
+                padding: 24px !important;
+
+            }
+
+        }
+
+        /* Melhorias visuais dos blocos de orientação */
+        .competencias-info-panel { border-left: 4px solid #ef873a !important; }
+        .competencias-next-panel { background: linear-gradient(110deg,#fff8f1,#fff) !important; border-left: 4px solid #ef873a !important; }
+        .competencias-info-panel .personal-card-link,
+        .competencias-next-panel .personal-card-link { display:inline-flex;align-items:center;margin-top:14px;color:#b65c22;font-weight:800;text-decoration:none; }
+        .competencias-info-panel .personal-card-link:hover,
+        .competencias-next-panel .personal-card-link:hover { text-decoration:underline; }
+    </style>
+
 </head>
+
+
+
 <body>
+
 <div class="app-shell">
+
+
+
     <%- include("menu", { perfil, email, active }) %>
+
+
+
     <main class="main">
+
+
+
         <header class="topbar">
+
             <button class="menu-button" id="menuButton">☰</button>
-            <div><p class="eyebrow">Desenvolvimento</p><h1>Competências</h1></div>
-            <div class="profile-switch"><span><%= email %></span></div>
+
+
+
+            <div>
+
+                <p class="eyebrow">Desenvolvimento</p>
+
+                <h1>Competências</h1>
+
+            </div>
+
+
+
+            <div class="profile-switch">
+
+                <span><%= email %></span>
+
+            </div>
+
+
+
             <a class="topbar-logout" href="/sair">Sair</a>
+
         </header>
 
+
+
         <section class="hero-card">
+
             <p class="eyebrow">AI Literacy</p>
+
             <h2>Conhecimento comprovado por aprendizagem</h2>
-            <p>O indicador usa somente leituras e avaliações concluídas nos microtreinamentos publicados para sua empresa.</p>
+
+            <p>
+
+                O indicador usa somente leituras e avaliações concluídas
+
+                nos microtreinamentos publicados para sua empresa.
+
+            </p>
+
         </section>
 
-        <% const historicoBase = typeof resumoBaseOriginal==='function' ? resumoBaseOriginal() : null; if(historicoBase) { %>
-        <section class="panel"><h3>AI Literacy no histórico da base original</h3>
-            <strong style="font-size:28px"><%= historicoBase.literacy.nota==null?'Não disponível':Number(historicoBase.literacy.nota).toLocaleString('pt-BR')+'/100' %></strong>
-            <p>Empresa sintética: <%= historicoBase.empresa %>. Média das médias por pessoa, com <%= historicoBase.literacy.denominador %> pessoas observadas em conclusões válidas de IA Generativa, de <%= historicoBase.periodo.inicio %> a <%= historicoBase.periodo.fim %>.</p>
-            <p>Esse resultado organizacional não é a nota da sua conta e não concede certificados ou XP. Abaixo está sua aprendizagem registrada na plataforma.</p>
-        </section><% } %>
-        <% if (!literacy) { %>
-            <section class="panel"><p class="error-message">Não foi possível consultar a AI Literacy agora.</p></section>
-        <% } else { const nomes={NAO_AVALIADO:'Ainda não avaliado',INICIAL:'Inicial',EM_DESENVOLVIMENTO:'Em desenvolvimento',COMPETENTE:'Competente',AVANCADO:'Avançado'}; %>
-            <section class="dashboard-summary">
-                <article class="dashboard-summary-card"><span>AI Literacy</span><strong><%= literacy.notaMedia === null ? '—' : Number(literacy.notaMedia).toLocaleString('pt-BR') + '/100' %></strong><p><%= nomes[literacy.nivel] || literacy.nivel %></p></article>
-                <article class="dashboard-summary-card"><span>Cobertura</span><strong><%= literacy.cobertura === null ? '—' : Number(literacy.cobertura).toLocaleString('pt-BR') + '%' %></strong><p>Avaliações concluídas sobre conteúdos publicados</p></article>
-                <article class="dashboard-summary-card"><span>Conteúdos lidos</span><strong><%= literacy.conteudosLidos %> / <%= literacy.conteudosPublicados %></strong><p>Leituras confirmadas e versionadas</p></article>
-                <article class="dashboard-summary-card"><span>Avaliações aprovadas</span><strong><%= literacy.avaliacoesAprovadas %> / <%= literacy.avaliacoesConcluidas %></strong><p>Aprovação exige nota mínima de 80</p></article>
+
+
+        <% const historicoBase = typeof resumoBaseOriginal === 'function'
+
+            ? resumoBaseOriginal()
+
+            : null;
+
+
+
+        if (historicoBase) { %>
+
+
+
+            <section class="panel">
+
+                <h3>AI Literacy — Média da empresa</h3>
+
+
+
+                <strong style="font-size:28px">
+
+                    <%= historicoBase.literacy.nota == null
+
+                        ? 'Não disponível'
+
+                        : Number(historicoBase.literacy.nota).toLocaleString('pt-BR') + '/100' %>
+
+                </strong>
+
+
+
+                <p>
+
+                    Média de conhecimento em IA Generativa dos
+
+                    <%= historicoBase.literacy.denominador %> participantes
+
+                    da empresa HestIA,
+
+                    com base nos dados históricos.
+
+                </p>
+
             </section>
+
+
+
+        <% } %>
+
+
+
+        <% if (!literacy) { %>
+
+
+
+            <section class="panel">
+
+                <p class="error-message">
+
+                    Não foi possível consultar a AI Literacy agora.
+
+                </p>
+
+            </section>
+
+
+
+        <% } else {
+
+
+
+            const nomes = {
+
+                NAO_AVALIADO: 'Ainda não avaliado',
+
+                INICIAL: 'Inicial',
+
+                EM_DESENVOLVIMENTO: 'Em desenvolvimento',
+
+                COMPETENTE: 'Competente',
+
+                AVANCADO: 'Avançado'
+
+            };
+
+        %>
+
+
+
+            <section class="dashboard-summary">
+
+
+
+                <article class="dashboard-summary-card">
+
+                    <span>AI Literacy</span>
+
+                    <strong>
+
+                        <%= literacy.notaMedia === null
+
+                            ? '—'
+
+                            : Number(literacy.notaMedia).toLocaleString('pt-BR') + '/100' %>
+
+                    </strong>
+
+                    <p><%= nomes[literacy.nivel] || literacy.nivel %></p>
+
+                </article>
+
+
+
+                <article class="dashboard-summary-card">
+
+                    <span>Cobertura</span>
+
+                    <strong>
+
+                        <%= literacy.cobertura === null
+
+                            ? '—'
+
+                            : Number(literacy.cobertura).toLocaleString('pt-BR') + '%' %>
+
+                    </strong>
+
+                    <p>Avaliações concluídas sobre conteúdos publicados</p>
+
+                </article>
+
+
+
+                <article class="dashboard-summary-card">
+
+                    <span>Conteúdos lidos</span>
+
+                    <strong>
+
+                        <%= literacy.conteudosLidos %> /
+
+                        <%= literacy.conteudosPublicados %>
+
+                    </strong>
+
+                    <p>Leituras confirmadas e versionadas</p>
+
+                </article>
+
+
+
+                <article class="dashboard-summary-card">
+
+                    <span>Avaliações aprovadas</span>
+
+                    <strong>
+
+                        <%= literacy.avaliacoesAprovadas %> /
+
+                        <%= literacy.avaliacoesConcluidas %>
+
+                    </strong>
+
+                    <p>Aprovação exige nota mínima de 80</p>
+
+                </article>
+
+
+
+            </section>
+
+
 
             <section class="grid two">
+
+
+
                 <article class="panel">
-                    <div class="panel-head"><div><h3>Como a nota é calculada</h3><p>Regra <%= literacy.versaoRegra %></p></div></div>
-                    <p>A nota é a média da melhor avaliação concluída em cada conteúdo publicado. Tentativas abertas não entram no cálculo e nenhum valor é estimado.</p>
-                    <% if (literacy.notaMedia === null) { %><p class="muted">Conclua a leitura e a avaliação de um microtreinamento para gerar sua primeira evidência.</p><% } %>
-                    <a class="personal-card-link" href="/microtreinamentos">Ir para microtreinamentos →</a>
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>Como funciona sua nota de AI Literacy?</h3>
+
+                            <p>Critério de cálculo: <%= literacy.versaoRegra %></p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <p>
+
+                        Sua nota é a média das melhores avaliações finalizadas em cada microtreinamento. Tentativas não concluídas não entram no cálculo.
+
+                    </p>
+
+
+
+                    <% if (literacy.notaMedia === null) { %>
+
+                        <p class="muted">
+
+                            Conclua a leitura e a avaliação de um
+
+                            microtreinamento para gerar sua primeira evidência.
+
+                        </p>
+
+                    <% } %>
+
+
+
+                    <a class="personal-card-link" href="/microtreinamentos">
+
+                        Explorar microtreinamentos →
+
+                    </a>
+
                 </article>
+
+
+
                 <article class="panel">
-                    <div class="panel-head"><div><h3>Faixas de desenvolvimento</h3><p>Classificação transparente da nota observada.</p></div></div>
-                    <div class="list-clean"><span>Inicial: abaixo de 60</span><span>Em desenvolvimento: 60 a 79,99</span><span>Competente: 80 a 89,99</span><span>Avançado: 90 a 100</span></div>
+
+                    <div class="panel-head">
+
+                        <div>
+
+                            <h3>Faixas de desenvolvimento</h3>
+
+                            <p>Classificação transparente da nota observada.</p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="list-clean">
+
+                        <span>Inicial: abaixo de 60</span>
+
+                        <span>Em desenvolvimento: 60 a 79,99</span>
+
+                        <span>Competente: 80 a 89,99</span>
+
+                        <span>Avançado: 90 a 100</span>
+
+                    </div>
+
                 </article>
+
+
+
             </section>
+
+
+
         <% } %>
 
-        <% if(literacy && Number(literacy.conteudosLidos)>Number(literacy.avaliacoesConcluidas)) { %>
-        <section class="panel"><h3>Próximo passo: concluir a avaliação</h3><p>A leitura está registrada, mas a nota exige o envio da prova. Aprovação exige pelo menos 80; XP e certificados seguem os requisitos publicados.</p><a href="/microtreinamentos">Abrir meus microtreinamentos e continuar a avaliação →</a></section>
+
+
+        <% if (
+
+            literacy &&
+
+            Number(literacy.conteudosLidos) >
+
+            Number(literacy.avaliacoesConcluidas)
+
+        ) { %>
+
+
+
+            <section class="panel">
+
+                <h3>Próximo passo: finalize sua avaliação</h3>
+
+
+
+                <p>
+
+                    Você já concluiu a leitura. Agora, finalize a avaliação para registrar sua nota. Para ser aprovado, é necessário alcançar pelo menos 80 pontos.
+
+                </p>
+
+
+
+                <a href="/microtreinamentos">
+
+                    Continuar minha avaliação →
+
+                </a>
+
+            </section>
+
+
+
         <% } %>
-        <% if(typeof historicoAprendizagem!=='undefined') { %>
-        <section class="panel"><h3>Histórico das minhas avaliações</h3>
-        <% if(historicoAprendizagem==null){ %><p>Histórico indisponível no momento. Tente novamente.</p>
-        <% }else if(!historicoAprendizagem.length){ %><p>Nenhuma prova iniciada nesta conta. A nota ainda não foi avaliada; não equivale a zero.</p>
-        <% }else{ %><div class="table-wrap"><table><thead><tr><th>Conteúdo</th><th>Tentativa</th><th>Estado</th><th>Nota</th><th>Próximo passo</th></tr></thead><tbody>
-        <% for(const t of historicoAprendizagem){ %><tr><td>Microtreinamento <%= t.treinamento_id %> · versão <%= t.versao %></td><td><%= t.numero %></td><td><%= t.status %></td><td><%= t.nota==null?'Ainda não finalizada':Number(t.nota).toLocaleString('pt-BR')+'/100' %></td><td><a href="/microtreinamentos/<%= encodeURIComponent(t.treinamento_id) %>"><%= t.status==='APROVADA'?'Rever conteúdo':t.status==='EM_ANDAMENTO'?'Continuar conteúdo/avaliação':'Consultar feedback e requisitos de reforço' %></a></td></tr><% } %>
-        </tbody></table></div><% } %></section><% } %>
+
+
+
+        <% if (typeof historicoAprendizagem !== 'undefined') { %>
+
+
+
+            <section class="panel">
+
+                <h3>Histórico das minhas avaliações</h3>
+
+
+
+                <% if (historicoAprendizagem == null) { %>
+
+
+
+                    <p>Histórico indisponível no momento. Tente novamente.</p>
+
+
+
+                <% } else if (!historicoAprendizagem.length) { %>
+
+
+
+                    <p>
+
+                        Nenhuma prova iniciada nesta conta.
+
+                        A nota ainda não foi avaliada; não equivale a zero.
+
+                    </p>
+
+
+
+                <% } else { %>
+
+
+
+                    <div class="table-wrap">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Conteúdo</th>
+
+                                    <th>Tentativa</th>
+
+                                    <th>Estado</th>
+
+                                    <th>Nota</th>
+
+                                    <th>Próximo passo</th>
+
+                                </tr>
+
+                            </thead>
+
+
+
+                            <tbody>
+
+                                <% for (const t of historicoAprendizagem) { %>
+
+                                    <tr>
+
+                                        <td>
+
+                                            Microtreinamento <%= t.treinamento_id %>
+
+                                            · versão <%= t.versao %>
+
+                                        </td>
+
+
+
+                                        <td><%= t.numero %></td>
+
+                                        <td><%= t.status %></td>
+
+
+
+                                        <td>
+
+                                            <%= t.nota == null
+
+                                                ? 'Ainda não finalizada'
+
+                                                : Number(t.nota).toLocaleString('pt-BR') + '/100' %>
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                            <a href="/microtreinamentos/<%= encodeURIComponent(t.treinamento_id) %>">
+
+                                                <%= t.status === 'APROVADA'
+
+                                                    ? 'Rever conteúdo'
+
+                                                    : t.status === 'EM_ANDAMENTO'
+
+                                                        ? 'Continuar conteúdo/avaliação'
+
+                                                        : 'Consultar feedback e requisitos de reforço' %>
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+
+                <% } %>
+
+            </section>
+
+
+
+        <% } %>
+
+
+
         <section class="panel">
-            <div class="panel-head"><div><h3>Certificações concedidas</h3><p>Somente certificações verificadas pelo backend são exibidas.</p></div></div>
-            <% if (!certificacoes.length) { %><p class="muted">Nenhuma certificação concedida até o momento.</p><% } else { %>
-                <div class="table-wrap"><table><thead><tr><th>Certificação</th><th>Nível</th><th>Versão</th><th>Concedida em</th></tr></thead><tbody>
-                <% certificacoes.forEach(item => { %><tr><td><%= item.nome %></td><td><%= item.nivel %></td><td><%= item.versao %></td><td><%= new Date(item.concedida_em || item.concedidaEm).toLocaleString('pt-BR') %></td></tr><% }) %>
-                </tbody></table></div>
+
+            <div class="panel-head">
+
+                <div>
+
+                    <h3>Certificações concedidas</h3>
+
+
+                </div>
+
+            </div>
+
+
+
+            <% if (!certificacoes.length) { %>
+
+
+
+                <p class="muted">
+
+                    Nenhuma certificação concedida até o momento.
+
+                </p>
+
+
+
+            <% } else { %>
+
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Certificação</th>
+
+                                <th>Nível</th>
+
+                                <th>Versão</th>
+
+                                <th>Concedida em</th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <tbody>
+
+                            <% certificacoes.forEach(item => { %>
+
+                                <tr>
+
+                                    <td><%= item.nome %></td>
+
+                                    <td><%= item.nivel %></td>
+
+                                    <td><%= item.versao %></td>
+
+                                    <td>
+
+                                        <%= new Date(
+
+                                            item.concedida_em || item.concedidaEm
+
+                                        ).toLocaleString('pt-BR') %>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
             <% } %>
+
         </section>
+
+
+
     </main>
+
 </div>
+
+
+
 <script src="/app.js"></script>
+
 </body>
+
 </html>
