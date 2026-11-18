@@ -19,6 +19,8 @@
         <section class="panel hm-risk-panel">
             <div class="panel-head"><h3>Apuração departamental</h3></div>
             <form method="get" action="/mapa-risco">
+                <input type="hidden" name="fonte" value="OPERACIONAL">
+                <a href="/mapa-risco?fonte=SINTETICA">Consultar histórico da base original</a>
                 <label for="inicio">Início</label>
                 <input id="inicio" name="inicio" type="date" value="<%= inicio %>" required>
                 <label for="fim">Fim</label>

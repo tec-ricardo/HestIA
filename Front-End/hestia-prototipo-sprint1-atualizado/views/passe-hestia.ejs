@@ -8,6 +8,7 @@ const faixasPasse = [
 const xpPasse = Math.max(0, Number(passe.xpAtual) || 0);
 const faixaAtual = [...faixasPasse].reverse().find(faixa => xpPasse >= faixa.xpNecessario) || faixasPasse[0];
 const faixaProxima = faixasPasse.find(faixa => faixa.nivel === faixaAtual.nivel + 1);
+const progressoFaixa = faixaProxima ? Math.max(0,Math.min(100,100*(xpPasse-faixaAtual.xpNecessario)/(faixaProxima.xpNecessario-faixaAtual.xpNecessario))) : 100;
 passe.nivelAtual = faixaAtual.nivel;
 passe.nomeNivel = faixaAtual.nome;
 passe.xpProximoNivel = faixaProxima ? faixaProxima.xpNecessario : xpPasse;
@@ -83,7 +84,7 @@ passe.niveis = faixasPasse.map(faixa => ({
                     <div class="pass-progress">
                         <div
                             class="pass-progress-fill"
-                            style="width: <%= Math.min((passe.xpAtual / passe.xpProximoNivel) * 100, 100) %>%;">
+                            style="width: <%= progressoFaixa %>%;">
                         </div>
                     </div>
                     <small class="pass-xp-remaining">
@@ -107,7 +108,7 @@ passe.niveis = faixasPasse.map(faixa => ({
                     <%= passe.taxaConformidade == null ? '—' : passe.taxaConformidade + '%' %>
                 </strong>
                 <small>
-                    <%= passe.taxaConformidade == null ? 'Indicador ainda não fornecido pela API' : 'das utilizações avaliadas' %>
+                    <%= passe.taxaConformidade == null ? 'Sem dados operacionais suficientes' : 'das utilizações avaliadas' %>
                 </small>
             </article>
             <article class="pass-stat-card">
@@ -118,7 +119,7 @@ passe.niveis = faixasPasse.map(faixa => ({
                     <%= passe.totalUtilizacoesAvaliadas == null ? '—' : passe.totalUtilizacoesAvaliadas %>
                 </strong>
                 <small>
-                    <%= passe.totalUtilizacoesAvaliadas == null ? 'Indicador ainda não fornecido pela API' : 'experiências analisadas' %>
+                    <%= passe.totalUtilizacoesAvaliadas == null ? 'Sem dados operacionais suficientes' : 'experiências analisadas' %>
                 </small>
             </article>
             <article class="pass-stat-card">
@@ -129,7 +130,7 @@ passe.niveis = faixasPasse.map(faixa => ({
                     <%= passe.totalUtilizacoesConformes == null ? '—' : passe.totalUtilizacoesConformes %>
                 </strong>
                 <small>
-                    <%= passe.totalUtilizacoesConformes == null ? 'Indicador ainda não fornecido pela API' : 'práticas responsáveis' %>
+                    <%= passe.totalUtilizacoesConformes == null ? 'Sem dados operacionais suficientes' : 'práticas responsáveis' %>
                 </small>
             </article>
             <article class="pass-stat-card">
@@ -140,7 +141,7 @@ passe.niveis = faixasPasse.map(faixa => ({
                     <%= passe.sequenciaConforme == null ? '—' : passe.sequenciaConforme %>
                 </strong>
                 <small>
-                    <%= passe.sequenciaConforme == null ? 'Indicador ainda não fornecido pela API' : 'utilizações conformes' %>
+                    <%= passe.sequenciaConforme == null ? 'Sem dados operacionais suficientes' : 'utilizações conformes' %>
                 </small>
             </article>
         </section>
@@ -411,6 +412,7 @@ passe.niveis = faixasPasse.map(faixa => ({
     (() => {
         let xpExibido = Number(document.querySelector('[data-hestia-pass-xp]')?.dataset.hestiaPassXp || 0);
         let atualizando = false;
+        let assinaturaIndicadores = JSON.stringify(<%- JSON.stringify([passe.taxaConformidade,passe.totalUtilizacoesAvaliadas,passe.totalUtilizacoesConformes,passe.sequenciaConforme]) %>);
         async function substituirConteudoDoPasse() {
             if (atualizando) return;
             atualizando = true;
@@ -437,7 +439,10 @@ passe.niveis = faixasPasse.map(faixa => ({
                 });
                 if (!resposta.ok) return;
                 const status = await resposta.json();
-                if (Number(status.xpTotal) !== xpExibido) await substituirConteudoDoPasse();
+                const assinatura=JSON.stringify([status.taxaConformidade,status.totalUtilizacoesAvaliadas,status.totalUtilizacoesConformes,status.sequenciaConforme]);
+                if (Number(status.xpTotal) !== xpExibido || assinatura!==assinaturaIndicadores) {
+                    await substituirConteudoDoPasse(); assinaturaIndicadores=assinatura;
+                }
             } catch (_) {
                 // A próxima verificação tenta novamente sem interromper a demonstração.
             }
