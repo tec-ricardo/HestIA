@@ -1,0 +1,49 @@
+<%
+const dimensoesHeatmap = [
+ ['aiLiteracy','AI Literacy'], ['governanca','Governança'], ['usoResponsavel','Uso responsável'],
+ ['produtividade','Produtividade'], ['finOps','FinOps'], ['seguranca','Segurança'],
+ ['colaboracao','Colaboração'], ['desenvolvimentoCompetencias','Competências']
+];
+const simularFinOpsHeatmap = sim => {
+ if(typeof permitirSimulacaoHeatmap==='undefined'||!permitirSimulacaoHeatmap
+    ||sim?.natureza!=='SIMULACAO_COM_PREMISSAS'||sim.moedaOrcamento!=='BRL'
+    ||![sim.cambioBRLPorUSD,sim.orcamento].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>0)
+    ||typeof sim.custoConvertido!=='number'||!Number.isFinite(sim.custoConvertido)||sim.custoConvertido<0)return null;
+ return Math.max(0,Math.min(100,100*(2-sim.custoConvertido/sim.orcamento)));
+};
+const corNota = n => `hsl(${Math.round(n * 1.2)}, 46%, 86%)`;
+const numeroHeatmap = n => Number(n).toLocaleString('pt-BR', {maximumFractionDigits: 1});
+%>
+<style>
+.hm-matriz-scroll{overflow-x:auto}.hm-matriz{border-collapse:separate;border-spacing:5px;width:100%;min-width:850px;font-size:12px}
+.hm-matriz th{padding:10px 6px;text-align:center;color:#33465d;font-weight:600}.hm-matriz th:first-child{text-align:left;min-width:160px}
+.hm-matriz td{text-align:center;height:48px;min-width:70px;border-radius:6px;color:#203348;font-weight:700}
+.hm-matriz .hm-sem-dados{background:repeating-linear-gradient(135deg,#f0f2f5,#f0f2f5 4px,#e5e9ef 4px,#e5e9ef 5px);color:#607087}
+.hm-matriz td small{display:block;font-size:10px;font-weight:400}.hm-legenda{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:#52647a;margin:12px 0}
+.hm-escala{width:150px;height:12px;border-radius:5px;background:linear-gradient(90deg,hsl(0,46%,86%),hsl(60,46%,86%),hsl(120,46%,86%))}
+</style>
+<section class="panel" aria-labelledby="heatmap-titulo">
+ <div class="panel-head"><h2 id="heatmap-titulo">Mapa de calor dos indicadores</h2></div>
+ <p>Departamentos × indicadores. A cor representa a nota de 0 a 100. A classificação de risco considera a regra própria de Governança, Uso Responsável e Segurança.</p>
+ <% if (linhasHeatmap.length) { %>
+ <div class="hm-legenda"><span>0</span><span class="hm-escala" aria-hidden="true"></span><span>100</span><span>— Sem dados</span><span>* Informação frágil ou descritiva</span><span>Sim. = simulação com premissas; não compõe o score operacional nem classifica risco operacional</span></div>
+ <div class="hm-matriz-scroll"><table class="hm-matriz">
+  <caption>Notas por departamento e indicador no recorte consultado</caption>
+  <thead><tr><th scope="col">Departamento</th><% for(const [,nome] of dimensoesHeatmap){ %><th scope="col"><%= nome %></th><% } %></tr></thead>
+  <tbody><% for(const linha of linhasHeatmap){ %><tr><th scope="row"><%= linha.nome %></th>
+   <% for(const [codigo,nome] of dimensoesHeatmap){
+      const fator = (linha.fatores || []).find(f => f.codigo === codigo);
+      const estimativa = codigo==='finOps' && fator?.nota==null ? simularFinOpsHeatmap(linha.simulacaoFinOps) : null;
+      const simulada = estimativa!=null || typeof permitirSimulacaoHeatmap!=='undefined' && permitirSimulacaoHeatmap && fator?.naturezaDados==='SIMULADA';
+      const nota = estimativa!=null ? estimativa : fator?.nota;
+      const temNota = typeof nota === 'number' && Number.isFinite(nota) && nota >= 0 && nota <= 100;
+   %>
+   <td class="<%= temNota ? '' : 'hm-sem-dados' %>" <% if(temNota){ %>style="background:<%= corNota(nota) %>"<% } %>
+       title="<%= nome %>: <%= estimativa!=null ? 'Simulação FinOps: orçamento assumido em BRL; câmbio '+linha.simulacaoFinOps.cambioBRLPorUSD+' BRL/USD; não compõe o score operacional' : fator?.motivo || (temNota ? 'Nota apurada' : 'Sem dados') %>">
+    <% if(temNota){ %><%= numeroHeatmap(nota) %><%= simulada || fator.elegivelGlobal === true ? '' : ' *' %><% if(simulada){ %><small>Sim.</small><% } %>
+    <% } else { %>—<small>Sem dados</small><% } %>
+   </td><% } %>
+  </tr><% } %></tbody>
+ </table></div>
+ <% } else { %><p>Sem departamentos para este recorte.</p><% } %>
+</section>

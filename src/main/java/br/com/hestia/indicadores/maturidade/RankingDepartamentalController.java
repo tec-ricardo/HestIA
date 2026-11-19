@@ -35,12 +35,17 @@ public class RankingDepartamentalController {
         this.classificacao = classificacao;
     }
 
+    public Resposta consultar(Usuario usuario,LocalDate inicio,LocalDate fim){
+        return consultar(usuario,inicio,fim,ResultadoMaturidadeService.Natureza.OPERACIONAL);
+    }
     @GetMapping("/indicadores/maturidade/ranking-departamental")
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     public Resposta consultar(
             @RequestAttribute("usuarioAutenticado") Usuario usuario,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim,
+            @RequestParam(defaultValue="OPERACIONAL") ResultadoMaturidadeService.Natureza fonte) {
+        if(fonte==ResultadoMaturidadeService.Natureza.SINTETICA)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Ranking requer fonte operacional ou DEMO");
         Long empresa = acesso.validarEmpresa(usuario, null);
         boolean administrador = usuario.getPerfil() == PerfilUsuario.ADMIN;
         if (!administrador && usuario.getPerfil() != PerfilUsuario.GESTOR) {
@@ -66,11 +71,11 @@ public class RankingDepartamentalController {
                 empresa, departamento, departamento);
         var itens = departamentos.stream().map(d -> {
             var consulta = new ResultadoMaturidadeService.Consulta(inicio, fim,
-                    ResultadoMaturidadeService.Natureza.OPERACIONAL, null, d.id(), null, null);
+                    fonte, null, d.id(), null, null);
             var apuracao = maturidade.consultar(usuario, consulta);
             return new Linha(d.id(), d.nome(), null, apuracao, classificacao.classificar(apuracao.fatores()));
         }).toList();
-        return new Resposta(empresa, inicio, fim, "OPERACIONAL", ClassificacaoRiscoDepartamental.VERSAO,
+        return new Resposta(empresa, inicio, fim, fonte.name(), ClassificacaoRiscoDepartamental.VERSAO,
                 ordenar(itens, administrador));
     }
 

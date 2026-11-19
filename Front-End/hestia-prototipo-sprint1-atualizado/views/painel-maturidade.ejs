@@ -1,0 +1,185 @@
+<%
+const nomesPainel = [
+ ['aiLiteracy','AI Literacy'], ['governanca','Governança'], ['usoResponsavel','Uso responsável'],
+ ['produtividade','Produtividade'], ['finOps','FinOps'], ['seguranca','Segurança'],
+ ['colaboracao','Colaboração'], ['desenvolvimentoCompetencias','Competências']
+];
+const resultadoPainel = painel.resultado;
+const numeroPainel = n => typeof n === 'number' && Number.isFinite(n) ? n.toFixed(2) : 'Indisponível';
+const filtroPainel = painel.filtros || {};
+const fatoresPainel = nomesPainel.map(([codigo,nome]) => ({
+    codigo, nome, ...((resultadoPainel?.fatores || []).find(f => f.codigo === codigo) || {nota:null})
+}));
+const finOpsPainel = painel.sintetica ? painel.recorte?.simulacaoFinOps : null;
+const estimativaFinOps = finOpsPainel?.natureza === 'SIMULACAO_COM_PREMISSAS'
+    && finOpsPainel.moedaOrcamento === 'BRL'
+    && [finOpsPainel.cambioBRLPorUSD,finOpsPainel.orcamento].every(n=>typeof n==='number'&&Number.isFinite(n)&&n>0)
+    && typeof finOpsPainel.custoConvertido === 'number' && Number.isFinite(finOpsPainel.custoConvertido) && finOpsPainel.custoConvertido>=0
+    ? Math.max(0,Math.min(100,100*(2-finOpsPainel.custoConvertido/finOpsPainel.orcamento))) : null;
+const simuladoPainel = f => painel.sintetica && (f.naturezaDados==='SIMULADA' || f.codigo==='finOps' && f.nota==null && estimativaFinOps!=null);
+const notaPainel = f => f.codigo==='finOps' && f.nota==null ? estimativaFinOps : f.nota;
+const qualidadePainel = f => simuladoPainel(f) ? {rotulo:'Simulação com premissas'} : typeof qualidadeIndicador === 'function' ? qualidadeIndicador(f) : {
+    rotulo: f.nota == null ? 'Indisponível' : f.elegivelGlobal ? 'Dados suficientes' : 'Informação frágil'
+};
+const seriesPainel = fatoresPainel.map(f => ({nome:f.nome, nota: typeof notaPainel(f) === 'number' ? notaPainel(f) : null, simulacao:simuladoPainel(f)}));
+const evolucaoPainel = painel.recorte?.evolucao || [];
+%>
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>HestIA — AI Maturity Score</title><link rel="stylesheet" href="/styles.css">
+ <style>
+ .maturity-page{color:#14243c;background:#f1f5f9;min-width:0;padding-bottom:32px}
+ .maturity-page .panel,.maturity-page .metric-card{border:1px solid #dce4ee;background:#fff;border-radius:14px;box-shadow:0 4px 18px #14243c06}
+ .maturity-body{padding:12px 28px}.maturity-page h2{font-size:19px}.maturity-page .panel{padding:22px;margin:20px 0}
+ .maturity-links{display:flex;gap:18px;flex-wrap:wrap;margin:15px 0}.maturity-links a{color:#85502f}
+ .maturity-filters{display:flex;gap:14px;flex-wrap:wrap;align-items:end}.maturity-filters label{display:grid;gap:7px;font-size:13px;font-weight:600}
+ .maturity-filters input,.maturity-filters select{padding:10px;border:1px solid #ccd6e2;border-radius:7px;max-width:100%}
+ .maturity-filters button{padding:11px 22px;border:0;border-radius:7px;background:#14243c;color:#fff;cursor:pointer}
+ .maturity-overview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:20px}
+ .maturity-overview .metric-card{padding:25px;border-left:4px solid #b87346}.maturity-overview strong{display:block;font-size:28px;margin:10px 0}
+ .maturity-overview span{font-size:14px}.maturity-overview p{font-size:13px;color:#61718a}
+ .maturity-indicators{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+ .maturity-indicators .metric-card{padding:20px}.maturity-indicators h3{font-size:14px;margin:0 0 12px}.maturity-note{font-size:23px;font-weight:700}
+ .maturity-quality{display:block;margin:8px 0;color:#6c5737;font-size:12px}.maturity-indicators p,.maturity-indicators details{font-size:12px;line-height:1.5;color:#53657a}
+ .maturity-charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}.maturity-charts .panel{min-width:0}
+ .maturity-charts canvas{display:block;width:100%;height:320px}.maturity-announcement{padding:15px 18px;border-left:4px solid #b87346;background:#fbf3e9;font-size:13px;line-height:1.55;border-radius:6px}
+ .maturity-detail{overflow:auto}.maturity-detail table{width:100%;border-collapse:collapse}.maturity-detail td,.maturity-detail th{text-align:left;padding:10px;border-bottom:1px solid #e2e8f0;font-size:13px}
+ .maturity-trace{overflow-wrap:anywhere;font-size:12px;color:#61718a}
+ @media(max-width:1050px){.maturity-indicators{grid-template-columns:repeat(2,minmax(0,1fr))}.maturity-charts{grid-template-columns:1fr}}
+ @media(max-width:600px){.maturity-body{padding:10px}.maturity-overview,.maturity-indicators{grid-template-columns:1fr}}
+ </style>
+</head><body><div class="app-shell">
+ <%- include('menu',{perfil,email,active}) %>
+ <main class="main maturity-page">
+  <header class="topbar"><button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu">☰</button>
+   <div><p class="eyebrow">Indicadores</p><h1>AI Maturity Score</h1></div>
+   <div class="profile-switch"><span><%= email %></span></div><a class="topbar-logout" href="/sair">Sair</a>
+  </header>
+  <div class="maturity-body">
+   <nav class="maturity-links" aria-label="Consultas de maturidade">
+    <a href="/maturidade">Base sintética</a><a href="/maturidade/resultados?fonte=OPERACIONAL">Minha empresa</a>
+    <a href="/maturidade/resultados?fonte=DEMO">Demonstração no banco</a>
+    <a href="<%= filtroPainel.fonte==='DEMO' ? '/mapa-risco?fonte=DEMO' : '/mapa-risco' %>">Mapa de risco</a><a href="/maturidade/confiabilidade">Confiabilidade</a>
+   </nav>
+   <% if(painel.sintetica){ %><div class="maturity-announcement"><strong>Base sintética — <%= painel.empresa.company_name %>.</strong>
+    Cenário acadêmico separado da empresa da sessão. Notas descritivas e simulações mantêm suas limitações. Período <%= filtroPainel.inicio %> a <%= filtroPainel.fim %>.</div><% } %>
+   <% if(painel.cenarioDemo){ %><section class="panel" role="note"><h2>Cenário fictício complementar — <%= painel.cenarioDemo.versao %></h2><p><%= painel.cenarioDemo.aviso %></p><p>O resumo combina indicadores da base sintética com as premissas declaradas. Não representa o score operacional nem comprova conformidade ou segurança.</p>
+    <details><summary>Ver os resultados de exemplo dos oito controles</summary><ul>
+     <% const controlesCenario = filtroPainel.departamentoOrigem ? painel.cenarioDemo.departamentos.find(d=>d.id===filtroPainel.departamentoOrigem)?.seguranca : painel.cenarioDemo.segurancaEmpresa;
+     for(let i=0;i<(controlesCenario || []).length;i++){ %><li><%= painel.cenarioDemo.controles[i] %>: <%= controlesCenario[i] %> (hipotético)</li><% } %>
+    </ul><p>O cenário da empresa é independente dos exemplos departamentais de segurança. Os exemplos de conformidade da empresa são a soma das contagens dos departamentos.</p></details>
+   </section><% } %>
+   <% if(filtroPainel.fonte==='DEMO'){ %><div class="maturity-announcement"><strong>Fonte DEMO — PostgreSQL.</strong> Os oito indicadores e o score usam as fórmulas originais sobre observações fictícias persistidas no banco. Período fechado de demonstração: <%= filtroPainel.inicio %> a <%= filtroPainel.fim %>. Os dados operacionais reais da conta permanecem separados.</div><% } %><section class="panel"><form class="maturity-filters" method="get" action="/maturidade/resultados">
+    <% if(painel.sintetica){ %>
+     <input type="hidden" name="inicio" value="<%= filtroPainel.inicio %>"><input type="hidden" name="fim" value="<%= filtroPainel.fim %>">
+     <input type="hidden" name="fonte" value="SINTETICA"><input type="hidden" name="snapshot" value="<%= filtroPainel.snapshot %>">
+     <% if(painel.cenarioDemo){ %><input type="hidden" name="cenario" value="demo-v1"><% } %>
+     <label>Departamento<select name="departamentoOrigem"><option value="">Empresa inteira</option>
+      <% for(const d of painel.departamentos){ %><option value="<%= d.department_id %>" <%= filtroPainel.departamentoOrigem === d.department_id ? 'selected' : '' %>><%= d.department_name %></option><% } %>
+     </select></label>
+    <% } else { %>
+     <label>Início<input type="date" name="inicio" value="<%= filtroPainel.inicio || '' %>" required></label>
+     <label>Fim<input type="date" name="fim" value="<%= filtroPainel.fim || '' %>" required></label>
+     <label>Fonte<select name="fonte"><option value="DEMO" <%= filtroPainel.fonte==='DEMO'?'selected':'' %>>Demonstração no banco</option><option value="OPERACIONAL" <%= filtroPainel.fonte === 'OPERACIONAL' ? 'selected' : '' %>>Operacional</option><option value="SINTETICA" <%= filtroPainel.fonte === 'SINTETICA' ? 'selected' : '' %>>Sintética</option></select></label>
+     <label>Snapshot<input name="snapshot" value="<%= filtroPainel.snapshot || '' %>"></label>
+     <label>Departamento operacional<input name="departamentoId" type="number" min="1" value="<%= filtroPainel.departamentoId || '' %>"></label>
+     <label>Departamento de origem<input name="departamentoOrigem" value="<%= filtroPainel.departamentoOrigem || '' %>"></label>
+     <label>Tipo de issue<input name="tipoIssue" value="<%= filtroPainel.tipoIssue || '' %>"></label>
+    <% } %><button type="submit">Consultar</button>
+   </form></section>
+   <% if(painel.erro){ %><section class="panel" role="alert"><h2>Consulta indisponível</h2><p><%= painel.erro %></p></section><% } %>
+   <% if(resultadoPainel){ %>
+                <% if(!painel.sintetica && resultadoPainel.scoreGlobal==null){ %><div class="maturity-announcement" role="status">Esta consulta usa somente registros da empresa autenticada. Ausência de dados ou de configuração não equivale a nota zero. Consulte o motivo em cada indicador. As estimativas de custos estão na <a href="/maturidade">base sintética</a>; a comparação de tempos está em <a href="/maturidade/simulacao-produtividade">simulação de produtividade</a>.</div><% } %>
+    <div class="maturity-overview">
+     <% if(painel.cenarioDemo){ %>
+     <article class="metric-card"><span>Score do cenário fictício</span><strong><%= numeroPainel(painel.recorte.resumoDemonstrativo.nota) %></strong><p>Média ponderada das oito dimensões no cenário de demonstração. Não é apuração operacional elegível.</p></article>
+     <article class="metric-card"><span>Cobertura do cenário fictício</span><strong><%= 8-painel.recorte.resumoDemonstrativo.ausentes.length %>/8</strong><p><%= painel.recorte.resumoDemonstrativo.ausentes.length ? 'Resumo indisponível: faltam notas na origem deste departamento.' : 'Notas da base sintética e simulações identificadas; pesos originais preservados.' %></p></article>
+     <% } else { %>
+     <article class="metric-card"><span>AI Maturity Score completo</span><strong><%= numeroPainel(resultadoPainel.scoreGlobal) %></strong><p>Calculado quando os oito fatores são elegíveis.</p></article>
+     <article class="metric-card"><span>Score parcial exploratório</span><strong><%= numeroPainel(resultadoPainel.scoreParcial) %></strong><p>Cobertura dos pesos: <%= resultadoPainel.coberturaPesos == null ? 'Indisponível' : numeroPainel(resultadoPainel.coberturaPesos * 100) + '%' %></p></article>
+     <% } %>
+    </div>
+    <p aria-label="Legenda da qualidade dos dados">Dados suficientes · Informação frágil · Simulação · Indisponível</p>
+    <section class="maturity-indicators" aria-label="Oito indicadores de maturidade">
+     <% for(const fator of fatoresPainel){ %><article class="metric-card"><h3><%= fator.nome %></h3>
+      <div class="maturity-note"><%= numeroPainel(notaPainel(fator)) %></div><span class="maturity-quality"><%= qualidadePainel(fator).rotulo %></span>
+      <% if(fator.codigo==='finOps' && fator.nota==null && simuladoPainel(fator)){ %>
+                         <p>Estimativa com premissas explícitas. Orçamento assumido em BRL e câmbio de <%= numeroPainel(finOpsPainel.cambioBRLPorUSD) %> BRL por USD. Não compõe o score global ou parcial.</p>
+                         <details><summary>Premissas e cálculo</summary><p>Custo convertido: BRL <%= numeroPainel(finOpsPainel.custoConvertido) %>. Orçamento: BRL <%= numeroPainel(finOpsPainel.orcamento) %>.</p><p>100 × (2 − custo / orçamento), limitado a 0–100. Recorte: <%= filtroPainel.inicio %> a <%= filtroPainel.fim %>.</p><p><%= finOpsPainel.limite %></p></details>
+                        <% } else { %><p><%= fator.motivo || 'Sem evidência para este recorte.' %></p>
+      <details><summary>Fonte e cálculo</summary><p><%= fator.fonte || 'Fonte indisponível' %></p><p><%= fator.formula || '' %></p>
+       <p>Amostra: <%= fator.amostra ?? fator.denominador ?? 'Indisponível' %></p>
+      </details><% } %></article><% } %>
+    </section>
+    <div class="maturity-charts">
+     <section class="panel"><h2>Perfil de maturidade</h2><p>Notas disponíveis de 0 a 100. Fatores ausentes aparecem sem ponto. Valores simulados são identificados e não compõem o score operacional.</p>
+      <canvas id="graficoMaturidade" role="img" aria-label="Gráfico radar com as notas dos cartões de indicadores"></canvas>
+     </section>
+     <section class="panel"><h2>Indicadores do recorte</h2><p><%= painel.sintetica ? 'Valores descritivos da base sintética.' : 'Resultados retornados pela API.' %></p>
+      <% for(const fator of fatoresPainel){ %><div style="margin:12px 0;font-size:12px"><span><%= fator.nome %><%= simuladoPainel(fator) ? ' (simulação)' : '' %></span><strong style="float:right"><%= numeroPainel(notaPainel(fator)) %></strong>
+       <div style="height:8px;background:#edf1f6;border-radius:6px;margin-top:5px"><% if(typeof notaPainel(fator) === 'number' && Number.isFinite(notaPainel(fator))){ %><div style="height:100%;border-radius:6px;background:#b87346;width:<%= Math.max(0,Math.min(100,notaPainel(fator))) %>%"></div><% } %></div>
+      </div><% } %>
+     </section>
+    </div>
+    <% if(painel.sintetica){ %>
+     <%- include('heatmap-indicadores',{permitirSimulacaoHeatmap:true,linhasHeatmap:painel.departamentos.map(d=>({nome:d.department_name,fatores:d.fatores,simulacaoFinOps:d.simulacaoFinOps}))}) %>
+     <% if(evolucaoPainel.length){ %><section class="panel"><h2>Evolução de uso</h2><div class="maturity-detail"><table><thead><tr><th>Mês</th><th>Eventos</th><th>Requisições</th><th>Tokens</th></tr></thead><tbody>
+      <% for(const mes of evolucaoPainel){ %><tr><td><%= mes.mes %></td><td><%= mes.eventos %></td><td><%= mes.requisicoes %></td><td><%= mes.tokens %></td></tr><% } %>
+     </tbody></table></div></section><% } %>
+     <section class="panel"><h2>Custos e premissas</h2>
+      <% for(const [moeda,valor] of Object.entries(painel.recorte.custosPorMoeda || {})){ %><p><%= moeda %> <%= numeroPainel(valor) %></p><% } %>
+      <% if(painel.recorte.simulacaoFinOps){ const fin = painel.recorte.simulacaoFinOps; %>
+       <p>Simulação FinOps: <%= numeroPainel(estimativaFinOps) %>/100. Orçamento assumido em BRL, câmbio de <%= numeroPainel(fin.cambioBRLPorUSD) %> BRL por USD.</p><p><%= fin.limite %></p>
+      <% } %><a href="/custos">Ver custos detalhados</a>
+     </section>
+    <% } %>
+    <p class="maturity-trace">Fonte: <%= resultadoPainel.naturezaDados || filtroPainel.fonte %> · Versão: <%= resultadoPainel.versaoCalculo || 'Indisponível' %>
+     <% if(painel.origem){ %> · Arquivo: <%= painel.origem.arquivo %> · SHA-256: <%= painel.origem.sha256 %><% } %></p>
+    <% for(const aviso of resultadoPainel.avisos || []){ %><p class="maturity-trace"><%= aviso %></p><% } %>
+   <% } else if(!painel.erro){ %><section class="panel"><p>Selecione o período e a fonte para consultar os indicadores.</p></section><% } %>
+  </div>
+ </main>
+</div>
+<script id="dados-radar" type="application/json"><%- JSON.stringify(seriesPainel).replace(/</g,'\\u003c') %></script>
+<script>
+(() => {
+ const canvas = document.getElementById('graficoMaturidade');
+ if(!canvas) return;
+ const series = JSON.parse(document.getElementById('dados-radar').textContent);
+ function desenhar(){
+  const largura = canvas.clientWidth, altura = 320, escala = window.devicePixelRatio || 1;
+  if(!largura) return;
+  canvas.width = largura * escala; canvas.height = altura * escala;
+  const ctx = canvas.getContext('2d'); if(!ctx) return; ctx.scale(escala,escala);
+  const x = largura/2, y = altura/2, raio = Math.min(largura/2-78,105);
+  if(raio<=0) return;
+  const ponto = (i,r) => [x+Math.cos(i*Math.PI/4-Math.PI/2)*r,y+Math.sin(i*Math.PI/4-Math.PI/2)*r];
+  ctx.strokeStyle='#dce4ee'; ctx.lineWidth=1;
+  for(const fracao of [.25,.5,.75,1]){
+   ctx.beginPath(); for(let i=0;i<8;i++){const [a,b]=ponto(i,raio*fracao);i?ctx.lineTo(a,b):ctx.moveTo(a,b);} ctx.closePath();ctx.stroke();
+  }
+  ctx.font='11px sans-serif';ctx.fillStyle='#52647a';
+  series.forEach((s,i)=>{
+   const [a,b]=ponto(i,raio),[tx,ty]=ponto(i,raio+18);
+   ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(a,b);ctx.stroke();
+   ctx.textAlign=Math.abs(tx-x)<2?'center':tx>x?'left':'right';
+   const nome=s.nome==='Desenvolvimento de competências'?'Competências':s.nome;
+   ctx.fillText(nome+(s.simulacao?' (sim.)':''),tx,ty+4);
+  });
+  ctx.textAlign='left';ctx.fillText('100',x+5,y-raio+11);ctx.fillText('50',x+5,y-raio/2+11);
+  ctx.strokeStyle='#b87346';ctx.fillStyle='#b87346';ctx.lineWidth=2;
+  series.forEach((s,i)=>{
+   if(typeof s.nota!=='number'||!Number.isFinite(s.nota))return;
+   const [a,b]=ponto(i,raio*Math.max(0,Math.min(100,s.nota))/100);
+   const seguinte=series[(i+1)%8];
+   if(typeof seguinte.nota==='number'&&Number.isFinite(seguinte.nota)){
+    const [c,d]=ponto((i+1)%8,raio*Math.max(0,Math.min(100,seguinte.nota))/100);
+    ctx.beginPath();ctx.moveTo(a,b);ctx.lineTo(c,d);ctx.stroke();
+   }
+   ctx.beginPath();ctx.arc(a,b,4,0,Math.PI*2);ctx.fill();
+  });
+ }
+ desenhar();window.addEventListener('resize',desenhar);
+})();
+</script><script src="/app.js"></script></body></html>

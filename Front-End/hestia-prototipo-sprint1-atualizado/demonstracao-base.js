@@ -1,4 +1,10 @@
 const {carregarOrigem}=require('./origem-local');
+const {aplicarCenario}=require('./cenario-maturidade-demo');
+function selecionarCenario(req,dados) {
+    if(!req.query.cenario)return dados;
+    if(req.query.cenario!=='demo-v1')throw new RangeError('Cenário desconhecido.');
+    return aplicarCenario(dados);
+}
 
 function registrarDemonstracaoBase(app) {
     if(app.locals)app.locals.resumoBaseOriginal=()=>{
@@ -10,7 +16,7 @@ function registrarDemonstracaoBase(app) {
         if(req.query.fonte!=='SINTETICA')return next();
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
         try {
-            const dados=carregarOrigem();
+            const dados=selecionarCenario(req,carregarOrigem());
             if(req.query.inicio!==dados.periodo.inicio||req.query.fim!==dados.periodo.fim)return next();
             if(req.query.snapshot&&req.query.snapshot!==dados.origem.sha256)return next();
             // IDs numericos operacionais nao sao IDs de origem; nao assumir equivalencias.
@@ -25,7 +31,7 @@ function registrarDemonstracaoBase(app) {
     });
     app.get('/maturidade/demonstracao', (req,res) => {
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
-        let dados;try{dados=carregarOrigem();}catch(_){return res.status(503).send('Base original indisponível; nenhum mock foi utilizado.');}
+        let dados;try{dados=selecionarCenario(req,carregarOrigem());}catch(_){return res.status(503).send('Base ou cenário demonstrativo indisponível.');}
         const departamento = req.query.departamento;
         const recorte = departamento ? dados.departamentos.find(d=>d.department_id===departamento) : dados.total;
         if(!recorte)return res.status(400).send('Departamento ausente na base demonstrativa C01.');
@@ -52,10 +58,10 @@ function registrarDemonstracaoBase(app) {
  }
     });
     app.get('/mapa-risco',(req,res,next)=>{
-        if(req.query.fonte==='OPERACIONAL')return next();
+        if(['OPERACIONAL','DEMO'].includes(req.query.fonte))return next();
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
         try {
-            const dados=carregarOrigem(),mes=String(req.query.mes||'');
+            const dados=selecionarCenario(req,carregarOrigem()),mes=String(req.query.mes||'');
             if(mes&&!dados.financeiro.meses.includes(mes))return res.status(400).send('Mês ausente na base original.');
             const linhas=dados.departamentos.map(d=>{
                 const mensal=d.evolucao.filter(m=>!mes||m.mes===mes);

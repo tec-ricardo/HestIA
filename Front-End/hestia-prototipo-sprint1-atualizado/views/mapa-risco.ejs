@@ -1,3 +1,4 @@
+<% const fonteVista=typeof fonte!=='undefined'?fonte:resultado?.fonte||'OPERACIONAL'; %>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -19,7 +20,7 @@
         <section class="panel hm-risk-panel">
             <div class="panel-head"><h3>Apuração departamental</h3></div>
             <form method="get" action="/mapa-risco">
-                <input type="hidden" name="fonte" value="OPERACIONAL">
+                <label>Fonte<select name="fonte"><option value="DEMO" <%= fonteVista==='DEMO'?'selected':'' %>>Demonstração no banco</option><option value="OPERACIONAL" <%= fonteVista==='OPERACIONAL'?'selected':'' %>>Operacional</option></select></label>
                 <a href="/mapa-risco?fonte=SINTETICA">Consultar histórico da base original</a>
                 <label for="inicio">Início</label>
                 <input id="inicio" name="inicio" type="date" value="<%= inicio %>" required>
@@ -30,10 +31,11 @@
             <% if (erro) { %>
                 <p role="alert"><%= erro %></p>
             <% } else if (resultado) { %>
-                <p>Fonte operacional. O índice de risco é descritivo.</p>
+                <p><%= fonteVista==='DEMO'?'Fonte DEMO: observações fictícias persistidas no PostgreSQL; mesmos indicadores e regra de risco.':'Fonte operacional. O índice de risco é descritivo.' %></p>
                 <% if (!resultado.departamentos.length) { %>
                     <p>Sem dados: nenhum departamento no escopo consultado.</p>
                 <% } else { %>
+                    <%- include('heatmap-indicadores', {linhasHeatmap:resultado.departamentos.map(item=>({nome:item.departamento,fatores:item.apuracao.fatores || []}))}) %>
                     <div class="table-wrap">
                         <table>
                             <thead><tr>

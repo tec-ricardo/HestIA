@@ -16,7 +16,10 @@ import java.util.*;
 
 @Service
 public class ResultadoMaturidadeService {
-    public enum Natureza { SINTETICA, OPERACIONAL }
+    public enum Natureza { SINTETICA, OPERACIONAL, DEMO }
+    private FonteMaturidadeDemo fonteDemo;
+    @org.springframework.beans.factory.annotation.Autowired(required=false)
+    void configurarFonteDemo(FonteMaturidadeDemo fonteDemo){this.fonteDemo=fonteDemo;}
     public record Consulta(LocalDate inicio,LocalDate fim,Natureza fonte,String snapshot,Long departamentoId,String departamentoOrigem,String tipoIssue){}
     public record Resultado(Long empresaId,Long departamentoId,String empresaOrigem,String departamentoOrigem,
         LocalDate inicio,LocalDate fim,Instant apuradoEm,String hashSnapshot,Natureza naturezaDados,
@@ -68,12 +71,17 @@ public class ResultadoMaturidadeService {
             catch(IllegalStateException ex){throw erro(HttpStatus.UNPROCESSABLE_ENTITY,ex.getMessage());}
             catch(IllegalArgumentException ex){throw erro(HttpStatus.BAD_REQUEST,ex.getMessage());}
             catch(DataAccessException ex){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Staging indisponível; nenhum dado foi importado automaticamente");}
+        }else if(consulta.fonte()==Natureza.DEMO){
+            if(fonteDemo==null)throw erro(HttpStatus.CONFLICT,"Fonte DEMO habilitada somente no perfil demo");
+            if(consulta.snapshot()!=null||depOrigem!=null||consulta.tipoIssue()!=null)throw erro(HttpStatus.BAD_REQUEST,"Fonte DEMO usa apenas período e departamento autorizado");
+            fatores=fonteDemo.calcular(empresa,departamento,consulta.inicio(),consulta.fim());
+            parametros.put("naturezaFonte","DADOS_FICTICIOS_PERSISTIDOS_NO_POSTGRESQL");
         }else {
             if(consulta.snapshot()!=null||depOrigem!=null)throw erro(HttpStatus.BAD_REQUEST,"Fonte operacional não aceita snapshot/identidade sintética");
             try{fatores=operacional.calcular(empresa,departamento,consulta.inicio(),consulta.fim());}
             catch(DataAccessException ex){throw erro(HttpStatus.SERVICE_UNAVAILABLE,"Fonte operacional indisponível");}
         }
-        return compor(empresa,departamento,codigo,depOrigem,consulta,hash,configuracao.getVersaoParametros(),parametros,fatores,composicao.consultar().versaoRegra());
+        return compor(empresa,departamento,codigo,depOrigem,consulta,hash,consulta.fonte()==Natureza.DEMO?CargaMaturidadeDemo.VERSAO:configuracao.getVersaoParametros(),parametros,fatores,composicao.consultar().versaoRegra());
     }
     public static Resultado compor(Long empresa,Long departamento,String codigo,String depOrigem,Consulta consulta,String hash,String versaoParametros,
                                    Map<String,String> parametros,List<FatorCalculado> fatores,String versaoPesos){

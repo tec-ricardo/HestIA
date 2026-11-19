@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const {periodoDemoBanco,contaDemo}=require('./periodo-demo-banco');
 const app = express();
 app.locals.qualidadeIndicador = require("./qualidade-indicadores").qualidadeIndicador;
 const session = require("express-session");
@@ -166,11 +167,13 @@ app.get("/", async (req, res) => {
         )
     ]);
 
+    const fimMaturidade = new Date();
+    const inicioMaturidade = new Date(fimMaturidade);
+    inicioMaturidade.setDate(inicioMaturidade.getDate() - 29);
+    const dataDashboard = d => [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
     const maturityUrl = "/indicadores/maturidade/resultados?" + new URLSearchParams({
-        inicio: "2025-06-01",
-        fim: "2026-08-10",
-        fonte: "SINTETICA",
-        snapshot: "11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3"
+        ...(contaDemo(req.session.email)?periodoDemoBanco():{inicio:dataDashboard(inicioMaturidade),fim:dataDashboard(fimMaturidade)}),
+        fonte: contaDemo(req.session.email)?"DEMO":"OPERACIONAL"
     }).toString();
     const maturidade = colaborador
         ? null
@@ -198,6 +201,7 @@ app.get("/", async (req, res) => {
         tokensRegistrados: registros.reduce((total, item) => total + Number(item.tokensTotal || 0), 0),
         atividadeRecente: registrosOrdenados.slice(0, 5),
         maturidadeParcial: maturidade?.scoreParcial ?? null,
+        maturidadeFonte: maturidade?.naturezaDados ?? null,
         coberturaMaturidade: maturidade?.coberturaPesos != null
             ? Math.round(Number(maturidade.coberturaPesos) * 100)
             : null
@@ -217,6 +221,7 @@ app.get("/", async (req, res) => {
 
 const consultarConfianca = criarRotaMaturidade(api);
 app.get("/maturidade", (req, res, next) => {
+    if(!Object.keys(req.query).length&&contaDemo(req.session.email))return res.redirect('/maturidade/resultados?fonte=DEMO');
     if (Object.keys(req.query).length) return res.redirect("/maturidade/resultados?" + new URLSearchParams(req.query).toString());
     return res.redirect("/maturidade/resultados?" + new URLSearchParams({
         inicio: "2025-06-01",
@@ -239,6 +244,11 @@ app.get("/maturidade/resultados", async (req, res) => {
     const filtros = {};
     for (const campo of ["inicio", "fim", "fonte", "snapshot", "departamentoId", "departamentoOrigem", "tipoIssue"]) {
         if (typeof req.query[campo] === "string" && req.query[campo].trim()) filtros[campo] = req.query[campo].trim();
+    }
+    if(filtros.fonte==='DEMO'){
+        const periodo=periodoDemoBanco();
+        if(!filtros.inicio)filtros.inicio=periodo.inicio;
+        if(!filtros.fim)filtros.fim=periodo.fim;
     }
     let resultado = null;
     let erro = null;
@@ -796,14 +806,16 @@ app.get("/mapa-risco", async (req, res) => {
     const perfil = req.session.perfil;
     if (perfil !== "gestor" && perfil !== "administrador") return res.redirect("/");
 
-    const inicio = typeof req.query.inicio === "string" ? req.query.inicio : "";
-    const fim = typeof req.query.fim === "string" ? req.query.fim : "";
+    const fonte=req.query.fonte==='DEMO'?'DEMO':'OPERACIONAL';
+    const periodoPadrao=fonte==='DEMO'?periodoDemoBanco():{inicio:'',fim:''};
+    const inicio = typeof req.query.inicio === "string" ? req.query.inicio : periodoPadrao.inicio;
+    const fim = typeof req.query.fim === "string" ? req.query.fim : periodoPadrao.fim;
     const formatar = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format;
     let resultado = null;
     let erro = null;
     let status = 200;
 
-    if (Object.hasOwn(req.query, "inicio") || Object.hasOwn(req.query, "fim")) {
+    if (fonte==='DEMO' || Object.hasOwn(req.query, "inicio") || Object.hasOwn(req.query, "fim")) {
         const dataIso = /^\d{4}-\d{2}-\d{2}$/;
         if (!dataIso.test(inicio) || !dataIso.test(fim) || inicio > fim) {
             status = 400;
@@ -811,9 +823,9 @@ app.get("/mapa-risco", async (req, res) => {
         } else {
             try {
                 const resposta = await api.get("/indicadores/maturidade/ranking-departamental", {
-                    params: { inicio, fim }
+                    params: { inicio, fim, fonte }
                 });
-                if (resposta.data?.fonte !== "OPERACIONAL" || !Array.isArray(resposta.data.departamentos)) {
+                if (resposta.data?.fonte !== fonte || !Array.isArray(resposta.data.departamentos)) {
                     throw new Error("Resposta de ranking inválida");
                 }
                 resultado = resposta.data;
@@ -829,7 +841,7 @@ app.get("/mapa-risco", async (req, res) => {
     }
 
     return res.set("Cache-Control", "no-store").status(status).render("mapa-risco", {
-        perfil, email: req.session.email, active: "mapa-risco", inicio, fim, resultado, erro, formatar
+        perfil, email: req.session.email, active: "mapa-risco", inicio, fim, resultado, erro, formatar, fonte
     });
 });
 
@@ -1348,20 +1360,6 @@ async function carregarIndicadores(perfil) {
     }));
     const indicadores = Object.fromEntries(entradas);
 
-    // Endpoint somente de leitura, com totais organizacionais compartilhados.
-    // O backend deve autorizar tanto gestor quanto administrador neste endpoint.
-    if (perfil === "gestor" || perfil === "administrador") {
-        try {
-            const { data } = await api.get("/indicadores/dashboard");
-            for (const campo of ["empresas", "departamentos", "usuarios"]) {
-                if (Number.isSafeInteger(data?.[campo]) && data[campo] >= 0) {
-                    indicadores[campo] = data[campo];
-                }
-            }
-        } catch (erro) {
-            console.error(`[Dashboard compartilhado] ${mensagemDaApi(erro)} (HTTP ${erro.response?.status || 'indisponivel'})`);
-        }
-    }
     return indicadores;
 }
 
