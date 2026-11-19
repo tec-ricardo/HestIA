@@ -39,13 +39,14 @@ class MaturidadePostgresTest {
     @AfterEach void desfazer() throws Exception {
         if(connection!=null){try {connection.rollback();} finally {connection.close();}}
     }
-    @Test void atualizaBase17Para30EValidaHistorico() {
-        assertThat(atualizacoes).isEqualTo(13);
+    @Test void atualizaBase17Para31EValidaHistorico() {
+        assertThat(atualizacoes).isEqualTo(14);
         flyway.validate();
-        assertThat(flyway.info().applied()).hasSize(30);
+        assertThat(flyway.info().applied()).hasSize(31);
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("31");
         assertThat(flyway.migrate().migrationsExecuted).isZero();
         assertThat(jdbc.queryForList("SELECT tablename FROM pg_tables WHERE schemaname=?",String.class,schema))
-                .contains("trilhas","trilha_etapas","participacoes_trilha","trilha_conclusoes");
+                .contains("trilhas","trilha_etapas","participacoes_trilha","trilha_conclusoes","maturidade_observacoes_demo");
     }
     void linha(String hash,String tabela,String chave,String json) {
         jdbc.update("INSERT INTO base_sintetica.import_linhas(origem_sha256,tabela,chave_origem,dados) VALUES(?,?,?,CAST(? AS jsonb))",hash,tabela,chave,json);

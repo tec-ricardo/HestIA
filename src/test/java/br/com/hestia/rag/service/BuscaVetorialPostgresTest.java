@@ -201,7 +201,8 @@ class BuscaVetorialPostgresTest {
 
     @Test
     void migratesAllVersionsAndCreatesVectorIndexAndStaging() {
-        assertThat(flyway.info().applied()).hasSize(30);
+        assertThat(flyway.info().applied()).hasSize(31);
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("31");
         assertThat(flyway.validateWithResult().validationSuccessful).isTrue();
         assertThat(flyway.migrate().migrationsExecuted).isZero();
 
@@ -225,6 +226,10 @@ class BuscaVetorialPostgresTest {
                 "SELECT to_regclass('base_sintetica.import_linhas')::text",
                 String.class
         )).isEqualTo("base_sintetica.import_linhas");
+        assertThat(jdbc.queryForObject(
+                "SELECT to_regclass(?) IS NOT NULL", Boolean.class,
+                schema + ".maturidade_observacoes_demo"
+        )).isTrue();
     }
 
     @Test
