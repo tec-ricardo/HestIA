@@ -1,0 +1,23 @@
+{
+  "versao": "demo-v1",
+  "natureza": "CENARIO_FICTICIO_COM_PREMISSAS",
+  "empresaOrigem": "C01",
+  "inicio": "2025-06-01",
+  "fim": "2026-08-10",
+  "aviso": "Avaliações de conformidade e resultados de controles abaixo são exemplos fictícios criados para exercitar as fórmulas. Não são avaliações realizadas nem evidências de segurança do sistema.",
+  "controles": ["SEG01", "SEG02", "SEG03", "SEG04", "SEG05", "SEG06", "SEG07", "SEG08"],
+  "segurancaEmpresa": ["ATENDIDO", "ATENDIDO", "ATENDIDO", "ATENDIDO", "NAO_ATENDIDO", "ATENDIDO", "NAO_ATENDIDO", "ATENDIDO"],
+  "departamentos": [
+    {"id":"C01-D01","conformes":26,"naoConformes":4,"revisao":2,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D02","conformes":24,"naoConformes":6,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D03","conformes":27,"naoConformes":3,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D04","conformes":28,"naoConformes":2,"revisao":2,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D05","conformes":25,"naoConformes":5,"revisao":2,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D06","conformes":21,"naoConformes":9,"revisao":2,"seguranca":["ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D07","conformes":22,"naoConformes":8,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D08","conformes":24,"naoConformes":6,"revisao":2,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D09","conformes":27,"naoConformes":3,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D10","conformes":28,"naoConformes":2,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]},
+    {"id":"C01-D11","conformes":29,"naoConformes":1,"revisao":1,"seguranca":["ATENDIDO","ATENDIDO","ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO","NAO_ATENDIDO","ATENDIDO"]}
+  ]
+}
