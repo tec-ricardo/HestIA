@@ -7943,3 +7943,9 @@ body.login-body .login-card .login-brand .brand-mark {
     background: url('/logo_hestia_branco.png') center center / contain no-repeat !important;
     filter: none !important;
 }
+/* AI MATURITY SCORE — ocultar apenas links na interface; rotas e funcionalidades preservadas */
+.maturity-links a[href="/maturidade/resultados?fonte=OPERACIONAL"],
+.maturity-links a[href="/maturidade/resultados?fonte=DEMO"],
+.maturity-links a[href="/maturidade/confiabilidade"] {
+    display: none !important;
+}
