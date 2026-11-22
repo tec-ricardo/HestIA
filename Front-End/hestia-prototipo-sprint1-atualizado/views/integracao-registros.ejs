@@ -416,6 +416,26 @@ formRegistro.addEventListener('submit', async function (evento) {
 
 });
 
+(function () {
+    const form = document.getElementById('formRegistro');
+    if (!form) return;
+
+    function preencherTokens() {
+        ['tokensEntrada', 'tokensSaida'].forEach(function (nome) {
+            const campo = form.querySelector(`input[name="${nome}"]`);
+            if (campo && campo.value === '') {
+                campo.value = '0';
+            }
+        });
+    }
+
+    preencherTokens();
+
+    form.addEventListener('reset', function () {
+        setTimeout(preencherTokens, 0);
+    });
+})();
+
 </script>
 
 </body>
