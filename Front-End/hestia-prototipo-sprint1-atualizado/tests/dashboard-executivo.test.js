@@ -30,3 +30,12 @@ test('template executivo renderiza os seis KPIs, gráficos e decisões',async()=
  const indisponivel=await ejs.renderFile(path.join(__dirname,'../views/gestor-dashboard.ejs'),{perfil:'gestor',email:'teste@example.test',active:'dashboard',dashboard:montarDashboard(null,null,{dias:30}),erro:'Sem dados',demonstracao:false});
  assert.match(indisponivel,/Dados indisponíveis/);assert.doesNotMatch(indisponivel,/ex-kpi-grid/);
 });
+
+test('a consulta gerencial encaminha somente período e departamento selecionados',async()=>{
+ const {carregarPainel}=require('../gestao-colaboradores');
+ let args;
+ const api={get:async(...a)=>{args=a;return {data:base}}};
+ const painel=await carregarPainel(api,0,{dias:7,departamentoId:1,empresaId:999});
+ assert.deepEqual(args,['/gestao/colaboradores',{params:{dias:7,departamentoId:1}}]);
+ assert.equal(painel.colaboradores.length,2);
+});
