@@ -139,21 +139,23 @@ app.post("/acesso", async (req, res, next) => {
 
 app.get("/", async (req, res) => {
     if (["gestor","administrador"].includes(req.session.perfil)) {
-        const {filtrosPainel,montarDashboard}=require("./dashboard-executivo");
-        const filtros=filtrosPainel(req.query);
-        let painel=null, maturidade=null, erro=null;
+        const {filtrosPainel,montarDashboard,fonteMaturidade,consultaDaMaturidade}=require("./dashboard-executivo");
+        const filtros=filtrosPainel(req.query), demonstracao=contaDemo(req.session.email);
+        const fonte=fonteMaturidade(req.query,demonstracao);
+        let painel=null, maturidade=null, consulta=null, erro=null;
         if(req.session.apiToken){
             try{
                 painel=await carregarPainel(api,limiteAcompanhamento(req.session.limiteAcompanhamento),filtros);
-                const consulta={inicio:painel.inicio,fim:painel.fim,fonte:"OPERACIONAL",
-                    ...(painel.departamentoId?{departamentoId:painel.departamentoId}:{})};
-                maturidade=await consultarObjetoComFallback("/indicadores/maturidade/resultados?"+new URLSearchParams(consulta),null);
+                consulta=consultaDaMaturidade(painel,fonte);
+                const resultado=await consultarObjetoComFallback("/indicadores/maturidade/resultados?"+new URLSearchParams(consulta),null);
+                // Não apresentar uma apuração de outra fonte como se fosse a selecionada.
+                maturidade=resultado?.naturezaDados===consulta.fonte?resultado:null;
             }catch(e){erro=e.response?.status===403?"Departamento fora do escopo autorizado.":"Não foi possível consultar os dados operacionais.";}
         }
-        const dashboard=montarDashboard(painel,maturidade,filtros);
+        const dashboard=montarDashboard(painel,maturidade,filtros,consulta);
         return res.set("Cache-Control","no-store").render("gestor-dashboard",{
             perfil:req.session.perfil,email:req.session.email,active:"dashboard",dashboard,erro,
-            demonstracao:contaDemo(req.session.email)
+            demonstracao,fonteSelecionada:fonte
         });
     }
 

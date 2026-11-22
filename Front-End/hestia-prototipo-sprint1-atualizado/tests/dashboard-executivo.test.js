@@ -39,3 +39,29 @@ test('a consulta gerencial encaminha somente período e departamento selecionado
  assert.deepEqual(args,['/gestao/colaboradores',{params:{dias:7,departamentoId:1}}]);
  assert.equal(painel.colaboradores.length,2);
 });
+
+test('conta demonstrativa abre no cenário DEMO e pode alternar para operacional',()=>{
+ const {fonteMaturidade,consultaDaMaturidade}=require('../dashboard-executivo');
+ assert.equal(fonteMaturidade({},true),'DEMO');
+ assert.equal(fonteMaturidade({fonteMaturidade:'OPERACIONAL'},true),'OPERACIONAL');
+ assert.equal(fonteMaturidade({fonteMaturidade:'DEMO'},false),'OPERACIONAL');
+ const painel={...base,departamentoId:1};
+ assert.deepEqual(consultaDaMaturidade(painel,'DEMO',new Date(2026,10,22)),{inicio:'2026-10-01',fim:'2026-10-31',fonte:'DEMO',departamentoId:1});
+ assert.deepEqual(consultaDaMaturidade(painel,'OPERACIONAL'),{inicio:base.inicio,fim:base.fim,fonte:'OPERACIONAL',departamentoId:1});
+});
+test('exibe as oito notas demonstrativas e mantém os KPIs da operação separados',async()=>{
+ const ejs=require('ejs'),path=require('node:path');
+ const fatores=['aiLiteracy','governanca','usoResponsavel','produtividade','finOps','seguranca','colaboracao','desenvolvimentoCompetencias'].map((codigo,i)=>({codigo,nota:80+i,elegivelGlobal:true}));
+ const consulta={fonte:'DEMO',inicio:'2026-10-01',fim:'2026-10-31'};
+ const d=montarDashboard(base,{scoreGlobal:83.5,coberturaPesos:1,naturezaDados:'DEMO',fatores,inicio:consulta.inicio,fim:consulta.fim},{dias:7},consulta);
+ const html=await ejs.renderFile(path.join(__dirname,'../views/gestor-dashboard.ejs'),{perfil:'gestor',email:'gestor.demo@hestia.local',active:'dashboard',dashboard:d,erro:null,demonstracao:true});
+ assert.match(html,/name="fonteMaturidade"/);
+ assert.match(html,/value="DEMO" selected/);
+ assert.match(html,/83,50/);
+ for(let i=80;i<88;i++)assert.match(html,new RegExp(i+',00'));
+ assert.match(html,/DEMONSTRAÇÃO NO BANCO/);
+ assert.match(html,/01\/10\/2026/);
+ assert.match(html,/KPIs e alertas abaixo permanecem operacionais/);
+ assert.match(html,/50%/);
+ assert.match(html,/75%/);
+});

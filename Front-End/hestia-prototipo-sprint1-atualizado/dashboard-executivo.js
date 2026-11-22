@@ -1,4 +1,5 @@
 const { gerarDiagnostico } = require('./diagnostico-gerencial');
+const {periodoDemoBanco}=require('./periodo-demo-banco');
 const inteiro = n => Number.isSafeInteger(Number(n)) && Number(n)>=0 ? Number(n) : 0;
 const proporcao = (n,d) => d>0 ? n*100/d : null;
 const media = xs => xs.length ? xs.reduce((a,b)=>a+b,0)/xs.length : null;
@@ -19,9 +20,17 @@ function serieDias(inicio,fim,linhas){
  }
  return serie;
 }
-function montarDashboard(painel,maturidade,filtros={}){
+function fonteMaturidade(query={},demoAutorizado=false){
+ return demoAutorizado&&query.fonteMaturidade!=='OPERACIONAL'?'DEMO':'OPERACIONAL';
+}
+function consultaDaMaturidade(painel,fonte,hoje=new Date()){
+ if(!painel)return null;
+ const periodo=fonte==='DEMO'?periodoDemoBanco(hoje):{inicio:painel.inicio,fim:painel.fim};
+ return {...periodo,fonte,...(painel.departamentoId?{departamentoId:painel.departamentoId}:{})};
+}
+function montarDashboard(painel,maturidade,filtros={},consultaMaturidade=null){
  const diagnostico=gerarDiagnostico(maturidade);
- const base={disponivel:!!painel,diagnostico,filtros,query:queryPainel(filtros),maturidade:maturidade??null};
+ const base={disponivel:!!painel,diagnostico,filtros,query:queryPainel(filtros),maturidade:maturidade??null,consultaMaturidade:consultaMaturidade??consultaDaMaturidade(painel,'OPERACIONAL')};
  if(!painel)return base;
  const pessoas=painel.colaboradores;
  const somar=k=>pessoas.reduce((n,c)=>n+inteiro(c[k]),0);
@@ -45,4 +54,4 @@ function montarDashboard(painel,maturidade,filtros={}){
   finalidades:(painel.finalidades||[]).slice(0,6),
   departamentos,acoes};
 }
-module.exports={filtrosPainel,queryPainel,serieDias,montarDashboard};
+module.exports={filtrosPainel,queryPainel,serieDias,montarDashboard,fonteMaturidade,consultaDaMaturidade};
