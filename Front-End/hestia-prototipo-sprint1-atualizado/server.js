@@ -250,6 +250,10 @@ app.get("/maturidade/resultados", async (req, res) => {
         if(!filtros.inicio)filtros.inicio=periodo.inicio;
         if(!filtros.fim)filtros.fim=periodo.fim;
     }
+    if(filtros.fonte==='OPERACIONAL'&&!filtros.inicio&&!filtros.fim){
+        const fim=new Date(),inicio=new Date(fim);inicio.setDate(inicio.getDate()-29);
+        filtros.inicio=inicio.toLocaleDateString("sv-SE");filtros.fim=fim.toLocaleDateString("sv-SE");
+    }
     let resultado = null;
     let erro = null;
     let status = 200;
