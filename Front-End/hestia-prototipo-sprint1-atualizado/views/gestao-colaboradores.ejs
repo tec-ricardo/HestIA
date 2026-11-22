@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acompanhamento | HestIA</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/feedback.css"></head>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acompanhamento | HestIA</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/feedback.css"><link rel="stylesheet" href="/dashboard-executivo.css"></head>
 <body><div class="app-shell"><%- include("menu",{perfil,email,active}) %>
-<main class="main-content"><header class="page-header"><div><h1><%= custos?'Consumo e eficiência':'Acompanhamento de colaboradores' %></h1>
+<main class="main ex-page"><header class="ex-header"><button class="menu-button" id="menuButton" aria-label="Abrir menu">☰</button><div><h1><%= custos?'Consumo e eficiência':'Acompanhamento de colaboradores' %></h1>
 <p><%= painel.empresa %> — <%= painel.departamento %> · Operacional: <%= painel.inicio %> a <%= painel.fim %></p></div></header>
-<section class="panel"><h2>Conclusão do acompanhamento</h2>
+<section class="ex-card"><h2>Conclusão do acompanhamento</h2>
 <p><strong><%= painel.comAlertas %></strong> de <%= painel.colaboradores.length %> colaboradores com pontos de atenção. <%= painel.usos %> usos e <%= painel.tokens.toLocaleString('pt-BR') %> tokens registrados no período.</p>
 <p>XP mede atividades registradas, não desempenho profissional. Ausência de dados não significa desempenho baixo. Consumo é descritivo; zero pode indicar registro sem medição.</p>
 <% if(custos){ %><p>O valor monetário operacional depende de faturamento, moeda e orçamento compatíveis; quando ausentes, não é estimado a partir dos tokens. <a href="/custos/demonstracao">Consultar exemplo histórico separado (QSoft) →</a></p><% } %>
-<form method="get"><label>Referência de tokens no período (0 desativa o alerta) <input type="number" name="limite" min="0" step="1" value="<%= painel.limite %>"></label><button type="submit">Atualizar referência</button></form>
+<form method="get" class="ex-filters"><label>Período<select name="dias"><% for(const n of [7,30,90]){ %><option value="<%= n %>" <%= (painel.dias||30)===n?'selected':'' %>>Últimos <%= n %> dias</option><% } %></select></label><% if(perfil==='administrador'){ %><label>Departamento<select name="departamentoId"><option value="">Todos</option><% for(const dep of painel.departamentosDisponiveis||[]){ %><option value="<%= dep.id %>" <%= String(dep.id)===String(painel.departamentoId)?'selected':'' %>><%= dep.nome %></option><% } %></select></label><% } %><label>Referência de tokens (0 desativa)<input type="number" name="limite" min="0" step="1" value="<%= painel.limite %>"></label><button type="submit">Aplicar filtros</button></form>
 <div class="feedback-table"><table><thead><tr><th>Colaborador</th><th>Departamento</th><th>XP total</th><th>AI Literacy</th><th>Conformidade</th><th>Tokens</th><th>Pontos de atenção</th></tr></thead><tbody>
 <% for(const c of painel.colaboradores){ %><tr><td><a href="#colaborador-<%= c.id %>"><%= c.nome %></a></td><td><%= c.departamento %></td><td><a href="/ranking/<%= c.id %>/xp"><%= c.xp %> XP</a></td><td><%= c.aiLiteracy==null?'Sem avaliação':c.aiLiteracy.toFixed(1) %></td><td><%= c.taxaConformidade==null?'—':c.taxaConformidade.toFixed(1)+'%' %></td><td><%= c.tokens %></td><td><%= c.alertas.length %></td></tr><% } %>
 </tbody></table></div><% if(!painel.colaboradores.length){ %><p>Nenhum colaborador ativo no escopo.</p><% } %></section>
-<% for(const c of painel.colaboradores){ %><section class="panel" id="colaborador-<%= c.id %>">
+<% for(const c of painel.colaboradores){ %><section class="ex-card" id="colaborador-<%= c.id %>">
 <h2><%= c.nome %> · <%= c.departamento %></h2>
 <p><strong><%= c.xp_periodo %> XP no período</strong> · <%= c.utilizacoes %> usos · <%= c.usos_com_tokens %> usos com tokens positivos · <%= c.treinamentos %> treinamentos pontuados · <%= c.reutilizacoes %> reutilizações.</p>
 <p>Aprendizagem: <%= c.amostraLiteracy %> avaliações selecionadas, <%= c.avaliacoesQualificadas %> com nota ≥ 80. Conformidade: <%= c.conformes %> conformes / <%= c.totalAvaliado %> definitivas; <%= c.revisoes %> em revisão.</p>

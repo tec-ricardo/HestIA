@@ -35,16 +35,30 @@ public class AcompanhamentoColaboradoresController {
         return d.getId();
     }
 
+    // Compatibility for existing internal tests and default period.
+    public Map<String,Object> listar(Usuario autor) { return listar(autor,30,null); }
+
     @GetMapping("/colaboradores")
-    @Transactional(readOnly = true)
-    public Map<String,Object> listar(@RequestAttribute("usuarioAutenticado") Usuario autor) {
+    @Transactional(readOnly = true, isolation=org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
+    public Map<String,Object> listar(@RequestAttribute("usuarioAutenticado") Usuario autor,
+            @RequestParam(defaultValue="30") int dias,
+            @RequestParam(required=false) Long departamentoId) {
         Long dep = departamentoAutorizado(autor);
         Long empresa = autor.getEmpresa().getId();
-        LocalDate fim = LocalDate.now(), inicio = fim.minusDays(29);
+        if(!Set.of(7,30,90).contains(dias))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Selecione 7, 30 ou 90 dias.");
+        if(departamentoId!=null){
+            if(dep!=null&&!dep.equals(departamentoId))
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            if(jdbc.queryForObject("SELECT COUNT(*) FROM departamentos WHERE id=? AND empresa_id=?",Long.class,departamentoId,empresa)!=1)
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            dep=departamentoId;
+        }
+        LocalDate fim = LocalDate.now(), inicio = fim.minusDays(dias-1);
         Timestamp de = Timestamp.valueOf(inicio.atStartOfDay());
         Timestamp ate = Timestamp.valueOf(fim.plusDays(1).atStartOfDay());
         var pessoas = jdbc.queryForList("""
-            SELECT u.id, u.nome, d.nome AS departamento, COALESCE(p.xp_total,0) AS xp
+            SELECT u.id, u.nome, d.id AS departamento_id, d.nome AS departamento, COALESCE(p.xp_total,0) AS xp
             FROM usuarios u JOIN departamentos d ON d.id=u.departamento_id AND d.empresa_id=u.empresa_id
             LEFT JOIN progressos_usuario p ON p.usuario_id=u.id
             WHERE u.empresa_id=? AND u.ativo=TRUE AND u.perfil='FUNCIONARIO'
@@ -103,13 +117,39 @@ public class AcompanhamentoColaboradoresController {
         Map<String,Object> resposta=new LinkedHashMap<>();
         resposta.put("empresaId",empresa);
         resposta.put("empresa",autor.getEmpresa().getNome());
-        resposta.put("departamento",dep==null?"Empresa inteira":autor.getDepartamento().getNome());
+        resposta.put("departamento",dep==null?"Empresa inteira":jdbc.queryForObject("SELECT nome FROM departamentos WHERE id=? AND empresa_id=?",String.class,dep,empresa));
+        resposta.put("departamentoId",dep); resposta.put("dias",dias);
+        resposta.put("departamentosDisponiveis",jdbc.queryForList("SELECT id,nome FROM departamentos WHERE empresa_id=? AND (CAST(? AS BIGINT) IS NULL OR id=?) ORDER BY nome",empresa,departamentoAutorizado(autor),departamentoAutorizado(autor)));
         resposta.put("inicio",inicio); resposta.put("fim",fim);
         resposta.put("fonte","OPERACIONAL");
         resposta.put("colaboradores",colaboradores);
         resposta.put("departamentos",jdbc.queryForObject("SELECT COUNT(*) FROM departamentos WHERE empresa_id=? AND (CAST(? AS BIGINT) IS NULL OR id=?)",Long.class,empresa,dep,dep));
         resposta.put("politicas",jdbc.queryForObject("SELECT COUNT(*) FROM politicas_uso WHERE empresa_id=? AND excluida=FALSE",Long.class,empresa));
         resposta.put("ferramentas",jdbc.queryForObject("SELECT COUNT(*) FROM ferramentas_ia WHERE empresa_id=?",Long.class,empresa));
+        // Os gráficos têm exatamente a mesma população ativa das métricas individuais.
+        String escopo = """
+            FROM registros_uso_ia r JOIN usuarios u ON u.id=r.usuario_id
+            JOIN departamentos d ON d.id=u.departamento_id AND d.empresa_id=u.empresa_id
+            WHERE u.empresa_id=? AND u.ativo=TRUE AND u.perfil='FUNCIONARIO'
+                AND (CAST(? AS BIGINT) IS NULL OR u.departamento_id=?)
+                AND r.data_hora>=? AND r.data_hora<?
+            """;
+        Object[] atuais={empresa,dep,dep,de,ate};
+        resposta.put("evolucao",jdbc.queryForList("SELECT CAST(r.data_hora AS DATE) AS dia, COUNT(*) AS usos, COALESCE(SUM(r.tokens_total),0) AS tokens "+escopo+" GROUP BY CAST(r.data_hora AS DATE) ORDER BY dia",atuais).stream().map(r->Map.of("dia",r.get("dia").toString(),"usos",r.get("usos"),"tokens",r.get("tokens"))).toList());
+        resposta.put("finalidades",jdbc.queryForList("SELECT r.finalidade AS nome, COUNT(*) AS usos "+escopo+" GROUP BY r.finalidade ORDER BY usos DESC, nome",atuais));
+        resposta.put("ferramentasUso",jdbc.queryForList("""
+            SELECT COALESCE(f.nome,'Ferramenta indisponível') AS nome, COUNT(*) AS usos
+            FROM registros_uso_ia r JOIN usuarios u ON u.id=r.usuario_id
+            JOIN departamentos d ON d.id=u.departamento_id AND d.empresa_id=u.empresa_id
+            LEFT JOIN ferramentas_ia f ON f.id=r.ferramenta_id AND f.empresa_id=u.empresa_id
+            WHERE u.empresa_id=? AND u.ativo=TRUE AND u.perfil='FUNCIONARIO'
+              AND (CAST(? AS BIGINT) IS NULL OR u.departamento_id=?)
+              AND r.data_hora>=? AND r.data_hora<?
+            GROUP BY COALESCE(f.nome,'Ferramenta indisponível') ORDER BY usos DESC,nome
+            """,atuais));
+        Timestamp anterior=Timestamp.valueOf(inicio.minusDays(dias).atStartOfDay());
+        resposta.put("anterior",jdbc.queryForMap("SELECT COUNT(*) AS usos, COUNT(DISTINCT u.id) AS participantes "+escopo,
+            empresa,dep,dep,anterior,de));
         return resposta;
     }
 }
