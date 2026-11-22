@@ -266,11 +266,7 @@
 
   <div class="hx-overview-grid">
 
-    <% const historicoBase = typeof resumoBaseOriginal==='function' ? resumoBaseOriginal() : null; if(historicoBase) { %>
-
-    <article class="hx-card hx-feature"><span>Governança · média da empresa</span><strong><%= historicoBase.governanca.nota==null?'Não disponível':Number(historicoBase.governanca.nota).toLocaleString('pt-BR')+'%' %></strong><p><%= historicoBase.empresa %> · Uso de ferramentas de IA autorizadas.</p></article>
-
-    <% } %>
+    
 
     <article class="hx-card hx-feature hx-feature-neutral"><span>Conformidade das avaliações</span><strong><%= resumoConformidade && resumoConformidade.percentualConformidade !== null ? Number(resumoConformidade.percentualConformidade).toLocaleString('pt-BR') + '%' : '—' %></strong><p><%= resumoConformidade && resumoConformidade.avaliadas ? resumoConformidade.conformes + ' conformes de ' + resumoConformidade.avaliadas + ' avaliadas' : 'Nenhuma avaliação concluída' %></p></article>
 

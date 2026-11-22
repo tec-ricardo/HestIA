@@ -58,7 +58,7 @@ const evolucaoPainel = painel.recorte?.evolucao || [];
   </header>
   <div class="maturity-body">
    <nav class="maturity-links" aria-label="Consultas de maturidade">
-    <a href="/maturidade">Base sintética</a><a href="/maturidade/resultados?fonte=OPERACIONAL">Minha empresa</a>
+    <a href="/maturidade/demonstracao">Base sintética</a><a href="/maturidade/resultados?fonte=OPERACIONAL">Minha empresa</a>
     <a href="/maturidade/resultados?fonte=DEMO">Demonstração no banco</a>
     <a href="<%= filtroPainel.fonte==='DEMO' ? '/mapa-risco?fonte=DEMO' : '/mapa-risco' %>">Mapa de risco</a><a href="/maturidade/confiabilidade">Confiabilidade</a>
    </nav>
@@ -70,12 +70,12 @@ const evolucaoPainel = painel.recorte?.evolucao || [];
      for(let i=0;i<(controlesCenario || []).length;i++){ %><li><%= painel.cenarioDemo.controles[i] %>: <%= controlesCenario[i] %> (hipotético)</li><% } %>
     </ul><p>O cenário da empresa é independente dos exemplos departamentais de segurança. Os exemplos de conformidade da empresa são a soma das contagens dos departamentos.</p></details>
    </section><% } %>
-   <% if(filtroPainel.fonte==='DEMO'){ %><div class="maturity-announcement"><strong>Fonte DEMO — PostgreSQL.</strong> Os oito indicadores e o score usam as fórmulas originais sobre observações fictícias persistidas no banco. Período fechado de demonstração: <%= filtroPainel.inicio %> a <%= filtroPainel.fim %>. Os dados operacionais reais da conta permanecem separados.</div><% } %><section class="panel"><form class="maturity-filters" method="get" action="/maturidade/resultados">
+   <% if(filtroPainel.fonte==='DEMO'){ %><div class="maturity-announcement"><strong>Fonte DEMO — PostgreSQL.</strong> Os oito indicadores e o score usam as fórmulas originais sobre observações fictícias persistidas no banco. Período fechado de demonstração: <%= filtroPainel.inicio %> a <%= filtroPainel.fim %>. Os dados operacionais reais da conta permanecem separados.</div><% } %><section class="panel"><form class="maturity-filters" method="get" action="<%= painel.sintetica ? '/maturidade/demonstracao' : '/maturidade/resultados' %>">
     <% if(painel.sintetica){ %>
      <input type="hidden" name="inicio" value="<%= filtroPainel.inicio %>"><input type="hidden" name="fim" value="<%= filtroPainel.fim %>">
      <input type="hidden" name="fonte" value="SINTETICA"><input type="hidden" name="snapshot" value="<%= filtroPainel.snapshot %>">
      <% if(painel.cenarioDemo){ %><input type="hidden" name="cenario" value="demo-v1"><% } %>
-     <label>Departamento<select name="departamentoOrigem"><option value="">Empresa inteira</option>
+     <label>Departamento<select name="departamento"><option value="">Empresa inteira</option>
       <% for(const d of painel.departamentos){ %><option value="<%= d.department_id %>" <%= filtroPainel.departamentoOrigem === d.department_id ? 'selected' : '' %>><%= d.department_name %></option><% } %>
      </select></label>
     <% } else { %>
@@ -90,7 +90,7 @@ const evolucaoPainel = painel.recorte?.evolucao || [];
    </form></section>
    <% if(painel.erro){ %><section class="panel" role="alert"><h2>Consulta indisponível</h2><p><%= painel.erro %></p></section><% } %>
    <% if(resultadoPainel){ %>
-                <% if(!painel.sintetica && resultadoPainel.scoreGlobal==null){ %><div class="maturity-announcement" role="status">Esta consulta usa somente registros da empresa autenticada. Ausência de dados ou de configuração não equivale a nota zero. Consulte o motivo em cada indicador. As estimativas de custos estão na <a href="/maturidade">base sintética</a>; a comparação de tempos está em <a href="/maturidade/simulacao-produtividade">simulação de produtividade</a>.</div><% } %>
+                <% if(!painel.sintetica && resultadoPainel.scoreGlobal==null){ %><div class="maturity-announcement" role="status">Esta consulta usa somente registros da empresa autenticada. Ausência de dados ou de configuração não equivale a nota zero. Consulte o motivo em cada indicador. As estimativas de custos estão na <a href="/maturidade/demonstracao">base sintética</a>; a comparação de tempos está em <a href="/maturidade/simulacao-produtividade">simulação de produtividade</a>.</div><% } %>
     <div class="maturity-overview">
      <% if(painel.cenarioDemo){ %>
      <article class="metric-card"><span>Score do cenário fictício</span><strong><%= numeroPainel(painel.recorte.resumoDemonstrativo.nota) %></strong><p>Média ponderada das oito dimensões no cenário de demonstração. Não é apuração operacional elegível.</p></article>
@@ -131,7 +131,7 @@ const evolucaoPainel = painel.recorte?.evolucao || [];
       <% for(const [moeda,valor] of Object.entries(painel.recorte.custosPorMoeda || {})){ %><p><%= moeda %> <%= numeroPainel(valor) %></p><% } %>
       <% if(painel.recorte.simulacaoFinOps){ const fin = painel.recorte.simulacaoFinOps; %>
        <p>Simulação FinOps: <%= numeroPainel(estimativaFinOps) %>/100. Orçamento assumido em BRL, câmbio de <%= numeroPainel(fin.cambioBRLPorUSD) %> BRL por USD.</p><p><%= fin.limite %></p>
-      <% } %><a href="/custos">Ver custos detalhados</a>
+      <% } %><a href="/custos/demonstracao">Ver custos detalhados</a>
      </section>
     <% } %>
     <p class="maturity-trace">Fonte: <%= resultadoPainel.naturezaDados || filtroPainel.fonte %> · Versão: <%= resultadoPainel.versaoCalculo || 'Indisponível' %>

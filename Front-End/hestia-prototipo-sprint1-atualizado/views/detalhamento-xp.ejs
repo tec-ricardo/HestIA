@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Composição do XP | HestIA</title><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/feedback.css"></head>
+<body><div class="app-shell"><%- include("menu",{perfil,email,active}) %><main class="main-content">
+<section class="panel"><h1>Composição do XP — <%= detalhe.nome %></h1><p>Pontos acumulados por ações registradas; missões usam a recompensa configurada.</p>
+<% const nomes={REGISTRO_USO:'Registro de utilização',USO_CONFORME:'Utilização conforme',MICRO_TREINAMENTO:'Microtreinamento',REUTILIZACAO_RESPOSTA:'Reutilização de resposta',MISSAO_CONCLUIDA:'Missão concluída'}; %>
+<div class="feedback-table"><table><thead><tr><th>Atividade</th><th>Quantidade</th><th>XP registrado</th></tr></thead><tbody>
+<% for(const item of detalhe.itens){ %><tr><td><%= nomes[item.acao]||item.acao %></td><td><%= item.quantidade %></td><td><%= item.xp %> XP</td></tr><% } %>
+</tbody></table></div><p>Movimentos: <strong><%= detalhe.xpMovimentos %> XP</strong> · Saldo do ranking: <strong><%= detalhe.xpTotal %> XP</strong></p>
+<% if(!detalhe.conciliado){ %><p role="alert">Há divergência entre saldo e movimentos. A composição não explica integralmente o saldo; solicite revisão.</p><% } %>
+<p>Registro: 10 XP; conformidade: 25 XP; treinamento: 40 XP; reutilização: 15 XP; missão: valor configurado.</p>
+<a href="<%= perfil==='colaborador'?'/ranking':'/gestao-colaboradores' %>">Voltar</a></section></main></div><script src="/app.js"></script></body></html>

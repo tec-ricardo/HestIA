@@ -65,13 +65,11 @@ test('tela do cenário identifica as simulações, o escopo e a navegação',asy
 
 test('cenário é optativo e nunca intercepta a fonte operacional',()=>{
  const rotas={};require('../demonstracao-base').registrarDemonstracaoBase({get:(p,h)=>rotas[p]=h});
- let seguiu=false;
- rotas['/maturidade/resultados']({query:{fonte:'OPERACIONAL',cenario:'demo-v1'}},{},()=>seguiu=true);
- assert(seguiu);
+ assert.equal(rotas['/maturidade/resultados'],undefined);
  let renderizou=false;
  const req={session:contexto,query:{fonte:'SINTETICA',inicio:dados.periodo.inicio,fim:dados.periodo.fim,cenario:'demo-v1'}};
  const res={set:()=>res,render:(view,c)=>{assert.equal(c.dados.cenarioDemo.versao,'demo-v1');assert.equal(c.recorte.fatores.find(f=>f.codigo==='seguranca').nota,75);renderizou=true;}};
- rotas['/maturidade/resultados'](req,res,()=>assert.fail('Cenário ignorado'));
+ rotas['/maturidade/demonstracao'](req,res);
  assert(renderizou);
 });
 

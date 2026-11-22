@@ -30,6 +30,7 @@
 
         <!-- GESTOR -->
         <% if (perfil == "gestor") { %>
+            <a class="nav-link <%= active == 'gestao-colaboradores' ? 'active' : '' %>" href="/gestao-colaboradores">Acompanhamento de colaboradores</a>
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="<%= indicadoresBancoDemo ? '/maturidade/resultados?fonte=DEMO' : '/maturidade' %>">AI Maturity Score</a>
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>
@@ -42,6 +43,7 @@
 
         <!-- ADMINISTRADOR -->
         <% if (perfil == "administrador") { %>
+            <a class="nav-link <%= active == 'gestao-colaboradores' ? 'active' : '' %>" href="/gestao-colaboradores">Acompanhamento de colaboradores</a>
             <a class="nav-link <%= active == 'curadoria' ? 'active' : '' %>" href="/curadoria">Curadoria de Respostas</a>
             <a class="nav-link <%= active == 'maturidade' ? 'active' : '' %>" href="<%= indicadoresBancoDemo ? '/maturidade/resultados?fonte=DEMO' : '/maturidade' %>">AI Maturity Score</a>
             <a class="nav-link <%= active == 'creditos' ? 'active' : '' %>" href="/creditos">AI Credits</a>

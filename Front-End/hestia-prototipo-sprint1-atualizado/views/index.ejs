@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="/styles.css">
 
-</head>
+<link rel="stylesheet" href="/feedback.css"></head>
 
 <body>
 
@@ -126,13 +126,14 @@
 
       <div class="hm-section-intro" aria-label="Resumo gerencial"><div><span class="hm-kicker">PAINEL GERENCIAL</span><h2>Indicadores da organização</h2><p>Uma visão consolidada dos cadastros, da maturidade e da atividade registrada.</p></div><span class="hm-live-note"><span aria-hidden="true">●</span> Dados da plataforma</span></div>
 
+      <% if(typeof diagnostico !== "undefined"){ %><%- include("diagnostico-gerencial",{diagnostico,painelGestao:typeof painelGestao==="undefined"?null:painelGestao}) %><% } %>
       <section class="dashboard-summary overview-summary hm-manager-metrics" aria-label="Indicadores organizacionais">
 
-        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Empresas</span><span class="overview-kpi-icon" aria-hidden="true">▦</span></div><strong><%= indicadores.empresas == null ? '—' : indicadores.empresas %></strong><p>Cadastros acessíveis</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Empresas</span><span class="overview-kpi-icon" aria-hidden="true">▦</span></div><strong><%= indicadores.empresas == null ? '—' : indicadores.empresas %></strong><p>Empresa autenticada</p></article>
 
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Departamentos</span><span class="overview-kpi-icon" aria-hidden="true">▤</span></div><strong><%= indicadores.departamentos == null ? '—' : indicadores.departamentos %></strong><p>Estruturas cadastradas</p></article>
 
-        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Usuários</span><span class="overview-kpi-icon" aria-hidden="true">♙</span></div><strong><%= indicadores.usuarios == null ? '—' : indicadores.usuarios %></strong><p>Contas cadastradas</p></article>
+        <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Usuários</span><span class="overview-kpi-icon" aria-hidden="true">♙</span></div><strong><%= indicadores.usuarios == null ? '—' : indicadores.usuarios %></strong><p>Colaboradores ativos no escopo</p></article>
 
         <article class="dashboard-summary-card overview-kpi"><div class="overview-kpi-top"><span>Ferramentas</span><span class="overview-kpi-icon" aria-hidden="true">✦</span></div><strong><%= indicadores.ferramentas == null ? '—' : indicadores.ferramentas %></strong><p>Ferramentas de IA cadastradas</p></article>
 
@@ -144,9 +145,9 @@
 
           <div class="panel-head"><div><p class="overview-section-label">MATURIDADE EM IA</p><h3>AI Maturity Score</h3><p><%= resumo.maturidadeFonte === 'DEMO' ? 'Apuração das observações de demonstração persistidas no PostgreSQL.' : 'Apuração dos registros operacionais da empresa.' %></p></div><span class="overview-panel-icon" aria-hidden="true">✦</span></div>
 
-          <div class="overview-maturity-value"><h2><%= resumo.maturidadeParcial === null ? 'Não disponível' : resumo.maturidadeParcial.toFixed(2) + ' / 100' %></h2></div>
+          <div class="overview-maturity-value"><h2><%= (resumo.maturidadeGlobal ?? resumo.maturidadeParcial) == null ? 'Não disponível' : Number(resumo.maturidadeGlobal ?? resumo.maturidadeParcial).toFixed(2) + ' / 100' %></h2></div>
 
-          <p class="overview-maturity-note"><%= resumo.coberturaMaturidade === null ? 'Cobertura não disponível.' : 'Cobertura dos pesos elegíveis: ' + resumo.coberturaMaturidade + '%.' %></p>
+          <p><%= resumo.maturidadeGlobal != null ? "Score completo" : "Score parcial exploratório" %></p><p class="overview-maturity-note"><%= resumo.coberturaMaturidade === null ? 'Cobertura não disponível.' : 'Cobertura dos pesos elegíveis: ' + resumo.coberturaMaturidade + '%.' %></p>
 
           <a class="personal-card-link overview-card-link" href="/maturidade">Ver apuração <span aria-hidden="true">→</span></a>
 
@@ -154,9 +155,9 @@
 
         <article class="panel overview-feature-panel overview-usage-panel">
 
-          <div class="panel-head"><div><p class="overview-section-label">ATIVIDADE ORGANIZACIONAL</p><h3>Operação registrada</h3><p>Uso de IA presente no banco operacional.</p></div><span class="overview-panel-icon" aria-hidden="true">▤</span></div>
+          <div class="panel-head"><div><p class="overview-section-label">ATIVIDADE ORGANIZACIONAL</p><h3>Operação registrada</h3><p>Uso de IA dos colaboradores autorizados nos últimos 30 dias.</p></div><span class="overview-panel-icon" aria-hidden="true">▤</span></div>
 
-          <div class="list-clean overview-usage-list"><span><strong><%= resumo.totalRegistros %></strong> utilizações</span><span><strong><%= resumo.tokensRegistrados.toLocaleString('pt-BR') %></strong> tokens informados</span><span><strong><%= indicadores.politicas == null ? '—' : indicadores.politicas %></strong> políticas cadastradas</span></div>
+          <div class="list-clean overview-usage-list"><span><strong><%= resumo.totalRegistros ?? "—" %></strong> utilizações</span><span><strong><%= resumo.tokensRegistrados == null ? "—" : resumo.tokensRegistrados.toLocaleString("pt-BR") %></strong> tokens informados</span><span><strong><%= indicadores.politicas == null ? '—' : indicadores.politicas %></strong> políticas cadastradas</span></div>
 
         </article>
 
