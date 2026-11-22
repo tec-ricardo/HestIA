@@ -1,6 +1,6 @@
 const express = require("express");
 const {gerarDiagnostico}=require("./diagnostico-gerencial");
-const {registrarRotasGestao,carregarPainel}=require("./gestao-colaboradores");
+const {registrarRotasGestao,carregarPainel,limiteAcompanhamento}=require("./gestao-colaboradores");
 const axios = require("axios");
 const {periodoDemoBanco,contaDemo}=require('./periodo-demo-banco');
 const app = express();
@@ -158,7 +158,7 @@ app.get("/", async (req, res) => {
     const colaborador = req.session.perfil === "colaborador";
 
     const [painelGestao, creditos, passe, registros] = await Promise.all([
-        colaborador ? Promise.resolve(null) : carregarPainel(api).catch(()=>null),
+        colaborador ? Promise.resolve(null) : carregarPainel(api,limiteAcompanhamento(req.session.limiteAcompanhamento)).catch(()=>null),
         consultarObjetoComFallback("/gamificacao/creditos", null),
         Number.isSafeInteger(usuarioId) && usuarioId > 0
             ? consultarObjetoComFallback(`/gamificacao/usuarios/${usuarioId}/passe`, null)

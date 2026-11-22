@@ -16,7 +16,8 @@ function registrarRotasGestao(app,api){
  const renderizar=async(req,res,custos=false)=>{
   if(!gerencial(req))return res.sendStatus(403);
   try{
-   const painel=await carregarPainel(api,limiteAcompanhamento(req.query.limite));
+   if(req.query.limite!==undefined) req.session.limiteAcompanhamento=limiteAcompanhamento(req.query.limite);
+   const painel=await carregarPainel(api,limiteAcompanhamento(req.session.limiteAcompanhamento));
    return res.set('Cache-Control','no-store').render('gestao-colaboradores',{
     perfil:req.session.perfil,email:req.session.email,active:custos?'custos':'gestao-colaboradores',painel,custos});
   }catch(e){return res.status(e.response?.status||503).send('Não foi possível consultar o escopo autorizado.');}

@@ -333,53 +333,7 @@
 
 
 
-        <% const historicoBase = typeof resumoBaseOriginal === 'function'
-
-            ? resumoBaseOriginal()
-
-            : null;
-
-
-
-        if (historicoBase) { %>
-
-
-
-            <section class="panel">
-
-                <h3>AI Literacy — Média da empresa</h3>
-
-
-
-                <strong style="font-size:28px">
-
-                    <%= historicoBase.literacy.nota == null
-
-                        ? 'Não disponível'
-
-                        : Number(historicoBase.literacy.nota).toLocaleString('pt-BR') + '/100' %>
-
-                </strong>
-
-
-
-                <p>
-
-                    Média de conhecimento em IA Generativa dos
-
-                    <%= historicoBase.literacy.denominador %> participantes
-
-                    da empresa HestIA,
-
-                    com base nos dados históricos.
-
-                </p>
-
-            </section>
-
-
-
-        <% } %>
+        
 
 
 
