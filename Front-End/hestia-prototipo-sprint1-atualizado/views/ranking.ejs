@@ -41,7 +41,7 @@
                 <div><span class="ranking-info-icon">★</span></div>
                 <div>
                     <strong>Ranking baseado no HestIA Pass</strong>
-                    <p>A classificação usa o mesmo histórico validado que alimenta o Passe e o AI Credits. Empates recebem a mesma posição.</p>
+                    <p>A classificação usa o mesmo histórico validado que alimenta o Passe e o AI Credits. Empates recebem a mesma posição. O líder tem o maior XP registrado; clique no nome para consultar os totais por atividade. XP representa engajamento, não desempenho profissional.</p>
                 </div>
             </section>
 
@@ -62,7 +62,7 @@
                         <article class="hm-podium-card hm-podium-<%= item.posicao %> <%= item.usuarioAtual ? 'hm-podium-me' : '' %>">
                             <span class="hm-podium-rank"><%= item.posicao + 'º' %></span>
                             <div class="hm-podium-avatar"><%= item.iniciais %></div>
-                            <strong><%= item.nome %></strong>
+                            <strong><a href="/ranking/<%= item.usuarioId %>/xp"><%= item.nome %></a></strong>
                             <span class="hm-podium-level"><%= item.nivel %></span>
                             <b><%= item.xp %> XP</b>
                             <% if (item.usuarioAtual) { %><small>Você</small><% } %>
@@ -77,7 +77,7 @@
                             <% ranking.classificacao.forEach(item => { %>
                                 <tr class="<%= item.usuarioAtual ? 'ranking-current-user' : '' %>">
                                     <td><div class="ranking-position"><%= item.posicao + 'º' %></div></td>
-                                    <td><div class="ranking-user"><div class="ranking-avatar"><%= item.iniciais %></div><div><strong><%= item.nome %></strong><% if (item.usuarioAtual) { %><span>Você</span><% } %></div></div></td>
+                                    <td><div class="ranking-user"><div class="ranking-avatar"><%= item.iniciais %></div><div><strong><a href="/ranking/<%= item.usuarioId %>/xp"><%= item.nome %></a></strong><% if (item.usuarioAtual) { %><span>Você</span><% } %></div></div></td>
                                     <td><span class="ranking-level"><%= item.nivel %></span></td>
                                     <td><strong class="ranking-xp"><%= item.xp %> XP</strong></td>
                                 </tr>

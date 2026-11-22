@@ -12,23 +12,6 @@ function registrarDemonstracaoBase(app) {
             literacy:d.total.fatores.find(f=>f.codigo==='aiLiteracy'),
             governanca:d.total.fatores.find(f=>f.codigo==='governanca')};}catch(_){return null;}
     };
-    app.get('/maturidade/resultados',(req,res,next)=>{
-        if(req.query.fonte!=='SINTETICA')return next();
-        if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
-        try {
-            const dados=selecionarCenario(req,carregarOrigem());
-            if(req.query.inicio!==dados.periodo.inicio||req.query.fim!==dados.periodo.fim)return next();
-            if(req.query.snapshot&&req.query.snapshot!==dados.origem.sha256)return next();
-            // IDs numericos operacionais nao sao IDs de origem; nao assumir equivalencias.
-            if(req.query.departamentoId||req.query.tipoIssue)return next();
-            const dep=req.query.departamentoOrigem;
-            const recorte=dep?dados.departamentos.find(d=>d.department_id===dep):dados.total;
-            if(!recorte)return res.status(400).send('Departamento ausente na fonte original.');
-            return res.set('Cache-Control','no-store').render('demonstracao-base',{
-                perfil:req.session.perfil,email:req.session.email,active:'maturidade',dados,recorte,
-                departamento:dep||'',formatar:n=>n==null?'Não disponível':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2})});
-        }catch(_){return res.status(503).send('Base original indisponível; nenhuma nota foi estimada.');}
-    });
     app.get('/maturidade/demonstracao', (req,res) => {
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
         let dados;try{dados=selecionarCenario(req,carregarOrigem());}catch(_){return res.status(503).send('Base ou cenário demonstrativo indisponível.');}
@@ -41,7 +24,7 @@ function registrarDemonstracaoBase(app) {
             departamento:departamento||'',formatar:n=>n==null?'Não disponível':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2})
         });
     });
-    app.get('/custos',(req,res)=>{
+    app.get('/custos/demonstracao',(req,res)=>{
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
         try {
             const painel=require('./custos-base').calcularPainel(carregarOrigem(),req.query);
@@ -58,7 +41,7 @@ function registrarDemonstracaoBase(app) {
  }
     });
     app.get('/mapa-risco',(req,res,next)=>{
-        if(['OPERACIONAL','DEMO'].includes(req.query.fonte))return next();
+        if(req.query.fonte!=='SINTETICA')return next();
         if(!['administrador','gestor'].includes(req.session?.perfil))return res.sendStatus(403);
         try {
             const dados=selecionarCenario(req,carregarOrigem()),mes=String(req.query.mes||'');

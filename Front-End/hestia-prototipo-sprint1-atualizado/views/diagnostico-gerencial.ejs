@@ -1,0 +1,25 @@
+<section class="panel" aria-label="Resumo executivo">
+ <div class="panel-head"><div><h2>Resumo executivo</h2><p><%= diagnostico.conclusao %></p></div></div>
+ <p>Fonte: <strong><%= diagnostico.fonte || 'Indisponível' %></strong> · <%= diagnostico.inicio || '—' %> a <%= diagnostico.fim || '—' %></p>
+ <% if(diagnostico.fonte==='DEMO'){ %><p>As notas são fictícias; não correspondem aos colaboradores operacionais abaixo.</p><% } %>
+ <p>Referências gerenciais propostas: abaixo de 60, crítico; de 60 a menos de 80, atenção. Notas sem evidência suficiente não são classificadas.</p>
+ <div class="feedback-table"><table>
+ <thead><tr><th>Dimensão</th><th>Nota / 100</th><th>Situação</th><th>Interpretação</th><th>Ação</th></tr></thead>
+ <tbody><% diagnostico.indicadores.forEach(i=>{ %><tr>
+ <td><strong><%= i.nome %></strong></td><td><%= i.nota===null?'—':i.nota.toFixed(1) %></td>
+ <td><span class="feedback-status" data-status="<%= i.status %>"><%= i.status %></span></td><td><%= i.significado %></td>
+ <td><%= i.recomendacao %> <a href="<%= i.link %>">Consultar →</a>
+ <% if(i.formula){ %><details><summary>Fonte e racional de cálculo</summary><p><%= i.formula %></p><p><%= i.fonte %> · Amostra: <%= i.amostra??'—' %> · Numerador: <%= i.numerador??'—' %> · Denominador: <%= i.denominador??'—' %></p></details><% } %></td>
+ </tr><% }) %></tbody></table></div>
+ <p><a href="/maturidade">Ver apuração completa →</a></p>
+</section>
+<section class="panel" aria-label="Prioridades dos colaboradores">
+ <h2>Prioridades de acompanhamento</h2>
+ <% if(typeof painelGestao==='undefined'||!painelGestao){ %><p>Dados operacionais indisponíveis. Nenhuma conclusão individual foi gerada.</p>
+ <% }else{ %>
+ <p><strong><%= painelGestao.empresa %> — <%= painelGestao.departamento %></strong> · <%= painelGestao.inicio %> a <%= painelGestao.fim %></p>
+ <p><%= painelGestao.comAlertas %> de <%= painelGestao.colaboradores.length %> colaboradores com pontos de acompanhamento.</p>
+ <% for(const c of painelGestao.colaboradores.filter(c=>c.alertas.length).slice(0,5)){ %><p><a href="/gestao-colaboradores#colaborador-<%= c.id %>"><strong><%= c.nome %></strong></a> — <%= c.alertas.map(a=>a.dimensao).join(', ') %></p><% } %>
+ <% } %>
+ <p><a href="/gestao-colaboradores">Abrir acompanhamento individual →</a> · <a href="/ocorrencias">Tratar ocorrências →</a></p>
+</section>

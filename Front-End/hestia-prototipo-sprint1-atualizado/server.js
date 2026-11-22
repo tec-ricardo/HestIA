@@ -1,4 +1,6 @@
 const express = require("express");
+const {gerarDiagnostico}=require("./diagnostico-gerencial");
+const {registrarRotasGestao,carregarPainel}=require("./gestao-colaboradores");
 const axios = require("axios");
 const {periodoDemoBanco,contaDemo}=require('./periodo-demo-banco');
 const app = express();
@@ -88,6 +90,7 @@ app.use((req, res, next) => contextoApi.run({
 }, next));
 
 require("./integracoes-sprint")(app, api);
+registrarRotasGestao(app,api);
 require("./simulacao-produtividade").registrarRotasSimulacao(app);
 require("./configuracao-inicial")(app, api);
 require("./ciencia-politica")(app, api);
@@ -141,6 +144,7 @@ app.get("/", async (req, res) => {
             perfil: req.session.perfil,
             email: req.session.email,
             active: "dashboard",
+            diagnostico: gerarDiagnostico(null), painelGestao:null,
             indicadores: { empresas: 0, departamentos: 0, usuarios: 0, politicas: 0, ferramentas: 0 },
             resumo: {
                 creditos: null, posicao: null, participantes: 0, xp: null,
@@ -153,20 +157,16 @@ app.get("/", async (req, res) => {
     const usuarioId = Number(req.session.usuarioId);
     const colaborador = req.session.perfil === "colaborador";
 
-    const [indicadores, creditos, passe, registros] = await Promise.all([
-        carregarIndicadores(req.session.perfil),
+    const [painelGestao, creditos, passe, registros] = await Promise.all([
+        colaborador ? Promise.resolve(null) : carregarPainel(api).catch(()=>null),
         consultarObjetoComFallback("/gamificacao/creditos", null),
         Number.isSafeInteger(usuarioId) && usuarioId > 0
             ? consultarObjetoComFallback(`/gamificacao/usuarios/${usuarioId}/passe`, null)
             : Promise.resolve(null),
-        consultarListaComFallback(
-            colaborador
-                ? `/registros-uso-ia?usuarioId=${encodeURIComponent(usuarioId)}`
-                : "/registros-uso-ia",
-            []
-        )
+        colaborador ? consultarListaComFallback(`/registros-uso-ia?usuarioId=${encodeURIComponent(usuarioId)}`,[]) : Promise.resolve([])
     ]);
 
+    const indicadores = painelGestao ? {empresas:1,departamentos:painelGestao.departamentos,usuarios:painelGestao.colaboradores.length,politicas:painelGestao.politicas,ferramentas:painelGestao.ferramentas} : {empresas:null,departamentos:null,usuarios:null,politicas:null,ferramentas:null};
     const fimMaturidade = new Date();
     const inicioMaturidade = new Date(fimMaturidade);
     inicioMaturidade.setDate(inicioMaturidade.getDate() - 29);
@@ -196,11 +196,12 @@ app.get("/", async (req, res) => {
         nivel: passe ? (passe.xpTotal >= 2500 ? "Embaixador" : passe.xpTotal >= 750 ? "Guardião" : passe.xpTotal >= 300 ? "Consciente" : "Aprendiz") : null,
         percentualProgresso: passe ? require("./progresso-nivel").progressoNivel(Number(passe.xpTotal || 0)) : null,
         xpProximoNivel: passe ? (Number(passe.xpTotal || 0) < 300 ? 300 : Number(passe.xpTotal || 0) < 750 ? 750 : Number(passe.xpTotal || 0) < 2500 ? 2500 : null) : null,
-        totalRegistros: registros.length,
+        totalRegistros: colaborador ? registros.length : painelGestao?.usos ?? null,
         registrosComSucesso: registros.filter(item => item.statusExecucao === "SUCESSO").length,
-        tokensRegistrados: registros.reduce((total, item) => total + Number(item.tokensTotal || 0), 0),
+        tokensRegistrados: colaborador ? registros.reduce((total,item)=>total+Number(item.tokensTotal||0),0) : painelGestao?.tokens ?? null,
         atividadeRecente: registrosOrdenados.slice(0, 5),
         maturidadeParcial: maturidade?.scoreParcial ?? null,
+        maturidadeGlobal: maturidade?.scoreGlobal ?? null,
         maturidadeFonte: maturidade?.naturezaDados ?? null,
         coberturaMaturidade: maturidade?.coberturaPesos != null
             ? Math.round(Number(maturidade.coberturaPesos) * 100)
@@ -212,7 +213,7 @@ app.get("/", async (req, res) => {
         email: req.session.email,
         active: "dashboard",
         indicadores,
-        resumo
+        resumo, painelGestao, diagnostico:gerarDiagnostico(maturidade)
     });
 });
 
@@ -224,10 +225,9 @@ app.get("/maturidade", (req, res, next) => {
     if(!Object.keys(req.query).length&&contaDemo(req.session.email))return res.redirect('/maturidade/resultados?fonte=DEMO');
     if (Object.keys(req.query).length) return res.redirect("/maturidade/resultados?" + new URLSearchParams(req.query).toString());
     return res.redirect("/maturidade/resultados?" + new URLSearchParams({
-        inicio: "2025-06-01",
-        fim: "2026-08-10",
-        fonte: "SINTETICA",
-        snapshot: "11d10be9a03f6ce73653523dd7dbe8bdac42c9e65435a1a865250cffe4d20ab3"
+        inicio: (()=>{const d=new Date();d.setDate(d.getDate()-29);return d.toLocaleDateString("sv-SE");})(),
+        fim: new Date().toLocaleDateString("sv-SE"),
+        fonte: "OPERACIONAL"
     }).toString());
 });
 
@@ -807,7 +807,8 @@ app.get("/mapa-risco", async (req, res) => {
     if (perfil !== "gestor" && perfil !== "administrador") return res.redirect("/");
 
     const fonte=req.query.fonte==='DEMO'?'DEMO':'OPERACIONAL';
-    const periodoPadrao=fonte==='DEMO'?periodoDemoBanco():{inicio:'',fim:''};
+    const fimPadrao=new Date(),inicioPadrao=new Date(fimPadrao);inicioPadrao.setDate(inicioPadrao.getDate()-29);
+    const periodoPadrao=fonte==='DEMO'?periodoDemoBanco():{inicio:inicioPadrao.toLocaleDateString("sv-SE"),fim:fimPadrao.toLocaleDateString("sv-SE")};
     const inicio = typeof req.query.inicio === "string" ? req.query.inicio : periodoPadrao.inicio;
     const fim = typeof req.query.fim === "string" ? req.query.fim : periodoPadrao.fim;
     const formatar = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format;
@@ -815,7 +816,7 @@ app.get("/mapa-risco", async (req, res) => {
     let erro = null;
     let status = 200;
 
-    if (fonte==='DEMO' || Object.hasOwn(req.query, "inicio") || Object.hasOwn(req.query, "fim")) {
+    if (inicio && fim) {
         const dataIso = /^\d{4}-\d{2}-\d{2}$/;
         if (!dataIso.test(inicio) || !dataIso.test(fim) || inicio > fim) {
             status = 400;
@@ -895,6 +896,7 @@ app.get("/ranking", async (req, res) => {
         },
         classificacao: (creditos.ranking || []).map(item => ({
             posicao: item.posicao,
+            usuarioId:item.usuarioId,
             nome: item.nome,
             iniciais: iniciais(item.nome),
             nivel: item.xpTotal != null && Number.isFinite(Number(item.xpTotal))
@@ -1819,7 +1821,7 @@ function adaptarPasseHestIA(passeApi, fallback) {
             { titulo: "Utilização conforme", descricao: "Após avaliação de conformidade.", xp: "+25 XP", tipo: "positivo" },
             { titulo: "Microtreinamento", descricao: "Após conclusão válida.", xp: "+40 XP", tipo: "bonus" },
             { titulo: "Reutilização eficiente", descricao: "Resposta aprovada reutilizada.", xp: "+15 XP", tipo: "reutilizacao" },
-            { titulo: "Missão concluída", descricao: "Conclusão de uma missão do passe.", xp: "+50 XP", tipo: "bonus" }
+            { titulo: "Missão concluída", descricao: "Conclusão de missão; recompensa definida no cadastro.", xp: "Variável", tipo: "bonus" }
         ],
         proximoNivel: proximo ? {
             nivel: proximo.nivel,
