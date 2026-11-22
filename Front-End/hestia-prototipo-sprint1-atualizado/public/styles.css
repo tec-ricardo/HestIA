@@ -7949,3 +7949,9 @@ body.login-body .login-card .login-brand .brand-mark {
 .maturity-links a[href="/maturidade/confiabilidade"] {
     display: none !important;
 }
+
+/* Ocultar campos de tokens no registro */
+#formRegistro .usage-field:has(input[name="tokensEntrada"]),
+#formRegistro .usage-field:has(input[name="tokensSaida"]) {
+    display: none !important;
+}
